@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:replace="/fragment/head.html :: headFragment"></th:block>
+<body>
+<th:block th:replace="/fragment/loader.html :: loaderFragment"></th:block>
+    <section>
+        <div class="container-fluid p-0">
+            <div class="row m-0">
+                <div class="col-xl-7 p-0"><img class="bg-img-cover bg-center" th:src="@{/static/images/signup.jpg}" alt="looginpage"></div>
+                <div class="col-xl-5 p-0">
+                    <div class="login-card">
+                        <form th:action="@{/signup}" th:object="${memberForm}" method="post" class="theme-form login-form" onsubmit="return passwordFlag">
+                            <h4>Create your account</h4>
+                            <h6>Enter your personal details to create account</h6>
+                            <th:block th:if="${param.error}">
+                                <div class="alert alert-danger outline alert-dismissible fade show" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-down"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
+                                    <span class="exception"></span>
+                                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                                </div>
+                            </th:block>
+                            <div class="form-group">
+                                <label>학번</label>
+                                <div class="small-group">
+                                    <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
+                                        <input name="userNumber" th:field="*{userNumber}" class="form-control" type="text" required="" placeholder="Student Number">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>이름</label>
+                                <div class="small-group">
+                                    <div class="input-group"><span class="input-group-text"><i class="icofont icofont-surface-tablet"></i></span>
+                                        <input name="name" th:field="*{name}" class="form-control" type="text" required="" placeholder="Student Number">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>ID</label>
+                                <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
+                                    <input name="memberId" th:field="*{memberId}" class="form-control" type="text" required="" placeholder="Test@gmail.com">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <div id="pass-alert" class="alert alert-danger outline alert-dismissible fade show hidden" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-down"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
+                                    <span class="password_exception"></span>
+                                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                                </div>
+                                <div class="input-group"><span class="input-group-text"><i class="icon-lock"></i></span>
+                                    <input id="password" class="form-control" type="password" name="password" th:field="*{password}" required="" placeholder="*********">
+                                    <div class="show-hide"><span class="show">                         </span></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-block" type="submit">Create Account</button>
+                            </div>
+                            <div class="login-social-title">
+                                <h5>Sign in with</h5>
+                            </div>
+                            <div class="form-group">
+                                <ul class="login-social">
+                                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="linkedin"></i></a></li>
+                                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="twitter"></i></a></li>
+                                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="facebook"></i></a></li>
+                                    <li><a href="https://www.instagram.com/login" target="_blank"><i data-feather="instagram">                  </i></a></li>
+                                </ul>
+                            </div>
+                            <p>Already have an account?<a class="ms-2" href="/login">Sign in</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<th:block th:replace="/fragment/script.html :: scriptFragment"></th:block>
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    const exception = /*[[${param.exception}]]*/;
+    /* ]]> */
+    if(exception!=null){
+        const error = document.querySelector(".exception");
+        if(exception=="identification"){
+            error.innerHTML = "<b>학번</b>과 <b>이름</b>이 일치하지 않습니다.";
+        }else if(exception=="overlap"){
+            error.innerHTML = "중복되는 <b>아이디</b>입니다.";
+        }
+    }
+
+    const PASSWORDREG_1 = /[A-Za-z\d#?!@$%^&*-]{8,}$/;
+    const PASSWORDREG_2 = /(?=.*?[a-z])(?=.*?[A-Z])/;
+    const PASSWORDREG_3 = /(?=.*?[0-9#?!@$%^&*-])/;
+    let passwordFlag = false;
+    const password = document.querySelector("#password");
+
+    password.addEventListener("keyup",function(){
+        const passAlert = document.querySelector("#pass-alert");
+        const passAlertText = passAlert.querySelector('.password_exception');
+        const passwordText = password.value;
+        passwordFlag = false;
+
+        console.log(passAlertText);
+        if(!PASSWORDREG_1.test(passwordText)){
+            passAlert.classList.remove("hidden");
+            passAlertText.innerHTML = "<b>8자</b> 이상이여야 합니다."
+        }else if(!PASSWORDREG_2.test(passwordText)){
+            passAlert.classList.remove("hidden");
+            passAlertText.innerHTML = "<b>소문자</b>와 <b>대문자</b>가 모두 포함되어야 합니다."
+        }else if(!PASSWORDREG_3.test(passwordText)){
+            passAlert.classList.remove("hidden");
+            passAlertText.innerHTML = "<b>숫자</b>또는 <b>기호</b> 가 포함되어야 합니다."
+        }else if(passwordText == ""){
+            passAlert.classList.add("hidden");
+        }else{
+            passAlert.classList.add("hidden");
+            passwordFlag = true;
+        }
+    });
+
+
+</script>
+</body>
+</html>

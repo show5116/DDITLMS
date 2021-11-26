@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:replace="/fragment/head.html :: headFragment"></th:block>
+<body>
+<th:block th:replace="/fragment/loader.html :: loaderFragment"></th:block>
+<section>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-7"><img class="bg-img-cover bg-center" th:src="@{/static/images/login.jpg}" alt="looginpage"></div>
+      <div class="col-xl-5 p-0">
+        <div class="login-card">
+          <div class="col-sm-12 col-xl-6 xl-100">
+            <div class="card height-equal">
+              <div class="card-header pb-0">
+                <h5>아이디/비밀번호 찾기</h5>
+              </div>
+              <div class="card-body">
+                <ul class="nav nav-dark" id="pills-darktab" role="tablist">
+                  <li class="nav-item"><a class="nav-link active" id="pills-darkhome-tab" data-bs-toggle="pill" href="#pills-id" role="tab" aria-controls="pills-id" aria-selected="true"><i class="icon-user"></i>Id</a></li>
+                  <li class="nav-item"><a class="nav-link" id="pills-darkprofile-tab" data-bs-toggle="pill" href="#pills-password" role="tab" aria-controls="pills-password" aria-selected="false"><i class="icon-lock"></i>Password</a></li>
+                </ul>
+                <div class="tab-content" id="pills-darktabContent">
+                  <div class="tab-pane fade show active" id="pills-id" role="tabpanel" aria-labelledby="pills-id">
+                    <div>
+                      <div class="form-group">
+                        <label>학번</label>
+                        <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
+                          <input id="identification-findID" class="form-control" type="text" name="userNumber"  required="" placeholder="학번">
+                          <div class="show-hide"><span class="show">                         </span></div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label>이름</label>
+                        <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
+                          <input id="name-findID" class="form-control" type="text" name="name"  required="" placeholder="이름">
+                          <div class="show-hide"><span class="show">                         </span></div>
+                        </div>
+                      </div>
+                      <button id="button-findID" class="btn btn-primary" type="button">ID 찾기</button>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="pills-password" role="tabpanel" aria-labelledby="pills-password">
+                    <div>
+                      <div class="col-sm-12 col-xl-6 xl-100">
+                        <div class="card height-equal">
+                          <div class="card-body">
+                            <ul class="nav nav-pills" id="pills-icontab" role="tablist">
+                              <li class="nav-item"><a class="nav-link active" id="pills-iconhome-tab" data-bs-toggle="pill" href="#pills-mail" role="tab" aria-controls="pills-mail" aria-selected="true"><i class="icon-email"></i>Mail</a></li>
+                              <li class="nav-item"><a class="nav-link" id="pills-iconprofile-tab" data-bs-toggle="pill" href="#pills-phone" role="tab" aria-controls="pills-phone" aria-selected="false"><i class="icon-mobile"></i>Phone</a></li>
+                            </ul>
+                            <div class="tab-content" id="pills-icontabContent">
+                              <div class="tab-pane fade active show" id="pills-iconhome" role="tabpanel" aria-labelledby="pills-iconhome-tab">
+                                <div class="form-group">
+                                  <label>학번</label>
+                                  <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
+                                    <input id="identification-changePassword" class="form-control" type="text" name="userNumber"  required="" placeholder="학번">
+                                    <div class="show-hide"><span class="show">                         </span></div>
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label>이름</label>
+                                  <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
+                                    <input id="name-changePassword" class="form-control" type="text" name="name"  required="" placeholder="이름">
+                                    <div class="show-hide"><span class="show">                         </span></div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="pills-iconprofile" role="tabpanel" aria-labelledby="pills-iconprofile-tab">
+                                <p class="mb-0 m-t-30">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumIt was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<th:block th:replace="/fragment/script.html :: scriptFragment"></th:block>
+<script th:inline="javascript">
+  const identificationFindID = document.querySelector("#identification-findID");
+  const nameFindID = document.querySelector("#name-findID");
+  const buttonFindID = document.querySelector("#button-findID");
+
+  buttonFindID.addEventListener("click",function() {
+    const params = {
+      identification : identificationFindID.value,
+      name : nameFindID.value
+    };
+    $.ajax({
+      url: "/forget/findID",
+      data: params,
+      method: "GET",
+      dataType: "json"
+    })
+    .done(function(fragment){
+
+    });
+  });
+</script>
+</body>
+</html>

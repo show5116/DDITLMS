@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<th:block th:replace="/fragment/head.html :: headFragment"></th:block>
+<body>
+<th:block th:replace="/fragment/loader.html :: loaderFragment"></th:block>
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-7"><img class="bg-img-cover bg-center" th:src="@{/static/images/login.jpg}" alt="looginpage"></div>
+            <div class="col-xl-5 p-0">
+                <div class="login-card">
+                    <form th:action="@{/login}" method="post" class="theme-form login-form">
+                        <h4>Login</h4>
+                        <h6>Welcome back! Log in to your account.</h6>
+                        <div class="form-group">
+                            <th:block th:if="${param.error}">
+                                <div class="alert alert-danger outline alert-dismissible fade show" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-down"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
+                                    <span class="exception"></span>
+                                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                                </div>
+                            </th:block>
+                            <label>계정</label>
+                            <div class="input-group"><span class="input-group-text"><i id="account_icon" class="icon-id-badge"></i></span>
+                                <input id="account" class="form-control" type="text" name="username" required="" placeholder="아이디 혹은 학번">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="input-group"><span class="input-group-text"><i class="icon-lock"></i></span>
+                                <input class="form-control" type="password" name="password"  required="" placeholder="*********">
+                                <div class="show-hide"><span class="show">                         </span></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <input id="remember-me" name="remember-me" type="checkbox">
+                                <label class="text-muted" for="remember-me">로그인 유지하기</label>
+                            </div><a class="link" href="/forget">Forgot password?</a>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+                        </div>
+                        <div class="login-social-title">
+                            <h5>Sign in with</h5>
+                        </div>
+                        <div class="form-group">
+                            <ul class="login-social">
+                                <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="linkedin"></i></a></li>
+                                <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="twitter"></i></a></li>
+                                <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="facebook"></i></a></li>
+                                <li><a href="https://www.instagram.com/login" target="_blank"><i data-feather="instagram">                  </i></a></li>
+                            </ul>
+                        </div>
+                        <p>Don't have account?<a class="ms-2" href="/signup">Create Account</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block th:replace="/fragment/script.html :: scriptFragment"></th:block>
+<script th:inline="javascript">
+    /* <![CDATA[ */
+        const exception = /*[[${param.exception}]]*/;
+        const cnt = /*[[${param.cnt}]]*/;
+    /* ]]> */
+    if(exception!=null){
+            const error = document.querySelector(".exception");
+            if(exception=="Password"){
+                error.innerHTML = "비밀번호가<b>" + cnt + "회</b> 틀렸습니다.";
+            }else if (exception=="Account"){
+                error.innerHTML = "<b>계정이</b> 존재하지 않습니다.";
+            }else if (exception=="Secret"){
+                error.innerHTML = "잘못된 <b>토큰접근</b>입니다.";
+            }else if (exception=="Disable"){
+                error.innerHTML = "계정이 <b>잠겼습니다.</b>";
+            }else if (exception=="Duplicate"){
+            error.innerHTML = "계정이 이미 <b>접속중</b>입니다.";
+        }
+    }
+
+    const account = document.querySelector("#account");
+
+    account.addEventListener("keyup",function(){
+        const accountIcon = document.querySelector("#account_icon");
+        if(isNaN(account.value[0])){
+            accountIcon.classList.replace("icon-id-badge","icon-user");
+        }else{
+            accountIcon.classList.replace("icon-user","icon-id-badge");
+        }
+    });
+</script>
+</body>
+</html>
