@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -87,6 +90,21 @@ public class MainController {
         }
         //response.getWriter().print(jsonObject.toJSONString());
     }
+
+    @GetMapping("/fileUpload")
+    public String fileUpload(){
+        return "/pages/dropzonetest";
+    }
+
+    @PostMapping("/upload")
+    public String fileUpload(@RequestParam(value = "file", required = false) MultipartFile file,
+                             MultipartHttpServletRequest request) {
+        Map<String, MultipartFile> map = request.getFileMap();
+        System.out.println(map);
+        System.out.println("뭐라카노");
+        return "/pages/dropzonetest";
+    }
+
 
     @GetMapping("/student/main")
     public String student(){
