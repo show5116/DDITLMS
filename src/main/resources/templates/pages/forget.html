@@ -27,14 +27,12 @@
                         <label>학번</label>
                         <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
                           <input id="identification-findID" class="form-control" type="text" name="userNumber"  required="" placeholder="학번">
-                          <div class="show-hide"><span class="show">                         </span></div>
                         </div>
                       </div>
                       <div class="form-group">
                         <label>이름</label>
                         <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
                           <input id="name-findID" class="form-control" type="text" name="name"  required="" placeholder="이름">
-                          <div class="show-hide"><span class="show">                         </span></div>
                         </div>
                       </div>
                       <button id="button-findID" class="btn btn-primary" type="button">ID 찾기</button>
@@ -46,28 +44,39 @@
                         <div class="card height-equal">
                           <div class="card-body">
                             <ul class="nav nav-pills" id="pills-icontab" role="tablist">
-                              <li class="nav-item"><a class="nav-link active" id="pills-iconhome-tab" data-bs-toggle="pill" href="#pills-mail" role="tab" aria-controls="pills-mail" aria-selected="true"><i class="icon-email"></i>Mail</a></li>
-                              <li class="nav-item"><a class="nav-link" id="pills-iconprofile-tab" data-bs-toggle="pill" href="#pills-phone" role="tab" aria-controls="pills-phone" aria-selected="false"><i class="icon-mobile"></i>Phone</a></li>
+                              <li class="nav-item"><a class="nav-link active" id="pills-mail-li" data-bs-toggle="pill" href="#pills-mail" role="tab" aria-controls="pills-mail" aria-selected="true"><i class="icon-email"></i>Mail</a></li>
+                              <li class="nav-item"><a class="nav-link" id="pills-phone-li" data-bs-toggle="pill" href="#pills-phone" role="tab" aria-controls="pills-phone" aria-selected="false"><i class="icon-mobile"></i>Phone</a></li>
                             </ul>
-                            <div class="tab-content" id="pills-icontabContent">
-                              <div class="tab-pane fade active show" id="pills-iconhome" role="tabpanel" aria-labelledby="pills-iconhome-tab">
+                            <div class="form-group">
+                              <label>학번</label>
+                              <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
+                                <input id="identification-changePassword" class="form-control" type="text" required="" placeholder="학번">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label>이름</label>
+                              <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
+                                <input id="name-changePassword" class="form-control" type="text" required="" placeholder="이름">
+                              </div>
+                            </div>
+                            <div class="tab-content" id="pills-mailContent">
+                              <div class="tab-pane fade active show" id="pills-mail" role="tabpanel" aria-labelledby="pills-mail">
                                 <div class="form-group">
-                                  <label>학번</label>
+                                  <label>메일</label>
                                   <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
-                                    <input id="identification-changePassword" class="form-control" type="text" name="userNumber"  required="" placeholder="학번">
-                                    <div class="show-hide"><span class="show">                         </span></div>
+                                    <input class="form-control" id="mail-text" type="text" name="mail"  required="" placeholder="mail">
                                   </div>
-                                </div>
-                                <div class="form-group">
-                                  <label>이름</label>
-                                  <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
-                                    <input id="name-changePassword" class="form-control" type="text" name="name"  required="" placeholder="이름">
-                                    <div class="show-hide"><span class="show">                         </span></div>
-                                  </div>
+                                  <button id="button-change-password-mail" class="btn btn-primary" type="button">메일로 변경하기</button>
                                 </div>
                               </div>
-                              <div class="tab-pane fade" id="pills-iconprofile" role="tabpanel" aria-labelledby="pills-iconprofile-tab">
-                                <p class="mb-0 m-t-30">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumIt was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently</p>
+                              <div class="tab-pane fade" id="pills-phone" role="tabpanel" aria-labelledby="pills-phone">
+                                <div class="form-group">
+                                  <label>전화번호</label>
+                                  <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
+                                    <input class="form-control" id="phone-text" type="text" name="phone"  required="" placeholder="phone">
+                                  </div>
+                                  <button id="button-change-password-phone" class="btn btn-primary" type="button">문자로 변경하기</button>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -88,9 +97,28 @@
 <script th:inline="javascript">
   const identificationFindID = document.querySelector("#identification-findID");
   const nameFindID = document.querySelector("#name-findID");
+  const identificationChangePassword = document.querySelector("#identification-changePassword");
+  const nameChnagePassword = document.querySelector("#name-changePassword");
+
+  identificationFindID.addEventListener("keyup",function (){
+    identificationChangePassword.value = identificationFindID.value;
+  });
+  identificationChangePassword.addEventListener("keyup",function (){
+    identificationFindID.value = identificationChangePassword.value;
+  });
+  nameFindID.addEventListener("keyup",function (){
+    nameChnagePassword.value = nameFindID.value;
+  });
+  nameChnagePassword.addEventListener("keyup",function (){
+    nameFindID.value = nameChnagePassword.value;
+  });
+
   const buttonFindID = document.querySelector("#button-findID");
 
   buttonFindID.addEventListener("click",function() {
+    if(identificationFindID.value=="" || nameFindID.value==""){
+      return;
+    }
     const params = {
       identification : identificationFindID.value,
       name : nameFindID.value
@@ -102,9 +130,52 @@
       dataType: "json"
     })
     .done(function(fragment){
-
+      if(fragment.find == "true"){
+        swal(`아이디는 ${fragment.id}입니다.`);
+      }else{
+        swal(`해당 학번,이름이 맞지 않거나 계정이 존재하지 않습니다.`);
+      }
     });
   });
+
+  const passwordMail = document.querySelector("#button-change-password-mail");
+  passwordMail.addEventListener("click",function(){
+    const mailText = document.querySelector("#mail-text");
+    if(identificationFindID.value=="" || nameFindID.value=="" || mailText.value==""){
+      return;
+    }
+    const params = {
+      identification : identificationFindID.value,
+      name : nameFindID.value,
+      mail : mailText.value
+    };
+    $.ajax({
+      url: "/forget/mail",
+      data: params,
+      method: "GET",
+      dataType: "json"
+    })
+  });
+  const passwordPhone = document.querySelector("#button-change-password-phone");
+  passwordPhone.addEventListener("click",function(){
+    const phoneText = document.querySelector("#phone-text");
+    if(identificationFindID.value=="" || nameFindID.value=="" || phoneText.value==""){
+      return;
+    }
+    const params = {
+      identification : identificationFindID.value,
+      name : nameFindID.value,
+      phone : phoneText.value
+    };
+    $.ajax({
+      url: "/forget/phone",
+      data: params,
+      method: "GET",
+      dataType: "json"
+    })
+  });
+
+
 </script>
 </body>
 </html>

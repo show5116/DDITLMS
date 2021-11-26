@@ -1,27 +1,18 @@
 package com.example.dditlms.domain.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashMap;
 
 @Getter @Setter
+@AllArgsConstructor
+@ToString
 public class SMSDTO {
     private String to;
     private String from;
     private String type;
     private String text;
     private String app_version;
-
-    @Builder
-    public SMSDTO(String to, String from, String type, String text, String app_version) {
-        this.to = to;
-        this.from = from;
-        this.type = type;
-        this.text = text;
-        this.app_version = app_version;
-    }
 
     public HashMap<String,String> ToHashMap(){
         HashMap<String,String> params = new HashMap<String,String>();

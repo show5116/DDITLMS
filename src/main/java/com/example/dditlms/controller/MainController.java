@@ -1,10 +1,14 @@
 package com.example.dditlms.controller;
 
+import com.example.dditlms.domain.dto.MailDTO;
+import com.example.dditlms.domain.dto.SMSDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.IdentificationRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.security.AccountContext;
+import com.example.dditlms.service.MailService;
 import com.example.dditlms.service.MemberService;
+import com.example.dditlms.service.SMSService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -22,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +38,10 @@ public class MainController {
     private final MemberService memberService;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final MailService mailService;
+
+    private final SMSService smsService;
 
     @PostAuthorize("isAuthenticated()")
     @GetMapping("/")
@@ -88,7 +97,42 @@ public class MainController {
             jsonObject.put("find","true");
             jsonObject.put("id",id);
         }
-        //response.getWriter().print(jsonObject.toJSONString());
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
+    }
+
+    @GetMapping("/forget/mail")
+    public void changePasswordMail(HttpServletResponse response, @RequestParam Map<String,String> paramMap){
+        JSONObject jsonObject = new JSONObject();
+        String id = memberService.findId(paramMap.get("identification"),paramMap.get("name"));
+        if(id==null){
+            jsonObject.put("find","false");
+        }else{
+            MailDTO mailDTO = new MailDTO(paramMap.get("mail"),"제목","니 비번");
+            mailService.mailSend(mailDTO);
+        }
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
+    }
+
+    @GetMapping("/forget/phone")
+    public void chanePasswordPhone(HttpServletResponse response, @RequestParam Map<String,String> paramMap){
+        JSONObject jsonObject = new JSONObject();
+        String id = memberService.findId(paramMap.get("identification"),paramMap.get("name"));
+        SMSDTO smsdto = new SMSDTO("01067856542","01051161830","SMS","문자요","test app 1.2");
+        smsService.SendMessage(smsdto);
+        if(id==null){
+            jsonObject.put("find","false");
+        }else{
+        }
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
     }
 
     @GetMapping("/fileUpload")
@@ -100,8 +144,6 @@ public class MainController {
     public String fileUpload(@RequestParam(value = "file", required = false) MultipartFile file,
                              MultipartHttpServletRequest request) {
         Map<String, MultipartFile> map = request.getFileMap();
-        System.out.println(map);
-        System.out.println("뭐라카노");
         return "/pages/dropzonetest";
     }
 
