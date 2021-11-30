@@ -32,18 +32,17 @@
                         <th:block th:replace="/fragment/nav_professor.html :: nav_professorFragment"></th:block>
                     </ul>
                     <ul sec:authorize="hasRole('ROLE_ACCADEMIC_DEP')" class="nav-menu custom-scrollbar">
-                        <th:block th:replace="/fragment/nav_professor.html :: nav_professorFragment"></th:block>
+                        <th:block th:replace="/fragment/nav_accademic_dep.html :: nav_accademic_depFragment"></th:block>
                     </ul>
                     <ul sec:authorize="hasRole('ROLE_ADMIN_DEP')" class="nav-menu custom-scrollbar">
-                        <th:block th:replace="/fragment/nav_professor.html :: nav_professorFragment"></th:block>
+                        <th:block th:replace="/fragment/nav_admin_dep.html :: nav_admin_depFragment"></th:block>
                     </ul>
                     <ul sec:authorize="hasRole('ROLE_GENERAL_DEP')" class="nav-menu custom-scrollbar">
-                        <th:block th:replace="/fragment/nav_professor.html :: nav_professorFragment"></th:block>
+                        <th:block th:replace="/fragment/nav_general_dep.html :: nav_general_depFragment"></th:block>
                     </ul>
                     <ul sec:authorize="hasRole('ROLE_STUDENT_DEP')" class="nav-menu custom-scrollbar">
-                        <th:block th:replace="/fragment/nav_professor.html :: nav_professorFragment"></th:block>
+                        <th:block th:replace="/fragment/nav_student_dep.html :: nav_student_depFragment"></th:block>
                     </ul>
-
                 </div>
                 <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
             </div>
