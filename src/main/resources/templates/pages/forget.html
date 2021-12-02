@@ -24,6 +24,7 @@
                   <div class="tab-pane fade show active" id="pills-id" role="tabpanel" aria-labelledby="pills-id">
                     <div>
                       <div class="form-group">
+                        <br/>
                         <label>학번</label>
                         <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
                           <input id="identification-findID" class="form-control" type="text" name="userNumber"  required="" placeholder="학번">
@@ -48,6 +49,7 @@
                               <li class="nav-item"><a class="nav-link" id="pills-phone-li" data-bs-toggle="pill" href="#pills-phone" role="tab" aria-controls="pills-phone" aria-selected="false"><i class="icon-mobile"></i>Phone</a></li>
                             </ul>
                             <div class="form-group">
+                              <br/>
                               <label>학번</label>
                               <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
                                 <input id="identification-changePassword" class="form-control" type="text" required="" placeholder="학번">
@@ -66,15 +68,27 @@
                                   <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
                                     <input class="form-control" id="mail-text" type="text" name="mail"  required="" placeholder="mail">
                                   </div>
+                                  <br/>
                                   <button id="button-change-password-mail" class="btn btn-primary" type="button">메일로 변경하기</button>
                                 </div>
                               </div>
                               <div class="tab-pane fade" id="pills-phone" role="tabpanel" aria-labelledby="pills-phone">
                                 <div class="form-group">
                                   <label>전화번호</label>
-                                  <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
-                                    <input class="form-control" id="phone-text" type="text" name="phone"  required="" placeholder="phone">
+                                  <div style="display: -webkit-box;">
+                                    <div class="col">
+                                      <input id="phone1" class="form-control text-center opt-text" type="text" maxlength="3" onkeyPress="javascript:checkInputNum();">
+                                    </div>
+                                    <span>-</span>
+                                    <div class="col">
+                                      <input id="phone2" class="form-control text-center opt-text" type="text" maxlength="4" onkeyPress="javascript:checkInputNum();">
+                                    </div>
+                                    <span>-</span>
+                                    <div class="col">
+                                      <input id="phone3" class="form-control text-center opt-text" type="text" maxlength="4" onkeyPress="javascript:checkInputNum();">
+                                    </div>
                                   </div>
+                                  <br/>
                                   <button id="button-change-password-phone" class="btn btn-primary" type="button">문자로 변경하기</button>
                                 </div>
                               </div>
@@ -160,15 +174,29 @@
     });
   });
   const passwordPhone = document.querySelector("#button-change-password-phone");
+  const phone1 = document.querySelector("#phone1");
+  const phone2 = document.querySelector("#phone2");
+  const phone3 = document.querySelector("#phone3");
+
+  phone1.addEventListener("keyup",function(){
+    if(phone1.value.length==3){
+      phone2.focus();
+    }
+  });
+  phone2.addEventListener("keyup",function(){
+    if(phone2.value.length==4){
+      phone3.focus();
+    }
+  });
   passwordPhone.addEventListener("click",function(){
-    const phoneText = document.querySelector("#phone-text");
-    if(identificationFindID.value=="" || nameFindID.value=="" || phoneText.value==""){
+    if(identificationFindID.value=="" || nameFindID.value=="" || phone1.value=="" || phone2.value=="" || phone3.value==""){
       return;
     }
+    const phone = phone1.value + phone2.value + phone3.value;
     const params = {
       identification : identificationFindID.value,
       name : nameFindID.value,
-      phone : phoneText.value
+      phone : phone
     };
     $.ajax({
       url: "/forget/phone",

@@ -1,3 +1,11 @@
+// Custom script 개발자 자유 공통 스크립트 작성장소
+// checkInputNum --> 숫자만 입력 가능하게 해주는 코드
+function checkInputNum(){
+    if ((event.keyCode < 48) || (event.keyCode > 57)){
+        event.returnValue = false;
+    }
+}
+
 (function($) {
     "use strict";
     $(".mobile-toggle").click(function(){
