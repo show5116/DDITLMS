@@ -86,7 +86,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .tokenValiditySeconds(86400*30)
                 .tokenRepository(getJDBCRepository());
 
-
         http.exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler());
     }
