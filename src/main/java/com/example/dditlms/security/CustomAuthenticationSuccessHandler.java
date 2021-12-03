@@ -40,7 +40,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new LockedException("Account locked");
         }else{
             member.setFailCount(0);
-
+            memberRepository.save(member);
         }
 
         // 쿠팡 둘러보기 하다가 로그인 성공 시 다시 거기로 가는 경우

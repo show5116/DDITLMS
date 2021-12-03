@@ -32,10 +32,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
-        int userNumber;
+        long userNumber;
         Optional<Member> memberEntityWrapper;
         try{
-            userNumber = Integer.parseInt(account);
+            userNumber = Long.parseLong(account);
             memberEntityWrapper = memberRepository.findByUserNumber(userNumber);
         }catch (NumberFormatException e){
             memberEntityWrapper = memberRepository.findByMemberId(account);
@@ -78,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public String findId(String identification, String name) {
-        int usernumber = Integer.parseInt(identification);
+        long usernumber = Long.parseLong(identification);
         Optional<Identification> identificationWrapper =  identificationRepository.findByUserNumberAndName(usernumber,name);
         Identification identificationEntity = identificationWrapper.orElse(null);
         if(identificationEntity == null){
@@ -90,5 +90,15 @@ public class MemberServiceImpl implements MemberService {
         }catch(Exception e){
             return null;
         }
+    }
+
+    @Override
+    public boolean changePW(String id, String password) {
+        Optional<Member> memberEntityWrapper = memberRepository.findByMemberId(id);
+        Member member = memberEntityWrapper.orElse(null);
+        member.setPassword(password);
+        member.setFailCount(0);
+        memberRepository.save(member);
+        return true;
     }
 }

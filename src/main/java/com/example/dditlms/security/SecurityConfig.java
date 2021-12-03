@@ -57,7 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/student/**").hasAuthority(Role.STUDENT.getValue())
                 .antMatchers("/admin/**").hasAuthority(Role.ADMIN.getValue())
                 .antMatchers("/professor/**").hasAuthority(Role.PROFESSOR.getValue())
-                .antMatchers("/**").permitAll()
+                .antMatchers("/forget","/forget/**").permitAll()
+                .antMatchers("/login").permitAll()
                 .anyRequest().authenticated();
 
         http.sessionManagement()

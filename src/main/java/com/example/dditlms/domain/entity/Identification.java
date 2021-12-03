@@ -13,7 +13,7 @@ public class Identification {
 
     @Id
     @Column(name="user_number")
-    private Integer userNumber;
+    private long userNumber;
 
     @Column(nullable = false)
     private String name;
@@ -31,7 +31,7 @@ public class Identification {
     private Member member;
 
     @Builder
-    public Identification(int userNumber,String name,String email,String d_type,String phoneNumber,
+    public Identification(long userNumber,String name,String email,String d_type,String phoneNumber,
                           Member member){
         this.userNumber = userNumber;
         this.name = name;
