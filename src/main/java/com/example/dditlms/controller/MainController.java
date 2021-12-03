@@ -3,16 +3,14 @@ package com.example.dditlms.controller;
 import com.example.dditlms.domain.dto.MailDTO;
 import com.example.dditlms.domain.dto.SMSDTO;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.repository.IdentificationRepository;
-import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.MailService;
 import com.example.dditlms.service.MemberService;
 import com.example.dditlms.service.SMSService;
+import com.example.dditlms.util.OtpUtil;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,9 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -42,6 +41,8 @@ public class MainController {
     private final MailService mailService;
 
     private final SMSService smsService;
+
+    private final OtpUtil otpUtil;
 
     @PostAuthorize("isAuthenticated()")
     @GetMapping("/")
@@ -110,8 +111,13 @@ public class MainController {
         if(id==null){
             jsonObject.put("find","false");
         }else{
-            MailDTO mailDTO = new MailDTO(paramMap.get("mail"),"제목","니 비번");
+            jsonObject.put("find","true");
+            String[] otp = otpUtil.getOTP();
+            MailDTO mailDTO = new MailDTO(paramMap.get("mail"),"제목",otp[1]);
             mailService.mailSend(mailDTO);
+            Cookie cookie = new Cookie("otp",passwordEncoder.encode(otp[0]));
+            cookie.setMaxAge(60 * 5);
+            response.addCookie(cookie);
         }
         try {
             response.getWriter().print(jsonObject.toJSONString());
@@ -120,14 +126,20 @@ public class MainController {
     }
 
     @GetMapping("/forget/phone")
-    public void chanePasswordPhone(HttpServletResponse response, @RequestParam Map<String,String> paramMap){
+    public void chanePasswordPhone(HttpServletResponse response, HttpServletRequest request,
+                                   @RequestParam Map<String,String> paramMap){
         JSONObject jsonObject = new JSONObject();
         String id = memberService.findId(paramMap.get("identification"),paramMap.get("name"));
-        SMSDTO smsdto = new SMSDTO("01067856542","01051161830","SMS","문자요","test app 1.2");
-        smsService.SendMessage(smsdto);
-        if(id==null){
+        if(id==null || id.equals(paramMap.get(id))){
             jsonObject.put("find","false");
         }else{
+            jsonObject.put("find","true");
+            String[] otp = otpUtil.getOTP();
+            SMSDTO smsdto = new SMSDTO(paramMap.get("phone"),"01051161830","SMS",otp[1],"test app 1.2");
+            smsService.SendMessage(smsdto);
+            Cookie cookie = new Cookie("otp",passwordEncoder.encode(otp[0]));
+            cookie.setMaxAge(60 * 5);
+            response.addCookie(cookie);
         }
         try {
             response.getWriter().print(jsonObject.toJSONString());
@@ -135,21 +147,45 @@ public class MainController {
         }
     }
 
-    @GetMapping("/fileUpload")
-    public String fileUpload(){
-        return "/pages/dropzonetest";
+    @PostMapping("/forget/otpcheck")
+    public void otpCheck(HttpServletResponse response, HttpServletRequest request,
+                         @RequestParam Map<String,String> paramMap){
+        JSONObject jsonObject = new JSONObject();
+
+        Cookie[] cookies = request.getCookies();
+        Cookie cookie = null;
+        if(cookies !=null){
+            for(Cookie findcookie : cookies){
+                if(findcookie.getName().equals("otp")){
+                    cookie = findcookie;
+                }
+            }
+        }
+        String otp = paramMap.get("otpText");
+        if(passwordEncoder.matches(otp,cookie.getValue())){
+            jsonObject.put("check","true");
+        }else{
+            jsonObject.put("check","false");
+        }
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
     }
 
-    @PostMapping("/upload")
-    public String fileUpload(@RequestParam(value = "file", required = false) MultipartFile file,
-                             MultipartHttpServletRequest request) {
-        Map<String, MultipartFile> map = request.getFileMap();
-        return "/pages/dropzonetest";
+    @PostMapping("/forget/changepassword")
+    public void changepassword(HttpServletResponse response, HttpServletRequest request,
+                               @RequestParam Map<String,String> paramMap){
+        JSONObject jsonObject = new JSONObject();
+        if(memberService.changePW(paramMap.get("id"),passwordEncoder.encode(paramMap.get("password")))){
+            jsonObject.put("change","true");
+        }else{
+            jsonObject.put("change","false");
+        }
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
     }
 
-
-    @GetMapping("/student/main")
-    public String student(){
-        return "/pages/studentmain";
-    }
 }

@@ -23,7 +23,7 @@ public class Member {
 
     @Id
     @Column(name="user_number",updatable = false,nullable = false)
-    private Integer userNumber;
+    private Long userNumber;
 
     @Column(name="member_id",nullable = false)
     private String memberId;
@@ -40,7 +40,7 @@ public class Member {
     private Integer failCount;
 
     @Builder
-    public Member(Identification identification,int userNumber, String memberId, String password){
+    public Member(Identification identification,long userNumber, String memberId, String password){
         this.identification = identification;
         this.userNumber = userNumber;
         this.memberId = memberId;

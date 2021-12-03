@@ -99,7 +99,6 @@
         const passwordText = password.value;
         passwordFlag = false;
 
-        console.log(passAlertText);
         if(!PASSWORDREG_1.test(passwordText)){
             passAlert.classList.remove("hidden");
             passAlertText.innerHTML = "<b>8자</b> 이상이여야 합니다."

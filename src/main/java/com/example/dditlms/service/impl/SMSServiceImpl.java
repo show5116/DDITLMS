@@ -15,7 +15,6 @@ public class SMSServiceImpl implements SMSService {
     public void SendMessage(SMSDTO smsdto) {
         Message coolsms = new Message(API_KEY,API_SECRET);
         try{
-            System.out.print(smsdto);
             coolsms.send(smsdto.ToHashMap());
         }catch(CoolsmsException e){
         }
