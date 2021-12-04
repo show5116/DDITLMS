@@ -1,0 +1,49 @@
+sever:
+  port: 8090
+spring:
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+  datasource:
+    url: jdbc:oracle:thin:@112.220.114.130:1521/xe
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: team2_202106F
+    password: java
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yyj161091@gmail.com
+    password: Yyj14161091!
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  mvc:
+    static-path-pattern: /static/**
+  thymeleaf:
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    check-template-location: true
+    cache: false
+  jpa:
+    hibernate:
+      #     ddl-auto: update
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  multipart:
+    enabled: true
+    location: ${java.io.tmpdir}
+    max-file-size: 100KB
+    max-request-size: 100KB
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
