@@ -1,50 +1,95 @@
 package com.example.dditlms.domain.entity.sanction;
 
-import lombok.AccessLevel;
+import com.example.dditlms.domain.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Table(name = "SANCTN_LN")
 @Entity
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 @ToString
 public class SanctnLn {
     @Id
-    @Column(name = "SANCTN_LN_ID", nullable = false)
-    private Long sanctnLnId;
+    @Column(name = "SANCTN_LN_SN", nullable = false)
+    private Long sanctnLn;
 
-    @Column(name = "SANCTNER", length = 50)
-    private String sanctner;
+    @Column(name = "SANCTN_STTUS", length = 30)
+    private String sanctnSttus;
 
-    @Column(name = "SANCTN_SN")
-    private Long sanctnSn;
+    @Column(name = "SANCTN_DATE")
+    private LocalDate sanctnDate;
 
-    public Long getSanctnSn() {
+    @Lob
+    @Column(name = "SANCTN_OPINION")
+    private String sanctnOpinion;
+
+    @Column(name = "SANCTN_STEP")
+    private Long sanctnStep;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MBER_NO")
+    private Member mberNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SANCTN_SN")
+    private Sanctn sanctnSn;
+
+    public Sanctn getSanctnSn() {
         return sanctnSn;
     }
 
-    public void setSanctnSn(Long sanctnSn) {
+    public void setSanctnSn(Sanctn sanctnSn) {
         this.sanctnSn = sanctnSn;
     }
 
-    public String getSanctner() {
-        return sanctner;
+    public Member getMberNo() {
+        return mberNo;
     }
 
-    public void setSanctner(String sanctner) {
-        this.sanctner = sanctner;
+    public void setMberNo(Member mberNo) {
+        this.mberNo = mberNo;
     }
 
-    public Long getSanctnLnId() {
-        return sanctnLnId;
+    public Long getSanctnStep() {
+        return sanctnStep;
     }
 
-    public void setSanctnLnId(Long sanctnLnId) {
-        this.sanctnLnId = sanctnLnId;
+    public void setSanctnStep(Long sanctnStep) {
+        this.sanctnStep = sanctnStep;
+    }
+
+    public String getSanctnOpinion() {
+        return sanctnOpinion;
+    }
+
+    public void setSanctnOpinion(String sanctnOpinion) {
+        this.sanctnOpinion = sanctnOpinion;
+    }
+
+    public LocalDate getSanctnDate() {
+        return sanctnDate;
+    }
+
+    public void setSanctnDate(LocalDate sanctnDate) {
+        this.sanctnDate = sanctnDate;
+    }
+
+    public String getSanctnSttus() {
+        return sanctnSttus;
+    }
+
+    public void setSanctnSttus(String sanctnSttus) {
+        this.sanctnSttus = sanctnSttus;
+    }
+
+    public Long getSanctnLn() {
+        return sanctnLn;
+    }
+
+    public void setSanctnLn(Long sanctnLn) {
+        this.sanctnLn = sanctnLn;
     }
 }

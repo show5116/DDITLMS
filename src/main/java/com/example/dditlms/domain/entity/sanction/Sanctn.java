@@ -1,6 +1,5 @@
 package com.example.dditlms.domain.entity.sanction;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -9,89 +8,101 @@ import java.time.LocalDate;
 
 @Table(name = "SANCTN")
 @Entity
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 @ToString
 public class Sanctn {
     @Id
-    @Column(name = "SANCTN_ID", nullable = false)
+    @Column(name = "SANCTN_SN", nullable = false)
     private Long sanctnId;
 
-    @Column(name = "SANCTN_STTUS", length = 30)
-    private String sanctnSttus;
-
-    @Column(name = "SANCTN_DATE")
-    private LocalDate sanctnDate;
+    @Column(name = "SANCTN_SJ")
+    private String sanctnSj;
 
     @Lob
-    @Column(name = "SANCTN_OPINION")
-    private String sanctnOpinion;
+    @Column(name = "SANCTN_CN")
+    private String sanctnCn;
 
-    @Column(name = "SANCTN_STEP")
-    private Long sanctnStep;
+    @Column(name = "SANCTN_WRITNGDE")
+    private LocalDate sanctnWritngde;
 
-    @Column(name = "MBER_NO")
-    private Long mberNo;
+    @Column(name = "SANCTN_UPDDE")
+    private LocalDate sanctnUpdde;
 
-    @Column(name = "SANCTN_DOC_ID")
-    private Long sanctnDocId;
+    @Column(name = "DRAFTER")
+    private Long drafter;
 
-    @Column(name = "SANCTN_LN_ID")
-    private Long sanctnLnId;
+    @Column(name = "SANCTN_PROGRS_STTUS", length = 30)
+    private String sanctnProgrsSttus;
 
-    public Long getSanctnLnId() {
-        return sanctnLnId;
+    @Column(name = "ATCHMNFL_ID")
+    private Long atchmnflId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DOCFORM_SN")
+    private Docform docformSn;
+
+    public Docform getDocformSn() {
+        return docformSn;
     }
 
-    public void setSanctnLnId(Long sanctnLnId) {
-        this.sanctnLnId = sanctnLnId;
+    public void setDocformSn(Docform docformSn) {
+        this.docformSn = docformSn;
     }
 
-    public Long getSanctnDocId() {
-        return sanctnDocId;
+    public Long getAtchmnflId() {
+        return atchmnflId;
     }
 
-    public void setSanctnDocId(Long sanctnDocId) {
-        this.sanctnDocId = sanctnDocId;
+    public void setAtchmnflId(Long atchmnflId) {
+        this.atchmnflId = atchmnflId;
     }
 
-    public Long getMberNo() {
-        return mberNo;
+    public String getSanctnProgrsSttus() {
+        return sanctnProgrsSttus;
     }
 
-    public void setMberNo(Long mberNo) {
-        this.mberNo = mberNo;
+    public void setSanctnProgrsSttus(String sanctnProgrsSttus) {
+        this.sanctnProgrsSttus = sanctnProgrsSttus;
     }
 
-    public Long getSanctnStep() {
-        return sanctnStep;
+    public Long getDrafter() {
+        return drafter;
     }
 
-    public void setSanctnStep(Long sanctnStep) {
-        this.sanctnStep = sanctnStep;
+    public void setDrafter(Long drafter) {
+        this.drafter = drafter;
     }
 
-    public String getSanctnOpinion() {
-        return sanctnOpinion;
+    public LocalDate getSanctnUpdde() {
+        return sanctnUpdde;
     }
 
-    public void setSanctnOpinion(String sanctnOpinion) {
-        this.sanctnOpinion = sanctnOpinion;
+    public void setSanctnUpdde(LocalDate sanctnUpdde) {
+        this.sanctnUpdde = sanctnUpdde;
     }
 
-    public LocalDate getSanctnDate() {
-        return sanctnDate;
+    public LocalDate getSanctnWritngde() {
+        return sanctnWritngde;
     }
 
-    public void setSanctnDate(LocalDate sanctnDate) {
-        this.sanctnDate = sanctnDate;
+    public void setSanctnWritngde(LocalDate sanctnWritngde) {
+        this.sanctnWritngde = sanctnWritngde;
     }
 
-    public String getSanctnSttus() {
-        return sanctnSttus;
+    public String getSanctnCn() {
+        return sanctnCn;
     }
 
-    public void setSanctnSttus(String sanctnSttus) {
-        this.sanctnSttus = sanctnSttus;
+    public void setSanctnCn(String sanctnCn) {
+        this.sanctnCn = sanctnCn;
+    }
+
+    public String getSanctnSj() {
+        return sanctnSj;
+    }
+
+    public void setSanctnSj(String sanctnSj) {
+        this.sanctnSj = sanctnSj;
     }
 
     public Long getSanctnId() {

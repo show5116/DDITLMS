@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DocformRepository extends JpaRepository<Docform, String>, DocformRepositoryCustom {
+public interface DocformRepository extends JpaRepository<Docform, Long>, DocformRepositoryCustom {
 
 
 

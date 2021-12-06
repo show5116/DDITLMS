@@ -1,7 +1,5 @@
 package com.example.dditlms.domain.entity.sanction;
 
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -9,12 +7,12 @@ import javax.persistence.*;
 
 @Table(name = "DOCFORM")
 @Entity
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 @ToString
 public class Docform {
     @Id
-    @Column(name = "DOCFORM_CODE", nullable = false, length = 50)
-    private String docFormId;
+    @Column(name = "DOCFORM_SN", nullable = false)
+    private Long docformId;
 
     @Column(name = "DOCFORM_NM")
     private String docformNm;
@@ -22,6 +20,17 @@ public class Docform {
     @Lob
     @Column(name = "DOCFORM_CN")
     private String docformCn;
+
+    @Column(name = "DOCFORM_CN_CTGRY", length = 50)
+    private String docformCnCtgry;
+
+    public String getDocformCnCtgry() {
+        return docformCnCtgry;
+    }
+
+    public void setDocformCnCtgry(String docformCnCtgry) {
+        this.docformCnCtgry = docformCnCtgry;
+    }
 
     public String getDocformCn() {
         return docformCn;
@@ -39,18 +48,11 @@ public class Docform {
         this.docformNm = docformNm;
     }
 
-    public String getDocFormId() {
-        return docFormId;
+    public Long getDocformId() {
+        return docformId;
     }
 
-    public void setDocFormId(String docFormId) {
-        this.docFormId = docFormId;
-    }
-
-    @Builder
-    public Docform(String docFormId, String docformNm, String docformCn) {
-        this.docFormId = docFormId;
-        this.docformNm = docformNm;
-        this.docformCn = docformCn;
+    public void setDocformId(Long docformId) {
+        this.docformId = docformId;
     }
 }

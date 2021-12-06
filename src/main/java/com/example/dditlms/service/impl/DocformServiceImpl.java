@@ -21,8 +21,4 @@ public class DocformServiceImpl implements DocformService {
 
     }
 
-    @Override
-    public String findLastCode(String formCode) {
-        return docformRepository.findLastCode(formCode);
-    }
 }
