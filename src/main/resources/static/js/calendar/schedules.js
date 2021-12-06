@@ -93,17 +93,20 @@ function generateTime(schedule, renderStart, renderEnd) {
     }
 }
 
-function generateNames() {
-    var names = [];
-    var i = 0;
-    var length = chance.integer({min: 1, max: 10});
 
-    for (; i < length; i += 1) {
-        names.push(chance.name());
-    }
+// function generateNames() {
+//     var names = [];
+//     var i = 0;
+//     var length = chance.integer({min: 1, max: 10});
+//
+//     for (; i < length; i += 1) {
+//         names.push(chance.name());
+//     }
+//
+//     return names;
+// }
 
-    return names;
-}
+
 
 function generateRandomSchedule(calendar, renderStart, renderEnd) {
     var schedule = new ScheduleInfo();
@@ -118,7 +121,7 @@ function generateRandomSchedule(calendar, renderStart, renderEnd) {
 
     schedule.isPrivate = chance.bool({likelihood: 10});
     schedule.location = chance.address();
-    schedule.attendees = chance.bool({likelihood: 70}) ? generateNames() : [];
+    // schedule.attendees = chance.bool({likelihood: 70}) ? generateNames() : [];
     schedule.recurrenceRule = chance.bool({likelihood: 20}) ? 'repeated events' : '';
     schedule.state = chance.bool({likelihood: 20}) ? 'Free' : 'Busy';
     schedule.color = calendar.color;
@@ -158,8 +161,8 @@ function generateSchedule(viewName, renderStart, renderEnd) {
         } else if (viewName === 'day') {
             length = 4;
         }
-        for (; i < length; i += 1) {
+/*        for (; i < length; i += 1) {
             generateRandomSchedule(calendar, renderStart, renderEnd);
-        }
+        }*/
     });
 }
