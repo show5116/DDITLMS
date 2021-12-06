@@ -11,7 +11,7 @@
                 <div class="col-xl-5 p-0">
                     <div class="login-card">
                         <form th:action="@{/signup}" th:object="${memberForm}" method="post" class="theme-form login-form" onsubmit="return passwordFlag">
-                            <h4>Create your account</h4>
+                            <h4>회원가입</h4>
                             <h6>Enter your personal details to create account</h6>
                             <th:block th:if="${param.error}">
                                 <div class="alert alert-danger outline alert-dismissible fade show" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-down"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
@@ -31,14 +31,14 @@
                                 <label>이름</label>
                                 <div class="small-group">
                                     <div class="input-group"><span class="input-group-text"><i class="icofont icofont-surface-tablet"></i></span>
-                                        <input name="name" th:field="*{name}" class="form-control" type="text" required="" placeholder="Student Number">
+                                        <input name="name" th:field="*{name}" class="form-control" type="text" required="" placeholder="홍길동">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>ID</label>
                                 <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
-                                    <input name="memberId" th:field="*{memberId}" class="form-control" type="text" required="" placeholder="Test@gmail.com">
+                                    <input name="memberId" th:field="*{memberId}" class="form-control" type="text" required="" placeholder="asdf1234">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -53,20 +53,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button class="btn btn-primary btn-block" type="submit">Create Account</button>
+                                <button class="btn btn-primary btn-block" type="submit">회원가입</button>
                             </div>
-                            <div class="login-social-title">
-                                <h5>Sign in with</h5>
-                            </div>
-                            <div class="form-group">
-                                <ul class="login-social">
-                                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="linkedin"></i></a></li>
-                                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="twitter"></i></a></li>
-                                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="facebook"></i></a></li>
-                                    <li><a href="https://www.instagram.com/login" target="_blank"><i data-feather="instagram">                  </i></a></li>
-                                </ul>
-                            </div>
-                            <p>Already have an account?<a class="ms-2" href="/login">Sign in</a></p>
+                            <p>이미 계정이 있으신가요?<a class="ms-2" href="/login">로그인</a></p>
                         </form>
                     </div>
                 </div>

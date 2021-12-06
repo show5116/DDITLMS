@@ -11,7 +11,7 @@
             <div class="col-xl-5 p-0">
                 <div class="login-card">
                     <form th:action="@{/login}" method="post" class="theme-form login-form">
-                        <h4>Login</h4>
+                        <h4>로그인</h4>
                         <h6>Welcome back! Log in to your account.</h6>
                         <div class="form-group">
                             <th:block th:if="${param.error}">
@@ -36,23 +36,12 @@
                             <div class="checkbox">
                                 <input id="remember-me" name="remember-me" type="checkbox">
                                 <label class="text-muted" for="remember-me">로그인 유지하기</label>
-                            </div><a class="link" href="/forget">Forgot password?</a>
+                            </div><a class="link" href="/forget">아이디/비밀번호 찾기</a>
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+                            <button class="btn btn-primary btn-block" type="submit">로그인</button>
                         </div>
-                        <div class="login-social-title">
-                            <h5>Sign in with</h5>
-                        </div>
-                        <div class="form-group">
-                            <ul class="login-social">
-                                <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="linkedin"></i></a></li>
-                                <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="twitter"></i></a></li>
-                                <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="facebook"></i></a></li>
-                                <li><a href="https://www.instagram.com/login" target="_blank"><i data-feather="instagram">                  </i></a></li>
-                            </ul>
-                        </div>
-                        <p>Don't have account?<a class="ms-2" href="/signup">Create Account</a></p>
+                        <p>계정이 없으신가요?<a class="ms-2" href="/signup">회원가입</a></p>
                     </form>
                 </div>
             </div>

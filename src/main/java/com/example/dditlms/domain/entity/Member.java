@@ -8,7 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "MEMBER")
+@Table(name = "MBER")
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor
@@ -16,19 +16,31 @@ import javax.persistence.*;
 @ToString
 public class Member {
 
-    @MapsId
-    @OneToOne(cascade =CascadeType.ALL)
-    @JoinColumn(name="user_number")
-    private Identification identification;
-
     @Id
-    @Column(name="user_number",updatable = false,nullable = false)
+    @Column(name="MBER_NO",updatable = false,nullable = false)
     private Long userNumber;
 
-    @Column(name="member_id",nullable = false)
+    @Column(name="MBER_SE",nullable = false)
+    private String selection;
+
+    @Column(name="MBER_NM",nullable = false)
+    private String name;
+
+    @Column(name="EMAIL",nullable = false)
+    private String email;
+
+    @Column(name="TELNO",nullable = false)
+    private String phone;
+
+    @Column(name="BANK_NM")
+    private String bankName;
+
+    @Column(name="ACNUT_NO")
+    private String bankAccount;
+
+    @Column(name="MEMBER_ID")
     private String memberId;
 
-    @Column(nullable = false)
     private String password;
 
     @Column(name="member_img")
@@ -40,11 +52,11 @@ public class Member {
     private Integer failCount;
 
     @Builder
-    public Member(Identification identification,long userNumber, String memberId, String password){
-        this.identification = identification;
+    public Member(Long userNumber, String selection, String name, String email, String phone) {
         this.userNumber = userNumber;
-        this.memberId = memberId;
-        this.password = password;
+        this.selection = selection;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
     }
-
 }

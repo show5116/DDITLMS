@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
 
-@EqualsAndHashCode(of = {"userCd"})
 public class AccountContext extends User {
 
     private final Member member;
