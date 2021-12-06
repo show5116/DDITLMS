@@ -1,5 +1,6 @@
 package com.example.dditlms.controller;
 
+import com.example.dditlms.domain.common.Menu;
 import com.example.dditlms.domain.dto.MailDTO;
 import com.example.dditlms.domain.dto.SMSDTO;
 import com.example.dditlms.domain.entity.Member;

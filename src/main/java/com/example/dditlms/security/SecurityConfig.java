@@ -1,5 +1,6 @@
 package com.example.dditlms.security;
 
+import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -54,9 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/student/**").hasAuthority(Role.STUDENT.getValue())
-                .antMatchers("/admin/**").hasAuthority(Role.ADMIN.getValue())
-                .antMatchers("/professor/**").hasAuthority(Role.PROFESSOR.getValue())
+                .antMatchers("/student/**").hasAuthority(Role.ROLE_STUDENT.getValue())
+                .antMatchers("/admin/**").hasAuthority(Role.ROLE_ADMIN.getValue())
+                .antMatchers("/professor/**").hasAuthority(Role.ROLE_PROFESSOR.getValue())
                 .antMatchers("/forget","/forget/**").permitAll()
                 .antMatchers("/signup","/signup/**").permitAll()
                 .antMatchers("/login").permitAll()

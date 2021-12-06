@@ -154,8 +154,6 @@
 </section>
 <th:block th:replace="/fragment/script.html :: scriptFragment"></th:block>
 <script th:inline="javascript">
-  const token = $("meta[name='_csrf']").attr("content");
-  const header = $("meta[name='_csrf_header']").attr("content");
   const identificationFindID = document.querySelector("#identification-findID");
   const nameFindID = document.querySelector("#name-findID");
   const identificationChangePassword = document.querySelector("#identification-changePassword");
@@ -163,8 +161,17 @@
   const idChangePassword = document.querySelector("#id-changePassword");
   const changeBtn = document.querySelector("#btn-change");
   const closeBtn = document.querySelector("#btn-close");
+  const buttonFindID = document.querySelector("#button-findID");
+  const passwordMail = document.querySelector("#button-change-password-mail");
+  const passwordPhone = document.querySelector("#button-change-password-phone");
+  const phone1 = document.querySelector("#phone1");
+  const phone2 = document.querySelector("#phone2");
+  const phone3 = document.querySelector("#phone3");
+  const PASSWORDREG_1 = /[A-Za-z\d#?!@$%^&*-]{8,}$/;
+  const PASSWORDREG_2 = /(?=.*?[a-z])(?=.*?[A-Z])/;
+  const PASSWORDREG_3 = /(?=.*?[0-9#?!@$%^&*-])/;
   let otpFlag = false;
-
+  let passwordFlag = false;
   identificationFindID.addEventListener("keyup",function (){
     identificationChangePassword.value = identificationFindID.value;
   });
@@ -174,11 +181,10 @@
   nameFindID.addEventListener("keyup",function (){
     nameChnagePassword.value = nameFindID.value;
   });
+
   nameChnagePassword.addEventListener("keyup",function (){
     nameFindID.value = nameChnagePassword.value;
   });
-
-  const buttonFindID = document.querySelector("#button-findID");
 
   buttonFindID.addEventListener("click",function() {
     if(identificationFindID.value=="" || nameFindID.value==""){
@@ -202,8 +208,6 @@
       }
     });
   });
-
-  const passwordMail = document.querySelector("#button-change-password-mail");
   passwordMail.addEventListener("click",function(){
     const mailText = document.querySelector("#mail-text");
     if(identificationFindID.value=="" || nameFindID.value=="" || mailText.value==""){
@@ -231,11 +235,8 @@
       }
     });
   });
-  const passwordPhone = document.querySelector("#button-change-password-phone");
-  const phone1 = document.querySelector("#phone1");
-  const phone2 = document.querySelector("#phone2");
-  const phone3 = document.querySelector("#phone3");
 
+  const newPassword = document.querySelector("#newpassword");
   phone1.addEventListener("keyup",function(){
     if(phone1.value.length==3){
       phone2.focus();
@@ -246,6 +247,7 @@
       phone3.focus();
     }
   });
+
   passwordPhone.addEventListener("click",function(){
     if(identificationFindID.value=="" || nameFindID.value=="" || phone1.value=="" || phone2.value=="" || phone3.value==""){
       return;
@@ -273,7 +275,6 @@
       }
     });
   });
-
   const otpCheckBtn = document.querySelector("#btn-otpcheck");
   otpCheckBtn.addEventListener("click",function(){
     const otpText = document.querySelector("#text-otp");
@@ -303,13 +304,6 @@
       }
     });
   })
-
-  const PASSWORDREG_1 = /[A-Za-z\d#?!@$%^&*-]{8,}$/;
-  const PASSWORDREG_2 = /(?=.*?[a-z])(?=.*?[A-Z])/;
-  const PASSWORDREG_3 = /(?=.*?[0-9#?!@$%^&*-])/;
-  let passwordFlag = false;
-
-  const newPassword = document.querySelector("#newpassword");
   newPassword.addEventListener("keyup",function(){
     const passAlert = document.querySelector("#pass-alert");
     const passAlertText = passAlert.querySelector('.password_exception');

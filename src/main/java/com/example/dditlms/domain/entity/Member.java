@@ -1,5 +1,6 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.common.Role;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -20,8 +21,9 @@ public class Member {
     @Column(name="MBER_NO",updatable = false,nullable = false)
     private Long userNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="MBER_SE",nullable = false)
-    private String selection;
+    private Role role;
 
     @Column(name="MBER_NM",nullable = false)
     private String name;
@@ -52,9 +54,9 @@ public class Member {
     private Integer failCount;
 
     @Builder
-    public Member(Long userNumber, String selection, String name, String email, String phone) {
+    public Member(Long userNumber, Role role, String name, String email, String phone) {
         this.userNumber = userNumber;
-        this.selection = selection;
+        this.role = role;
         this.name = name;
         this.email = email;
         this.phone = phone;

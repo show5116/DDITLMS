@@ -20,9 +20,24 @@
         </div>
     </div>
     <script>
+        const pathname = window.location.pathname;
         const addBookmarkBtn = document.querySelector(".add-bookmark");
         addBookmarkBtn.addEventListener("click",function (){
-
+            const params = {
+                pathname : pathname
+            };
+            $.ajax({
+                url: "/bookmark",
+                data: params,
+                method: "Post",
+                dataType: "json",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done(function (fragment){
+                swal("")
+            });
         });
     </script>
 </th:block>

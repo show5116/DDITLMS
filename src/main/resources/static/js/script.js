@@ -6,6 +6,10 @@ function checkInputNum(){
     }
 }
 
+// token 변수
+const token = $("meta[name='_csrf']").attr("content");
+const header = $("meta[name='_csrf_header']").attr("content");
+
 (function($) {
     "use strict";
     $(".mobile-toggle").click(function(){

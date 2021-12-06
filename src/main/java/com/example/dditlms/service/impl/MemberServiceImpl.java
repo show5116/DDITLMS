@@ -41,7 +41,7 @@ public class MemberServiceImpl implements MemberService {
             return null;
         }
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(memberEntity.getSelection()));
+        authorities.add(new SimpleGrantedAuthority(memberEntity.getRole().getValue()));
 
         AccountContext accountContext = new AccountContext(memberEntity,authorities);
 
