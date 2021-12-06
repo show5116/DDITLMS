@@ -1,34 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="nav_student_depFragment">
-    <li class="back-btn">
-        <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
-    </li>
-
-    <li class="sidebar-main-title">
-        <div>
-            <h6>공용             </h6>
-        </div>
-    </li>
-    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="home"></i><span>마이페이지</span></a>
-        <ul class="nav-submenu menu-content">
-            <li><a href="#">개인정보 변경</a></li>
-            <li><a href="#">스크랩</a></li>
-            <li><a href="#">주소록</a></li>
-        </ul>
-    </li>
-    <li class="dropdown"><a class="nav-link menu-title link-nav" href="#"><i data-feather="git-pull-request"></i><span>클라우드</span></a></li>
-    <li class="dropdown"><a class="nav-link menu-title link-nav" href="#"><i data-feather="calendar"></i><span>캘린더</span></a></li>
-    <li class="dropdown"><a class="nav-link menu-title link-nav" href="#"><i data-feather="mail"></i><span>메일</span></a></li>
-    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="book-open"></i><span>게시판</span></a>
-        <ul class="nav-submenu menu-content">
-            <li><a href="#">일반 공지</a></li>
-            <li><a href="#">장학 공지</a></li>
-            <li><a href="#">학사 공지</a></li>
-            <li><a href="#">학과 공지</a></li>
-            <li><a href="#">자유 게시판</a></li>
-        </ul>
-    </li>
+    <th:block th:replace="/fragment/nav_common.html :: nav_commonFragment"></th:block>
     <li class="dropdown"><a class="nav-link menu-title link-nav" href="#"><i data-feather="package"></i><span>결재함</span></a></li>
     <li class="sidebar-main-title">
         <div>
