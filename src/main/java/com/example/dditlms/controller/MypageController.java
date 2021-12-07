@@ -74,6 +74,9 @@ public class MypageController {
         }catch(ClassCastException e){
         }
         bookmarkService.removeBookmark(member,menu);
+        HttpSession session = request.getSession();
+        Set<Bookmark> bookmarks = bookmarkService.getBookmarks(member);
+        session.setAttribute("bookmarks",bookmarks);
         jsonObject.put("state","true");
         try {
             response.getWriter().print(jsonObject.toJSONString());
