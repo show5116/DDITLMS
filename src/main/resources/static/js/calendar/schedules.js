@@ -5,8 +5,10 @@
 var ScheduleList = [];
 
 var SCHEDULE_CATEGORY = [
-    'milestone',
-    'task'
+    'time',     /* 입반 일정- 수업,회의등 시작시간과 종료시간을 갖는 일정*/
+    'allday',   /* 종일 일정- 생일,여행등 날짜 자체에 의미가 있는 일정*/
+    'milestone', /*프로젝트 시한, 시험등 기한의 의미를 갖는 일정 */
+    'task'      /*과제 제출과 같은 Todo 개념의 일정 */
 ];
 
 function ScheduleInfo() {
@@ -93,25 +95,22 @@ function generateTime(schedule, renderStart, renderEnd) {
     }
 }
 
+function generateNames() {
+    var names = [];
+    var i = 0;
+    // var length = chance.integer({min: 1, max: 10});
 
-// function generateNames() {
-//     var names = [];
-//     var i = 0;
-//     var length = chance.integer({min: 1, max: 10});
-//
-//     for (; i < length; i += 1) {
-//         names.push(chance.name());
-//     }
-//
-//     return names;
-// }
+    for (; i < length; i += 1) {
+        names.push(chance.name());
+    }
 
-
+    return names;
+}
 
 function generateRandomSchedule(calendar, renderStart, renderEnd) {
     var schedule = new ScheduleInfo();
 
-    schedule.id = chance.guid();
+   /* schedule.id = chance.guid();
     schedule.calendarId = calendar.id;
 
     schedule.title = chance.sentence({words: 3});
@@ -121,7 +120,7 @@ function generateRandomSchedule(calendar, renderStart, renderEnd) {
 
     schedule.isPrivate = chance.bool({likelihood: 10});
     schedule.location = chance.address();
-    // schedule.attendees = chance.bool({likelihood: 70}) ? generateNames() : [];
+    schedule.attendees = chance.bool({likelihood: 70}) ? generateNames() : [];
     schedule.recurrenceRule = chance.bool({likelihood: 20}) ? 'repeated events' : '';
     schedule.state = chance.bool({likelihood: 20}) ? 'Free' : 'Busy';
     schedule.color = calendar.color;
@@ -147,7 +146,7 @@ function generateRandomSchedule(calendar, renderStart, renderEnd) {
         var travelTime = chance.minute();
         schedule.goingDuration = travelTime;
         schedule.comingDuration = travelTime;
-    }
+    }*/
 
     ScheduleList.push(schedule);
 }
@@ -161,8 +160,8 @@ function generateSchedule(viewName, renderStart, renderEnd) {
         } else if (viewName === 'day') {
             length = 4;
         }
-/*        for (; i < length; i += 1) {
-            generateRandomSchedule(calendar, renderStart, renderEnd);
-        }*/
+        // for (; i < length; i += 1) {
+        //     generateRandomSchedule(calendar, renderStart, renderEnd);
+        // }
     });
 }

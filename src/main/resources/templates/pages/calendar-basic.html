@@ -6,6 +6,10 @@
 <th:block layout:fragment="content">
   <link rel="stylesheet" type="text/css" th:href="@{/static/css/calendar.css}">
   <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='CALENDAR')"></th:block>
+  <div id="test_Box">
+    <button class="btn btn-primary" id="test_Button" type="button"><i id="test_list"></i><span id="test_calendarTypeName">Test</span></button>
+
+  </div>
    <div class="container-fluid calendar-basic">
     <div class="row">
       <div class="col-12">
@@ -51,7 +55,7 @@
               </div>
               <div class="col-md-12">
                 <div id="right">
-                  <div id="calendar"></div>
+                    <div id="calendar"></div>
                 </div>
               </div>
             </div>
@@ -68,7 +72,8 @@
   <script th:src="@{/static/js/calendar/tui-calendar.js}"></script>
   <script th:src="@{/static/js/calendar/calendars.js}"></script>
   <script th:src="@{/static/js/calendar/schedules.js}"></script>
-  <script th:src="@{/static/js/calendar/app.js}"></script>
+  <script th:src="@{/static/js/calendar/myApp.js}"></script>
+<!--  <script th:src="@{/static/js/calendar/app.js}"></script>-->
 
 </th:block>
 </html>

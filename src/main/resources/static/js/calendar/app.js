@@ -6,6 +6,8 @@
 /* global findCalendar, CalendarList, ScheduleList, generateSchedule */
 
 (function(window, Calendar) {
+    console.log("app.js");
+
     var cal, resizeThrottled;
     var useCreationPopup = true;
     var useDetailPopup = true;
@@ -291,6 +293,8 @@
             schedule.bgColor = calendar.bgColor;
             schedule.borderColor = calendar.borderColor;
         }
+
+        newCalendar(scheduleData);
 
         cal.createSchedules([schedule]);
 
