@@ -15,13 +15,46 @@ import javax.persistence.Table;
 public class Department {
     @Id
     @Column(name = "DEPT_CODE", nullable = false, length = 200)
-    private String id;
+    private String DepartmentCode;
 
-    public String getId() {
-        return id;
+    @Column(name = "DEPT_SE", length = 200)
+    private String deptSe;
+
+    @Column(name = "DEPT_NM", length = 200)
+    private String deptNm;
+
+    @Column(name = "PAR_DEPT_CODE", length = 200)
+    private String parDeptCode;
+
+    public String getParDeptCode() {
+        return parDeptCode;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setParDeptCode(String parDeptCode) {
+        this.parDeptCode = parDeptCode;
+    }
+
+    public String getDeptNm() {
+        return deptNm;
+    }
+
+    public void setDeptNm(String deptNm) {
+        this.deptNm = deptNm;
+    }
+
+    public String getDeptSe() {
+        return deptSe;
+    }
+
+    public void setDeptSe(String deptSe) {
+        this.deptSe = deptSe;
+    }
+
+    public String getDepartmentCode() {
+        return DepartmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.DepartmentCode = departmentCode;
     }
 }

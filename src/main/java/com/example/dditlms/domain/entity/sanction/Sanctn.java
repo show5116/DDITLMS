@@ -1,6 +1,8 @@
 package com.example.dditlms.domain.entity.sanction;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -9,10 +11,13 @@ import java.time.LocalDate;
 @Table(name = "SANCTN")
 @Entity
 @RequiredArgsConstructor
+@Getter
+@Setter
 @ToString
 public class Sanctn {
     @Id
     @Column(name = "SANCTN_SN", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long sanctnId;
 
     @Column(name = "SANCTN_SJ")
@@ -31,8 +36,9 @@ public class Sanctn {
     @Column(name = "DRAFTER")
     private Long drafter;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "SANCTN_PROGRS_STTUS", length = 30)
-    private String sanctnProgrsSttus;
+    private SanctnProgress status ;
 
     @Column(name = "ATCHMNFL_ID")
     private Long atchmnflId;
@@ -41,75 +47,4 @@ public class Sanctn {
     @JoinColumn(name = "DOCFORM_SN")
     private Docform docformSn;
 
-    public Docform getDocformSn() {
-        return docformSn;
-    }
-
-    public void setDocformSn(Docform docformSn) {
-        this.docformSn = docformSn;
-    }
-
-    public Long getAtchmnflId() {
-        return atchmnflId;
-    }
-
-    public void setAtchmnflId(Long atchmnflId) {
-        this.atchmnflId = atchmnflId;
-    }
-
-    public String getSanctnProgrsSttus() {
-        return sanctnProgrsSttus;
-    }
-
-    public void setSanctnProgrsSttus(String sanctnProgrsSttus) {
-        this.sanctnProgrsSttus = sanctnProgrsSttus;
-    }
-
-    public Long getDrafter() {
-        return drafter;
-    }
-
-    public void setDrafter(Long drafter) {
-        this.drafter = drafter;
-    }
-
-    public LocalDate getSanctnUpdde() {
-        return sanctnUpdde;
-    }
-
-    public void setSanctnUpdde(LocalDate sanctnUpdde) {
-        this.sanctnUpdde = sanctnUpdde;
-    }
-
-    public LocalDate getSanctnWritngde() {
-        return sanctnWritngde;
-    }
-
-    public void setSanctnWritngde(LocalDate sanctnWritngde) {
-        this.sanctnWritngde = sanctnWritngde;
-    }
-
-    public String getSanctnCn() {
-        return sanctnCn;
-    }
-
-    public void setSanctnCn(String sanctnCn) {
-        this.sanctnCn = sanctnCn;
-    }
-
-    public String getSanctnSj() {
-        return sanctnSj;
-    }
-
-    public void setSanctnSj(String sanctnSj) {
-        this.sanctnSj = sanctnSj;
-    }
-
-    public Long getSanctnId() {
-        return sanctnId;
-    }
-
-    public void setSanctnId(Long sanctnId) {
-        this.sanctnId = sanctnId;
-    }
 }
