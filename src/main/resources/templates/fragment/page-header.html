@@ -11,7 +11,7 @@
                     <div class="bookmark">
                         <ul>
                             <li>
-                                <a class="add-bookmark"><i data-feather="star"></i></a>
+                                <a class="add-bookmark"><i id="ico-bookmark" data-feather="star"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <script>
+    <script th:inline="javascript">
         const pathname = window.location.pathname;
         const addBookmarkBtn = document.querySelector(".add-bookmark");
         addBookmarkBtn.addEventListener("click",function (){
@@ -36,7 +36,25 @@
                 }
             })
             .done(function (fragment){
-                swal("")
+                if(fragment.state !="true"){
+                    swal("알 수 없는 오류가 발생했습니다.");
+                    return;
+                }
+                const iconBookmark = document.querySelector("#ico-bookmark");
+                iconBookmark.classList.add("font-warning");
+                const bookmarks = fragment.bookmarks;
+                let bookmarkHtml = "";
+                bookmarks.forEach(function(bookmark){
+                    bookmarkHtml +=
+                        `<li class="add-to-bookmark">
+                            <a href="${bookmark.url}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-${bookmark.icon} bookmark-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span>${bookmark.name}</span>
+                            </a>
+                            <i class="icon-trash pull-right"></i>
+                        </li>`;
+                });
+                const bookmarkList = document.querySelector("#bookmarks");
+                bookmarkList.innerHTML = bookmarkHtml;
             });
         });
     </script>

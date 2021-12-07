@@ -10,6 +10,31 @@ function checkInputNum(){
 const token = $("meta[name='_csrf']").attr("content");
 const header = $("meta[name='_csrf_header']").attr("content");
 
+// bookmark 삭제
+function removeBookmark(){
+    const parentli = event.target.parentNode;
+    const href = new URL(parentli.querySelector("a").href);
+    const params = {
+        pathname : href.pathname
+    };
+    $.ajax({
+        url: "/bookmark/remove",
+        data: params,
+        method: "Post",
+        dataType: "json",
+        beforeSend: function (xhr){
+            xhr.setRequestHeader(header,token);
+        }
+    })
+    .done(function(fragment){
+        if(fragment.state != "true"){
+            swal("알 수 없는 에러가 발생하였습니다.");
+            return;
+        }
+        parentli.remove();
+    });
+}
+
 (function($) {
     "use strict";
     $(".mobile-toggle").click(function(){

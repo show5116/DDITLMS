@@ -1,7 +1,9 @@
 package com.example.dditlms.security;
 
+import com.example.dditlms.domain.entity.Bookmark;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.MemberRepository;
+import com.example.dditlms.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +32,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     private final MemberRepository memberRepository;
+
+    private final BookmarkService bookmarkService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -51,8 +56,10 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
         }
         session.setAttribute("memberImg",member.getMemberImg());
-
-
+        Set<Bookmark> bookmarkList = bookmarkService.getBookmarks(member);
+        if(bookmarkList!=null && !bookmarkList.isEmpty()){
+            session.setAttribute("bookmarks",bookmarkList);
+        }
         SavedRequest savedRequest = requestCache.getRequest(request,response);
         if(savedRequest != null){
             // 인증 받기 전 url로 이동하기
@@ -63,4 +70,5 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             redirectStrategy.sendRedirect(request,response,getDefaultTargetUrl());
         }
     }
+
 }
