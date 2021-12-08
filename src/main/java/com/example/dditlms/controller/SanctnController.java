@@ -2,8 +2,7 @@ package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.dto.EmployeeDTO;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.QDepartment;
-import com.example.dditlms.domain.entity.QEmployee;
+import com.example.dditlms.domain.entity.sanction.DocFormCategory;
 import com.example.dditlms.domain.entity.sanction.Docform;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.repository.MemberRepository;
@@ -11,8 +10,8 @@ import com.example.dditlms.domain.repository.sanctn.DocformRepository;
 import com.example.dditlms.domain.repository.sanctn.EmployeeRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +30,8 @@ public class SanctnController {
     private final MemberRepository memberRepository;
 
     private final EmployeeRepository employeeRepository;
+
+    private final DocformRepository docformRepository;
 
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
@@ -57,6 +58,8 @@ public class SanctnController {
         String findname = findUser.get().getName();
         model.addAttribute("findname", findname);
 
+
+
         return "/pages/sanction";
     }
 
@@ -67,23 +70,31 @@ public class SanctnController {
         String findname = findUser.get().getName();
         model.addAttribute("findname", findname);
 
-//        List<Docform> docformList = docformRepository.findAll();
-
-//        model.addAttribute("docformList", docformList);
-
-
         List<EmployeeDTO> dtoList = employeeRepository.viewDetails(userNumber);
         EmployeeDTO empDetails = dtoList.get(0);
-//        String emp_se = empDetails.getEmp_se();
-//        String dept_nm = empDetails.getDept_nm();
 
         model.addAttribute("empDetails", empDetails);
 
+        Optional<Docform> docform = docformRepository.findById(1L);
+        String docformCn = docform.get().getDocformCn();
 
-//        model.addAttribute("emp_se", emp_se);
-//        model.addAttribute("dept_nm", dept_nm);
+        model.addAttribute("docformCn", docformCn);
+
+        List<DocFormCategory> allDocFormList = docformRepository.allDocFormList();
+
+        model.addAttribute("allDocFormList", allDocFormList);
+
+        return "/pages/drafting";
+    }
+
+    @GetMapping("/sanctn/makeForm")
+    public String makeForm(Model model) {
+
+
 
 
         return "/pages/drafting";
     }
+
+
 }
