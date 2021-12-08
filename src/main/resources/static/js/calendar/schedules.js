@@ -160,8 +160,8 @@ function generateSchedule(viewName, renderStart, renderEnd) {
         } else if (viewName === 'day') {
             length = 4;
         }
-        // for (; i < length; i += 1) {
-        //     generateRandomSchedule(calendar, renderStart, renderEnd);
-        // }
+        for (; i < length; i += 1) {
+            generateRandomSchedule(calendar, renderStart, renderEnd);
+        }
     });
 }

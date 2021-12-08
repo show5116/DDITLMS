@@ -6,10 +6,45 @@
 <th:block layout:fragment="content">
   <link rel="stylesheet" type="text/css" th:href="@{/static/css/calendar.css}">
   <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='CALENDAR')"></th:block>
-  <div id="test_Box">
+  <div id="test_box">
     <button class="btn btn-primary" id="test_Button" type="button"><i id="test_list"></i><span id="test_calendarTypeName">Test</span></button>
+    <div class="test">
+      <form>
+        <input>
+        <button type="button" id="addSchedule">테스트버튼</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#openModal">모달창</button>
+      </form>
 
+      <div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel2">일정 등록</h5>
+<!--              <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>-->
+            </div>
+            <div class="modal-body">
+              <form>
+                  <label class="col-form-label" >공유 대상</label>
+                  <input class="form-control" type="text" value="@fat">
+
+                <div class="mb-3">
+                  <label class="col-form-label" for="message-text">Message:</label>
+                  <textarea class="form-control" id="message-text"></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+              <button class="btn btn-primary" type="button">Send message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
+
+
    <div class="container-fluid calendar-basic">
     <div class="row">
       <div class="col-12">
@@ -73,7 +108,7 @@
   <script th:src="@{/static/js/calendar/calendars.js}"></script>
   <script th:src="@{/static/js/calendar/schedules.js}"></script>
   <script th:src="@{/static/js/calendar/myApp.js}"></script>
-<!--  <script th:src="@{/static/js/calendar/app.js}"></script>-->
+  <script th:src="@{/static/js/calendar/app.js}"></script>
 
 </th:block>
 </html>

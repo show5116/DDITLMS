@@ -14,6 +14,7 @@
     var datePicker, selectedCalendar;
 
     cal = new Calendar('#calendar', {
+        language: 'ko',
         defaultView: 'month',
         useCreationPopup: useCreationPopup,
         useDetailPopup: useDetailPopup,
@@ -294,7 +295,6 @@
             schedule.borderColor = calendar.borderColor;
         }
 
-        newCalendar(scheduleData);
 
         cal.createSchedules([schedule]);
 
@@ -433,7 +433,39 @@
     setRenderRangeText();
     setSchedules();
     setEventListener();
+
+// Lee custom script 커스텀 스크립트
+    const addScheduleBtn = document.querySelector("#addSchedule");
+    addScheduleBtn.addEventListener("click",function (){
+        var schedule = {
+            id: '1',
+            title: '하이',
+            isAllDay: true,
+            start: '2021-12-05',
+            end: '2021-12-05',
+            category: 'allday',
+            dueDateClass: '',
+            color: '#FFFFFF',
+            bgColor: '#ba895d',
+            dragBgColor: '#ba895d',
+            borderColor: '#ba895d',
+            location: '',
+            raw: {
+                class: 'NY'
+            },
+            state: 'busy'
+        };
+        saveNewSchedule(schedule);
+    });
 })(window, tui.Calendar);
+
+
+
+
+
+
+
+
 
 // set calendars
 (function() {
