@@ -5,14 +5,15 @@ import com.example.dditlms.domain.idclass.BookmarkId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "BKMK")
 @Getter
 @NoArgsConstructor
+@ToString
 @IdClass(BookmarkId.class)
 public class Bookmark {
 
