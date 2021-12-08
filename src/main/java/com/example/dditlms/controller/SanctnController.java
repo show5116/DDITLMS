@@ -1,13 +1,89 @@
 package com.example.dditlms.controller;
 
+import com.example.dditlms.domain.dto.EmployeeDTO;
+import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.entity.QDepartment;
+import com.example.dditlms.domain.entity.QEmployee;
+import com.example.dditlms.domain.entity.sanction.Docform;
+import com.example.dditlms.domain.entity.sanction.SanctnLn;
+import com.example.dditlms.domain.repository.MemberRepository;
+import com.example.dditlms.domain.repository.sanctn.DocformRepository;
+import com.example.dditlms.domain.repository.sanctn.EmployeeRepository;
+import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Controller
+@RequiredArgsConstructor
 public class SanctnController {
 
+    private final SanctnLnRepository sanctnLnRepository;
+
+    private final MemberRepository memberRepository;
+
+    private final EmployeeRepository employeeRepository;
+
+    //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
-    public String calendar(){
+    public String santn(Model model) {
+        Long userNumber = 11111L; // 추후에 로그인한 사용자 넣을 것(현재 테스트용)
+
+        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquireProgress(userNumber);
+        long totalPro = resultsPro.getTotal();
+        QueryResults<SanctnLn> resultsRej = sanctnLnRepository.inquireReject(userNumber);
+        long totalRej = resultsRej.getTotal();
+        QueryResults<SanctnLn> resultsPub = sanctnLnRepository.inquirePublicize(userNumber);
+        long totalPub = resultsPub.getTotal();
+        QueryResults<SanctnLn> resultsCom = sanctnLnRepository.inquireCompletion(userNumber);
+        long totalCom = resultsCom.getTotal();
+
+        List<SanctnLn> proDetails = resultsPro.getResults();
+        model.addAttribute("totalPro", totalPro);
+        model.addAttribute("proDetails", proDetails);
+        model.addAttribute("totalRej", totalRej);
+        model.addAttribute("totalPub", totalPub);
+        model.addAttribute("totalCom", totalCom);
+
+        Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
+        String findname = findUser.get().getName();
+        model.addAttribute("findname", findname);
+
         return "/pages/sanction";
+    }
+
+    @GetMapping("/drafting")
+    public String drafting(Model model) {
+        Long userNumber = 11111L;
+        Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
+        String findname = findUser.get().getName();
+        model.addAttribute("findname", findname);
+
+//        List<Docform> docformList = docformRepository.findAll();
+
+//        model.addAttribute("docformList", docformList);
+
+
+        List<EmployeeDTO> dtoList = employeeRepository.viewDetails(userNumber);
+        EmployeeDTO empDetails = dtoList.get(0);
+//        String emp_se = empDetails.getEmp_se();
+//        String dept_nm = empDetails.getDept_nm();
+
+        model.addAttribute("empDetails", empDetails);
+
+
+//        model.addAttribute("emp_se", emp_se);
+//        model.addAttribute("dept_nm", dept_nm);
+
+
+        return "/pages/drafting";
     }
 }

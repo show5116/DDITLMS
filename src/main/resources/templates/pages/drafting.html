@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <script type="text/javascript" th:src="@{/static/js/ckeditor/ckeditor.js}"></script>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="col-xl-12 col-md-12 box-col-12">
+            <div class="draft-content">
+                <div class="card">
+                    <div class="card-header center-block style=width:300px; padding:15px;">
+                        <h4>기본설정</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">문서종류</th>
+                                    <th scope="col">
+                                        <select name="docForm" id="docFormCate">
+                                            <option value="">공용문서</option>
+                                            <option value="">교무처</option>
+                                            <option value="">행정과</option>
+                                            <option value="">총무부</option>
+                                            <option value="">학생부</option>
+                                        </select>
+                                    </th>
+                                    <th scope="col">
+                                        <select name="docForm" id="docForm">
+                                            <option value="">휴학신청서</option>
+                                            <option value="">복학신청서</option>
+                                            <option value="">일반장학금신청서</option>
+                                            <option value="">특별장학금신청서</option>
+                                        </select>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row" class="table-primary">작성자</th>
+                                    <th th:text="|${empDetails.dept_nm} - ${empDetails.emp_se} : ${findname}|"
+                                        colspan="4" scope="row" class="table-primary"
+                                        style="width: 65%; float:none; margin:0 auto">
+                                    </th>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <hr>
+                        </div>
+                        <h4>결재선
+                            <i class="fa fa-plus fa-1x" style="color:green; cursor:pointer" id="sanPlus"
+                               data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg"></i>
+                            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+                                 aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myLargeModalLabel">결재선 지정</h4>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                <tr>
+                                    <th scope="col">부서</th>
+                                    <th th:text="${empDetails.dept_nm}" scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">직급</th>
+                                    <th th:text="${empDetails.emp_se}" scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">이름</th>
+                                    <th th:text="${findname}" scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div style="width: 20%; float:none; margin:0 auto">
+                                <button class="btn btn-pill btn-secondary btn-air-secondary btn-lg" type="button"
+                                        title="btn btn-pill btn-secondary btn-air-secondary btn-lg">기안양식생성
+                                </button>
+                            </div>
+                            <textarea id="editor4" name="editor4"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Container-fluid Ends-->
+        <script>CKEDITOR.replace('editor4');</script>
+</th:block>
+</html>

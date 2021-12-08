@@ -1,10 +1,14 @@
 package com.example.dditlms.domain.repository.sanctn;
 
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
-
-import java.util.List;
+import com.querydsl.core.QueryResults;
 
 public interface SanctnLnRepositoryCustom {
 
-    List<SanctnLn> inquire(Long userNumber);
+    QueryResults<SanctnLn> inquireProgress(Long userNumber);
+    QueryResults<SanctnLn> inquireReject(Long userNumber);
+    QueryResults<SanctnLn> inquirePublicize(Long userNumber);
+    QueryResults<SanctnLn> inquireCompletion(Long userNumber);
+
+
 }
