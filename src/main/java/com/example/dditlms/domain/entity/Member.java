@@ -34,12 +34,6 @@ public class Member {
     @Column(name="TELNO",nullable = false)
     private String phone;
 
-    @Column(name="BANK_NM")
-    private String bankName;
-
-    @Column(name="ACNUT_NO")
-    private String bankAccount;
-
     @Column(name="MEMBER_ID")
     private String memberId;
 

@@ -3,6 +3,7 @@ package com.example.dditlms.service;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,15 +41,7 @@ class SanctnLnServiceTest {
     @Test
     public void inquire() {
 
-        List<SanctnLn> result = sanctnLnRepository.inquire(11111L);
-
-        for (SanctnLn sanctnLn : result) {
-            System.out.println(sanctnLn.getSanctnLn());
-            System.out.println(sanctnLn.getSanctnSttus());
-            System.out.println(sanctnLn.getSanctnStep());
-        }
-
-
+        QueryResults<SanctnLn> result = sanctnLnRepository.inquireProgress(11111L);
 
 
     }

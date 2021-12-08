@@ -16,13 +16,13 @@
                                 <div class="card-body">
                                     <ul>
                                         <li>
-                                            <div class="btn btn-light">기안하기</div>
+                                             <a class="btn btn-light" href="/drafting">기안하기</a>
                                         </li>
                                         <li>
-                                            <div class="btn btn-light">결재처리</div>
+                                            <a class="btn btn-light" href="/sanctn">결재처리</a>
                                         </li>
                                         <li>
-                                            <div class="btn btn-light">공람처리</div>
+                                            <a class="btn btn-light" href="/sanctn">공람처리</a>
                                         </li>
                                     </ul>
                                     <hr>
@@ -49,11 +49,12 @@
                     <div class="card">
                         <div class="card-header center-block style=width:300px; padding:15px;">
                             <ul style='display:inline-block'>
-                                <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br>총 2건
+                                <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br><span th:text="|총 : ${totalPro} 건|">총 2건</span>
                                 </li>
-                                <li style='display:inline-block'><i class="fa fa-arrow-left fa-5x p-2">반려</i><br>총 3건
+                                <li style='display:inline-block'><i class="fa fa-arrow-left fa-5x p-2">반려</i><br><span th:text="|총 : ${totalRej} 건|">총 3건</span>
                                 </li>
-                                <li style='display:inline-block'><i class="fa fa-repeat fa-5x p-2">공람</i><br>총 4건</li>
+                                <li style='display:inline-block'><i class="fa fa-repeat fa-5x p-2">공람</i><br><span th:text="|총 : ${totalPub} 건|">총 3건</span>
+                                </li>
                             </ul>
                         </div>
                         <hr>
@@ -81,40 +82,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Alexander</td>
-                                    <td>Orton</td>
-                                    <td>@mdorton</td>
-                                    <td>Admin</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>John Deo</td>
-                                    <td>Deo</td>
-                                    <td>@johndeo</td>
-                                    <td>User</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Randy Orton</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                    <td>admin</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">4</th>
-                                    <td>Randy Mark</td>
-                                    <td>Ottandy</td>
-                                    <td>@mdothe</td>
-                                    <td>user</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">5</th>
-                                    <td>Ram Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@twitter</td>
-                                    <td>admin</td>
+                                <tr th:each="proDetail : ${proDetails}">
+                                    <td th:text="${proDetail.sanctnStep}"></td>
+                                    <td>제목:join</td>
+                                    <td th:text="${findname}">제목:join</td>
+                                    <td>제목:join</td>
+                                    <td th:text="${proDetail.sanctnDate}"></td>
                                 </tr>
                                 </tbody>
                             </table>
