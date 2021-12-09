@@ -2,6 +2,8 @@ package com.example.dditlms.service.impl;
 
 import com.example.dditlms.controller.MemberForm;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.entity.MemberDetail;
+import com.example.dditlms.domain.repository.MemberDetailRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.MemberService;
@@ -24,6 +26,8 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final MemberDetailRepository memberDetailRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -70,6 +74,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String findId(String identification, String name) {
         long usernumber = Long.parseLong(identification);
         Optional<Member> memberEntityWrapper =  memberRepository.findByUserNumberAndName(usernumber,name);
@@ -81,6 +86,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public boolean changePW(String id, String password) {
         Optional<Member> memberEntityWrapper = memberRepository.findByMemberId(id);
         Member member = memberEntityWrapper.orElse(null);
@@ -88,5 +94,17 @@ public class MemberServiceImpl implements MemberService {
         member.setFailCount(0);
         memberRepository.save(member);
         return true;
+    }
+
+    @Override
+    @Transactional
+    public void changeData(Member member) {
+        memberRepository.save(member);
+    }
+
+    @Override
+    @Transactional
+    public void changeDetail(MemberDetail memberDetail) {
+        memberDetailRepository.save(memberDetail);
     }
 }

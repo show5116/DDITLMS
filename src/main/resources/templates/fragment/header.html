@@ -25,9 +25,9 @@
                     <li class="onhover-dropdown">
                         <div class="bookmark-box"><i data-feather="star"></i></div>
                         <div class="bookmark-dropdown onhover-show-div">
-                            <ul id="bookmarks" class="m-t-5" th:each="bookmark : ${session.bookmarks}">
-                                <li class="add-to-bookmark">
-                                    <a th:href="${bookmark.menu.url}">
+                            <ul id="bookmarks" class="m-t-5">
+                                <li th:each="bookmark : ${session.bookmarks}" class="add-to-bookmark">
+                                    <a class="list-url" th:href="${bookmark.menu.url}">
                                         <i class="bookmark-icon" th:data-feather="${bookmark.menu.icon}"></i><span th:text="${bookmark.menu.name}"></span>
                                     </a>
                                     <i class="icon-trash pull-right" onclick="removeBookmark()"></i>

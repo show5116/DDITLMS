@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <div class="bookmark">
                         <ul>
-                            <li>
+                            <li class="pointer">
                                 <a class="add-bookmark"><i id="ico-bookmark" data-feather="star"></i></a>
                             </li>
                         </ul>
@@ -21,6 +21,16 @@
     </div>
     <script th:inline="javascript">
         const pathname = window.location.pathname;
+        const iconBookmark = document.querySelector("#ico-bookmark");
+        const urls = document.querySelectorAll(".list-url");
+        if(urls != undefined && urls != null){
+            for(let i=0;i<urls.length;i++){
+                let urlPath = new URL(urls[i].href);
+                if(urlPath.pathname == pathname){
+                    iconBookmark.classList.add("font-warning");
+                }
+            }
+        }
         const addBookmarkBtn = document.querySelector(".add-bookmark");
         addBookmarkBtn.addEventListener("click",function (){
             const params = {
@@ -40,7 +50,6 @@
                     swal("알 수 없는 오류가 발생했습니다.");
                     return;
                 }
-                const iconBookmark = document.querySelector("#ico-bookmark");
                 iconBookmark.classList.add("font-warning");
                 const bookmarks = fragment.bookmarks;
                 let bookmarkHtml = "";

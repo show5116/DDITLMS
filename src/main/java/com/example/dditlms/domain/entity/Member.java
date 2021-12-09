@@ -39,13 +39,17 @@ public class Member {
 
     private String password;
 
+    @Lob
     @Column(name="member_img")
-    @ColumnDefault("'user'")
     private String memberImg;
 
     @Column(name ="fail_count")
     @ColumnDefault("0")
     private Integer failCount;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private MemberDetail memberDetail;
 
     @Builder
     public Member(Long userNumber, Role role, String name, String email, String phone) {

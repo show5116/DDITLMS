@@ -55,7 +55,12 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if(session!=null) {
             session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
         }
-        session.setAttribute("memberImg",member.getMemberImg());
+        session.setAttribute("userName",member.getName());
+        if(member.getMemberImg() == null){
+            session.setAttribute("memberImg","/static/images/memberImg/user.png");
+        }else{
+            session.setAttribute("memberImg",member.getMemberImg());
+        }
         Set<Bookmark> bookmarkList = bookmarkService.getBookmarks(member);
         if(bookmarkList!=null && !bookmarkList.isEmpty()){
             session.setAttribute("bookmarks",bookmarkList);
