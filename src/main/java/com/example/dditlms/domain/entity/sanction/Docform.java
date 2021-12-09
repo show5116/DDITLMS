@@ -26,8 +26,9 @@ public class Docform {
     @Column(name = "DOCFORM_CN")
     private String docformCn;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "DOCFORM_CN_CTGRY", length = 50)
-    private String docformCnCtgry;
+    private DocFormCategory docFormCategory;
 
 
 }

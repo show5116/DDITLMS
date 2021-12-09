@@ -1,6 +1,9 @@
 package com.example.dditlms.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +11,9 @@ import java.util.Date;
 @Entity
 @Table(name = "CALENDAR")
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Calendar {
 
     @Id
