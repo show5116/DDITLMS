@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Table(name = "DEPT")
 @Entity
@@ -18,8 +15,9 @@ import javax.persistence.Table;
 @RequiredArgsConstructor
 public class Department {
     @Id
-    @Column(name = "DEPT_CODE", nullable = false, length = 200)
-    private String DepartmentCode;
+    @Column(name = "DEPT_CODE", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long departmentCode;
 
     @Column(name = "DEPT_SE", length = 200)
     private String deptSe;

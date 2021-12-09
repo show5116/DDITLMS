@@ -1,5 +1,6 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.entity.sanction.EmployeeRole;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import javax.persistence.*;
 @Builder
 public class Employee {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userNumber;
 
     @MapsId
@@ -21,8 +23,9 @@ public class Employee {
     @JoinColumn(name = "MBER_NO", nullable = false)
     private Member member;
 
-    @Column(name = "EMP_SE", length = 50)
-    private String empSe;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "EMP_SE")
+    private EmployeeRole employeeRole;
 
     @Column(name = "ENCPN", length = 200)
     private String encpn;

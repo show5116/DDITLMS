@@ -20,15 +20,13 @@
                                     <th scope="col">문서종류</th>
                                     <th scope="col">
                                         <select name="docForm" id="docFormCate" onchange="changeCate()">
+                                            <option>[양식선택]</option>
                                             <option th:each="docForm : ${allDocFormList}" th:text="${docForm.krName}" th:value="${docForm}"></option>
                                         </select>
                                     </th>
                                     <th scope="col">
-                                        <select name="docForm" id="docForm">
-                                            <option value="">휴학신청서</option>
-                                            <option value="">복학신청서</option>
-                                            <option value="">일반장학금신청서</option>
-                                            <option value="">특별장학금신청서</option>
+                                        <select name="docForm" id="docForm" style="width:200px;">
+                                            <option value="">---------</option>
                                         </select>
                                     </th>
                                 </tr>
@@ -36,7 +34,7 @@
                                 <tbody>
                                 <tr>
                                     <th scope="row" class="table-primary">작성자</th>
-                                    <th th:text="|${empDetails.dept_nm} - ${empDetails.emp_se} : ${findname}|"
+                                    <th th:text="|${empDetails.dept_nm} - ${empDetails.employeeRole.krName} : ${findname}|"
                                         colspan="4" scope="row" class="table-primary"
                                         style="width: 65%; float:none; margin:0 auto">
                                     </th>
@@ -51,26 +49,32 @@
                             <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
                                  aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
-                                    <div class="modal-content" style="height: 400px; float: none; margin:0 auto;">
+                                    <div class="modal-content" style="height: 430px; float: none; margin:0 auto;">
                                         <div class="modal-header" style="float: none; margin:0 auto;">
                                             <h4 class="modal-title" id="myLargeModalLabel">결재선 지정</h4>
                                             <button class="btn-close" type="button" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
                                         <form style="float: none; margin:0 auto;">
-                                            <div style="float:none; margin:0 auto;">
+                                            <div style="text-align: center; float:none; margin:0 auto;">
+                                                <select  style="text-align: center; margin: 0 auto;" id="dept" onchange="changeDep()">
+                                                    <deptgroup label='부서' th:each="department : ${departmentList}">
+                                                        <option th:text="${department.deptNm}" th:value="${department.departmentCode}">부서선택요!</option>
+                                                    </deptgroup>
+                                                </select>
+                                                <hr>
                                                 <select id='optgroup' multiple='multiple'>
                                                     <optgroup label='대리'>
-                                                        <option value='김대리'>김대리</option>
-                                                        <option value='이대리'>이대리</option>
-                                                        <option value='박대리'>박대리</option>
+                                                        <option th:each="emp : ${empList}" th:text="${emp.employeeRole.krName}" th:value="empList.dept_nm"></option>
+                                                        <option value='2'>이대리</option>
+                                                        <option value='3'>박대리</option>
                                                     </optgroup>
                                                     <optgroup label='과장'>
-                                                        <option value='김과장'>김과장</option>
-                                                        <option value='이과장'>이과장</option>
+                                                        <option value='4'>김과장</option>
+                                                        <option value='5'>이과장</option>
                                                     </optgroup>
                                                     <optgroup label='부장'>
-                                                        <option value='김부장'>김부장</option>
+                                                        <option value='6'>김부장</option>
                                                     </optgroup>
                                                 </select>
                                             </div>
@@ -100,23 +104,23 @@
                                 <tr>
                                     <th scope="col">부서</th>
                                     <th th:text="${empDetails.dept_nm}" scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
+                                    <th scope="col" id="dep1"></th>
+                                    <th scope="col" id="dep2"></th>
+                                    <th scope="col" id="dep3"></th>
                                 </tr>
                                 <tr>
                                     <th scope="col">직급</th>
-                                    <th th:text="${empDetails.emp_se}" scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
+                                    <th th:text="${empDetails.employeeRole.krName}" scope="col"></th>
+                                    <th scope="col" id="rank1"></th>
+                                    <th scope="col" id="rank2"></th>
+                                    <th scope="col" id="rank3"></th>
                                 </tr>
                                 <tr>
                                     <th scope="col">이름</th>
                                     <th th:text="${findname}" scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
+                                    <th scope="col" id="name1"></th>
+                                    <th scope="col" id="name2"></th>
+                                    <th scope="col" id="name3"></th>
                                 </tr>
                                 </tbody>
                             </table>
@@ -145,41 +149,89 @@
         <script th:src="@{/static/js/jquery.multi-select.js}" type="text/javascript"></script>
         <script th:inline="javascript">
         CKEDITOR.replace('editor4');
-        /*<![CDATA[*/ let content = /*[[${docformCn}]]*/; /*]]*/
+        /*<![CDATA[*/
+        let content = /*[[${docformCn}]]*/ ; /*]]*/
 
         CKEDITOR.instances.editor4.setData(content)
 
-        $(document).ready(function(){
 
-        $('#optgroup').multiSelect({ selectableOptgroup: true });
-        $("#btnReset").bind("click", function () {
-            $('#optgroup').multiselect('deselectAll', false);
-            $('#optgroup').multiselect('updateButtonText');
-        });
-        });
+            $('#optgroup').multiSelect({
+                selectableOptgroup: true
+            });
 
         const btnOk = document.querySelector("#btnOk");
-        btnOk.addEventListener("click", function() {
-        var s= document.querySelector("#optgroup");
+        btnOk.addEventListener("click", function () {
+            for (var i = 0; i < 3; i++) {
+                document.querySelector('#dep' + (i + 1)).innerHTML = "";
+                document.querySelector('#name' + (i + 1)).innerHTML = "";
+                document.querySelector('#rank' + (i + 1)).innerHTML = "";
+            }
+            var s = document.querySelector("#optgroup");
 
-        const values = [...s.options]
-        .filter(option => option.selected)
-        .map(option => option.value);
-        alert(values)
+            const values = [...s.options]
+                .filter(option => option.selected)
+                .map(option => option.value);
 
+            const names = [...s.options]
+                .filter(option => option.selected)
+                .map(option => option.text);
+
+            for (var i = 0; i < values.length; i++) {
+                document.querySelector('#dep' + (i + 1)).innerHTML = values[i]
+                document.querySelector('#name' + (i + 1)).innerHTML = names[i]
+            }
         })
 
-         function changeCate() {
+        function changeCate() {
             let cate = document.querySelector('#docFormCate');
             let result = cate.options[cate.selectedIndex].value;
-            console.log(result);
 
-            document.querySelector('#docForm').innerHTML = '<option value="">휴학신청서</option> <option value="">복학신청서</option> <option value="">강의개설신청서</option>'
+            $.ajax({
+                type: "GET",
+                url: "/sendFormCate",
+                data: {
+                    "cate": result
+                },
+                contentType: "application/json; charset=UTF-8",
+                success: function (data) {
 
+                    let opt = "";
+                    for (var i = 0; i < data.length; i++) {
+                        let nm = data[i].docform_nm;
+                        let vl = data[i].docform_sn;
+                        opt += "<option value='" + vl + "'>" + nm + "</option>"
+                    }
 
+                    document.querySelector('#docForm').innerHTML = opt
+                }
+            });
         }
 
-        </script>
+        function changeDep() {
+            let dep = document.querySelector('#dept');
+            let result = dep.options[dep.selectedIndex].value;
+
+            $.ajax({
+                type: "GET",
+                url: "/sendDept",
+                data: {
+                    "dep": result
+                },
+                contentType: "application/json; charset=UTF-8",
+                success: function (data) {
+                    console.log(data);
+                    let opt = "";
+                    for (var i = 0; i < data.length; i++) {
+                        let ro = data[i].employeeRole;
+                        let nm = data[i].name;
+                        opt += "<option value='" + nm + "'>" + ro + "</option>"
+                    }
+                    document.querySelector('#optgroup').innerHTML = opt
+
+                }
+            });
+        }
+    </script>
 
 </th:block>
 </html>
