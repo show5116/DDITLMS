@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='회원 등록')"></th:block>
+    <div class="container-fluid">
+        <div class="col-sm-12 col-xl-6 xl-100">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" role="tab" aria-controls="card-student" aria-selected="true">학생
+                            <div class="media"></div></a></li>
+                        <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" role="tab" aria-controls="card-professor" aria-selected="false">교수</a></li>
+                        <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" role="tab" aria-controls="card-staff" aria-selected="false">직원</a></li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="card-student" role="tabpanel" aria-labelledby="pills-home-tab">
+
+                        </div>
+                        <div class="tab-pane fade" id="card-professor" role="tabpanel" aria-labelledby="pills-profile-tab">
+
+                        </div>
+                        <div class="tab-pane fade" id="card-staff" role="tabpanel" aria-labelledby="pills-contact-tab">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <sciprt>
+
+    </sciprt>
+</th:block>
+</html>

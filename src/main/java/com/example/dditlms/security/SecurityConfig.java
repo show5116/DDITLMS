@@ -56,8 +56,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
         http.authorizeRequests()
                 .antMatchers("/student/**").hasAuthority(Role.ROLE_STUDENT.getValue())
-                .antMatchers("/admin/**").hasAuthority(Role.ROLE_ADMIN.getValue())
                 .antMatchers("/professor/**").hasAuthority(Role.ROLE_PROFESSOR.getValue())
+                .antMatchers("/accademic/**").hasAuthority(Role.ROLE_ACCADEMIC_DEP.getValue())
+                .antMatchers("/admin/**").hasAuthority(Role.ROLE_ADMIN_DEP.getValue())
+                .antMatchers("/general/**").hasAuthority(Role.ROLE_GENERAL_DEP.getValue())
+                .antMatchers("/studentDep/**").hasAuthority(Role.ROLE_STUDENT_DEP.getValue())
                 .antMatchers("/forget","/forget/**").permitAll()
                 .antMatchers("/signup","/signup/**").permitAll()
                 .antMatchers("/login").permitAll()
