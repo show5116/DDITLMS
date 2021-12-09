@@ -47,6 +47,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.pacesys/openstack4j
     //openstack4j 라이브러리를 이용하여 네이버 클라우드 플랫폼 Archive Storage를 사용
     implementation group: 'org.pacesys', name: 'openstack4j', version: '3.1.0'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.238'
 }
 
 test {

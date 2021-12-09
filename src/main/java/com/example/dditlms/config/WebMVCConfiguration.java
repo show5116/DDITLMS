@@ -1,5 +1,6 @@
 package com.example.dditlms.config;
 
+import com.example.dditlms.util.AmazonS3Util;
 import com.example.dditlms.util.OtpUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,4 +21,7 @@ public class WebMVCConfiguration {
     public OtpUtil createOtpUtil(){
         return new OtpUtil();
     }
+    @Bean
+    public AmazonS3Util createAmazonS3Util() { return  new AmazonS3Util(); }
+
 }
