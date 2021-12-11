@@ -6,6 +6,7 @@ import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.DocFormCategory;
 import com.example.dditlms.domain.entity.sanction.Docform;
+import com.example.dditlms.domain.entity.sanction.SanctnForm;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.DepartmentRepository;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -72,7 +74,7 @@ public class SanctnController {
     }
 
     @GetMapping("/drafting")
-    public String drafting(Model model) {
+    public String drafting(Model model, SanctnForm sanctnForm) {
         //로그인한 사람 이름 조회 및, 넘기기
         Long userNumber = 11111L;
         Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
@@ -85,12 +87,6 @@ public class SanctnController {
         model.addAttribute("empDetails", empDetails);
 
 
-        //상세 선택한 양식폼 검색 및 넣기(추가로 DB에서 검색되도록 구현 할 것)
-        Optional<Docform> docform = docformRepository.findById(1L);
-        String docformCn = docform.get().getDocformCn();
-
-        model.addAttribute("docformCn", docformCn);
-
         List<DocFormCategory> allDocFormList = docformRepository.allDocFormList();
 
         model.addAttribute("allDocFormList", allDocFormList);
@@ -99,6 +95,9 @@ public class SanctnController {
         List<Department> departmentList = departmentRepository.findAll();
         model.addAttribute("departmentList",departmentList);
         log.info(String.valueOf(departmentList));
+        
+        //폼 데이터 객체를 넘김
+//        model.addAttribute("sanctnForm", new SanctnForm());
 
         return "/pages/drafting";
     }
@@ -106,7 +105,7 @@ public class SanctnController {
     //양식폼 2차 카테고리 결과 반환
     @GetMapping("/sendFormCate")
     @ResponseBody
-    public List<DocFormDTO> sendFormCate(DocFormDTO dto, @RequestParam Map<String, Object> param) {
+    public List<DocFormDTO> sendFormCate(@RequestParam Map<String, Object> param) {
 
         List<DocFormDTO> result = docformRepository.DocFromCate((String) param.get("cate"));
 
@@ -115,19 +114,43 @@ public class SanctnController {
     //부서별 직원목록 반환
     @GetMapping("/sendDept")
     @ResponseBody
-    public List<EmployeeDTO> sendDept(EmployeeDTO dto, @RequestParam Map<String, Object> param) {
+    public List<EmployeeDTO> sendDept(@RequestParam Map<String, Object> param) {
 
         List<EmployeeDTO> empList = employeeRepository.empList(Long.valueOf((String) param.get("dep")));
 
         return empList;
     }
 
+    //양식폼 생성
+    @GetMapping("/makeForm")
+    @ResponseBody
+    public Optional<Docform> makeForm(@RequestParam Map<Long, Object> param) {
 
-    @GetMapping("/sanctn/makeForm")
-    public String makeForm(Model model) {
+        Optional<Docform> form = docformRepository.findById(Long.valueOf((String) param.get("form")));
 
 
-        return "/pages/drafting";
+        return form;
+    }
+
+    //직원 상세정보 조회
+    @GetMapping("/viewDetails")
+    @ResponseBody
+    public List<EmployeeDTO> viewDetails(@RequestParam Map<String, Object> param) {
+        log.info((String) param.get("userNumber"));
+
+        List<EmployeeDTO> viewDetails = employeeRepository.viewDetails(Long.valueOf((String)param.get("userNumber")));
+        log.info(String.valueOf(viewDetails));
+
+        return viewDetails;
+    }
+    //기안하기
+    @GetMapping("/sanctnSubmit")
+    @ResponseBody
+    public SanctnForm submitSanctn(@ModelAttribute("sanctnForm") SanctnForm sanctnForm) {
+            log.info("폼테스트!" + sanctnForm);
+            log.info("폼테스트2" + sanctnForm.getSanctnSj());
+            log.info("폼테스트3" + sanctnForm.getSanctnCn());
+        return sanctnForm;
     }
 
 
