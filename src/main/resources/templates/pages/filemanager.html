@@ -6,8 +6,6 @@
           layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
         <div class="container-fluid">
-<!--            <script src="../../static/js/dropzone/dropzone.js"></script>-->
-<!--            <script src="../../static/js/dropzone/dropzone-script.js"></script>-->
             <div class="page-header">
                 <div class="row">
                     <div class="col-sm-6">
@@ -137,10 +135,7 @@
                                                         <div class="modal-body">
                                                             <p>폴더 이름 뭘로 할래요?</p>
                                                             <p>폴더 이름 뭘로 할래요??</p>
-                                                            <p>폴더 이름 뭘로 할래요???</p>
-                                                            <p>폴더 이름 뭘로 할래요????</p>
-                                                            <p>폴더 이름 뭘로 할래요????</p>
-                                                            <input type="text" th:name="createFolder" th:id="createFolder">
+                                                            <input type="text" th:id="createFolder">
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">Close</button>
@@ -253,9 +248,9 @@
                                 </ul>
     <!-- ------------------------------------------------------------------------------------------------------------------------------------ -->
                                 <h5 class="mt-4">Files</h5>
-                                <ul id="" class="files">
+                                <ul class="files">
                                     <li class="file-box" th:each="last : ${objectListing.objectSummaries}">
-                                        <a class="" th:id="${last.key}">
+                                        <a class="file-target" th:id="${last.key}">
                                             <div class="file-top">  <i class="fa fa-file-archive-o txt-secondary"></i><i class="fa fa-ellipsis-v f-14 ellips"></i></div>
                                             <div class="file-bottom">
                                                 <h6 th:text="${#strings.arraySplit(last.key, '/')[#arrays.length(#strings.arraySplit(last.key, '/')) -1]}">Project.zip </h6>
@@ -279,9 +274,11 @@
         console.log("스크립트 있음");
         const newFolder = document.querySelector("#newFolder");
         let folderMoves = document.querySelectorAll(".folder-move");
+        let fileTargets = document.querySelectorAll(".file-target");
         const folderReplaceWith = document.querySelector("#folderReplace");
 
         let targetId = null;
+        let fileTargetId = null;
 
         folderMoves.forEach(folderMove => replaceEvent(folderMove));
 
@@ -304,11 +301,12 @@
                     console.log("전" + fragment);
                     $("#folderReplace").replaceWith(fragment);
                     folderMoves = document.querySelectorAll(".folder-move");
+                    fileTargets = document.querySelectorAll(".file-target");
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
+                    fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
 
                     //이걸 백에서 하면서 변수로 넣는 법이 있을까?
                 }).fail(function (data, textStatus, errorThrown){
-                    console.log("fail이야야야야야야야야");
                     console.log(textStatus);
                     console.log(errorThrown);
                     console.log(data);
@@ -339,6 +337,29 @@
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
                 })
             });
+
+
+        fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
+
+        function downloadEvent(target){
+            target.addEventListener("click", function(event){
+                console.log("타겟" + event.currentTarget.id);
+                fileTargetId = event.currentTarget.id;
+                const params = {
+                    fileTargetId : fileTargetId
+                };
+                $.ajax({
+                    url:"/cloud/download",
+                    data:params,
+                    type: "GET",
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header,token);
+                    }
+                }).done(function(){
+                    console.log("성공했어요");
+                })
+            })
+        }
 
     </script>
 </th:block>

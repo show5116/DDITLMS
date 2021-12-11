@@ -6,12 +6,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.repository.FileDataRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.util.AmazonS3Util;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.*;
 import java.util.Map;
 
 @Controller
@@ -150,8 +144,55 @@ public class FileDataController {
     }
 
 
-    @PostMapping("/cloud/download")
-    public String download(){
+    @GetMapping("/cloud/download")
+    public String download(@RequestParam Map<String, String> paramMap, Model model){
+        String fileTargetId = paramMap.get("fileTargetId");
+        String bucketName = "lms-project";
+
+        System.out.println(fileTargetId);
+        int Idx = fileTargetId.lastIndexOf("/")+1;
+//        String objectName = fileTargetId.substring(Idx,fileTargetId.length());
+        String objectName = fileTargetId;
+        String targetId = fileTargetId.substring(0, Idx);
+        System.out.println("targetId입니다 다운 : " + targetId);
+        // 다운때 이름만 받아서
+        System.out.println("objectName : "+objectName);
+//        String downloadFilePath = fileTargetId;
+        String downloadFilePath = "user1/user999/";
+//        String downloadFilePath = targetId;
+
+        // 다운의 경로를 받아서
+// download object
+        try {
+            System.out.println("안나오니?");
+            S3Object s3Object = s3.getObject(bucketName, objectName);
+            S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+
+            OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadFilePath));
+            byte[] bytesArray = new byte[4096];
+            int bytesRead = -1;
+            while ((bytesRead = s3ObjectInputStream.read(bytesArray)) != -1) {
+                outputStream.write(bytesArray, 0, bytesRead);
+            }
+
+            outputStream.close();
+            s3ObjectInputStream.close();
+            System.out.format("Object %s has been downloaded.\n", objectName);
+        } catch (AmazonS3Exception e) {
+            e.printStackTrace();
+        }
+        catch(SdkClientException e) {
+            e.printStackTrace();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ObjectListing objectListing = amazonS3Util.getAmazon(targetId);
+        model.addAttribute("objectListing", objectListing);
 
         return "pages/filemanager";
     }
