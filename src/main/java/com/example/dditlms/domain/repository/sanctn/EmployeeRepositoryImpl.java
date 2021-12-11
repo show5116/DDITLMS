@@ -2,15 +2,12 @@ package com.example.dditlms.domain.repository.sanctn;
 
 import com.example.dditlms.domain.dto.EmployeeDTO;
 import com.example.dditlms.domain.dto.QEmployeeDTO;
-import com.example.dditlms.domain.entity.QDepartment;
-import com.example.dditlms.domain.entity.QMember;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.example.dditlms.domain.entity.QDepartment.*;
+import static com.example.dditlms.domain.entity.QDepartment.department;
 import static com.example.dditlms.domain.entity.QEmployee.employee;
 import static com.example.dditlms.domain.entity.QMember.member;
 

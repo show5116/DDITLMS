@@ -166,10 +166,10 @@
                             </button>
                         </div>
 
-                        <form th:action="@{/sanctnSubmit}" th:method="get" id="sanctnForm"  th:object="${sanctnForm}" style="display:none">
-                            <input type="text" th:field="*{sanctnSj}"/>
-                            <input type="text" th:field="*{sanctnCn}"/>
-                            <input type="text" th:field="*{docformSn}">
+                        <form th:action="@{/sanctnSubmit}" th:method="get" id="sanctnForm" style="display:none">
+                            <input type="text" id="sanctnSj" th:name= "sanctnSj" th:value="${sanctnSj}"/>
+                            <input type="text" id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}"/>
+                            <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}" th:object="${docformSn}"/>
                         </form>
 
                     </div>
@@ -314,28 +314,25 @@
 
         const btnSm = document.querySelector('#btnSm');
 
-        const sanctnForm = document.querySelector('#sanctnForm');
 
         btnSm.addEventListener("click", function () {
 
-        let form = document.querySelector('#docForm').value;
-
 
         const sanctnSj = document.querySelector('#sanctnSj');
-        const docformSn = document.querySelector('#docformSn');
+        let docformSn = document.querySelector('#docformSn');
 <!--        const sanctnCn = document.querySelector('#sanctnCn');-->
 
         const title = document.querySelector('#exampleFormControlInput1').value;
+        const form = document.querySelector('#docForm').value;
 <!--        const content =CKEDITOR.instances.editor4.getData();-->
 
         sanctnSj.setAttribute('value', title);
         docformSn.setAttribute('value', form);
-        docformSn.value
-        console.log(docformSn);
-        console.log(form);
+
+
 <!--        sanctnCn.setAttribute('value', content);-->
 
-<!--        sanctnForm.submit();-->
+        sanctnForm.submit();
 
         })
 

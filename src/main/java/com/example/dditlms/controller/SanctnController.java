@@ -4,15 +4,13 @@ import com.example.dditlms.domain.dto.DocFormDTO;
 import com.example.dditlms.domain.dto.EmployeeDTO;
 import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.sanction.DocFormCategory;
-import com.example.dditlms.domain.entity.sanction.Docform;
-import com.example.dditlms.domain.entity.sanction.SanctnForm;
-import com.example.dditlms.domain.entity.sanction.SanctnLn;
+import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.DepartmentRepository;
 import com.example.dditlms.domain.repository.sanctn.DocformRepository;
 import com.example.dditlms.domain.repository.sanctn.EmployeeRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
+import com.example.dditlms.service.SanctnService;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +40,8 @@ public class SanctnController {
 
     private final DepartmentRepository departmentRepository;
 
+    private final SanctnService sanctnService;
+
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
     public String santn(Model model) {
@@ -68,6 +68,8 @@ public class SanctnController {
         Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
         String findname = findUser.get().getName();
         model.addAttribute("findname", findname);
+
+        model.addAttribute("docformSn", new Docform());
 
 
         return "/pages/sanction";
@@ -146,12 +148,14 @@ public class SanctnController {
     //기안하기
     @GetMapping("/sanctnSubmit")
     @ResponseBody
-    public SanctnForm submitSanctn(@ModelAttribute("sanctnForm") SanctnForm sanctnForm) {
-            log.info("폼테스트!" + sanctnForm);
-            log.info("폼테스트2" + sanctnForm.getSanctnSj());
-            log.info("폼테스트3" + sanctnForm.getSanctnCn());
-        return sanctnForm;
+    public Long submitSanctn(Model model, @RequestParam("sanctnSj") String sanctnSj, @ModelAttribute Docform docformSn) {
+
+
+        sanctnService.saveSanctn(sanctnSj, docformSn);
+
+        return null;
     }
+
 
 
 }
