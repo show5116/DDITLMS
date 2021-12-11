@@ -41,7 +41,8 @@
             console.log('clickDayname', date);
         },
         'beforeCreateSchedule': function(e) {
-            alert("ddd");
+            const modalBtn = document.querySelector("#schedule_modal_btn");
+            modalBtn.click();
             console.log('beforeCreateSchedule', e);
             // saveNewSchedule(e);
 

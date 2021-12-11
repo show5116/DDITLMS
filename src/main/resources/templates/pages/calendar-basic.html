@@ -10,7 +10,7 @@
 
     <!--  일정 등록 모달창 시작-->
     <div id="modal_box">
-        <div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="tooltipmodal" aria-hidden="true">
+        <div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="tooltipmodal" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -23,6 +23,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <select id="new-schedule-type" class="form-control btn-square">
+                                    <option value="none">선택</option>
                                     <option value="1">개인</option>
                                     <option value="2">학과</option>
                                     <option value="3">학교</option>
@@ -33,6 +34,7 @@
                             </div>
                             <div class="col-sm-4" >
                                 <select id="new-schedule-type-detaile" class="form-control btn-square">
+                                    <option value="none">선택</option>
                                     <option value="전자">전자과</option>
                                     <option value="컴공">컴퓨터공학과</option>
                                     <option value="기자공">기계자동차공학과</option>
@@ -44,7 +46,7 @@
                                 <label class="col-form-label" for="message-text">제목</label>
                             </div>
                             <div class="col-sm-10">
-                                <input class="form-control" type="text" id="new-schedule-title" placeholder="Title">
+                                <input class="form-control" type="text" id="new-schedule-title" autocomplete="off" placeholder="Title">
                             </div>
                         </div>
                         <p></p>
@@ -59,7 +61,7 @@
                                 <label class="col-form-label" for="message-text">위치</label>
                             </div>
                             <div class="col-sm-10">
-                                <input class="form-control" type="text" id="new-schedule-location" placeholder="Location">
+                                <input class="form-control" type="text" id="new-schedule-location" autocomplete="off" placeholder="Location">
                             </div>
                         </div>
                         <hr>
@@ -87,6 +89,7 @@
                             </div>
                             <div class="col-md-4 align-self-center">
                                 <select id="new-schedule-alam-time" class="form-control btn-square">
+                                    <option value="none">선택</option>
                                     <option value="30">30분전</option>
                                     <option value="60">1시간전</option>
                                     <option value="1440">1일전</option>
@@ -106,7 +109,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" id="sendBtn" type="button">등록</button>
-                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">취소</button>
+                        <button class="btn btn-secondary" id="cancel-btn" type="button" data-bs-dismiss="modal">취소</button>
                     </div>
                 </div>
             </div>
@@ -143,7 +146,7 @@
                 </div>
                 <div id="lnb">
                   <div class="lnb-new-schedule">
-                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#openModal">New schedule</button>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" id="schedule_modal_btn" data-bs-target="#openModal">New schedule</button>
                   </div>
                   <div class="lnb-calendars" id="lnb-calendars">
                     <div class="lnb-calendars-d1" id="calendarList">
@@ -172,6 +175,40 @@
   <script>
 <!--  일정 등록 -->
     const sendBtn = document.querySelector("#sendBtn");
+    const cancelBtn = document.querySelector("#cancel-btn");
+
+    <!-- 일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화 -->
+    function cleanSchedule(){
+        const type = document.querySelector("#new-schedule-type");
+        const typeDetail = document.querySelector("#new-schedule-type-detaile")
+        const title = document.querySelector("#new-schedule-title");
+        const content = document.querySelector("#message-text");
+        const location = document.querySelector("#new-schedule-location");
+        const startDate = document.querySelector("#startDate");
+        const endDate = document.querySelector("#endDate")
+        const isAllday = document.querySelector("#new-schedule-allday");
+        const alarmTime = document.querySelector("#new-schedule-alam-time");
+        const alarmSms = document.querySelector("#schedule-alam-sms");
+        const alarmKakao = document.querySelector("#schedule-alam-kakao");
+
+        type.value = "none";
+        typeDetail.value = "none";
+        title.value = "";
+        content.value = "";
+        location.value = "";
+        startDate.value = "";
+        endDate.value = "";
+        isAllday.value = "";
+        alarmTime.value = "none";
+        alarmSms.value = "";
+        alarmKakao.value = "";
+    };
+
+    cancelBtn.addEventListener("click",function(){
+       cleanSchedule();
+
+    })
+
     sendBtn.addEventListener("click", function(){
         console.log("aaa");
       const type = document.querySelector("#new-schedule-type");
@@ -199,6 +236,7 @@
         alarmKakao : alarmKakao.value
 
       };
+
       $.ajax({
         url: "/calendar/add",
         data: params,
@@ -208,10 +246,17 @@
           xhr.setRequestHeader(header,token);
         }
       })
+
         .done(function(fragment){
-            if(fragment.state == "true"){
-                swal("스케줄이 등록되었습니다.");
+            if(fragment.state != "true"){
+                swal("예상치 못한 에러가 발생하였습니다.")
+                return;
             }
+            swal("스케줄이 등록되었습니다.");
+            const cancelBtn = document.querySelector("#cancel-btn");
+            cancelBtn.click();
+            cleanSchedule();
+
         });
 
     })
