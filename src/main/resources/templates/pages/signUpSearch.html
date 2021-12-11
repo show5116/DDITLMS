@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='수강 검색')"></th:block>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-2 row">
+                    <div class="col-md-3 row ">
+                        <label class="col-sm-2 align-self-center">학년도</label>
+                        <select class="col form-select">
+                            <option>2022</option>
+                            <option>2021</option>
+                            <option>2020</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 row">
+                        <label class="col-sm-2 align-self-center">학기구분</label>
+                        <select class="col form-select">
+                            <option>1학기</option>
+                            <option>2학기</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 row">
+                        <label class="col-sm-2">대학구분</label>
+                        <select class="col form-select">
+                            <option>공과대학</option>
+                            <option>사회대학</option>
+                            <option>사회과학대학</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 row">
+                        <label class="col-sm-2">학부(과)</label>
+                        <select class="col form-select">
+                            <option>전자과</option>
+                            <option>컴퓨터 공학과</option>
+                            <option>기계과</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-2 row">
+                    <div class="col-md-3 row ">
+                        <label class="col-sm-2 align-self-center">개설과목</label>
+                        <input type="text" class="text">
+                    </div>
+                    <div class="col-md-3 row">
+                        <label class="col-sm-2 align-self-center">이수구분</label>
+                        <select class="col form-select">
+                            <option>전공필수</option>
+                            <option>전공선택</option>
+                            <option>교양필수</option>
+                            <option>교양선택</option>
+                        </select>
+                    </div>
+                    <div class="col row">
+                        <label class="col-sm-2 align-self-center">강의계획</label>
+                        <input type="radio" name="lecture" value="전체" checked>전체
+                        <input type="radio" name="lecture" value="입력" checked>입력
+                        <input type="radio" name="lecture" value="미정" checked>미정
+                    </div>
+
+                </div>
+
+            </div>
+         </div>
+    </div>
+
+
+</th:block>
+</html>
