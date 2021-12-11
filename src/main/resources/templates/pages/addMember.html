@@ -5,33 +5,194 @@
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='회원 등록')"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
     <div class="container-fluid">
         <div class="col-sm-12 col-xl-6 xl-100">
             <div class="card">
                 <div class="card-body">
                     <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" role="tab" aria-controls="card-student" aria-selected="true">학생
+                        <li class="nav-item"><a id="card-student-tab" class="nav-link active" href="#card-student" data-bs-toggle="pill" role="tab" aria-controls="card-student" aria-selected="true">학생
                             <div class="media"></div></a></li>
-                        <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" role="tab" aria-controls="card-professor" aria-selected="false">교수</a></li>
-                        <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" role="tab" aria-controls="card-staff" aria-selected="false">직원</a></li>
+                        <li class="nav-item"><a id="card-professor-tab" class="nav-link" href="#card-professor" data-bs-toggle="pill" role="tab" aria-controls="card-professor" aria-selected="false">교수</a></li>
+                        <li class="nav-item"><a id="card-staff-tab" class="nav-link" href="#card-staff" data-bs-toggle="pill" role="tab" aria-controls="card-staff" aria-selected="false">직원</a></li>
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="card-student" role="tabpanel" aria-labelledby="pills-home-tab">
-
+                        <div class="tab-pane fade show active" id="card-student" role="tabpanel" aria-labelledby="card-student-tab">
+                            <div id="grid-student"></div>
+                            <button class="btn btn-primary pull-right" id="btn-student-save" type="button">저장</button>
+                            <button class="btn btn-primary pull-right" id="btn-student-autoMade" type="button">학번자동생성</button>
                         </div>
-                        <div class="tab-pane fade" id="card-professor" role="tabpanel" aria-labelledby="pills-profile-tab">
-
+                        <div class="tab-pane fade" id="card-professor" role="tabpanel" aria-labelledby="card-professor-tab">
+                            <div id="grid-professor"></div>
                         </div>
-                        <div class="tab-pane fade" id="card-staff" role="tabpanel" aria-labelledby="pills-contact-tab">
-
+                        <div class="tab-pane fade" id="card-staff" role="tabpanel" aria-labelledby="card-staff-tab">
+                            <div id="grid-staff"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <sciprt>
-
-    </sciprt>
+    <script th:src="@{/static/js/jsgrid.min.js}"></script>
+    <script th:inline="javascript">
+        const studentAutoMadeBtn = document.querySelector("#btn-student-autoMade");
+        studentAutoMadeBtn.addEventListener("click",function (){
+            controller.member.sort(function (a,b){
+                const o1 = a.전공;
+                const o2 = b.전공;
+                const p1 = a.이름;
+                const p2 = b.이름;
+                if (o1 < o2) return -1;
+                if (o1 > o2) return 1;
+                if (p1 < p2) return -1;
+                if (p1 > p2) return 1;
+            })
+            const today = new Date();
+            const year = today.getFullYear();
+            let major = 0;
+            let num = "0001"
+            controller.member.forEach(mem => {
+                if(major != mem.전공){
+                    num = "0001";
+                    major = mem.전공;
+                }
+                mem.학번 = year + mem.전공 + num;
+                num = ((num * 1) + 1).toString().padStart(4,'0');
+            });
+            const headers = document.querySelectorAll(".jsgrid-header-cell");
+            headers.forEach(header => {
+                if(header.innerText== "학번"){
+                    header.click();
+                }
+            });
+        });
+        const majorArray = new Array();
+        /*[# th:each="major :${majors}"]*/
+        var majorinfo = new Object();
+        majorinfo.Name =  /*[[${major.getName()}]]*/;
+        majorinfo.Id =  /*[[${major.getCode()}]]*/;
+        majorArray.push(majorinfo);
+        /*[/]*/
+        const CustomLoadStrategy = function (grid){
+            jsGrid.loadStrategies.DirectLoadingStrategy.call(this,grid);
+        };
+        CustomLoadStrategy.prototype = new jsGrid.loadStrategies.DirectLoadingStrategy();
+        CustomLoadStrategy.prototype.finishInsert = function(insertItem){
+            const grid = this._grid;
+            grid.option("data").unshift(insertItem);
+            grid.refresh();
+        };
+        const controller = {
+            loadData: function(filter) {
+                return $.grep(this.member, function(member) {
+                    return (!filter.Name || member.Name.indexOf(filter.Name) > -1)
+                        && (!filter.학번 || member.학번.indexOf(filter.학번) > -1)
+                        && (!filter.이름 || member.이름.indexOf(filter.이름) > -1)
+                        && (!filter.전화번호 || member.전화번호.indexOf(filter.전화번호) > -1)
+                        && (!filter.mail || member.mail.indexOf(filter.mail) > -1);
+                });
+            },
+            insertItem: function(insertItem) {
+                this.member.unshift(insertItem);
+            },
+            updateItem: function(updateItem) {},
+            deleteItem: function(deleteItem) {
+                if(deleteItem.학번 != ""){
+                    controller.deleteMember.unshift({...deleteItem});
+                }
+                var clientIndex = $.inArray(deleteItem, this.member);
+                this.member.splice(clientIndex, 1);
+            }
+        }
+        controller.member=[];
+        /*[# th:each="student :${studentList}"]*/
+        var studentObject = new Object();
+        studentObject.학번 =  /*[[${student.getUserNumber()}]]*/;
+        studentObject.이름 =  /*[[${student.getName()}]]*/;
+        studentObject.전화번호 =  /*[[${student.getPhone()}]]*/;
+        studentObject.mail =  /*[[${student.getEmail()}]]*/;
+        studentObject.전공 =  "101";
+        controller.member.push(studentObject);
+        /*[/]*/
+        controller.deleteMember =[];
+        $("#grid-student").jsGrid({
+            width: "100%",
+            height: "auto",
+            updateOnResize: true,
+            filtering: true,
+            editing: true,
+            inserting: true,
+            loadStrategy: function (){
+                return new CustomLoadStrategy(this);
+            },
+            controller : controller,
+            sorting: true,
+            paging: true,
+            autoload: true,
+            pageSize: 15,
+            pageButtonCount: 10,
+            rowClick: function (){
+                console.log("안녕");
+            },
+            deleteConfirm: "삭제하시겠습니까?",
+            invalidMessage: "입력에 실패하였습니다.",
+            fields: [
+                { name: "학번", type: "text", width: 80 ,readOnly:true},
+                { name: "이름", type: "text", width: 50 ,validate: {validator:"required",message:"이름이 비었습니다."}},
+                { name: "전화번호", type: "text", width: 80 ,validate: {
+                    validator: function(value,item){
+                        return value.length >= 10 && value.length <= 11 && !isNaN(value);
+                    }, message: "전화번호 형식에 맞지 않습니다."}},
+                { name: "mail", type: "text", width: 80 ,validate:{validator:"required",message:"메일이 비었습니다."}},
+                { name: "전공", type: "select", items: majorArray, valueField: "Id", textField: "Name" },
+                { type: "control" }
+            ]
+        });
+        const studentSaveBtn = document.querySelector("#btn-student-save");
+        studentSaveBtn.addEventListener("click",function (){
+            const saveMembers = [];
+            const deleteMembers =[];
+            controller.member.forEach(mem => {
+                const saveMember = {
+                    userNumber : mem.학번,
+                    role : "ROLE_STUDENT",
+                    name : mem.이름,
+                    email : mem.mail,
+                    phone : mem.전화번호
+                }
+                saveMembers.unshift(saveMember);
+            });
+            controller.deleteMember.forEach(mem => {
+                const deleteMember = {
+                    userNumber : mem.학번,
+                    role : "ROLE_STUDENT",
+                    name : mem.이름,
+                    email : mem.mail,
+                    phone : mem.전화번호
+                }
+                deleteMembers.unshift(deleteMember);
+            });
+            const params = {
+                saveMember : saveMembers,
+                deleteMember : deleteMembers
+            }
+            $.ajax({
+                url: "/admin/addMember/student",
+                data: JSON.stringify(params),
+                method: "Post",
+                contentType : "application/json; charset=UTF-8",
+                dataType: "json",
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done(function (fragment){
+                if(fragment.state !="true"){
+                    swal("예상치 못한 에러가 발생하였습니다.")
+                }
+                swal("저장되었습니다.");
+            });
+        });
+    </script>
 </th:block>
 </html>

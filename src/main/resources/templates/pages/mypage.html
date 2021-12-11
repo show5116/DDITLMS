@@ -74,33 +74,33 @@
                                         <label class="form-label">은행</label>
                                         <select id="bank" class="form-control btn-square">
                                             <option value="null">--선택--</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='신한은행'}" value="신한은행">신한 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='국민은행'}" value="국민은행">국민 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='농협은행'}" value="농협은행">농협 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='기업은행'}" value="기업은행">기업 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='우리은행'}" value="우리은행">우리 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='카카오뱅크'}" value="카카오뱅크">카카오 뱅크</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='케이뱅크'}" value="케이뱅크">케이 뱅크</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='토스뱅크'}" value="토스뱅크">토스 뱅크</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='IBK은행'}" value="IBK은행">IBK 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='하나은행'}" value="하나은행">하나 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='신협은행'}" value="신협은행">신협 은행</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='우체국'}" value="우체국">우체국</option>
-                                            <option th:selected="${member.getMemberDetail().getBank()=='새마을금고'}" value="새마을금고">새마을 금고</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='신한은행'}" value="신한은행">신한 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='국민은행'}" value="국민은행">국민 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='농협은행'}" value="농협은행">농협 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='기업은행'}" value="기업은행">기업 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='우리은행'}" value="우리은행">우리 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='카카오뱅크'}" value="카카오뱅크">카카오 뱅크</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='케이뱅크'}" value="케이뱅크">케이 뱅크</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='토스뱅크'}" value="토스뱅크">토스 뱅크</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='IBK은행'}" value="IBK은행">IBK 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='하나은행'}" value="하나은행">하나 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='신협은행'}" value="신협은행">신협 은행</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='우체국'}" value="우체국">우체국</option>
+                                            <option th:selected="${member.getMemberDetail()?.getBank()=='새마을금고'}" value="새마을금고">새마을 금고</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="mb-3">
                                         <label class="form-label">계좌 번호</label>
-                                        <input id="accountNo" th:value="${member.getMemberDetail().getAcnutNo()}" class="form-control" type="text" onkeyup="checkInputNum()" placeholder="000-000-000000">
+                                        <input id="accountNo" th:value="${member.getMemberDetail()?.getAcnutNo()}" class="form-control" type="text" onkeyup="checkInputNum()" placeholder="000-000-000000">
                                     </div>
                                 </div>
                                 <div class="col-md-7">
                                     <div class="mb-3">
                                         <label class="form-label">우편번호</label>
                                         <div>
-                                            <input style="display: inline;width: 60%;" th:value="${member.getMemberDetail().getZip()}" id="sample4_postcode" class="form-control" type="text" readonly="true">
+                                            <input style="display: inline;width: 60%;" th:value="${member.getMemberDetail()?.getZip()}" id="sample4_postcode" class="form-control" type="text" readonly="true">
                                             <button onclick="sample4_execDaumPostcode()" class="btn btn-primary" type="button">우편번호 찾기</button>
                                         </div>
                                     </div>
@@ -108,31 +108,31 @@
                                 <div class="col-md-7">
                                     <div class="mb-3">
                                         <label class="form-label">도로명주소</label>
-                                        <input th:value="${member.getMemberDetail().getRdnmAdr()}" id="sample4_roadAddress" class="form-control" type="text" readonly="true">
+                                        <input th:value="${member.getMemberDetail()?.getRdnmAdr()}" id="sample4_roadAddress" class="form-control" type="text" readonly="true">
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="mb-3">
                                         <label class="form-label">지번주소</label>
-                                        <input th:value="${member.getMemberDetail().getLnmAdr()}" id="sample4_jibunAddress" class="form-control" type="text" readonly="true">
+                                        <input th:value="${member.getMemberDetail()?.getLnmAdr()}" id="sample4_jibunAddress" class="form-control" type="text" readonly="true">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="mb-3">
                                         <label class="form-label">상세주소</label>
-                                        <input th:value="${member.getMemberDetail().getDetailAdr()}" id="sample4_detailAddress" class="form-control" type="text">
+                                        <input th:value="${member.getMemberDetail()?.getDetailAdr()}" id="sample4_detailAddress" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">참고항목</label>
-                                        <input th:value="${member.getMemberDetail().getRefer()}" id="sample4_extraAddress" class="form-control" type="text" readonly="true">
+                                        <input th:value="${member.getMemberDetail()?.getRefer()}" id="sample4_extraAddress" class="form-control" type="text" readonly="true">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label">자기소개</label>
-                                        <textarea th:text="${member.getMemberDetail().getSelfIntr()}" id="selfIntr" class="form-control" rows="5"></textarea>
+                                        <textarea th:text="${member.getMemberDetail()?.getSelfIntr()}" id="selfIntr" class="form-control" rows="5"></textarea>
                                     </div>
                                 </div>
                             </div>

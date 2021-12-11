@@ -59,7 +59,14 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     }
 
     public String loginFail(String username){
-        Optional<Member> memberEntityWrapper = memberRepository.findByMemberId(username);
+        long userNumber;
+        Optional<Member> memberEntityWrapper;
+        try{
+            userNumber = Long.parseLong(username);
+            memberEntityWrapper = memberRepository.findByUserNumber(userNumber);
+        }catch (NumberFormatException e){
+            memberEntityWrapper = memberRepository.findByMemberId(username);
+        }
         Member memberEntity = memberEntityWrapper.orElse(null);
         memberEntity.setFailCount(memberEntity.getFailCount()+1);
         memberRepository.save(memberEntity);

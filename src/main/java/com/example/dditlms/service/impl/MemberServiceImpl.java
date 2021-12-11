@@ -1,6 +1,8 @@
 package com.example.dditlms.service.impl;
 
 import com.example.dditlms.controller.MemberForm;
+import com.example.dditlms.domain.common.Role;
+import com.example.dditlms.domain.dto.MemberDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.MemberDetail;
 import com.example.dditlms.domain.repository.MemberDetailRepository;
@@ -104,7 +106,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void changeDetail(MemberDetail memberDetail) {
-        memberDetailRepository.save(memberDetail);
+    public void addMembers(List<MemberDTO> saveMembers, Role role) {
+        Optional<List<Member>> memberListWrapper = memberRepository.findAllByRoleAndMemberIdIsNull(role);
+        List<Member> memberList = memberListWrapper.orElse(null);
+        for(Member member : memberList){
+            memberRepository.delete(member);
+        }
+        for(MemberDTO memberDTO : saveMembers){
+            Optional<Member> memberWrapper = memberRepository.findByUserNumber(memberDTO.getUserNumber());
+            Member member = memberWrapper.orElse(null);
+            if(member == null){
+                member = memberDTO.toEntity();
+            }
+            memberRepository.save(member);
+        }
     }
 }
