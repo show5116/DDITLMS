@@ -41,7 +41,7 @@ public class FileDataController {
             .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
             .build();
 
-    @GetMapping("/cloud/storageList")
+    @GetMapping("/cloud")
     public String storageList(Model model) {
         Member member = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -158,7 +158,7 @@ public class FileDataController {
         // 다운때 이름만 받아서
         System.out.println("objectName : "+objectName);
 //        String downloadFilePath = fileTargetId;
-        String downloadFilePath = "user1/user999/";
+        String downloadFilePath = "user1/";
 //        String downloadFilePath = targetId;
 
         // 다운의 경로를 받아서
