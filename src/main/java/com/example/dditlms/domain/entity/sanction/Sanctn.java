@@ -43,7 +43,7 @@ public class Sanctn {
     @Column(name = "ATCHMNFL_ID")
     private Long atchmnflId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "DOCFORM_SN")
     private Docform docformSn;
 
