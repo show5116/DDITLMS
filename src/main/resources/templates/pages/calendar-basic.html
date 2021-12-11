@@ -6,78 +6,113 @@
 <th:block layout:fragment="content">
   <link rel="stylesheet" type="text/css" th:href="@{/static/css/calendar.css}">
 
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script src="./jquery-ui-1.12.1/datepicker-ko.js"></script>
-
   <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='CALENDAR')"></th:block>
-  <div id="test_box">
-    <button class="btn btn-primary" id="test_Button" type="button"><i id="test_list"></i><span id="test_calendarTypeName">Test</span></button>
-    <div class="test">
-      <form>
-        <input>
-        <button type="button" id="addSchedule">테스트버튼</button>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#openModal">모달창</button>
-      </form>
 
-      <div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel2">일정 등록</h5>
+    <!--  일정 등록 모달창 시작-->
+    <div id="modal_box">
+        <div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="tooltipmodal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">일정 등록</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <div class="col-sm-2">
+                                <label class="col-form-label" >구분</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <select id="new-schedule-type" class="form-control btn-square">
+                                    <option value="1">개인</option>
+                                    <option value="2">학과</option>
+                                    <option value="3">학교</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="col-form-label" >대상</label>
+                            </div>
+                            <div class="col-sm-4" >
+                                <select id="new-schedule-type-detaile" class="form-control btn-square">
+                                    <option value="전자">전자과</option>
+                                    <option value="컴공">컴퓨터공학과</option>
+                                    <option value="기자공">기계자동차공학과</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row" >
+                            <div class="col-sm-2">
+                                <label class="col-form-label" for="message-text">제목</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <input class="form-control" type="text" id="new-schedule-title" placeholder="Title">
+                            </div>
+                        </div>
+                        <p></p>
+                        <div class="mb-3 row">
+                            <label class="col-sm-2 col-form-label" for="message-text">내용</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" id="message-text" placeholder="Content" ></textarea>
+                            </div>
+                        </div>
+                        <div class="mb-3 row" >
+                            <div class="col-sm-2">
+                                <label class="col-form-label" for="message-text">위치</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <input class="form-control" type="text" id="new-schedule-location" placeholder="Location">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3 row">
+                            <div class="col-md-3">
+                                <label class="col-form-label" for="message-text">날짜</label><br>
+                            </div>
+                            <div class="col">
+                                <input type="datetime-local" id="startDate" class="form-control" placeholder="Strart date">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col-md-3 align-self-center">
+                                <input id="new-schedule-allday" type="checkbox" value="true" >
+                                <span class="tui-full-calendar-section-allday">All day</span>
+                            </div>
+                            <div class="col">
+                                <input type="datetime-local" id="endDate" class="form-control" placeholder="End date">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3 row">
+                            <div class="col-md-3">
+                                <label class="col-form-label">알람설정</label>
+                            </div>
+                            <div class="col-md-4 align-self-center">
+                                <select id="new-schedule-alam-time" class="form-control btn-square">
+                                    <option value="30">30분전</option>
+                                    <option value="60">1시간전</option>
+                                    <option value="1440">1일전</option>
+                                    <option value="10080">7일전</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 align-self-center">
+                                <input id="schedule-alam-sms" type="checkbox" value="true" >
+                                <span class="tui-full-calendar-section-allday">SMS</span>
+                            </div>
+                            <div class="col-md-3 align-self-center">
+                                <input id="schedule-alam-kakao" type="checkbox" value="true" >
+                                <span class="tui-full-calendar-section-allday">카카오톡</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="sendBtn" type="button">등록</button>
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-
-                <div class="tui-full-calendar-popup-section tui-full-calendar-dropdown tui-full-calendar-close tui-full-calendar-section-calendar">
-                  <select id="new-schedule-type" class="form-control btn-square">
-                    <option value="1">개인</option>
-                    <option value="2">학과</option>
-                    <option value="3">학교</option>
-                  </select>
-                </div>
-                <div class="mb-3" >
-                  <label class="col-form-label" for="message-text">제목:</label>
-                  <input class="form-control" type="text" id="new-schedule-title" placeholder="Title">
-                </div>
-                <div class="mb-3">
-                  <label class="col-form-label" for="message-text">내용:</label>
-                  <textarea class="form-control" id="message-text" placeholder="Content" ></textarea>
-                </div>
-                <div class="mb-3" >
-                  <label class="col-form-label" for="message-text">위치:</label>
-                  <input class="form-control" type="text" id="new-schedule-location" placeholder="Location">
-                </div>
-                <div class="tui-full-calendar-popup-section">
-                  <label class="col-form-label" for="message-text">날짜:</label><br>
-                  <div class="tui-full-calendar-popup-section-item">
-<!--                    <input class="test-datepicker">-->
-                    <input type="datetime-local" id="startDate" class="tui-full-calendar-content" placeholder="Strart date">
-                  </div>
-                  <span class="tui-full-calendar-section-date-dash">-</span>
-                  <div class="tui-full-calendar-popup-section-item">
-                  <input type="datetime-local" id="endDate" class="tui-full-calendar-content" placeholder="End date">
-                  </div>
-                  <div class="tui-full-calendar-popup-section">
-                    <input id="new-schedule-allday" type="checkbox" value="true" >
-                    <span class="tui-full-calendar-section-allday">All day</span>
-                  </div>
-
-                </div>
-
-
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-              <button class="btn btn-primary" type="button" id="sendBtn">Send message</button>
-            </div>
-          </div>
         </div>
-      </div>
-
-    </div>
   </div>
-
+<!--  일정 등록 모달창 끝-->
 
    <div class="container-fluid calendar-basic">
     <div class="row">
@@ -108,7 +143,7 @@
                 </div>
                 <div id="lnb">
                   <div class="lnb-new-schedule">
-                    <button class="btn lnb-new-schedule-btn btn-primary" id="btn-new-schedule" type="button" data-bs-toggle="modal">New schedule</button>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#openModal">New schedule</button>
                   </div>
                   <div class="lnb-calendars" id="lnb-calendars">
                     <div class="lnb-calendars-d1" id="calendarList">
@@ -135,27 +170,34 @@
   </div>
 
   <script>
-
-
-
+<!--  일정 등록 -->
     const sendBtn = document.querySelector("#sendBtn");
     sendBtn.addEventListener("click", function(){
         console.log("aaa");
       const type = document.querySelector("#new-schedule-type");
+      const typeDetail = document.querySelector("#new-schedule-type-detaile")
       const title = document.querySelector("#new-schedule-title");
-      const text = document.querySelector("#message-text");
+      const content = document.querySelector("#message-text");
       const location = document.querySelector("#new-schedule-location");
       const startDate = document.querySelector("#startDate");
       const endDate = document.querySelector("#endDate")
       const isAllday = document.querySelector("#new-schedule-allday");
+      const alarmTime = document.querySelector("#new-schedule-alam-time");
+      const alarmSms = document.querySelector("#schedule-alam-sms");
+      const alarmKakao = document.querySelector("#schedule-alam-kakao");
       const params = {
         type : type.value,
+        typeDetail : typeDetail.value,
         title : title.value,
-        text : text.value,
+        content : content.value,
         location : location.value,
         startDate : startDate.value,
         endDate : endDate.value,
-        isAllday : isAllday.value
+        isAllday : isAllday.value,
+        alarmTime : alarmTime.value,
+        alarmSms : alarmSms.value,
+        alarmKakao : alarmKakao.value
+
       };
       $.ajax({
         url: "/calendar/add",
@@ -173,6 +215,9 @@
         });
 
     })
+
+
+
 
 
 

@@ -7,8 +7,8 @@
 
 (function(window, Calendar) {
     var cal, resizeThrottled;
-    var useCreationPopup = true;
-    var useDetailPopup = true;
+    var useCreationPopup = false;
+    var useDetailPopup = false;
     var datePicker, selectedCalendar;
 
     cal = new Calendar('#calendar', {
@@ -41,8 +41,11 @@
             console.log('clickDayname', date);
         },
         'beforeCreateSchedule': function(e) {
+            alert("ddd");
             console.log('beforeCreateSchedule', e);
-            saveNewSchedule(e);
+            // saveNewSchedule(e);
+
+            e.guide.clearGuideElement();
         },
         'beforeUpdateSchedule': function(e) {
             var schedule = e.schedule;
@@ -63,8 +66,8 @@
         },
         'afterRenderSchedule': function(e) {
             var schedule = e.schedule;
-            // var element = cal.getElement(schedule.id, schedule.calendarId);
-            // console.log('afterRenderSchedule', element);
+            var element = cal.getElement(schedule.id, schedule.calendarId);
+            console.log('afterRenderSchedule', element);
         },
         'clickTimezonesCollapseBtn': function(timezonesCollapsed) {
             console.log('timezonesCollapsed', timezonesCollapsed);
@@ -265,6 +268,7 @@
             });
         }
     }
+
     function saveNewSchedule(scheduleData) {
         var calendar = scheduleData.calendar || findCalendar(scheduleData.calendarId);
         var schedule = {
@@ -408,7 +412,7 @@
         $('#lnb-calendars').on('change', onChangeCalendars);
 
         $('#btn-save-schedule').on('click', onNewSchedule);
-        $('#btn-new-schedule').on('click', createNewSchedule);
+        // $('#btn-new-schedule').on('click', createNewSchedule);
 
         $('#dropdownMenu-calendars-list').on('click', onChangeNewScheduleCalendar);
 
@@ -431,6 +435,17 @@
     setEventListener();
 })(window, tui.Calendar);
 
+
+
+
+
+
+
+
+
+
+
+
 // set calendars
 (function() {
     var calendarList = document.getElementById('calendarList');
@@ -445,3 +460,4 @@
     });
     calendarList.innerHTML = html.join('\n');
 })();
+

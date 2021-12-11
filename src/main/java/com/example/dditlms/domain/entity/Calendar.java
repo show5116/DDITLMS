@@ -1,45 +1,50 @@
 package com.example.dditlms.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 
+@Table(name = "SCHDUL")
 @Entity
-@Table(name = "CALENDAR")
 @Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Calendar {
-
     @Id
-    @Column(name = "CALENDAR_ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "SCHDUL_SN", nullable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_NUMBER")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MBER_NO")
     private Member member;
 
-    @Column(name = "TITLE")
+    @Column(name = "SCHDUL_NM")
     private String title;
 
     @Lob
-    @Column(name = "CONTENT")
+    @Column(name = "SCHDUL_CN")
     private String content;
 
-    @Column(name = "SCHEDULE_STR")
-    private Date scheduleStr;
+    @Column(name = "SCHDUL_PLACE")
+    private String scheduleLocation;
 
-    @Column(name = "SCHEDULE_END")
-    private Date scheduleEnd;
+    @Column(name = "SCHDUL_BGNDE")
+    private String scheduleStr;
 
-    @Column(name = "PLACE")
-    private String place;
+    @Column(name = "SCHDUL_ENDDE")
+    private String scheduleEnd;
 
+    @Column(name = "SCHDUL_ALARM_TIME")
+    private String setAlarmTime;
 
+    @Column(name = "SCHDUL_OTHBC_TRGET", length = 30)
+    private String scheduleTypeDetail;
+
+    @Column(name = "SCHDUL_OTHBCSE", length = 30)
+    private String scheduleType;
 
 }
