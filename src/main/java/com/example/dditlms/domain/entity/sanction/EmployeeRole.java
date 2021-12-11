@@ -1,5 +1,8 @@
 package com.example.dditlms.domain.entity.sanction;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EmployeeRole {
     STAFF("사원"),
     ASSISTANT_MANAGER("대리"),

@@ -1,0 +1,12 @@
+.listtosel {overflow:hidden; margin-top:34px;}
+.listtosel h2 {font-family:'nngb'; font-size:13px;}
+.listtosel .schlist {float:left; width:243px;}
+.listtosel .ctrl {float:left; margin:0 26px; padding:60px 0 0 0; text-align:center;}
+.listtosel .ctrl a {display:block;}
+.listtosel .ctrl .first {margin-bottom:17px;}
+.listtosel .ctrl .second {margin-bottom:4px;}
+.listtosel .ctrl .last {margin-top:17px;}
+.listtosel .sellist {float:left; width:243px;}
+.listtosel select {border:1px solid #c5cfd8; width:100%; height:209px; padding:14px 0; margin-top:8px;}
+.listtosel option {padding:0 8px;}
+.listtosel option:selection {background:#e7edf6;}

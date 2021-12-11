@@ -16,14 +16,16 @@ public class EmployeeDTO {
     public EmployeeDTO() {}
 
     @QueryProjection
-    public EmployeeDTO(EmployeeRole employeeRole, String name, Long userNumber) {
-        this.employeeRole = employeeRole;
-        this.name = name;
-        this.userNumber = userNumber;
-    }
-    @QueryProjection
     public EmployeeDTO(EmployeeRole employeeRole, String dept_nm) {
         this.employeeRole = employeeRole;
         this.dept_nm = dept_nm;
+    }
+
+    @QueryProjection
+    public EmployeeDTO(EmployeeRole employeeRole, String name, String dept_nm, Long userNumber) {
+        this.employeeRole = employeeRole;
+        this.name = name;
+        this.dept_nm = dept_nm;
+        this.userNumber = userNumber;
     }
 }

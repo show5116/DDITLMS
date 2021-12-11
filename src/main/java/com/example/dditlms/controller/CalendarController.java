@@ -1,8 +1,8 @@
 package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.entity.Calendar;
+import com.example.dditlms.domain.entity.CalendarAlarm;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.repository.CalendarRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.CalendarService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 @Controller
@@ -44,16 +43,31 @@ public class CalendarController {
         }
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = null;
+        CalendarAlarm calendarAlarm = null;
+
         try {
             calendar = Calendar.builder()
+                    .scheduleType(paramMap.get("type"))
+                    .scheduleTypeDetail(paramMap.get("typeDetail"))
                     .title(paramMap.get("title"))
-                    .scheduleStr(fm.parse(paramMap.get("startDate")))
-                    .scheduleEnd(fm.parse(paramMap.get("endDate")))
+                    .content(paramMap.get("content"))
+                    .scheduleLocation(paramMap.get("location"))
+                    .scheduleStr((paramMap.get("startDate")))
+                    .scheduleEnd((paramMap.get("endDate")))
+                    .setAlarmTime(paramMap.get("alarmTime"))
                     .content(paramMap.get("text"))
                     .member(member).build();
+            calendarAlarm = calendarAlarm.builder()
+                    .scheduleAlarmTime(paramMap.get("alarmTime"))
+                    .scheduleAlarmType(paramMap.get("alarmSms"))
+                    .member(member).build();
+
         }catch (Exception e){
         }
         //서비스로 save 호출
+        calendarService.addSchedule(calendar);
+
+
         jsonObject.put("state","true");
         try {
             response.getWriter().print(jsonObject.toJSONString());

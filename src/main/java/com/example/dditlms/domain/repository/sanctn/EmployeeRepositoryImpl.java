@@ -43,7 +43,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepositoryCustom{
     public List<EmployeeDTO> empList(Long depCode) {
 
         return queryFactory
-                .select(new QEmployeeDTO(employee.employeeRole, member.name, employee.userNumber))
+                .select(new QEmployeeDTO(employee.employeeRole, member.name, department.deptNm, employee.userNumber))
                 .from(employee)
                 .from(department)
                 .from(member)

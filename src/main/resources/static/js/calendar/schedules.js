@@ -108,7 +108,7 @@ function generateNames() {
 function generateRandomSchedule(calendar, renderStart, renderEnd) {
     var schedule = new ScheduleInfo();
 
-    schedule.id = chance.guid();
+  /*  schedule.id = chance.guid();
     schedule.calendarId = calendar.id;
 
     schedule.title = chance.sentence({words: 3});
@@ -145,6 +145,7 @@ function generateRandomSchedule(calendar, renderStart, renderEnd) {
         schedule.goingDuration = travelTime;
         schedule.comingDuration = travelTime;
     }
+*/
 
     ScheduleList.push(schedule);
 }
