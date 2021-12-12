@@ -20,40 +20,44 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom{
     @Override
     public QueryResults<SanctnLn> inquireProgress(Long userNumber) {
 
-        return queryFactory
-                .selectFrom(sanctnLn1)
-                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
-                        ,(sanctnLn1.sanctnSttus.eq(String.valueOf(SanctnProgress.PROGRESS))))
-                .fetchResults();
+        return null;
+//                queryFactory
+//                .selectFrom(sanctnLn1)
+//                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
+//                        ,(sanctnLn1..eq(String.valueOf(SanctnProgress.PROGRESS))))
+//                .fetchResults();
     }
 
     @Override
     public QueryResults<SanctnLn> inquireReject(Long userNumber) {
 
-        return queryFactory
-                .selectFrom(sanctnLn1)
-                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
-                        ,(sanctnLn1.sanctnSttus.eq(String.valueOf(SanctnProgress.REJECT))))
-                .fetchResults();
+        return null;
+//                queryFactory
+//                .selectFrom(sanctnLn1)
+//                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
+//                        ,(sanctnLn1.sanctnSttus.eq(String.valueOf(SanctnProgress.REJECT))))
+//                .fetchResults();
 
     }
 
     @Override
     public QueryResults<SanctnLn> inquirePublicize(Long userNumber) {
-        return queryFactory
-                .selectFrom(sanctnLn1)
-                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
-                        ,(sanctnLn1.sanctnSttus.eq(String.valueOf(SanctnProgress.PUBLICIZE))) )
-                .fetchResults();
+        return null;
+//                queryFactory
+//                .selectFrom(sanctnLn1)
+//                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
+//                        ,(sanctnLn1.sanctnSttus.eq(String.valueOf(SanctnProgress.PUBLICIZE))) )
+//                .fetchResults();
     }
 
     @Override
     public QueryResults<SanctnLn> inquireCompletion(Long userNumber) {
-        return queryFactory
-                .selectFrom(sanctnLn1)
-                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
-                        ,(sanctnLn1.sanctnSttus.eq(String.valueOf(SanctnProgress.COMPLETION))))
-                .fetchResults();
+        return null;
+//                queryFactory
+//                .selectFrom(sanctnLn1)
+//                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
+//                        ,(sanctnLn1.sanctnSttus.eq(String.valueOf(SanctnProgress.COMPLETION))))
+//                .fetchResults();
     }
 
 

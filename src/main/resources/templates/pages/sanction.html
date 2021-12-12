@@ -49,11 +49,11 @@
                     <div class="card">
                         <div class="card-header center-block style=width:300px; padding:15px;">
                             <ul style='display:inline-block'>
-                                <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br><span th:text="|총 : ${totalPro} 건|">총 2건</span>
+                                <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br><span>총 2건</span>
                                 </li>
-                                <li style='display:inline-block'><i class="fa fa-arrow-left fa-5x p-2">반려</i><br><span th:text="|총 : ${totalRej} 건|">총 3건</span>
+                                <li style='display:inline-block'><i class="fa fa-arrow-left fa-5x p-2">반려</i><br><span>총 3건</span>
                                 </li>
-                                <li style='display:inline-block'><i class="fa fa-repeat fa-5x p-2">공람</i><br><span th:text="|총 : ${totalPub} 건|">총 3건</span>
+                                <li style='display:inline-block'><i class="fa fa-repeat fa-5x p-2">공람</i><br><span>총 3건</span>
                                 </li>
                             </ul>
                         </div>
@@ -82,12 +82,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="proDetail : ${proDetails}">
-                                    <td th:text="${proDetail.sanctnStep}"></td>
+                                <tr>
+                                    <td></td>
                                     <td>제목:join</td>
-                                    <td th:text="${findname}">제목:join</td>
                                     <td>제목:join</td>
-                                    <td th:text="${proDetail.sanctnDate}"></td>
+                                    <td>제목:join</td>
+                                    <td>제목:join</td>
                                 </tr>
                                 </tbody>
                             </table>

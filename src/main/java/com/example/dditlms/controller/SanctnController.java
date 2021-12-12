@@ -6,18 +6,18 @@ import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
-import com.example.dditlms.domain.repository.sanctn.DepartmentRepository;
-import com.example.dditlms.domain.repository.sanctn.DocformRepository;
-import com.example.dditlms.domain.repository.sanctn.EmployeeRepository;
-import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
+import com.example.dditlms.domain.repository.sanctn.*;
+import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.SanctnService;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -42,34 +42,42 @@ public class SanctnController {
 
     private final SanctnService sanctnService;
 
+    private final SanctnRepository sanctnRepository;
+
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
     public String santn(Model model) {
-        Long userNumber = 11111L; // 추후에 로그인한 사용자 넣을 것(현재 테스트용)
         
-        //진행중인 결재 내용 조회
-        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquireProgress(userNumber);
-        long totalPro = resultsPro.getTotal();
-        QueryResults<SanctnLn> resultsRej = sanctnLnRepository.inquireReject(userNumber);
-        long totalRej = resultsRej.getTotal();
-        QueryResults<SanctnLn> resultsPub = sanctnLnRepository.inquirePublicize(userNumber);
-        long totalPub = resultsPub.getTotal();
-        QueryResults<SanctnLn> resultsCom = sanctnLnRepository.inquireCompletion(userNumber);
-        long totalCom = resultsCom.getTotal();
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        }catch (ClassCastException e){
+        }
+        Long userNumber = member.getUserNumber();
 
-        List<SanctnLn> proDetails = resultsPro.getResults();
-        model.addAttribute("totalPro", totalPro);
-        model.addAttribute("proDetails", proDetails);
-        model.addAttribute("totalRej", totalRej);
-        model.addAttribute("totalPub", totalPub);
-        model.addAttribute("totalCom", totalCom);
+//        //진행중인 결재 내용 조회
+//        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquireProgress(userNumber);
+//        long totalPro = resultsPro.getTotal();
+//        QueryResults<SanctnLn> resultsRej = sanctnLnRepository.inquireReject(userNumber);
+//        long totalRej = resultsRej.getTotal();
+//        QueryResults<SanctnLn> resultsPub = sanctnLnRepository.inquirePublicize(userNumber);
+//        long totalPub = resultsPub.getTotal();
+//        QueryResults<SanctnLn> resultsCom = sanctnLnRepository.inquireCompletion(userNumber);
+//        long totalCom = resultsCom.getTotal();
+
+//        List<SanctnLn> proDetails = resultsPro.getResults();
+//        model.addAttribute("totalPro", totalPro);
+//        model.addAttribute("proDetails", proDetails);
+//        model.addAttribute("totalRej", totalRej);
+//        model.addAttribute("totalPub", totalPub);
+//        model.addAttribute("totalCom", totalCom);
         
         //로그인 한 사람 이름 조회, 넘기기
         Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
         String findname = findUser.get().getName();
         model.addAttribute("findname", findname);
-
-        model.addAttribute("docformSn", new Docform());
 
 
         return "/pages/sanction";
@@ -77,8 +85,17 @@ public class SanctnController {
 
     @GetMapping("/drafting")
     public String drafting(Model model, SanctnForm sanctnForm) {
-        //로그인한 사람 이름 조회 및, 넘기기
-        Long userNumber = 11111L;
+        //로그인한 사람 정보 조회 및 데이터 넘김
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        }catch (ClassCastException e){
+        }
+        Long userNumber = member.getUserNumber();
+        model.addAttribute("drafter", userNumber);
+
+        // 로그인한 사람 이름 얻기
         Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
         String findname = findUser.get().getName();
         model.addAttribute("findname", findname);
@@ -88,9 +105,9 @@ public class SanctnController {
         EmployeeDTO empDetails = dtoList.get(0);
         model.addAttribute("empDetails", empDetails);
 
-
+        
+        //문서양식 전부 가져옴
         List<DocFormCategory> allDocFormList = docformRepository.allDocFormList();
-
         model.addAttribute("allDocFormList", allDocFormList);
         
         //부서 목록 전체 조회
@@ -98,8 +115,6 @@ public class SanctnController {
         model.addAttribute("departmentList",departmentList);
         log.info(String.valueOf(departmentList));
         
-        //폼 데이터 객체를 넘김
-//        model.addAttribute("sanctnForm", new SanctnForm());
 
         return "/pages/drafting";
     }
@@ -146,12 +161,15 @@ public class SanctnController {
         return viewDetails;
     }
     //기안하기
-    @GetMapping("/sanctnSubmit")
-    @ResponseBody
-    public Long submitSanctn(Model model, @RequestParam("sanctnSj") String sanctnSj, @ModelAttribute Docform docformSn) {
+    @PostMapping("/sanctnSubmit")
+    public Docform submitSanctn(SanctnForm sanctnForm) {
 
 
-        sanctnService.saveSanctn(sanctnSj, docformSn);
+        sanctnService.saveSanctn(sanctnForm.getSanctnSj()
+                ,sanctnForm.getDocformSn()
+                ,sanctnForm.getDrafter()
+                ,sanctnForm.getSanctnCn());
+
 
         return null;
     }

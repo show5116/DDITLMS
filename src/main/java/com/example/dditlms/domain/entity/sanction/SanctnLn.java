@@ -22,17 +22,20 @@ public class SanctnLn {
     private Long sanctnLn;
 
     @Column(name = "SANCTN_STTUS", length = 30)
-    private String sanctnSttus;
+    @Enumerated(EnumType.STRING)
+    private SanctnLnProgress sanctnLnProgress;
 
     @Column(name = "SANCTN_DATE")
     private LocalDate sanctnDate;
 
-    @Lob
     @Column(name = "SANCTN_OPINION")
     private String sanctnOpinion;
 
     @Column(name = "SANCTN_STEP")
     private Long sanctnStep;
+
+    @Column(name = "SANCTN_LS_APV")
+    private String lastApproval;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MBER_NO")

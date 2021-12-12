@@ -5,6 +5,5 @@ import com.example.dditlms.domain.entity.sanction.Docform;
 
 public interface SanctnService {
 
-    public void saveSanctn(String sanctnSj, Docform docformSn);
-
+    public void saveSanctn(String sanctnSj, Docform docform, Long drafter, String sanctnCn);
 }

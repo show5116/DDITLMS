@@ -166,10 +166,11 @@
                             </button>
                         </div>
 
-                        <form th:action="@{/sanctnSubmit}" th:method="get" id="sanctnForm" style="display:none">
+                        <form th:action="@{/sanctnSubmit}" th:method="post" id="sanctnForm" style="display">
                             <input type="text" id="sanctnSj" th:name= "sanctnSj" th:value="${sanctnSj}"/>
-                            <input type="text" id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}"/>
-                            <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}" th:object="${docformSn}"/>
+                            <textarea id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}"></textarea>
+                            <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}"/>
+                            <input type="text" id="drafter" th:name= "drafter" th:value="${drafter}"/>
                         </form>
 
                     </div>
@@ -320,17 +321,17 @@
 
         const sanctnSj = document.querySelector('#sanctnSj');
         let docformSn = document.querySelector('#docformSn');
-<!--        const sanctnCn = document.querySelector('#sanctnCn');-->
+        const sanctnCn = document.querySelector('#sanctnCn');
 
         const title = document.querySelector('#exampleFormControlInput1').value;
         const form = document.querySelector('#docForm').value;
-<!--        const content =CKEDITOR.instances.editor4.getData();-->
+        console.log(form);
+        const content =CKEDITOR.instances.editor4.getData();
 
         sanctnSj.setAttribute('value', title);
         docformSn.setAttribute('value', form);
 
-
-<!--        sanctnCn.setAttribute('value', content);-->
+        document.querySelector('#sanctnCn').innerHTML = content;
 
         sanctnForm.submit();
 
