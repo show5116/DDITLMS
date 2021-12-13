@@ -1,5 +1,6 @@
 package com.example.dditlms.domain.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
+@AllArgsConstructor
 public enum Menu {
     MYPAGE("개인정보 변경","/mypage","home"),
     SCRAP("스크랩","/scrap","home"),
@@ -28,12 +30,6 @@ public enum Menu {
     private String name;
     private String url;
     private String icon;
-
-    Menu(String name,String url ,String icon){
-        this.name = name;
-        this.url = url;
-        this.icon = icon;
-    }
 
     public static Menu of(final String url){
         return Menu.valueOf(CODE_MAP.get(url));

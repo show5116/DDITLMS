@@ -1,11 +1,14 @@
 package com.example.dditlms.service.impl;
 
 import com.example.dditlms.controller.MemberForm;
+import com.example.dditlms.domain.common.AcademicStatus;
+import com.example.dditlms.domain.common.Grade;
 import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.domain.dto.MemberDTO;
+import com.example.dditlms.domain.entity.Major;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.MemberDetail;
-import com.example.dditlms.domain.repository.MemberDetailRepository;
+import com.example.dditlms.domain.entity.Student;
+import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.MemberService;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +33,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    private final MemberDetailRepository memberDetailRepository;
+    private final MajorRepository majorRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -109,15 +113,23 @@ public class MemberServiceImpl implements MemberService {
     public void addMembers(List<MemberDTO> saveMembers, Role role) {
         Optional<List<Member>> memberListWrapper = memberRepository.findAllByRoleAndMemberIdIsNull(role);
         List<Member> memberList = memberListWrapper.orElse(null);
+        Date now = new Date();
         for(Member member : memberList){
             memberRepository.delete(member);
         }
         for(MemberDTO memberDTO : saveMembers){
-            Optional<Member> memberWrapper = memberRepository.findByUserNumber(memberDTO.getUserNumber());
-            Member member = memberWrapper.orElse(null);
-            if(member == null){
-                member = memberDTO.toEntity();
-            }
+            Member member = memberDTO.toEntity();
+            memberRepository.save(member);
+            Optional<Major> majorWrapper = majorRepository.findById(memberDTO.getMajor());
+            Major major = majorWrapper.orElse(null);
+            Student student = Student.builder()
+                    .userNumber(member.getUserNumber())
+                    .major(major)
+                    .grade(Grade.FRESHMAN)
+                    .member(member)
+                    .enterDate(now)
+                    .academicStatus(AcademicStatus.ATTENDING).build();
+            member.setStudent(student);
             memberRepository.save(member);
         }
     }

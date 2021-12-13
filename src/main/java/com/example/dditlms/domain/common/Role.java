@@ -1,8 +1,10 @@
 package com.example.dditlms.domain.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum Role {
     ROLE_STUDENT("ROLE_STUDENT"),
     ROLE_PROFESSOR("ROLE_PROFESSOR"),
@@ -13,7 +15,4 @@ public enum Role {
 
     private String value;
 
-    Role(String value){
-        this.value = value;
-    }
 }

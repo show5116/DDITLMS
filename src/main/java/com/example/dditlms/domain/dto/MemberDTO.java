@@ -24,8 +24,8 @@ public class MemberDTO {
     private String phone;
     private String memberId;
     private String password;
-    private String memberImg;
-    private Integer failCount;
+    private String major;
+
 
     public Member toEntity(){
         Member member = Member.builder()

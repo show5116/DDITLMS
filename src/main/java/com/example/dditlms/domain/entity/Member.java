@@ -51,6 +51,10 @@ public class Member {
     @PrimaryKeyJoinColumn
     private MemberDetail memberDetail;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Student student;
+
     @Builder
     public Member(Long userNumber, Role role, String name, String email, String phone) {
         this.userNumber = userNumber;
