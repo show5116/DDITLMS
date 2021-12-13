@@ -1,9 +1,9 @@
 package com.example.dditlms.controller;
 
-import com.example.dditlms.domain.common.Major;
 import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.domain.dto.MemberDTO;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,12 +29,14 @@ public class AddMemberController {
 
     private final MemberRepository memberRepository;
 
+    private final MajorRepository majorRepository;
+
     @GetMapping("/admin/addMember")
     public ModelAndView addMember(ModelAndView mav){
         Optional<List<Member>> studentWrapper = memberRepository.findAllByRoleAndMemberIdIsNull(Role.ROLE_STUDENT);
         List<Member> studentList = studentWrapper.orElse(null);
         mav.addObject("studentList",studentList);
-        mav.addObject("majors",Major.values());
+        mav.addObject("majors",majorRepository.findAll());
         mav.setViewName("/pages/addMember");
         return mav;
     }

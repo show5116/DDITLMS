@@ -49,6 +49,11 @@ dependencies {
     implementation group: 'org.pacesys', name: 'openstack4j', version: '3.1.0'
     // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
     implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.238'
+    // jwt(java wen token)
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 }
 
 test {

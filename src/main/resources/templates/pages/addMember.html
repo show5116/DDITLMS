@@ -18,6 +18,8 @@
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="card-student" role="tabpanel" aria-labelledby="card-student-tab">
+                            <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-student" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                            <button class="btn btn-primary pull-right" id="btn-student-excel" type="button">엑셀파일읽기</button>
                             <div id="grid-student"></div>
                             <button class="btn btn-primary pull-right" id="btn-student-save" type="button">저장</button>
                             <button class="btn btn-primary pull-right" id="btn-student-autoMade" type="button">학번자동생성</button>
@@ -34,7 +36,44 @@
         </div>
     </div>
     <script th:src="@{/static/js/jsgrid.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
     <script th:inline="javascript">
+        const studentExcelBtn = document.querySelector("#btn-student-excel");
+        const studentExcel = document.querySelector("#excel-student");
+        studentExcelBtn.addEventListener("click",function (){
+            studentExcel.click();
+        });
+        studentExcel.addEventListener("change",function (event){
+            const file = event.target;
+            const reader = new FileReader();
+
+            reader.onload = function (){
+                const data = reader.result;
+                const workBook = XLSX.read(data,{type: 'binary'});
+
+                workBook.SheetNames.forEach(function (sheetName){
+                    const rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+                    rows.forEach(row => {
+                        if(row.학번 ==null || row.학번 =="" ||
+                            row.이름 ==null || row.이름 =="" ||
+                            row.전화번호 ==null || row.전화번호 =="" ||
+                            row.mail ==null || row.mail =="" ||
+                            row.전공 ==null || row.전공 ==""){
+                            return;
+                        }
+                        var studentObject = new Object();
+                        studentObject.학번 =  row.학번;
+                        studentObject.이름 =  row.이름;
+                        studentObject.전화번호 =  row.전화번호;
+                        studentObject.mail =  row.mail;
+                        studentObject.전공 = row.전공;
+                        controller.member.push(studentObject);
+                    });
+                    document.querySelector(".jsgrid-clear-filter-button").click();
+                });
+            }
+            reader.readAsBinaryString(file.files[0]);
+        });
         const studentAutoMadeBtn = document.querySelector("#btn-student-autoMade");
         studentAutoMadeBtn.addEventListener("click",function (){
             controller.member.sort(function (a,b){
@@ -59,18 +98,13 @@
                 mem.학번 = year + mem.전공 + num;
                 num = ((num * 1) + 1).toString().padStart(4,'0');
             });
-            const headers = document.querySelectorAll(".jsgrid-header-cell");
-            headers.forEach(header => {
-                if(header.innerText== "학번"){
-                    header.click();
-                }
-            });
+            document.querySelector(".jsgrid-clear-filter-button").click();
         });
         const majorArray = new Array();
         /*[# th:each="major :${majors}"]*/
         var majorinfo = new Object();
-        majorinfo.Name =  /*[[${major.getName()}]]*/;
-        majorinfo.Id =  /*[[${major.getCode()}]]*/;
+        majorinfo.Name =  /*[[${major.getKorean()}]]*/;
+        majorinfo.Id =  /*[[${major.getId()}]]*/;
         majorArray.push(majorinfo);
         /*[/]*/
         const CustomLoadStrategy = function (grid){
@@ -86,7 +120,7 @@
             loadData: function(filter) {
                 return $.grep(this.member, function(member) {
                     return (!filter.Name || member.Name.indexOf(filter.Name) > -1)
-                        && (!filter.학번 || member.학번.indexOf(filter.학번) > -1)
+                        && (!filter.학번 || member.학번.toString().indexOf(filter.학번) > -1)
                         && (!filter.이름 || member.이름.indexOf(filter.이름) > -1)
                         && (!filter.전화번호 || member.전화번호.indexOf(filter.전화번호) > -1)
                         && (!filter.mail || member.mail.indexOf(filter.mail) > -1);
@@ -111,7 +145,7 @@
         studentObject.이름 =  /*[[${student.getName()}]]*/;
         studentObject.전화번호 =  /*[[${student.getPhone()}]]*/;
         studentObject.mail =  /*[[${student.getEmail()}]]*/;
-        studentObject.전공 =  "101";
+        studentObject.전공 =  /*[[${student.getStudent()?.getMajor().getId()}]]*/;
         controller.member.push(studentObject);
         /*[/]*/
         controller.deleteMember =[];
@@ -137,7 +171,7 @@
             deleteConfirm: "삭제하시겠습니까?",
             invalidMessage: "입력에 실패하였습니다.",
             fields: [
-                { name: "학번", type: "text", width: 80 ,readOnly:true},
+                { name: "학번", type: "text", width: 80 },
                 { name: "이름", type: "text", width: 50 ,validate: {validator:"required",message:"이름이 비었습니다."}},
                 { name: "전화번호", type: "text", width: 80 ,validate: {
                     validator: function(value,item){
@@ -158,7 +192,8 @@
                     role : "ROLE_STUDENT",
                     name : mem.이름,
                     email : mem.mail,
-                    phone : mem.전화번호
+                    phone : mem.전화번호,
+                    major : mem.전공
                 }
                 saveMembers.unshift(saveMember);
             });
