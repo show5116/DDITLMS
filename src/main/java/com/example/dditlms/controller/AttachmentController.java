@@ -14,6 +14,5 @@ public class AttachmentController {
     @GetMapping("/download")
     public void download(HttpServletResponse response) {
 
-        File file = new File();
     }
 }
