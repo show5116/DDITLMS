@@ -46,12 +46,12 @@
                             <hr>
                         </div>
                         <h4>결재선
-                            <i class="fa fa-plus fa-1x" style="color:green; cursor:pointer" id="sanPlus"
+                            <i class="fa fa-plus fa-1x" style="color:green; cursor:pointer;" id="sanPlus"
                                data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg"></i>
                             <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
                                  aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
-                                    <div class="modal-content" style="height: 470px; float: none; margin:0 auto;"
+                                    <div class="modal-content" style="height: 470px; width: 1000px; float: none; margin:0 auto;"
                                          id="modal">
                                         <div class="modal-header" style="float: none; margin:0 auto;">
                                             <h4 class="modal-title" id="myLargeModalLabel">결재선 지정</h4>
@@ -70,9 +70,9 @@
                                                 </select>
                                                 <hr>
                                                 <div class="listtosel">
-                                                    <div class="schlist">
+                                                    <div class="schlist" style="width:350px">
                                                         <h2>검색된 사람</h2>
-                                                        <select name="" multiple="multiple" id="optgroup">
+                                                        <select name="" multiple="multiple" id="optgroup" style="width:350px">
                                                             <option th:each="emp : ${empList}"
                                                                     th:text="${emp.employeeRole.krName}"
                                                                     th:value="empList.dept_nm"></option>
@@ -84,9 +84,9 @@
                                                         <a href="#" class="onedesel">&lt;</a>
                                                         <a href="#" class="last alldesel">&lt;&lt;<</a>
                                                     </div>
-                                                    <div class="sellist">
+                                                    <div class="sellist" style="width:350px">
                                                         <h2>선택한 사람</h2>
-                                                        <select name="" multiple="multiple" id="selgroup">
+                                                        <select name="" multiple="multiple" id="selgroup" style="width:350px">
                                                         </select>
                                                     </div>
                                                 </div>
@@ -125,7 +125,7 @@
                                 <tbody>
                                 <tr>
                                     <th scope="col">부서</th>
-                                    <th th:text="${empDetails.dept_nm}" scope="col"></th>
+                                    <th th:text="|[${empDetails.dept_nm}]|" scope="col"></th>
                                     <th scope="col" id="dep1"></th>
                                     <th scope="col" id="dep2"></th>
                                     <th scope="col" id="dep3"></th>
@@ -166,11 +166,13 @@
                             </button>
                         </div>
 
-                        <form th:action="@{/sanctnSubmit}" th:method="post" id="sanctnForm" style="display">
+                        <form th:action="@{/sanctnSubmit}" th:method="post" id="sanctnForm" style="display:none">
                             <input type="text" id="sanctnSj" th:name= "sanctnSj" th:value="${sanctnSj}"/>
                             <textarea id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}"></textarea>
                             <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}"/>
                             <input type="text" id="drafter" th:name= "drafter" th:value="${drafter}"/>
+                            <select multiple="multiple" id="usernum"  th:name= "userNumber" th:value=${userNumber}>
+                            </select>
                         </form>
 
                     </div>
@@ -211,10 +213,19 @@
             }
 
             for (var i = 0; i < values.length; i++) {
-                document.querySelector('#dep' + (i + 1)).innerHTML = values[i];
+                document.querySelector('#dep' + (i + 1)).innerHTML = names[i].split("-")[2]
                 document.querySelector('#name' + (i + 1)).innerHTML = names[i].split("-")[0];
                 document.querySelector('#rank' + (i + 1)).innerHTML = names[i].split("-")[1];
+
             }
+
+            let usnm = "";
+        for (var i = 0; i <values.length; i++) {
+            sel = values[i];
+            usnm += "<option selected value='" + sel + "'>" + "</option>";
+        }
+         document.querySelector('#usernum').innerHTML = usnm;
+
         })
 
         const btnReset = document.querySelector("#btnReset");
@@ -276,6 +287,7 @@
                 contentType: "application/json; charset=UTF-8",
                 success: function (data) {
 
+                    console.log(data);
                     let opt = "";
                     for (var i = 0; i <data.length; i++) {
                         let nm = data[i].name;
@@ -283,9 +295,10 @@
                         let usnm = data[i].userNumber;
                         let dept = data[i].dept_nm;
 
-                        opt += "<option value='" + dept + "'>" + nm +' - ['+ ro + ']' + "</option>"
+                        opt += "<option value='" + usnm + "'>" + nm +' - ['+ ro + ']' + '- [' + dept + ']' + "</option>"
                     }
                      document.querySelector('#optgroup').innerHTML = opt;
+
 
                 }
             });

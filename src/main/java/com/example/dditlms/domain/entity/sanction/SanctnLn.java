@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "SANCTN_LN")
 @Entity
@@ -26,13 +27,13 @@ public class SanctnLn {
     private SanctnLnProgress sanctnLnProgress;
 
     @Column(name = "SANCTN_DATE")
-    private LocalDate sanctnDate;
+    private LocalDateTime sanctnDate;
 
     @Column(name = "SANCTN_OPINION")
     private String sanctnOpinion;
 
     @Column(name = "SANCTN_STEP")
-    private Long sanctnStep;
+    private Integer sanctnStep;
 
     @Column(name = "SANCTN_LS_APV")
     private String lastApproval;

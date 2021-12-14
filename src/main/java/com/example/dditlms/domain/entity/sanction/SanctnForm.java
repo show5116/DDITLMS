@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,4 +22,5 @@ public class SanctnForm {
     private SanctnProgress status ;
     private Long atchmnflId;
     private Docform docformSn;
+    private List<Long> userNumber;
 }
