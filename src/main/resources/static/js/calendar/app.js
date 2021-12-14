@@ -32,7 +32,7 @@
     // event handlers
     cal.on({
         'clickMore': function(e) {
-            console.log('clickMore', e);
+            console.log('clickMore', e.target);
         },
         'clickSchedule': function(e) {
             console.log('clickSchedule', e);
@@ -41,7 +41,8 @@
             console.log('clickDayname', date);
         },
         'beforeCreateSchedule': function(e) {
-            alert("ddd");
+            const modalBtn = document.querySelector("#schedule_modal_btn");
+            modalBtn.click();
             console.log('beforeCreateSchedule', e);
             // saveNewSchedule(e);
 
@@ -181,6 +182,7 @@
         setDropdownCalendarType();
         setRenderRangeText();
         setSchedules();
+        alert("aaa");
     }
 
     function onClickNavi(e) {
@@ -202,6 +204,7 @@
 
         setRenderRangeText();
         setSchedules();
+        alert("bbb");
     }
 
     function onNewSchedule() {
@@ -399,9 +402,26 @@
     }
 
     function setSchedules() {
+        alert("ccc");
         cal.clear();
-        generateSchedule(cal.getViewName(), cal.getDateRangeStart(), cal.getDateRangeEnd());
-        cal.createSchedules(ScheduleList);
+        ScheduleList.forEach(Schedule => {
+            let findCalender = null;
+            CalendarList.forEach(calendar => {
+                if(calendar.id == Schedule.calendarId){
+                    findCalender = calendar
+                }
+            });
+            schedule.color = findCalender.color;
+            schedule.bgColor = findCalender.bgColor;
+            schedule.dragBgColor = findCalender.dragBgColor;
+            schedule.borderColor = findCalender.borderColor;
+        })
+        console.log(ScheduleList);
+        setTimeout(function (){
+
+            cal.createSchedules(ScheduleList);
+        },1000);
+
 
         refreshScheduleVisibility();
     }
@@ -432,6 +452,7 @@
     setDropdownCalendarType();
     setRenderRangeText();
     setSchedules();
+    alert("ddd");
     setEventListener();
 })(window, tui.Calendar);
 

@@ -1,24 +1,74 @@
 package com.example.dditlms.util;
 
 import com.example.dditlms.domain.entity.Attachment;
+import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.AttachmentRepository;
+import com.example.dditlms.security.AccountContext;
+import com.example.dditlms.security.JwtSecurityService;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class FileUtil {
 
     private final AttachmentRepository attachmentRepository;
+
+    private final JwtSecurityService jwtSecurityService;
+
+    public String makeFileToken(long id, int order){
+        Member member =null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        StringBuilder originToken = new StringBuilder();
+        originToken.append(member.getUserNumber());
+        originToken.append("&");
+        originToken.append(id);
+        originToken.append("&");
+        originToken.append(order);
+        return jwtSecurityService.createToken(originToken.toString(),60000L);
+    }
+
+    public Map<String,String> getToken(String token){
+        Map<String,String> map = new HashMap<String, String>();
+        String parseToken = null;
+        try{
+            parseToken = jwtSecurityService.getToken(token);
+        }catch (ExpiredJwtException e){
+            map.put("success","N");
+            return map;
+        }
+        String[] parses = parseToken.split("&");
+        Member member = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        if(member.getUserNumber() != Long.parseLong(parses[0])){
+            map.put("success","N");
+            return map;
+        }
+        Optional<Attachment> attachmentWrapper = attachmentRepository.findByIdAndOrder(Long.parseLong(parses[1]),Integer.parseInt(parses[2]));
+        Attachment attachment = attachmentWrapper.orElse(null);
+
+        map.put("success","Y");
+        map.put("path",attachment.getSource());
+        return map;
+    }
 
     public long uploadFiles(Map<String, MultipartFile> map){
         Optional<Attachment> attachmentWrapper = attachmentRepository.findFirstByOrderByIdDesc();

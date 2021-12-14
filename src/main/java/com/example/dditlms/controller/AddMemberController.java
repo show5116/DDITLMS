@@ -7,6 +7,7 @@ import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.security.JwtSecurityService;
 import com.example.dditlms.service.MemberService;
+import com.example.dditlms.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -32,13 +33,13 @@ public class AddMemberController {
 
     private final MajorRepository majorRepository;
 
-    private final JwtSecurityService jwtSecurityService;
+    private final FileUtil fileUtil;
 
     @GetMapping("/admin/addMember")
     public ModelAndView addMember(ModelAndView mav){
         Optional<List<Member>> studentWrapper = memberRepository.findAllByRoleAndMemberIdIsNull(Role.ROLE_STUDENT);
         List<Member> studentList = studentWrapper.orElse(null);
-        mav.addObject("token",jwtSecurityService.createToken("aa",60000L));
+        mav.addObject("token",fileUtil.makeFileToken(0L,1));
         mav.addObject("studentList",studentList);
         mav.addObject("majors",majorRepository.findAll());
         mav.setViewName("/pages/addMember");
