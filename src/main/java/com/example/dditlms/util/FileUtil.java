@@ -20,17 +20,6 @@ public class FileUtil {
 
     private final AttachmentRepository attachmentRepository;
 
-    public long uploadFile(MultipartFile file){
-        Optional<Attachment> attachmentWrapper = attachmentRepository.findFirstByOrderByIdDesc();
-        Attachment topAttachment = attachmentWrapper.orElse(null);
-        long id = 0;
-        if(topAttachment != null){
-            id = topAttachment.getId() + 1;
-        }
-        copyAndSave(id,1,file);
-        return id;
-    }
-
     public long uploadFiles(Map<String, MultipartFile> map){
         Optional<Attachment> attachmentWrapper = attachmentRepository.findFirstByOrderByIdDesc();
         Attachment topAttachment = attachmentWrapper.orElse(null);
