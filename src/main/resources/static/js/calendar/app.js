@@ -32,7 +32,7 @@
     // event handlers
     cal.on({
         'clickMore': function(e) {
-            console.log('clickMore', e);
+            console.log('clickMore', e.target);
         },
         'clickSchedule': function(e) {
             console.log('clickSchedule', e);
@@ -182,6 +182,7 @@
         setDropdownCalendarType();
         setRenderRangeText();
         setSchedules();
+        alert("aaa");
     }
 
     function onClickNavi(e) {
@@ -203,6 +204,7 @@
 
         setRenderRangeText();
         setSchedules();
+        alert("bbb");
     }
 
     function onNewSchedule() {
@@ -400,9 +402,11 @@
     }
 
     function setSchedules() {
+        alert("ccc");
         cal.clear();
         generateSchedule(cal.getViewName(), cal.getDateRangeStart(), cal.getDateRangeEnd());
         cal.createSchedules(ScheduleList);
+        console.log(ScheduleList);
 
         refreshScheduleVisibility();
     }
@@ -433,6 +437,7 @@
     setDropdownCalendarType();
     setRenderRangeText();
     setSchedules();
+    alert("ddd");
     setEventListener();
 })(window, tui.Calendar);
 

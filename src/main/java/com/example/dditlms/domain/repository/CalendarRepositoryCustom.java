@@ -10,7 +10,7 @@ public interface CalendarRepositoryCustom {
 
     public Student getMajor(Long userNumber);
 
-    public List<Calendar> getScheduleList(Member userNumber, String scheduleType);
+    public List<Calendar> getAllScheduleList(Member userNumber, String scheduleType);
 
 
 

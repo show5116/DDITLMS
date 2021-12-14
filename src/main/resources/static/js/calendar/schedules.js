@@ -107,7 +107,6 @@ function generateNames() {
 
 function generateRandomSchedule(calendar, renderStart, renderEnd) {
     var schedule = new ScheduleInfo();
-
   /*  schedule.id = chance.guid();
     schedule.calendarId = calendar.id;
 

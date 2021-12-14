@@ -26,22 +26,35 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
                 .select(student)
                 .from(student)
                 .from(major)
-                .join(student.majorCode, major)
-                .where(student.majorCode.eq(major), student.userNumber.eq(userNumber))
+                .join(student.major, major)
+                .where(student.major.eq(major), student.userNumber.eq(userNumber))
                 .fetchOne();
     }
 
-    public List<Calendar> getScheduleList(Member userNumber, String scheduleType) {
-        return queryFactory
-                .select(QCalendar.calendar)
-                .from(QCalendar.calendar)
-                .where(QCalendar.calendar.member.eq(userNumber)
-                        .or((QCalendar.calendar.scheduleType.eq(scheduleType))
-                        .and(QCalendar.calendar.scheduleTypeDetail.eq(queryFactory
-                                                                            .select(major.majorName)
-                                                                            .from(major, student)
-                                                                            .where(student.member.eq(userNumber), student.majorCode.eq(major))))))
-                .fetch();
-    }
+//    public List<Calendar> getScheduleList(Member userNumber, String scheduleType) {
+//        return queryFactory
+//                .select(QCalendar.calendar)
+//                .from(QCalendar.calendar)
+//                .where(QCalendar.calendar.member.eq(userNumber)
+//                        .or((QCalendar.calendar.scheduleType.eq(scheduleType))
+//                        .and(QCalendar.calendar.scheduleTypeDetail.eq(queryFactory
+//                                                                            .select(major.korean)
+//                                                                            .from(major, student)
+//                                                                            .where(student.member.eq(userNumber), student.major.eq(major))))))
+//                .fetch();
+//    }
+        public List<Calendar> getAllScheduleList(Member userNumber, String scheduleType) {
+            return queryFactory
+                    .select(QCalendar.calendar)
+                    .from(QCalendar.calendar)
+                    .where(QCalendar.calendar.member.eq(userNumber)
+                            .or(QCalendar.calendar.scheduleType.eq("TOTAL"))
+                            .or((QCalendar.calendar.scheduleType.eq(scheduleType))
+                                    .and(QCalendar.calendar.scheduleTypeDetail.eq(queryFactory
+                                                                                .select(major.korean)
+                                                                                .from(student, major)
+                                                                                .where(student.member.eq(userNumber), student.major.eq(major))))))
+                    .fetch();
+        }
 
 }
