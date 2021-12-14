@@ -114,31 +114,42 @@
                                             </div>
 
 <!--                                        </form>-->
-                                        <div class="btn btn-outline-primary ms-2" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="heading1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                            Upload
+                                        <div class="btn btn-outline-primary ms-2">
+                                            <form id="upload-file-form" name="uploadFormName">
+                                                <label for="upload-file-input">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                    Upload
+                                                </label>
+                                                <input id="upload-file-input" type="file" name="uploadfile" accept="*" style="display: none;"/>
+                                                <input type="file" id="input_img" />
+                                            </form>
                                         </div>
-                                        <div class="collapse" id="collapse1" aria-labelledby="heading1" data-bs-parent="#accordionclose" style="">
-                                            <div class="card">
-                                                <div class="card-header pb-0">
-                                                    <h5>Multi File Upload</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <form class="dropzone digits dz-clickable" id="singleFileUpload" action="/upload.php">
-                                                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
-                                                            <h6>Drop files here or click to upload.</h6><span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>
-                                                        </div>
-                                                    </form>
-<!--                                                    <form class="dropzone dropzone-primary dz-clickable" id="fileDropzone" th:action="@{/file/fileManager}" method="post" enctype="multipart/form-data">-->
-<!--                                                        <button type="button" id="btn-upload-file">업로드 wu!</button>-->
-<!--                                                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>-->
-<!--                                                            <h6>Drop files here or click to upload.</h6><span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>-->
-<!--                                                        </div><input type="file" multiple="multiple" class="dz-hidden-input" th:name="paramFile" data-bs-original-title="" title="" form="fileDropzone">-->
-<!--                                                    </form>-->
-<!--                                                    style="visibility: hidden; position: absolute; top: 0px; left: 0px; height: 0px; width: 0px;"-->
-                                                </div>
+                                        <div>
+                                            <div class="img_wrap">
+                                                <img id="img" />
                                             </div>
                                         </div>
+<!--                                        <div class="collapse" id="collapse1" aria-labelledby="heading1" data-bs-parent="#accordionclose" style="">-->
+<!--                                            <div class="card">-->
+<!--                                                <div class="card-header pb-0">-->
+<!--                                                    <h5>Multi File Upload</h5>-->
+<!--                                                </div>-->
+<!--                                                <div class="card-body">-->
+<!--                                                    <form class="dropzone digits dz-clickable" id="singleFileUpload" action="/upload.php">-->
+<!--                                                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>-->
+<!--                                                            <h6>Drop files here or click to upload.</h6><span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>-->
+<!--                                                        </div>-->
+<!--                                                    </form>-->
+<!--&lt;!&ndash;                                                    <form class="dropzone dropzone-primary dz-clickable" id="fileDropzone" th:action="@{/file/fileManager}" method="post" enctype="multipart/form-data">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <button type="button" id="btn-upload-file">업로드 wu!</button>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        <div class="dz-message needsclick"><i class="icon-cloud-up"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                            <h6>Drop files here or click to upload.</h6><span class="note needsclick">(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                        </div><input type="file" multiple="multiple" class="dz-hidden-input" th:name="paramFile" data-bs-original-title="" title="" form="fileDropzone">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </form>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    style="visibility: hidden; position: absolute; top: 0px; left: 0px; height: 0px; width: 0px;"&ndash;&gt;-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
 
 <!--                                        <input type="file" class="dz-hidden-input" style="visibility: hidden; position: absolute; top: 0px; left: 0px; height: 0px; width: 0px;" data-bs-original-title="" title="">-->
 <!--                                        <input type="file" multiple="multiple" class="dz-hidden-input" accept="image/*,application/pdf,.psd" style="visibility: hidden; position: absolute; top: 0px; left: 0px; height: 0px; width: 0px;" data-bs-original-title="" title="">-->
@@ -237,12 +248,33 @@
 
     <!-- Container-fluid Ends-->
     <script th:inline="javascript">
+        var sel_file;
+
+        $(function(){
+            $("#input_img").on("change",handleImgFileSelect);
+        });
+
+        function handleImgFileSelect(e){
+            var files = e.target.files;
+            var filesArr = Array.prototype.slice.call(files);
+
+            filesArr.forEach(function(f){
+                console.log(f);
+                sel_file = f;
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    $("#img").attr("src",e.target.result);
+                }
+                reader.readAsDataURL(f);
+            });
+        }
 
         console.log("스크립트 있음");
         const newFolder = document.querySelector("#newFolder");
         let folderMoves = document.querySelectorAll(".folder-move");
         let fileTargets = document.querySelectorAll(".file-target");
         const folderReplaceWith = document.querySelector("#folderReplace");
+        const uploadFileInput = document.querySelector("#upload-file-input");
 
         let targetId = null;
         let fileTargetId = null;
@@ -287,10 +319,11 @@
 
                 const params = {
                     targetId : targetId,
-                    createFolder : createFolder.value
+                    createFolder : createFolder.value,
+                    flag : "folder"
                 };
                 $.ajax({
-                    url:"/cloud/upload",
+                    url:"/cloud/folderUpload",
                     data:params,
                     type: "POST",
                     beforeSend: function(xhr){
@@ -302,6 +335,7 @@
                     $("#folderReplace").replaceWith(fragment);
                     folderMoves = document.querySelectorAll(".folder-move");
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
+                    fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
                 })
             });
 
@@ -326,6 +360,52 @@
                     console.log("성공했어요");
                 })
             })
+        }
+
+
+        uploadFileInput.addEventListener("change", function () {
+            const fileVal = uploadFileInput.value;
+            const fileSplit = fileVal.split("\\");
+            const fileNameSp = fileSplit[fileSplit.length-1].split(".");
+            console.log("파일 이름만 : " + fileNameSp);
+            const reader = new FileReader();
+            console.log("일단 얘부터 되야지");
+            console.log("sas"+fileVal);
+
+            reader.onload = function (){
+                console.log("오 이게 될까?");
+                console.log(targetId);
+                const data = reader.result;
+                uploadFile(fileVal);
+            }
+
+            reader.readAsBinaryString(uploadFileInput.files[0], "utf-8");
+            // 파일 읽기 시작
+        });
+
+        function uploadFile(val){
+            // document.uploadFormName.submit();
+            console.log("val : "+ val);
+            console.log("네임 찍는다 : " + document.getElementById("upload-file-input").files[0]);
+            const params = {
+                value : val,
+                targetId : targetId
+            }
+            $.ajax({
+                url:"/cloud/fileUpload",
+                data: params,
+                type: "POST",
+                enctype: "multipart/form-data",
+                processData : false,
+                contentType: false,
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            }).done(function (){
+                console.log("성공입니다.");
+            }).fail(function (){
+                console.log("실패입니다.");
+            });
         }
 
     </script>
