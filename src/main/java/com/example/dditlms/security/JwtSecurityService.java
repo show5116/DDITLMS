@@ -14,7 +14,7 @@ import java.util.Date;
 public class JwtSecurityService {
     private static final String SECRET_KEY = "ashjkdlehfaljksdhfcxbnakljshedfnjkawlkasjhdgfasjdfgasjdgfwakvbszmjhdbvlasmehfkljahsdkljfhasdkljfhalsjkdfh";
 
-    public String createToken(String member, Long expTime) {
+    public String createToken(String originToken, Long expTime) {
         if(expTime <= 0) {
             throw new RuntimeException("Expired Time must exceed zero");
         }
@@ -24,7 +24,7 @@ public class JwtSecurityService {
         Key signingKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
 
         return Jwts.builder()
-                .setSubject(member)
+                .setSubject(originToken)
                 .signWith(signingKey, signatureAlgorithm)
                 .setExpiration(new Date(System.currentTimeMillis() + expTime))
                 .compact();
