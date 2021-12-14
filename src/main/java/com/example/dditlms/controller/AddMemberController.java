@@ -5,6 +5,7 @@ import com.example.dditlms.domain.dto.MemberDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
+import com.example.dditlms.security.JwtSecurityService;
 import com.example.dditlms.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -31,10 +32,13 @@ public class AddMemberController {
 
     private final MajorRepository majorRepository;
 
+    private final JwtSecurityService jwtSecurityService;
+
     @GetMapping("/admin/addMember")
     public ModelAndView addMember(ModelAndView mav){
         Optional<List<Member>> studentWrapper = memberRepository.findAllByRoleAndMemberIdIsNull(Role.ROLE_STUDENT);
         List<Member> studentList = studentWrapper.orElse(null);
+        mav.addObject("token",jwtSecurityService.createToken("aa",60000L));
         mav.addObject("studentList",studentList);
         mav.addObject("majors",majorRepository.findAll());
         mav.setViewName("/pages/addMember");
@@ -53,5 +57,7 @@ public class AddMemberController {
         } catch (IOException e) {
         }
     }
+
+
 }
 

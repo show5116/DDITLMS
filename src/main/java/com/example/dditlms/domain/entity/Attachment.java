@@ -1,15 +1,15 @@
 package com.example.dditlms.domain.entity;
 
 import com.example.dditlms.domain.idclass.AttachmentId;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ATCHMNFL_DETAIL")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @ToString
 @IdClass(AttachmentId.class)
@@ -36,9 +36,6 @@ public class Attachment {
 
     @Column(name="FILE_SIZE")
     private Long size;
-
-    @Column(name="JOB_SE")
-    private String selection;
 
     @Column(name="DWLD_CO")
     private Long downloadCount;
