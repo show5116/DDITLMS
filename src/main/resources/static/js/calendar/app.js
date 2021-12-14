@@ -404,9 +404,24 @@
     function setSchedules() {
         alert("ccc");
         cal.clear();
-        generateSchedule(cal.getViewName(), cal.getDateRangeStart(), cal.getDateRangeEnd());
-        cal.createSchedules(ScheduleList);
+        ScheduleList.forEach(Schedule => {
+            let findCalender = null;
+            CalendarList.forEach(calendar => {
+                if(calendar.id == Schedule.calendarId){
+                    findCalender = calendar
+                }
+            });
+            schedule.color = findCalender.color;
+            schedule.bgColor = findCalender.bgColor;
+            schedule.dragBgColor = findCalender.dragBgColor;
+            schedule.borderColor = findCalender.borderColor;
+        })
         console.log(ScheduleList);
+        setTimeout(function (){
+
+            cal.createSchedules(ScheduleList);
+        },1000);
+
 
         refreshScheduleVisibility();
     }

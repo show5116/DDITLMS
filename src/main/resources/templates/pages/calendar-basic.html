@@ -19,7 +19,7 @@
                     <div class="modal-body">
                         <div class="mb-3 row">
                             <div class="col-sm-2">
-                                <label class="col-form-label" >구분</label>
+                                <label class="col-form-label" >구분 *</label>
                             </div>
                             <div class="col-sm-4">
                                 <select id="new-schedule-type" class="form-control btn-square">
@@ -43,7 +43,7 @@
                         </div>
                         <div class="mb-3 row" >
                             <div class="col-sm-2">
-                                <label class="col-form-label" for="message-text">제목</label>
+                                <label class="col-form-label" for="message-text">제목 *</label>
                             </div>
                             <div class="col-sm-10">
                                 <input class="form-control" type="text" id="new-schedule-title" autocomplete="off" placeholder="Title">
@@ -67,7 +67,7 @@
                         <hr>
                         <div class="mb-3 row">
                             <div class="col-md-3">
-                                <label class="col-form-label" for="message-text">날짜</label><br>
+                                <label class="col-form-label" for="message-text">날짜 *</label><br>
                             </div>
                             <div class="col">
                                 <input type="datetime-local" id="startDate" class="form-control" placeholder="Strart date">
@@ -224,6 +224,28 @@
       const alarmTime = document.querySelector("#new-schedule-alam-time");
       const alarmSms = document.querySelector("#schedule-alam-sms");
       const alarmKakao = document.querySelector("#schedule-alam-kakao");
+
+      const isTitle = title.value;
+      const isType = type.value;
+      const isStr = startDate.value;
+      const isEnd = endDate.value;
+      if(!isTitle || !isType || !isStr || !isEnd){
+          swal("필수 항목을 입력해주세요");
+          return;
+      }
+      const strDt = new Date(isStr);
+      const endDt = new Date(isEnd);
+
+      console.log(strDt);
+      console.log(endDt);
+
+      if(strDt > endDt){
+          swal("시간 이상해 다시 설정해");
+      }
+
+
+
+
       const params = {
         type : type.value,
         typeDetail : typeDetail.value,
@@ -269,6 +291,7 @@
 
 //일정 출력 END
 
+var ScheduleList = [];
 const originSheduleList = new Array();
 //const scheduleJson = new Array();
 /*[# th:each="schedule :${scheduleList}"]*/
@@ -276,45 +299,17 @@ var schedule = new Object();
 schedule.id = /*[[${schedule.getId()}]]*/;
 schedule.calendarId = /*[[${schedule.getScheduleType()}]]*/;
 schedule.title = /*[[${schedule.getTitle()}]]*/;
-schedule.body = /*[[${schedule.getContent()}]]*/;
-schedule.isReadOnly = false;
-schedule.start = /*[[${schedule.getScheduleStr}]]*/;
-schedule.end = /*[[${schedule.getScheduleEnd}]]*/;
-
-
-schedule.isPrivate = false;
-schedule.location = /*[[${schedule.getScheduleLocation}]]*/;
-schedule.attendees = null;
-schedule.recurrenceRule = '';
-schedule.state = 'Free';
-/*
-schedule.color = calendar.color;
-schedule.bgColor = calendar.bgColor;
-schedule.dragBgColor = calendar.dragBgColor;
-schedule.borderColor = calendar.borderColor;
-*/
-schedule.category = 'task';
-schedule.customStyle = '';
-
-schedule.raw.memo = '';
-schedule.raw.creator.name = '';
-schedule.raw.creator.avatar = '';
-schedule.raw.creator.company = '';
-schedule.raw.creator.email = '';
-schedule.raw.creator.phone ='';
-
-if (chance.bool({ likelihood: 20 })) {
-    var travelTime = chance.minute();
-    schedule.goingDuration = travelTime;
-    schedule.comingDuration = travelTime;
-}
-
 schedule.isAllday = false;
-originSheduleList.push(schedule);
+schedule.start = new Date(/*[[${schedule.getScheduleStr}]]*/);
+schedule.end = new Date(/*[[${schedule.getScheduleEnd}]]*/);
+schedule.category = 'time';
+schedule.raw = {
+    class: 'class'
+};
+schedule.dueDateClass = '';
+schedule.state = 'Busy';
+ScheduleList.push(schedule);
 /*[/]*/
-
-
-
 
 
   </script>
@@ -325,7 +320,6 @@ originSheduleList.push(schedule);
     <script th:src="@{/static/js/calendar/chance.min.js}"></script>
     <script th:src="@{/static/js/calendar/tui-calendar.js}"></script>
     <script th:src="@{/static/js/calendar/calendars.js}"></script>
-    <script th:src="@{/static/js/calendar/schedules.js}"></script>
     <script th:src="@{/static/js/calendar/app.js}"></script>
 
 
