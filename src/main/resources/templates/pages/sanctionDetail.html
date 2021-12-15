@@ -74,11 +74,15 @@
                 </thead>
                 <tbody>
                 <tr th:each="sanctnLn : ${sanctnLnList}">
-
-                    <th id="names" scope="col" th:text="${sanctnLn.name}"></th>
+                    <div th:if="${sanctnLn.userNumber == userNumber}">
+                        <th th:text="|${sanctnLn.name} (나)|" th:class="text-primary"></th>
+                    </div>
+                    <div th:if="${sanctnLn.userNumber != userNumber}">
+                        <th th:text="${sanctnLn.name}"></th>
+                    </div>
                     <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
                     <th scope="col" th:text="${sanctnLn.deptNm}"></th>
-                    <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
+                    <th th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
                     <th scope="col"
                         th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
                     <!--                            <span th:if="${sanctnLn.lastApproval} =='Y'"></th:if>123123</span>-->
@@ -128,9 +132,16 @@
             <input class="form-control btn-square" id="input-text-1" type="email" placeholder="해당 결재의견을 입력하세요"
                    data-bs-original-title="" style="text-align: center; margin: 0 auto;">
             <hr>
-            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}" class="btn btn-pill btn-air-success btn-success-gradien" type="button" title="btn btn-pill btn-air-success btn-success-gradien">최종승인</button>
-            <button class="btn btn-pill btn-air-primary btn-primary-gradien" type="button" title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인</button>
-            <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button" title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려</button>
+            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}"
+                    class="btn btn-pill btn-air-success btn-success-gradien" type="button"
+                    title="btn btn-pill btn-air-success btn-success-gradien">최종승인
+            </button>
+            <button class="btn btn-pill btn-air-primary btn-primary-gradien" type="button"
+                    title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인
+            </button>
+            <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
+                    title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려
+            </button>
             <br><br>
         </div>
     </div>
@@ -160,6 +171,8 @@
             console.log("반려 눌렀음!")
 
         })
+
+
 
     </script>
 

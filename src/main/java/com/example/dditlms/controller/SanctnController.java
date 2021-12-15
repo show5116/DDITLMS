@@ -65,10 +65,10 @@ public class SanctnController {
         long totalPub = resultsPub.getTotal();
         QueryResults<SanctnLn> resultsCom = sanctnLnRepository.inquireCompletion(userNumber);
         long totalCom = resultsCom.getTotal();
-        QueryResults<SanctnLn> inquireTotal = sanctnLnRepository.inquireTotal(userNumber);
+        QueryResults inquireTotal = sanctnLnRepository.inquireTotal(userNumber);
 
 
-        List<SanctnLn> proDetails = inquireTotal.getResults();
+        List proDetails = inquireTotal.getResults();
         model.addAttribute("proDetails", proDetails);
 
         model.addAttribute("totalPro", totalPro);
@@ -85,8 +85,6 @@ public class SanctnController {
 
 
         //결재단계 불러오기 테스트
-
-        QueryResults<SanctnDTO> sanctnDTOQueryResults = sanctnRepository.countSanctn();
 
         return "/pages/sanction";
     }
@@ -280,7 +278,7 @@ public class SanctnController {
     //결재별 상세조회
     @GetMapping("/showSanctn/{id}")
     public String sanctnDetail(@PathVariable("id") Long id, Model model) {
-    
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = null;
         try {
