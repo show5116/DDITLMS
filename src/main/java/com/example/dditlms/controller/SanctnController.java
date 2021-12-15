@@ -71,7 +71,6 @@ public class SanctnController {
         List<SanctnLn> proDetails = inquireTotal.getResults();
         model.addAttribute("proDetails", proDetails);
 
-
         model.addAttribute("totalPro", totalPro);
         model.addAttribute("totalRej", totalRej);
         model.addAttribute("totalPub", totalPub);
@@ -89,11 +88,6 @@ public class SanctnController {
 
         QueryResults<SanctnDTO> sanctnDTOQueryResults = sanctnRepository.countSanctn();
 
-        SanctnDTO sanctnDTO = sanctnDTOQueryResults.getResults().get(0);
-        long total = sanctnDTOQueryResults.getTotal();
-
-        log.info("-------------------" + String.valueOf(sanctnDTO));
-        log.info("-------------------" + String.valueOf(total));
         return "/pages/sanction";
     }
 
@@ -298,6 +292,4 @@ public class SanctnController {
 
         return "/pages/sanctionDetail";
     }
-
-
 }
