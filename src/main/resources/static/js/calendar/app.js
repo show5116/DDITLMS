@@ -8,7 +8,7 @@
 (function(window, Calendar) {
     var cal, resizeThrottled;
     var useCreationPopup = false;
-    var useDetailPopup = false;
+    var useDetailPopup = true;
     var datePicker, selectedCalendar;
 
     cal = new Calendar('#calendar', {
@@ -49,21 +49,36 @@
             e.guide.clearGuideElement();
         },
         'beforeUpdateSchedule': function(e) {
+            alert("UpdateA");
+            console.log(e);
+            const modalBtn = document.querySelector("#schedule_modal_btn");
+            modalBtn.click();
+
             var schedule = e.schedule;
             var changes = e.changes;
+
+
 
             console.log('beforeUpdateSchedule', e);
 
             if (changes && !changes.isAllDay && schedule.category === 'allday') {
                 changes.category = 'time';
             }
-
             cal.updateSchedule(schedule.id, schedule.calendarId, changes);
             refreshScheduleVisibility();
         },
         'beforeDeleteSchedule': function(e) {
+            alert("deleteInto");
+            const scheduleId = e.schedule.id;
+
+                console.log(e);
+            console.log(e.schedule.calendarId);
             console.log('beforeDeleteSchedule', e);
+
+            myDeleteSchedule(scheduleId);
+
             cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
+
         },
         'afterRenderSchedule': function(e) {
             var schedule = e.schedule;
@@ -112,7 +127,7 @@
             } else if (schedule.attendees.length) {
                 html.push('<span class="calendar-font-icon ic-user-b"></span>');
             } else if (schedule.location) {
-                html.push('<span class="calendar-font-icon ic-location-b"></span>');
+                // html.push('<span class="calendar-font-icon ic-location-b"></span>');
             }
             html.push(' ' + schedule.title);
         }
@@ -402,12 +417,12 @@
     }
 
     function setSchedules() {
-        alert("ccc");
+
         cal.clear();
         ScheduleList.forEach(Schedule => {
             let findCalender = null;
             CalendarList.forEach(calendar => {
-                if(calendar.id == Schedule.calendarId){
+                if(calendar.id === Schedule.calendarId){
                     findCalender = calendar
                 }
             });
@@ -423,7 +438,7 @@
         },1000);
 
 
-        refreshScheduleVisibility();
+        //refreshScheduleVisibility();
     }
 
     function setEventListener() {
@@ -447,12 +462,194 @@
         cal.render();
     }, 50);
 
+
+
+
+// LNY function STR
+    function myDeleteSchedule(scheduleId){
+        $.ajax({
+            url : "/calendar/delete",
+            data : scheduleId,
+            method : "Post",
+            dataType : "json",
+            befoerSend: function(xhr){
+                xhr.setRequestHeader(header,token);
+            }
+        })
+            .done(function(fragment){
+                if(fragment.state != "true"){
+                    swal("삭제 실패")
+                    return;
+                }
+                swal("삭제 성공");
+
+            });
+    }
+
+    //일정 등록--------------------------------------------------------
+    const sendBtn = document.querySelector("#sendBtn");
+    const cancelBtn = document.querySelector("#cancel-btn");
+
+    //일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화 START
+    function cleanSchedule(){
+        const type = document.querySelector("#new-schedule-type");
+        const typeDetail = document.querySelector("#new-schedule-type-detaile")
+        const title = document.querySelector("#new-schedule-title");
+        const content = document.querySelector("#message-text");
+        const location = document.querySelector("#new-schedule-location");
+        const startDate = document.querySelector("#startDate");
+        const endDate = document.querySelector("#endDate")
+        const isAllday = document.querySelector("#new-schedule-allday");
+        const alarmTime = document.querySelector("#new-schedule-alam-time");
+        const alarmSms = document.querySelector("#schedule-alam-sms");
+        const alarmKakao = document.querySelector("#schedule-alam-kakao");
+
+        type.value = "none";
+        typeDetail.value = "none";
+        title.value = "";
+        content.value = "";
+        location.value = "";
+        startDate.value = "";
+        endDate.value = "";
+        isAllday.value = "";
+        alarmTime.value = "none";
+        alarmSms.value = "";
+        alarmKakao.value = "";
+    };
+    //일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화 END
+
+    //취소버튼 클릭시 모달창 내용 초기와 & 창 닫기
+    cancelBtn.addEventListener("click",function(){
+        cleanSchedule();
+
+    })
+
+
+    //모달창에 입력받은 값 DB등록 START
+    sendBtn.addEventListener("click", function(){
+        console.log("aaa");
+        var type = document.querySelector("#new-schedule-type");
+        var typeDetail = document.querySelector("#new-schedule-type-detaile")
+        var title = document.querySelector("#new-schedule-title");
+        var content = document.querySelector("#message-text");
+        var location = document.querySelector("#new-schedule-location");
+        var startDate = document.querySelector("#startDate");
+        var endDate = document.querySelector("#endDate")
+        var isAllday = document.querySelector("#new-schedule-allday");
+        var alarmTime = document.querySelector("#new-schedule-alam-time");
+        var alarmSms = document.querySelector("#schedule-alam-sms");
+        var alarmKakao = document.querySelector("#schedule-alam-kakao");
+
+        const isTitle = title.value;
+        const isType = type.value;
+        const isStr = startDate.value;
+        const isEnd = endDate.value;
+        if(!isTitle || !isType || !isStr || !isEnd){
+            swal("필수 항목을 입력해주세요");
+            return;
+        }
+
+        console.log(startDate.value);
+
+        const params = {
+            type : type.value,
+            typeDetail : typeDetail.value,
+            title : title.value,
+            content : content.value,
+            location : location.value,
+            startDate : startDate.value,
+            endDate : endDate.value,
+            isAllday : isAllday.value,
+            alarmTime : alarmTime.value,
+            alarmSms : alarmSms.value,
+            alarmKakao : alarmKakao.value
+
+        };
+
+        $.ajax({
+            url: "/calendar/add",
+            data: params,
+            method: "Post",
+            dataType: "json",
+            beforeSend: function(xhr){
+                xhr.setRequestHeader(header,token);
+            }
+        })
+            .done(function(fragment){
+                if(fragment.state != "true"){
+                    swal("예상치 못한 에러가 발생하였습니다.")
+                    return;
+                }
+                swal("스케줄이 등록되었습니다.");
+                const cancelBtn = document.querySelector("#cancel-btn");
+                cancelBtn.click();
+
+                var type = document.querySelector("#new-schedule-type");
+                var typeDetail = document.querySelector("#new-schedule-type-detaile")
+                var title = document.querySelector("#new-schedule-title");
+                var content = document.querySelector("#message-text");
+                var location = document.querySelector("#new-schedule-location");
+                var startDate = document.querySelector("#startDate");
+                var endDate = document.querySelector("#endDate")
+                var isAllday = document.querySelector("#new-schedule-allday");
+                var alarmTime = document.querySelector("#new-schedule-alam-time");
+                var alarmSms = document.querySelector("#schedule-alam-sms");
+                var alarmKakao = document.querySelector("#schedule-alam-kakao");
+
+                var schedule = {
+                    id: fragment.id,
+                    title: title.value,
+                    body: content.value,
+                    location: location.value,
+                    isAllday: false,
+                    start:startDate.value,
+                    end : endDate.value,
+                    category: 'time',
+                    raw : {class:'class'},
+                    dueDateClass:''
+                }
+                console.log(schedule);
+
+                cal.createSchedules([schedule]);
+                // refreshScheduleVisibility();
+                //cleanSchedule();
+            });
+
+    })
+    //모달창에 입력받은 값 DB등록 END
+
+    //일정 출력
+
+
+
+    //일정 출력 END
+
+
+
+
+
+
+
+
+
+
+
+// LNY function END
+
+
+
+
+
+
+
+
+
+
     window.cal = cal;
 
     setDropdownCalendarType();
     setRenderRangeText();
     setSchedules();
-    alert("ddd");
     setEventListener();
 })(window, tui.Calendar);
 

@@ -24,9 +24,9 @@
                             <div class="col-sm-4">
                                 <select id="new-schedule-type" class="form-control btn-square">
                                     <option value="none">선택</option>
-                                    <option value="1">개인</option>
-                                    <option value="2">학과</option>
-                                    <option value="3">학교</option>
+                                    <option value="PRIVATE">개인</option>
+                                    <option value="MAJOR">학과</option>
+                                    <option value="TOTAL">학교</option>
                                 </select>
                             </div>
                             <div class="col-sm-2">
@@ -172,6 +172,7 @@
     </div>
   </div>
     <script th:inline="javascript">
+        /*
 //일정등록
     const sendBtn = document.querySelector("#sendBtn");
     const cancelBtn = document.querySelector("#cancel-btn");
@@ -245,7 +246,6 @@
 
 
 
-
       const params = {
         type : type.value,
         typeDetail : typeDetail.value,
@@ -284,21 +284,23 @@
         });
 
     })
-//모달창에 입력받은 값 DB등록 END
+//모달창에 입력받은 값 DB등록 END`
 
 //일정 출력
 
 
 //일정 출력 END
-
+*/
 var ScheduleList = [];
 const originSheduleList = new Array();
 //const scheduleJson = new Array();
-/*[# th:each="schedule :${scheduleList}"]*/
+/*[# th:each="schedule :${scheduleList}"]*/``
 var schedule = new Object();
 schedule.id = /*[[${schedule.getId()}]]*/;
 schedule.calendarId = /*[[${schedule.getScheduleType()}]]*/;
 schedule.title = /*[[${schedule.getTitle()}]]*/;
+schedule.body = /*[[${schedule.getContent()}]]*/;
+schedule.location = /*[[${schedule.getScheduleLocation()}]]*/;
 schedule.isAllday = false;
 schedule.start = new Date(/*[[${schedule.getScheduleStr}]]*/);
 schedule.end = new Date(/*[[${schedule.getScheduleEnd}]]*/);
@@ -307,7 +309,7 @@ schedule.raw = {
     class: 'class'
 };
 schedule.dueDateClass = '';
-schedule.state = 'Busy';
+// schedule.state = 'Busy';
 ScheduleList.push(schedule);
 /*[/]*/
 

@@ -18,9 +18,9 @@ public class CalendarServiceImpl implements CalendarService {
 
 
     @Override
-    public boolean addSchedule(Calendar calendar) {
+    public Calendar addSchedule(Calendar calendar) {
         calendarRepository.save(calendar);
-        return true;
+        return calendar;
     }
 
     @Override
