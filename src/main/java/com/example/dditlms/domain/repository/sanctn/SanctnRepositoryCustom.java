@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface SanctnRepositoryCustom {
     List<Tuple> showDetail(Long id);
-    QueryResults<SanctnDTO> countSanctn();
 
 }

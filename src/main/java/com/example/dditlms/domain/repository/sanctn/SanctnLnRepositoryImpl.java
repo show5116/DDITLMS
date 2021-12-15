@@ -106,7 +106,6 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .join(sanctnLn1.sanctnSn, sanctn)
                 .where(sanctnLn1.sanctnSn.eq(sanctn), sanctnLn1.mberNo.eq(findMember.get()))
                 .groupBy(sanctnLn1.sanctnSn)
-                .orderBy(sanctn.sanctnUpdde.desc())
                 .fetchResults();
     }
 
