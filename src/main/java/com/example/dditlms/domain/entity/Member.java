@@ -14,7 +14,6 @@ import javax.persistence.*;
 @DynamicUpdate
 @NoArgsConstructor
 @Getter @Setter
-@ToString
 public class Member {
 
     @Id
