@@ -94,7 +94,8 @@
                                 </thead>
                                 <tbody id="test">
                                 <tr th:each="proDetail : ${proDetails}" style="cursor:pointer;"
-                                    th:onclick="'location.href=\''+ @{showSanctn/{id}(id=${proDetail.sanctnSn.sanctnId})} + '\''">
+                                    th:value="@{ {id}(id= ${proDetail.sanctnSn.sanctnId})}"
+                                    th:onclick="btnShowSanctn(this)" th:id="idValue">
                                     <td th:text="${proDetail.sanctnStep}">결재단계</td>
                                     <td th:text="${proDetail.sanctnSn.sanctnSj}">결재명</td>
                                     <td th:text="${proDetail.mberNo.name}">기안자</td>
@@ -189,7 +190,6 @@
                 });
         })
 
-
         const btnPublic = document.querySelector("#btnPublic");
 
         btnPublic.addEventListener("click", function () {
@@ -202,11 +202,20 @@
                 });
         })
 
+        function btnShowSanctn(id){
 
+        let ids = id.getAttribute("value");
 
+        var _width = '800';
+        var _height = '800';
 
+        var _left = Math.ceil(( window.screen.width - _width )/2);
+        var _top = Math.ceil(( window.screen.height - _height )/2);
 
+        window.open("/showSanctn/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
 
+        return false;
+    }
 
 
 
