@@ -90,9 +90,10 @@ public class SanctnController {
         QueryResults<SanctnDTO> sanctnDTOQueryResults = sanctnRepository.countSanctn();
 
         SanctnDTO sanctnDTO = sanctnDTOQueryResults.getResults().get(0);
+        long total = sanctnDTOQueryResults.getTotal();
 
         log.info("-------------------" + String.valueOf(sanctnDTO));
-
+        log.info("-------------------" + String.valueOf(total));
         return "/pages/sanction";
     }
 
