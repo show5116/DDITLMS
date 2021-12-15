@@ -287,6 +287,7 @@ public class SanctnController {
         }
         Long userNumber = member.getUserNumber();
 
+        
         //로그인한 사람의 정보를 넘겨 줌
         model.addAttribute("userNumber", userNumber);
 
@@ -297,9 +298,28 @@ public class SanctnController {
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
 
         model.addAttribute("sanctnLnList", sanctnDTOS);
-
-        log.info(String.valueOf(sanctnDTOS));
+        
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+        
 
         return "/pages/sanctionDetail";
+    }
+
+    @PostMapping ("/approval")
+    public String apropval(@RequestParam Map<String, Object> param) {
+
+
+        Object opinion = param.get("opinion");
+        log.info("----------" + opinion);
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        log.info("----------" + userNumber);
+
+        //수정할 결재 문서 ID 조회
+        SanctnLn sanctnId = sanctnLnRepository.findSanctnId(userNumber);
+        log.info("------------" + sanctnId);
+
+        return "/pages/sanctionDetail";
+
     }
 }
