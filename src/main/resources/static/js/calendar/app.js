@@ -74,7 +74,7 @@
 
             myDeleteSchedule(e);
 
-            cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
+            // cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
 
         },
         'afterRenderSchedule': function(e) {
@@ -465,16 +465,21 @@
 // LNY function STR=================================================================================
     //일정 삭체--------------------------------------------------------------------------------------
     function myDeleteSchedule(scheduleData){
-        alert("deleteSchedule into");
-        console.log(scheduleData.id);
-        const deleteSchedule = scheduleData.id;
+        alert("myDeleteSchedule into");
+        console.log(scheduleData.schedule.id);
+        const delSchedule = scheduleData.schedule.id;
+        const params = {
+            deleteSchedule : delSchedule
+        };
+
+        console.log(params);
 
         $.ajax({
             url : "/calendar/delete",
-            data : deleteSchedule,
+            data : params,
             method : "Post",
             dataType : "json",
-            befoerSend: function(xhr){
+            beforeSend: function(xhr){
                 xhr.setRequestHeader(header,token);
             }
         })
@@ -483,8 +488,32 @@
                     swal("삭제 실패")
                     return;
                 }
+                console.log(fragment);
                 swal("삭제 성공");
+                const originScheduleList = new Array();
+                $.each(fragment.list,function(i,v){
+                    const schedule = new Object();
+                    schedule.id = v.id;
+                    schedule.calendarId = v.scheduleType;
+                    schedule.title = v.title;
+                    schedule.body = v.content;
+                    schedule.location = v.schedulePlace;
+                    schedule.isAllDay = false;
+                    schedule.start = new Date(v.scheduleStr);
+                    schedule.end = new Date(v.scheduleEnd);
+                    schedule.category = 'time';
+                    schedule.raw ={
+                        class:'class'
+                    };
+                    schedule.dueDateClass ='';
 
+                    ScheduleList.push(schedule);
+                })
+
+                cal.clear();
+                setSchedules();
+                // cal.createSchedules([schedule]);
+                refreshScheduleVisibility();
             });
     }
     //일정 등록--------------------------------------------------------
@@ -605,6 +634,8 @@
 
                     ScheduleList.push(schedule);
                 })
+
+                cal.clear();
                 setSchedules();
 
                 cal.createSchedules([schedule]);
