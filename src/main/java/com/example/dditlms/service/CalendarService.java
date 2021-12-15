@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 public interface CalendarService {
 
-    public boolean addSchedule(Calendar calendar);
+    public Calendar addSchedule(Calendar calendar);
 
     public boolean addAlarm(CalendarAlarm calendarAlarm);
 

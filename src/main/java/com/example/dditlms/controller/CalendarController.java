@@ -81,6 +81,12 @@ public class CalendarController {
     };
     */
 
+    public void deleteSchedule(HttpServletRequest request, HttpServletResponse response, Integer scheduleId){
+        JSONObject jsonObject = new JSONObject();
+        Member member = null;
+
+    }
+
 
 
     @PostMapping("/calendar/add")
@@ -117,10 +123,11 @@ public class CalendarController {
         }catch (Exception e){
         }
         //서비스로 save 호출
-        calendarService.addSchedule(calendar);
+        calendar = calendarService.addSchedule(calendar);
 
 
         jsonObject.put("state","true");
+        jsonObject.put("id",calendar.getId());
         try {
             response.getWriter().print(jsonObject.toJSONString());
         } catch (IOException e) {
