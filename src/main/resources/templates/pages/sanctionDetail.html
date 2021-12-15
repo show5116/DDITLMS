@@ -47,9 +47,10 @@
     <script th:src="@{/static/js/dropzone/dropzone.js}"></script>
 </head>
 <th:block layout:fragment="content">
-    <div class="container-fluid" th:each="detail : ${details}">
-        <div class="col-xxl-5 col-lg-6">
-            <div class="project-box"><h2><span class="badge badge-primary" th:text="${detail.status.krName}">Doing</span><h2>
+    <div class="container-fluid col-xxl-5 col-lg-6" th:each="detail : ${details}">
+        <div>
+            <div class="project-box">
+                <h2><span class="badge badge-primary" th:text="${detail.status.krName}">Doing</span></h2>
                 <h6 th:text="${detail.sanctnSj}">기안서 제목</h6>
                 <div class="media">
                     <div class="media-body-right">
@@ -57,73 +58,110 @@
                     </div>
                 </div>
                 <p id="contents">본문 내용 쭉쭉~~~~~~~ 단 삭제 불가능하게 할 것!</p>
+            </div>
+        </div>
 
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">이름</th>
+                    <th scope="col">직급</th>
+                    <th scope="col">부서</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">처리날짜</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="sanctnLn : ${sanctnLnList}">
 
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th scope="col">이름</th>
-                            <th scope="col">직급</th>
-                            <th scope="col">부서</th>
-                            <th scope="col">상태</th>
-                            <th scope="col">처리날짜</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="sanctnLn : ${sanctnLnList}">
+                    <th id="names" scope="col" th:text="${sanctnLn.name}"></th>
+                    <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
+                    <th scope="col" th:text="${sanctnLn.deptNm}"></th>
+                    <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
+                    <th scope="col"
+                        th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    <!--                            <span th:if="${sanctnLn.lastApproval} =='Y'"></th:if>123123</span>-->
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-                            <th id ="names" scope="col" th:text="${sanctnLn.name}"></th>
-                            <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
-                            <th scope="col" th:text="${sanctnLn.deptNm}"></th>
-                            <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
-                            <th scope="col" th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
-<!--                            <span th:if="${sanctnLn.lastApproval} =='Y'"></th:if>123123</span>-->
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="project-status mt-4">
-                        <div class="media mb-0">
-                            <p>50% </p>
-                            <div class="media-body text-end"><span>최종승인</span></div>
-                        </div>
-                        <div class="progress" style="height: 5px">
-                            <div class="progress-bar-animated bg-primary progress-bar-striped" role="progressbar"
-                                 style="width: 50%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-
+        <div class="project-status mt-4">
+            <div class="media mb-0">
+                <p>50% </p>
+                <div class="media-body text-end"><span>최종승인</span></div>
+            </div>
+            <div class="progress" style="height: 5px">
+                <div class="progress-bar-animated bg-primary progress-bar-striped"
+                     role="progressbar"
+                     style="width: 50%" aria-valuenow="10" aria-valuemin="0"
+                     aria-valuemax="100">
                 </div>
             </div>
-            <div class="col-xxl-12 col-lg-6">
-                <div class="kanban-item" th:each="sanctnLn : ${sanctnLnList}" th:if="${sanctnLn.sanctnOpinion}">
-                    <div class="kanban-box" href="#"><span class="h5"
-                                                           th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}">의견날짜 2021-12-14</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <span><h6 th:text="${sanctnLn.deptNm}" class="badge badge-dark right">부서</h6></span>&nbsp;
-                        <span><h6 th:text="${sanctnLn.employeeRole.krName}"
-                                  class="badge badge-primary right">직급</h6></span>
-                        <h6 th:text="${sanctnLn.name}">의견자 이름</h6>
-                        <div class="media">
-                            <div class="media-body">
-                                <p th:text="${sanctnLn.sanctnOpinion}">의견 내용</p>
-                            </div>
+        </div>
+        <hr/>
+
+        <div class="col-xxl-12 col-lg-6">
+            <div class="kanban-item" th:each="sanctnLn : ${sanctnLnList}"
+                 th:if="${sanctnLn.sanctnOpinion}">
+                <div class="kanban-box" href="#"><span class="h5"
+                                                       th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}">의견날짜 2021-12-14</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span><h6 th:text="${sanctnLn.deptNm}" class="badge badge-dark right">부서</h6></span>&nbsp;
+                    <span><h6 th:text="${sanctnLn.employeeRole.krName}"
+                              class="badge badge-primary right">직급</h6></span>
+                    <h6 th:text="${sanctnLn.name}">의견자 이름</h6>
+                    <div class="media">
+                        <div class="media-body">
+                            <p th:text="${sanctnLn.sanctnOpinion}">의견 내용</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script th:inline="javascript">
+        <br/><br/>
 
-        /*<![CDATA[*/ let content = /*[[ ${detail.sanctnCn} ]]*/; /*]]*/
+        <div th:each="sanctnLn : ${sanctnLnList}"
+             th:if="${sanctnLn.sanctnLnProgress.toString().equals('REQUEST')} and ${sanctnLn.userNumber == userNumber}"
+             class="col-xxl-12 col-lg-6" style="text-align: center; margin: 0 auto;">
+            <label for="input-text-1">결재의견</label>
+            <input class="form-control btn-square" id="input-text-1" type="email" placeholder="해당 결재의견을 입력하세요"
+                   data-bs-original-title="" style="text-align: center; margin: 0 auto;">
+            <hr>
+            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}" class="btn btn-pill btn-air-success btn-success-gradien" type="button" title="btn btn-pill btn-air-success btn-success-gradien">최종승인</button>
+            <button class="btn btn-pill btn-air-primary btn-primary-gradien" type="button" title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인</button>
+            <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button" title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려</button>
+            <br><br>
+        </div>
+    </div>
+    <script th:inline="javascript">
+
+        /*<![CDATA[*/ let content = /*[[ ${details.sanctnCn} ]]*/; /*]]*/
         document.querySelector('#contents').innerHTML = content;
 
         let change = document.querySelector('#names').textContent;
         document.querySelector('#name').innerHTML = change;
 
 
-        </script>
 
+        const btnApproval = document.querySelector("#btnApproval");
+
+        btnApproval.addEventListener("click", function () {
+
+            console.log("승인 눌렀음!")
+
+        })
+
+
+        const btnReject = document.querySelector("#btnReject");
+
+        btnReject.addEventListener("click", function () {
+
+            console.log("반려 눌렀음!")
+
+        })
+
+    </script>
 
 </th:block>
 </html>

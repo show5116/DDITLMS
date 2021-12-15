@@ -280,6 +280,17 @@ public class SanctnController {
     //결재별 상세조회
     @GetMapping("/showSanctn/{id}")
     public String sanctnDetail(@PathVariable("id") Long id, Model model) {
+    
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        }catch (ClassCastException e){
+        }
+        Long userNumber = member.getUserNumber();
+
+        //로그인한 사람의 정보를 넘겨 줌
+        model.addAttribute("userNumber", userNumber);
 
         Optional<Sanctn> details = sanctnRepository.findById(id);
         Sanctn sanctn = details.get();
@@ -289,6 +300,7 @@ public class SanctnController {
 
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
+        log.info(String.valueOf(sanctnDTOS));
 
         return "/pages/sanctionDetail";
     }

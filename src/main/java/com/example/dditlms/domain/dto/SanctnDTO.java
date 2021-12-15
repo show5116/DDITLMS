@@ -26,6 +26,7 @@ public class SanctnDTO {
     private String name;
     private EmployeeRole employeeRole;
     private String deptNm;
+    private Long userNumber;
 
     private Long countPro;
 
@@ -34,7 +35,7 @@ public class SanctnDTO {
 
     @QueryProjection
 
-    public SanctnDTO(LocalDateTime sanctnDate, String sanctnOpinion, String lastApproval, String name, EmployeeRole employeeRole, String deptNm, Integer sanctnStep, SanctnLnProgress sanctnLnProgress) {
+    public SanctnDTO(LocalDateTime sanctnDate, String sanctnOpinion, String lastApproval, String name, EmployeeRole employeeRole, String deptNm, Integer sanctnStep, SanctnLnProgress sanctnLnProgress, Long userNumber) {
         this.sanctnDate = sanctnDate;
         this.sanctnOpinion = sanctnOpinion;
         this.lastApproval = lastApproval;
@@ -43,6 +44,7 @@ public class SanctnDTO {
         this.deptNm = deptNm;
         this.sanctnStep= sanctnStep;
         this.sanctnLnProgress = sanctnLnProgress;
+        this.userNumber = userNumber;
     }
 
     @QueryProjection

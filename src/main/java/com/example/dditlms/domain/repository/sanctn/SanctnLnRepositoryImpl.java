@@ -124,7 +124,8 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                         , employee.employeeRole
                         , department.deptNm
                         , sanctnLn1.sanctnStep
-                        , sanctnLn1.sanctnLnProgress))
+                        , sanctnLn1.sanctnLnProgress
+                        , sanctnLn1.mberNo.userNumber))
                 .from(sanctnLn1,
                         member,
                         sanctn,

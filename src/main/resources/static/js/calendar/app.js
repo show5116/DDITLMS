@@ -69,13 +69,10 @@
         },
         'beforeDeleteSchedule': function(e) {
             alert("deleteInto");
-            const scheduleId = e.schedule.id;
 
-                console.log(e);
-            console.log(e.schedule.calendarId);
             console.log('beforeDeleteSchedule', e);
 
-            myDeleteSchedule(scheduleId);
+            myDeleteSchedule(e);
 
             cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
 
@@ -83,7 +80,7 @@
         'afterRenderSchedule': function(e) {
             var schedule = e.schedule;
             var element = cal.getElement(schedule.id, schedule.calendarId);
-            console.log('afterRenderSchedule', element);
+            // console.log('afterRenderSchedule', element);
         },
         'clickTimezonesCollapseBtn': function(timezonesCollapsed) {
             console.log('timezonesCollapsed', timezonesCollapsed);
@@ -465,11 +462,16 @@
 
 
 
-// LNY function STR
-    function myDeleteSchedule(scheduleId){
+// LNY function STR=================================================================================
+    //일정 삭체--------------------------------------------------------------------------------------
+    function myDeleteSchedule(scheduleData){
+        alert("deleteSchedule into");
+        console.log(scheduleData.id);
+        const deleteSchedule = scheduleData.id;
+
         $.ajax({
             url : "/calendar/delete",
-            data : scheduleId,
+            data : deleteSchedule,
             method : "Post",
             dataType : "json",
             befoerSend: function(xhr){
@@ -485,7 +487,6 @@
 
             });
     }
-
     //일정 등록--------------------------------------------------------
     const sendBtn = document.querySelector("#sendBtn");
     const cancelBtn = document.querySelector("#cancel-btn");
@@ -569,7 +570,7 @@
         $.ajax({
             url: "/calendar/add",
             data: params,
-            method: "Post",
+            method: "post",
             dataType: "json",
             beforeSend: function(xhr){
                 xhr.setRequestHeader(header,token);
@@ -581,48 +582,43 @@
                     return;
                 }
                 swal("스케줄이 등록되었습니다.");
+                console.log(fragment.list);
                 const cancelBtn = document.querySelector("#cancel-btn");
                 cancelBtn.click();
 
-                var type = document.querySelector("#new-schedule-type");
-                var typeDetail = document.querySelector("#new-schedule-type-detaile")
-                var title = document.querySelector("#new-schedule-title");
-                var content = document.querySelector("#message-text");
-                var location = document.querySelector("#new-schedule-location");
-                var startDate = document.querySelector("#startDate");
-                var endDate = document.querySelector("#endDate")
-                var isAllday = document.querySelector("#new-schedule-allday");
-                var alarmTime = document.querySelector("#new-schedule-alam-time");
-                var alarmSms = document.querySelector("#schedule-alam-sms");
-                var alarmKakao = document.querySelector("#schedule-alam-kakao");
+                const originScheduleList = new Array();
+                $.each(fragment.list,function(i,v){
+                    const schedule = new Object();
+                    schedule.id = v.id;
+                    schedule.calendarId = v.scheduleType;
+                    schedule.title = v.title;
+                    schedule.body = v.content;
+                    schedule.location = v.schedulePlace;
+                    schedule.isAllDay = false;
+                    schedule.start = new Date(v.scheduleStr);
+                    schedule.end = new Date(v.scheduleEnd);
+                    schedule.category = 'time';
+                    schedule.raw ={
+                        class:'class'
+                    };
+                    schedule.dueDateClass ='';
 
-                var schedule = {
-                    id: fragment.id,
-                    title: title.value,
-                    body: content.value,
-                    location: location.value,
-                    isAllday: false,
-                    start:startDate.value,
-                    end : endDate.value,
-                    category: 'time',
-                    raw : {class:'class'},
-                    dueDateClass:''
-                }
-                console.log(schedule);
+                    ScheduleList.push(schedule);
+                })
+                setSchedules();
 
                 cal.createSchedules([schedule]);
-                // refreshScheduleVisibility();
-                //cleanSchedule();
-            });
+                refreshScheduleVisibility();
+                cleanSchedule();
+            })
+            .fail(function (er){
+                swal("에러");
+                console.log(er);
+            })
 
     })
     //모달창에 입력받은 값 DB등록 END
 
-    //일정 출력
-
-
-
-    //일정 출력 END
 
 
 
