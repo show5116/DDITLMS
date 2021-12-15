@@ -18,7 +18,7 @@
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="card-student" role="tabpanel" aria-labelledby="card-student-tab">
-                            <a th:href="@{/download?token=}+${token}"></a>
+                            <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
                             <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-student" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                             <button class="btn btn-primary pull-right" id="btn-student-excel" type="button">엑셀파일읽기</button>
                             <div id="grid-student"></div>

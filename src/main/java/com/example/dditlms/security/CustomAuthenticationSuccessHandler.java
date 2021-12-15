@@ -66,14 +66,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             session.setAttribute("bookmarks",bookmarkList);
         }
         SavedRequest savedRequest = requestCache.getRequest(request,response);
-        if(savedRequest != null){
-            // 인증 받기 전 url로 이동하기
-            String targetUrl = savedRequest.getRedirectUrl();
-            redirectStrategy.sendRedirect(request,response,targetUrl);
-        }else{
-            // 기본 url로 가도록 함함
-            redirectStrategy.sendRedirect(request,response,getDefaultTargetUrl());
-        }
+        redirectStrategy.sendRedirect(request,response,getDefaultTargetUrl());
     }
 
 }

@@ -64,11 +64,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/forget","/forget/**").permitAll()
                 .antMatchers("/signup","/signup/**").permitAll()
                 .antMatchers("/login").permitAll()
+                .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
 
         http.sessionManagement()
                 .maximumSessions(1)
-                .maxSessionsPreventsLogin(true)
+                .maxSessionsPreventsLogin(false)
                 .sessionRegistry(sessionRegistry());
 
         http.formLogin()
@@ -89,6 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         http.rememberMe()
                 .key("remember")
                 .rememberMeParameter("remember-me")
+                .userDetailsService(memberService)
                 .tokenValiditySeconds(86400*30)
                 .tokenRepository(getJDBCRepository());
 

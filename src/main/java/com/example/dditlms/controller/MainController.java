@@ -5,6 +5,7 @@ import com.example.dditlms.domain.dto.MailDTO;
 import com.example.dditlms.domain.dto.SMSDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.security.AccountContext;
+import com.example.dditlms.security.CustomAuthenticationSuccessHandler;
 import com.example.dditlms.service.MailService;
 import com.example.dditlms.service.MemberService;
 import com.example.dditlms.service.SMSService;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 
@@ -43,9 +46,23 @@ public class MainController {
 
     private final OtpUtil otpUtil;
 
-    @PostAuthorize("isAuthenticated()")
+    private final CustomAuthenticationSuccessHandler successHandler;
+
     @GetMapping("/")
-    public String home(){
+    public String home(HttpServletRequest request,
+                       HttpServletResponse response){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        HttpSession session = request.getSession();
+        try {
+            Member member = ((AccountContext)authentication.getPrincipal()).getMember();
+            if(session.getAttribute("memberImg") == null){
+                successHandler.onAuthenticationSuccess(request,response,authentication);
+            }
+        }catch(ClassCastException e){
+            return "redirect: /login";
+        } catch (IOException e) {
+        } catch (ServletException e) {
+        }
         return "pages/index";
     }
 
