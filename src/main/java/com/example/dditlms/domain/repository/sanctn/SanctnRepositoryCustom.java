@@ -1,10 +1,13 @@
 package com.example.dditlms.domain.repository.sanctn;
 
+import com.example.dditlms.domain.dto.SanctnDTO;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 
 import java.util.List;
 
 public interface SanctnRepositoryCustom {
-    public List<Tuple> showDetail(Long id);
+    List<Tuple> showDetail(Long id);
+    QueryResults<SanctnDTO> countSanctn();
 
 }

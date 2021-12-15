@@ -44,7 +44,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctn.setStatus(SanctnProgress.PROGRESS);
         Sanctn savedSanctn = sanctnRepository.save(sanctn);
 
-        //결재라인 저장
+        //결재라인 저장 , 일단 다 때려박아서 작성, 나중에 리팩토링 대상!
         SanctnLn sanctnLn = new SanctnLn();
         sanctnLn.setSanctnSn(savedSanctn);
         Optional<Member> byUserNumber = memberRepository.findByUserNumber(drafter);

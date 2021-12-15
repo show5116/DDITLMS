@@ -27,6 +27,8 @@ public class SanctnDTO {
     private EmployeeRole employeeRole;
     private String deptNm;
 
+    private Long countPro;
+
 
     public SanctnDTO() { }
 
@@ -45,7 +47,8 @@ public class SanctnDTO {
 
     @QueryProjection
 
-    public SanctnDTO(Integer sanctnStep) {
+    public SanctnDTO(Integer sanctnStep, SanctnLnProgress sanctnLnProgress) {
         this.sanctnStep = sanctnStep;
+        this.sanctnLnProgress = sanctnLnProgress;
     }
 }
