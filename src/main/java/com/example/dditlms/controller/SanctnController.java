@@ -11,7 +11,6 @@ import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.SanctnService;
 import com.querydsl.core.QueryResults;
-import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -72,8 +71,6 @@ public class SanctnController {
         List<SanctnLn> proDetails = inquireTotal.getResults();
         model.addAttribute("proDetails", proDetails);
 
-        log.info("----------------" + proDetails);
-
         model.addAttribute("totalPro", totalPro);
         model.addAttribute("totalRej", totalRej);
         model.addAttribute("totalPub", totalPub);
@@ -89,9 +86,7 @@ public class SanctnController {
 
         //결재단계 불러오기 테스트
 
-        QueryResults<SanctnDTO> sanctnDTOQueryResults = sanctnLnRepository.showSanctnCount();
-        List<SanctnDTO> results = sanctnDTOQueryResults.getResults();
-        log.info("-------------------" + String.valueOf(results));
+        QueryResults<SanctnDTO> sanctnDTOQueryResults = sanctnRepository.countSanctn();
 
         return "/pages/sanction";
     }
@@ -126,7 +121,6 @@ public class SanctnController {
         //부서 목록 전체 조회
         List<Department> departmentList = departmentRepository.findAll();
         model.addAttribute("departmentList",departmentList);
-        log.info(String.valueOf(departmentList));
 
 
         return "/pages/drafting";
@@ -166,10 +160,8 @@ public class SanctnController {
     @GetMapping("/viewDetails")
     @ResponseBody
     public List<EmployeeDTO> viewDetails(@RequestParam Map<String, Object> param) {
-        log.info((String) param.get("userNumber"));
 
         List<EmployeeDTO> viewDetails = employeeRepository.viewDetails(Long.valueOf((String)param.get("userNumber")));
-        log.info(String.valueOf(viewDetails));
 
         return viewDetails;
     }
@@ -283,7 +275,9 @@ public class SanctnController {
         return "/pages/sanction::#test";
 
     }
-
+    
+    
+    //결재별 상세조회
     @GetMapping("/showSanctn/{id}")
     public String sanctnDetail(@PathVariable("id") Long id, Model model) {
 
@@ -298,6 +292,4 @@ public class SanctnController {
 
         return "/pages/sanctionDetail";
     }
-
-
 }

@@ -21,7 +21,7 @@ import static com.example.dditlms.domain.entity.sanction.QSanctn.sanctn;
 import static com.example.dditlms.domain.entity.sanction.QSanctnLn.sanctnLn1;
 
 @Slf4j
-public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom{
+public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
     private final MemberRepository memberRepository;
@@ -111,7 +111,6 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom{
     }
 
 
-
     // 결재라인의견 조회
 
     @Override
@@ -136,8 +135,8 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom{
                 .join(employee.member, member)
                 .join(employee.deptCode, department)
                 .where(sanctnLn1.sanctnSn.eq(sanctn)
-                        ,sanctnLn1.mberNo.eq(member)
-                        ,sanctn.sanctnId.eq(id)
+                        , sanctnLn1.mberNo.eq(member)
+                        , sanctn.sanctnId.eq(id)
                         , employee.member.eq(member)
                         , employee.deptCode.eq(department))
                 .groupBy(member.name)
@@ -145,27 +144,13 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom{
                 .fetch();
 
     }
-    // 결재 진행단계 조회
-
-    @Override
-    public QueryResults<SanctnDTO> showSanctnCount() {
-
-        return queryFactory
-                .select(new QSanctnDTO(sanctnLn1.sanctnStep))
-                .from(sanctnLn1, sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn))
-                .fetchResults();
 
 
-
-    }
-
-
-
-
-
-
-
-    
 }
+
+
+
+
+
+
+

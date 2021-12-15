@@ -16,23 +16,27 @@
                                 <div class="card-body">
                                     <ul>
                                         <li>
-                                            <a class="btn btn-light" href="/drafting">기안하기</a>
+                                            <a class="btn btn-light justify-content-center" href="/drafting">기안하기</a>
                                         </li>
                                         <li>
-                                            <a class="btn btn-light" href="/sanctn">결재처리</a>
+                                            <a class="btn btn-light justify-content-center" href="/sanctn">결재처리</a>
                                         </li>
                                         <li>
-                                            <a class="btn btn-light" href="/sanctn">공람처리</a>
+                                            <a class="btn btn-light justify-content-center" href="/sanctn">공람처리</a>
                                         </li>
                                     </ul>
                                     <hr>
 
-                                    <div class="card-body dropdown-basic">
-                                        <div class="dropdown">
+                                    <div class="card-body dropdown-basic" style="text-align: center; margin: 0 auto;">
+                                        <div class="dropdown justify-content-center"
+                                             style="text-align: center; margin: 0 auto;">
                                             <div class="btn-group mb-0">
-                                                <button class="dropbtn btn-success btn-round" type="button">결재조회
+                                                <button class="dropbtn btn-success btn-round justify-content-center"
+                                                        type="button" style="text-align: center; margin: 0 auto;">결재조회
                                                     <span><i class="icofont icofont-arrow-down"></i></span></button>
-                                                <div class="dropdown-content"><a href="#">승인완료</a><a href="#">진행중</a><a
+                                                <div class="dropdown-content justify-content-center"
+                                                     style="text-align: center; margin: 0 auto;"><a href="#">승인완료</a><a
+                                                        href="#">진행중</a><a
                                                         href="#">반려</a></div>
                                             </div>
                                         </div>
@@ -46,17 +50,20 @@
             </div>
             <div class="col-xl-7 col-md-7 box-col-7">
                 <div class="file-content">
-                    <div class="card">
+                    <div class="card" style="text-align: center; margin: 0 auto;">
                         <div class="card-header center-block style=width:300px; padding:15px;">
                             <ul style='display:inline-block'>
-                                <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br><span
-                                        th:text="|총 : ${totalPro} 건|">총 0건</span>
+                                <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br>
+                                    <div style="text-align: center; margin: 0 auto;"><span
+                                            th:text="|총 : ${totalPro} 건|">총 0건</span></div>
                                 </li>
-                                <li style='display:inline-block'><i class="fa fa-arrow-left fa-5x p-2">반려</i><br><span
-                                        th:text="|총 : ${totalRej} 건|">총 3건</span>
+                                <li style='display:inline-block'><i class="fa fa-arrow-left fa-5x p-2">반려</i><br>
+                                    <div style="text-align: center; margin: 0 auto;"><span
+                                            th:text="|총 : ${totalRej} 건|">총 3건</span></div>
                                 </li>
-                                <li style='display:inline-block'><i class="fa fa-repeat fa-5x p-2">공람</i><br><span
-                                        th:text="|총 : ${totalPub} 건|">총 3건</span>
+                                <li style='display:inline-block'><i class="fa fa-repeat fa-5x p-2">공람</i><br>
+                                    <div style="text-align: center; margin: 0 auto;"><span
+                                            th:text="|총 : ${totalPub} 건|">총 3건</span></div>
                                 </li>
                             </ul>
                         </div>
@@ -73,19 +80,21 @@
                             </button>
                         </div>
                         </hr>
+                        <br>
                         <div class="table-responsive">
                             <table class="table table-border-horizontal">
                                 <thead>
-                                    <tr>
-                                        <th scope="col">결재단계</th>
-                                        <th scope="col">결재제목</th>
-                                        <th scope="col">기안자</th>
-                                        <th scope="col">상태</th>
-                                        <th scope="col">결재기한</th>
-                                    </tr>
+                                <tr>
+                                    <th scope="col">결재단계</th>
+                                    <th scope="col">결재제목</th>
+                                    <th scope="col">기안자</th>
+                                    <th scope="col">상태</th>
+                                    <th scope="col">결재기한</th>
+                                </tr>
                                 </thead>
                                 <tbody id="test">
-                                <tr th:each="proDetail : ${proDetails}" style="cursor:pointer;" th:onclick="'location.href=\''+ @{showSanctn/{id}(id=${proDetail.sanctnSn.sanctnId})} + '\''">
+                                <tr th:each="proDetail : ${proDetails}" style="cursor:pointer;"
+                                    th:onclick="'location.href=\''+ @{showSanctn/{id}(id=${proDetail.sanctnSn.sanctnId})} + '\''">
                                     <td th:text="${proDetail.sanctnStep}">결재단계</td>
                                     <td th:text="${proDetail.sanctnSn.sanctnSj}">결재명</td>
                                     <td th:text="${proDetail.mberNo.name}">기안자</td>
@@ -102,7 +111,8 @@
                 <div class="file-content">
                     <div class="card">
                         <div class="text-center">
-                            최근결재의견
+                            <br>
+                            <h3>최근결재의견</h3>
                         </div>
                         <div class="card-body">
                             <div class="card-block row">
@@ -117,6 +127,18 @@
                                             <tbody>
                                             <tr>
                                                 <th scope="row" class="table-primary">첨부파일이 빠져 있네요</th>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">홍길동 ∘ 교무처</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <th scope="row" class="table-primary">첨부파일이 빠져 있네요222</th>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -179,6 +201,9 @@
                     $("#test").replaceWith(fragment);
                 });
         })
+
+
+
 
 
 
