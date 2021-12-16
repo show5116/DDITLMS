@@ -14,6 +14,7 @@ import com.example.dditlms.domain.repository.FileDataRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.FileService;
 import com.example.dditlms.util.AmazonS3Util;
+import com.example.dditlms.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.*;
@@ -36,6 +39,7 @@ public class FileDataController {
     private static final Logger logger = LoggerFactory.getLogger(FileDataController.class);
 
     private final AmazonS3Util amazonS3Util;
+    private final FileUtil fileUtil;
 
     private final FileService fileService;
     private final FileDataRepository fileDataRepository;
@@ -131,9 +135,6 @@ public class FileDataController {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
         } catch (ClassCastException e) {
         }
-        System.out.println("param :" + fileDataDTO.getFileName()); // 새로 만든 폴더 이름
-
-
 
         FileData current = fileService.addFolder(fileDataDTO, member);
 
@@ -175,6 +176,16 @@ public class FileDataController {
                 fileDataRepository.findAllByMemberAndParentAndExtension(member, current.getParent(), "folder"));
         mav.setViewName("pages/filemanager :: #folderReplace");
 
+        return mav;
+    }
+
+    @PostMapping("/cloud/upload")
+    public ModelAndView uploadTest(@RequestParam(value = "file", required = false) MultipartFile file,
+                           MultipartHttpServletRequest request, ModelAndView mav){
+        Map<String, MultipartFile> map = request.getFileMap();
+        long id = fileUtil.uploadFiles(map);
+        System.out.println(map);
+        System.out.println(id);
         return mav;
     }
 
