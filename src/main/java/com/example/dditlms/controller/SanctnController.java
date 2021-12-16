@@ -9,6 +9,7 @@ import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.security.AccountContext;
+import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,8 @@ public class SanctnController {
     private final SanctnService sanctnService;
 
     private final SanctnRepository sanctnRepository;
+
+    private final SanctnLnService sanctnLnService;
 
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
@@ -298,7 +301,8 @@ public class SanctnController {
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
 
         model.addAttribute("sanctnLnList", sanctnDTOS);
-        
+
+
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
         
@@ -307,17 +311,46 @@ public class SanctnController {
     }
 
     @PostMapping ("/approval")
-    public String apropval(@RequestParam Map<String, Object> param) {
+    public String apropval(@RequestParam Map<String, Object> param, Model model) {
 
 
         Object opinion = param.get("opinion");
-        log.info("----------" + opinion);
         Long userNumber = Long.valueOf((String) param.get("userNumber"));
-        log.info("----------" + userNumber);
+        Long id = Long.valueOf((String) param.get("id"));
 
-        //수정할 결재 문서 ID 조회
-        SanctnLn sanctnId = sanctnLnRepository.findSanctnId(userNumber);
-        log.info("------------" + sanctnId);
+        sanctnLnService.updateSanctnLn(opinion.toString(), userNumber, id);
+
+        //의견 남기기 + 결재승인 처리
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        }catch (ClassCastException e){
+        }
+        Long userNumber2 = member.getUserNumber();
+
+
+        //로그인한 사람의 정보를 넘겨 줌
+        model.addAttribute("userNumber", userNumber2);
+
+        log.info("-------------------" + userNumber2);
+
+
+        Optional<Sanctn> details = sanctnRepository.findById(id);
+        Sanctn sanctn = details.get();
+        model.addAttribute("details", sanctn);
+
+
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+
+        model.addAttribute("sanctnLnList", sanctnDTOS);
+
+
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+
 
         return "/pages/sanctionDetail";
 

@@ -57,7 +57,7 @@
                         <p id="name" class="text-right">최초기안자</p>
                     </div>
                 </div>
-                <p id="contents">본문 내용 쭉쭉~~~~~~~ 단 삭제 불가능하게 할 것!</p>
+                <text id="contents" th:utext="${details.sanctnCn}">본문 내용 쭉쭉~~~~~~~</text>
             </div>
         </div>
 
@@ -142,26 +142,27 @@
                 <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
                         title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려
                 </button>
+            <div style="display:none">
                 <input type="number" th:value="${userNumber}" id="userNumber">
+                <input type="number" th:value="${id}" id="id">
+            </div>
             <br><br>
         </div>
     </div>
     <script th:inline="javascript">
 
-        /*<![CDATA[*/ let content = /*[[ ${details.sanctnCn} ]]*/; /*]]*/
-        document.querySelector('#contents').innerHTML = content;
 
-        const btnApproval = document.querySelector("#btnApproval");
+
+        let btnApproval = document.querySelector("#btnApproval");
 
         btnApproval.addEventListener("click", function () {
 
-            const token = $("meta[name='_csrf']").attr("content");
-            const header = $("meta[name='_csrf_header']").attr("content");
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
 
             let opinion = document.querySelector('#opinion').value;
             let userNumber = document.querySelector('#userNumber').value;
-
-            console.log(userNumber);
+            let id = document.querySelector('#id').value;
 
           $.ajax({
 
@@ -169,20 +170,22 @@
                 url: "/approval",
                 data: {
                     "opinion": opinion,
-                    "userNumber": userNumber
+                    "userNumber": userNumber,
+                    "id": id
                 },
                 beforeSend: function(xhr){
                     xhr.setRequestHeader(header,token);
                 },
                 success: function (data) {
 
-                  console.log(data)
-                }
+                    document.write(data);
+
+                },
             });
 
         })
 
-        const btnReject = document.querySelector("#btnReject");
+        let btnReject = document.querySelector("#btnReject");
 
         btnReject.addEventListener("click", function () {
 
@@ -190,8 +193,6 @@
 
         })
 
-        let change = document.querySelector('#names').textContent;
-        document.querySelector('#name').innerHTML = change;
 
 
     </script>
