@@ -130,6 +130,8 @@ public class CalendarController {
     public void deleteSchedule(HttpServletRequest request , HttpServletResponse response,
                                @RequestParam Map<String, Object> paramMap){
 
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         Member member = null;
@@ -151,11 +153,10 @@ public class CalendarController {
 
         boolean result = calendarService.deleteSchedule(calendar);
 
-
-        if(result =true){
+        if(result ==true){
             log.info("---------------------deleteSchedule SUCCESS");
             jsonObject.put("state","true");
-        } else if (result = false){
+        } else if (result == false){
             log.info("---------------------deleteSchedule FAILED");
             jsonObject.put("state","false");
         }
