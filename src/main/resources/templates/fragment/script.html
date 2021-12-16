@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <th:block th:fragment="scriptFragment">
     <!-- feather icon js-->
     <script th:src="@{/static/js/icons/feather-icon/feather.min.js}"></script>
@@ -14,6 +15,8 @@
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
     <script th:src="@{/static/js/script.js}"></script>
+    <script sec:authorize="isAuthenticated()" th:src="@{/static/js/webSocket.js}"></script>
+    <script th:src="@{/static/js/bootstrap-notify.min.js}"></script>
     <!-- login js-->
     <!-- Plugin used-->
 </th:block>
