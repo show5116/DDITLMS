@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class AmazonS3Util {
 
@@ -36,7 +37,11 @@ public class AmazonS3Util {
 
             objectListing = s3.listObjects(listObjectsRequest);
 
+            System.out.println("Object List:");
             while (true) {
+                for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+                    System.out.println("    name=" + objectSummary.getKey() + ", size=" + objectSummary.getSize() + ", owner=" + objectSummary.getOwner().getId());
+                }
                 if (objectListing.isTruncated()) {
                     objectListing = s3.listNextBatchOfObjects(objectListing);
                 } else {
@@ -57,7 +62,7 @@ public class AmazonS3Util {
 
             objectListing = s3.listObjects(listObjectsRequest);
 
-            objectListing.getObjectSummaries().remove(0);
+//            objectListing.getObjectSummaries().remove(0);
 
         } catch (AmazonS3Exception e) {}
         catch(SdkClientException e) {}

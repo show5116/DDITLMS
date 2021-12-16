@@ -49,7 +49,7 @@ function hexToRGBA(hex) {
     // id += 1;
     calendar.id = 'PRIVATE';
     calendar.name = '개인';
-    calendar.color = '#24695c';
+    calendar.color = '#FFFFFF';
     calendar.bgColor = '#24695c';
     calendar.dragBgColor = '#24695c';
     calendar.borderColor = '#24695c';
@@ -59,7 +59,7 @@ function hexToRGBA(hex) {
     // id += 1;
     calendar.id = 'MAJOR';
     calendar.name = '학과';
-    calendar.color = '#ba895d';
+    calendar.color = '#FFFFFF';
     calendar.bgColor = '#ba895d';
     calendar.dragBgColor = '#ba895d';
     calendar.borderColor = '#ba895d';
@@ -69,7 +69,7 @@ function hexToRGBA(hex) {
     // id += 1;
     calendar.id = 'TOTAL';
     calendar.name = '학교';
-    calendar.color = '#ff5583';
+    calendar.color = '#FFFFFF';
     calendar.bgColor = '#ff5583';
     calendar.dragBgColor = '#ff5583';
     calendar.borderColor = '#ff5583';
