@@ -3,6 +3,7 @@ package com.example.dditlms.domain.repository.sanctn;
 import com.example.dditlms.domain.dto.QSanctnDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.entity.sanction.QSanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
 import com.example.dditlms.domain.repository.MemberRepository;
@@ -106,7 +107,6 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .join(sanctnLn1.sanctnSn, sanctn)
                 .where(sanctnLn1.sanctnSn.eq(sanctn), sanctnLn1.mberNo.eq(findMember.get()))
                 .groupBy(sanctnLn1.sanctnSn)
-                .orderBy(sanctn.sanctnUpdde.desc())
                 .fetchResults();
     }
 
@@ -144,6 +144,21 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .orderBy(sanctnLn1.sanctnStep.asc())
                 .fetch();
 
+    }
+    
+    
+    //업데이트 할 결재 번호 검색
+    @Override
+    public SanctnLn findSanctnId(Long userNumber) {
+        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
+
+
+        return queryFactory
+                .select(sanctnLn1)
+                .where(sanctnLn1.mberNo.eq(findMember.get()))
+                .from(sanctnLn1)
+                .fetchOne();
+        
     }
 
 

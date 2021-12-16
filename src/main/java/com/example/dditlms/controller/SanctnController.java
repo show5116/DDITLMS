@@ -65,10 +65,10 @@ public class SanctnController {
         long totalPub = resultsPub.getTotal();
         QueryResults<SanctnLn> resultsCom = sanctnLnRepository.inquireCompletion(userNumber);
         long totalCom = resultsCom.getTotal();
-        QueryResults<SanctnLn> inquireTotal = sanctnLnRepository.inquireTotal(userNumber);
+        QueryResults inquireTotal = sanctnLnRepository.inquireTotal(userNumber);
 
 
-        List<SanctnLn> proDetails = inquireTotal.getResults();
+        List proDetails = inquireTotal.getResults();
         model.addAttribute("proDetails", proDetails);
 
         model.addAttribute("totalPro", totalPro);
@@ -85,8 +85,6 @@ public class SanctnController {
 
 
         //결재단계 불러오기 테스트
-
-        QueryResults<SanctnDTO> sanctnDTOQueryResults = sanctnRepository.countSanctn();
 
         return "/pages/sanction";
     }
@@ -280,7 +278,7 @@ public class SanctnController {
     //결재별 상세조회
     @GetMapping("/showSanctn/{id}")
     public String sanctnDetail(@PathVariable("id") Long id, Model model) {
-    
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = null;
         try {
@@ -289,6 +287,7 @@ public class SanctnController {
         }
         Long userNumber = member.getUserNumber();
 
+        
         //로그인한 사람의 정보를 넘겨 줌
         model.addAttribute("userNumber", userNumber);
 
@@ -299,9 +298,28 @@ public class SanctnController {
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
 
         model.addAttribute("sanctnLnList", sanctnDTOS);
-
-        log.info(String.valueOf(sanctnDTOS));
+        
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+        
 
         return "/pages/sanctionDetail";
+    }
+
+    @PostMapping ("/approval")
+    public String apropval(@RequestParam Map<String, Object> param) {
+
+
+        Object opinion = param.get("opinion");
+        log.info("----------" + opinion);
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        log.info("----------" + userNumber);
+
+        //수정할 결재 문서 ID 조회
+        SanctnLn sanctnId = sanctnLnRepository.findSanctnId(userNumber);
+        log.info("------------" + sanctnId);
+
+        return "/pages/sanctionDetail";
+
     }
 }

@@ -10,6 +10,6 @@ public class scheduler {
     //(0 0/1 * * * *) 매 1분마다 실행
     @Scheduled(cron = "0 0/1 * * * *")
     public void testCron(){
-        System.out.println("테스트용");
+
     }
 }

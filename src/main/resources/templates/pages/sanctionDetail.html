@@ -74,11 +74,15 @@
                 </thead>
                 <tbody>
                 <tr th:each="sanctnLn : ${sanctnLnList}">
-
-                    <th id="names" scope="col" th:text="${sanctnLn.name}"></th>
+                    <div th:if="${sanctnLn.userNumber == userNumber}">
+                        <th th:text="|${sanctnLn.name} (나)|" th:class="text-primary"></th>
+                    </div>
+                    <div th:if="${sanctnLn.userNumber != userNumber}">
+                        <th th:text="${sanctnLn.name}" th:id="names"></th>
+                    </div>
                     <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
                     <th scope="col" th:text="${sanctnLn.deptNm}"></th>
-                    <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
+                    <th th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
                     <th scope="col"
                         th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
                     <!--                            <span th:if="${sanctnLn.lastApproval} =='Y'"></th:if>123123</span>-->
@@ -124,13 +128,21 @@
         <div th:each="sanctnLn : ${sanctnLnList}"
              th:if="${sanctnLn.sanctnLnProgress.toString().equals('REQUEST')} and ${sanctnLn.userNumber == userNumber}"
              class="col-xxl-12 col-lg-6" style="text-align: center; margin: 0 auto;">
-            <label for="input-text-1">결재의견</label>
-            <input class="form-control btn-square" id="input-text-1" type="email" placeholder="해당 결재의견을 입력하세요"
-                   data-bs-original-title="" style="text-align: center; margin: 0 auto;">
-            <hr>
-            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}" class="btn btn-pill btn-air-success btn-success-gradien" type="button" title="btn btn-pill btn-air-success btn-success-gradien">최종승인</button>
-            <button class="btn btn-pill btn-air-primary btn-primary-gradien" type="button" title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인</button>
-            <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button" title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려</button>
+                <label for="opinion">결재의견</label>
+                <input class="form-control btn-square" id="opinion" type="text" placeholder="해당 결재의견을 입력하세요"
+                       data-bs-original-title="" style="text-align: center; margin: 0 auto;">
+                <hr>
+                <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}"
+                        class="btn btn-pill btn-air-success btn-success-gradien" type="button"
+                        title="btn btn-pill btn-air-success btn-success-gradien">최종승인
+                </button>
+                <button class="btn btn-pill btn-air-primary btn-primary-gradien" type="button"
+                        title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인
+                </button>
+                <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
+                        title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려
+                </button>
+                <input type="number" th:value="${userNumber}" id="userNumber">
             <br><br>
         </div>
     </div>
@@ -139,19 +151,36 @@
         /*<![CDATA[*/ let content = /*[[ ${details.sanctnCn} ]]*/; /*]]*/
         document.querySelector('#contents').innerHTML = content;
 
-        let change = document.querySelector('#names').textContent;
-        document.querySelector('#name').innerHTML = change;
-
-
-
         const btnApproval = document.querySelector("#btnApproval");
 
         btnApproval.addEventListener("click", function () {
 
-            console.log("승인 눌렀음!")
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+
+            let opinion = document.querySelector('#opinion').value;
+            let userNumber = document.querySelector('#userNumber').value;
+
+            console.log(userNumber);
+
+          $.ajax({
+
+                type: "POST",
+                url: "/approval",
+                data: {
+                    "opinion": opinion,
+                    "userNumber": userNumber
+                },
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                },
+                success: function (data) {
+
+                  console.log(data)
+                }
+            });
 
         })
-
 
         const btnReject = document.querySelector("#btnReject");
 
@@ -160,6 +189,10 @@
             console.log("반려 눌렀음!")
 
         })
+
+        let change = document.querySelector('#names').textContent;
+        document.querySelector('#name').innerHTML = change;
+
 
     </script>
 

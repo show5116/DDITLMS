@@ -1,5 +1,6 @@
 package com.example.dditlms.controller;
 
+import com.example.dditlms.DditlmsApplication;
 import com.example.dditlms.domain.entity.Calendar;
 import com.example.dditlms.domain.entity.CalendarAlarm;
 import com.example.dditlms.domain.entity.Member;
@@ -47,14 +48,8 @@ public class CalendarController {
             member = ((AccountContext)authentication.getPrincipal()).getMember();
         }catch(ClassCastException e){
         }
-        String type = "MAJOR";
 
-        List<Calendar> scheduleList = calendarRepository.getAllScheduleList (member, type);
-
-//        for (Calendar calendar :
-//                scheduleList) {
-//            log.info("====scheduleList : " + calendar.getTitle());
-//        }
+        List<Calendar> scheduleList = calendarRepository.getAllScheduleList (member);
 
         mav.addObject("scheduleList",scheduleList);
         mav.setViewName("pages/calendar-basic");
@@ -87,8 +82,8 @@ public class CalendarController {
                     .title(paramMap.get("title"))
                     .content(paramMap.get("content"))
                     .scheduleLocation(paramMap.get("location"))
-                    .scheduleStr((paramMap.get("startDate")))
-                    .scheduleEnd((paramMap.get("endDate")))
+                    .scheduleStr(paramMap.get("startDate"))
+                    .scheduleEnd(paramMap.get("endDate"))
                     .setAlarmTime(paramMap.get("alarmTime"))
                     .content(paramMap.get("text"))
                     .member(member).build();
@@ -101,7 +96,8 @@ public class CalendarController {
         }
         //서비스로 save 호출
         calendar = calendarService.addSchedule(calendar);
-        List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member, "MAJOR");
+
+        List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member);
 
         for(Calendar calendarToJson  : scheduleList ){
             Map<String, Object> map = new HashMap<>();
@@ -130,6 +126,129 @@ public class CalendarController {
 
     }
 
+    @PostMapping("/calendar/delete")
+    public void deleteSchedule(HttpServletRequest request , HttpServletResponse response,
+                               @RequestParam Map<String, Object> paramMap){
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Member member = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        Calendar calendar = null;
+        Object id = paramMap.get("deleteSchedule");
+        Long scheduleId = Long.valueOf(String.valueOf(id));
+        try {
+            calendar = Calendar.builder()
+                    .id(scheduleId)
+                    .member(member).build();
+
+        }catch (Exception e){
+        }
+
+        boolean result = calendarService.deleteSchedule(calendar);
+
+
+        if(result =true){
+            log.info("---------------------deleteSchedule SUCCESS");
+            jsonObject.put("state","true");
+        } else if (result = false){
+            log.info("---------------------deleteSchedule FAILED");
+            jsonObject.put("state","false");
+        }
+
+        List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member);
+
+        for (Calendar calendar1 : scheduleList){
+            log.info("-------------"+calendar1.getTitle());
+        }
+
+        for(Calendar calendarToJson  : scheduleList ){
+            Map<String, Object> map = new HashMap<>();
+            map.put("id",calendarToJson.getId());
+            map.put("member",calendarToJson.getMember().getUserNumber());
+            map.put("title",calendarToJson.getTitle());
+            map.put("content",calendarToJson.getContent());
+            map.put("schedulePlace",calendarToJson.getScheduleLocation());
+            map.put("scheduleStr",calendarToJson.getScheduleStr());
+            map.put("scheduleEnd",calendarToJson.getScheduleEnd());
+            map.put("alarmTime",calendarToJson.getSetAlarmTime());
+            map.put("scheduleTypeDetail",calendarToJson.getScheduleTypeDetail());
+            map.put("scheduleType",calendarToJson.getScheduleType());
+
+            jsonArray.add(map);
+        };
+
+        jsonObject.put("list",jsonArray);
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

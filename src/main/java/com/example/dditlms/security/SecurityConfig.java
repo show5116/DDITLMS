@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +22,10 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.context.NullSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.sql.DataSource;
@@ -64,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/forget","/forget/**").permitAll()
                 .antMatchers("/signup","/signup/**").permitAll()
                 .antMatchers("/login").permitAll()
+                .antMatchers("/loginTest","/loginTest/**").permitAll()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
 
@@ -99,8 +105,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
     @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
     public SessionRegistry sessionRegistry(){
         return new SessionRegistryImpl();
+    }
+
+    @Bean
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy(){
+        return new NullAuthenticatedSessionStrategy();
+    }
+
+    @Bean
+    SecurityContextRepository securityContextRepository(){
+        return new NullSecurityContextRepository();
     }
 
     @Bean
