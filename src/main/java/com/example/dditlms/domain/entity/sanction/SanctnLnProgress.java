@@ -8,6 +8,7 @@ public enum SanctnLnProgress {
     PROCESS("결재완료"),
     REQUEST("미결재"),
     WAITING("결재대기"),
+    REJECT("반려처리")
     ;
 
     final private String krName;
