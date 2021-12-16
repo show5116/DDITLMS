@@ -46,6 +46,7 @@
     <script th:src="@{/static/js/sweetalert.min.js}"></script>
     <script th:src="@{/static/js/dropzone/dropzone.js}"></script>
 </head>
+
 <th:block layout:fragment="content">
     <div class="container-fluid col-xxl-5 col-lg-6" th:each="detail : ${details}">
         <div>
@@ -63,30 +64,73 @@
 
         <div class="table-responsive">
             <table class="table table-bordered">
-                <thead>
+                <thead class="bg-success">
                 <tr>
-                    <th scope="col">이름</th>
-                    <th scope="col">직급</th>
-                    <th scope="col">부서</th>
-                    <th scope="col">상태</th>
-                    <th scope="col">처리날짜</th>
+                    <th class="text-white" scope="col">이름</th>
+                    <th class="text-white" scope="col">직급</th>
+                    <th class="text-white" scope="col">부서</th>
+                    <th class="text-white" scope="col">상태</th>
+                    <th class="text-white"scope="col">처리날짜</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="sanctnLn : ${sanctnLnList}">
-                    <div th:if="${sanctnLn.userNumber == userNumber}">
-                        <th th:text="|${sanctnLn.name} (나)|" th:class="text-primary"></th>
-                    </div>
-                    <div th:if="${sanctnLn.userNumber != userNumber}">
-                        <th th:text="${sanctnLn.name}" th:id="names"></th>
-                    </div>
-                    <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
-                    <th scope="col" th:text="${sanctnLn.deptNm}"></th>
-                    <th th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
-                    <th scope="col"
-                        th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
-                    <!--                            <span th:if="${sanctnLn.lastApproval} =='Y'"></th:if>123123</span>-->
-                </tr>
+                <div th:each="sanctnLn : ${sanctnLnList}">
+                    <tr th:if="${sanctnLn.sanctnLnProgress.toString().equals('PROCESS')}"
+                        style="background-color:LightCyan;">
+                        <div th:if="${sanctnLn.userNumber == userNumber}">
+                            <th th:text="|${sanctnLn.name} (나)|" th:class="text-primary"></th>
+                        </div>
+                        <div th:if="${sanctnLn.userNumber != userNumber}">
+                            <th th:text="${sanctnLn.name}" th:id="names"></th>
+                        </div>
+                        <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
+                        <th scope="col" th:text="${sanctnLn.deptNm}"></th>
+                        <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                    <tr th:if="${sanctnLn.sanctnLnProgress.toString().equals('REJECT')}"
+                        style="background-color:Tomato;">
+                        <div th:if="${sanctnLn.userNumber == userNumber}">
+                            <th th:text="|${sanctnLn.name} (나)|" th:class="text-primary"></th>
+                        </div>
+                        <div th:if="${sanctnLn.userNumber != userNumber}">
+                            <th th:text="${sanctnLn.name}" th:id="names"></th>
+                        </div>
+                        <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
+                        <th scope="col" th:text="${sanctnLn.deptNm}"></th>
+                        <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                    <tr th:if="${sanctnLn.sanctnLnProgress.toString().equals('WAITING')}">
+                        <div th:if="${sanctnLn.userNumber == userNumber}">
+                            <th th:text="|${sanctnLn.name} (나)|" th:class="text-primary"></th>
+                        </div>
+                        <div th:if="${sanctnLn.userNumber != userNumber}">
+                            <th th:text="${sanctnLn.name}" th:id="names"></th>
+                        </div>
+                        <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
+                        <th scope="col" th:text="${sanctnLn.deptNm}"></th>
+                        <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                    <tr th:if="${sanctnLn.sanctnLnProgress.toString().equals('REQUEST')}">
+                        <div th:if="${sanctnLn.userNumber == userNumber}">
+                            <th th:text="|${sanctnLn.name} (나)|" th:class="text-primary"></th>
+                        </div>
+                        <div th:if="${sanctnLn.userNumber != userNumber}">
+                            <th th:text="${sanctnLn.name}" th:id="names"></th>
+                        </div>
+                        <th scope="col" th:text="${sanctnLn.employeeRole.krName}"></th>
+                        <th scope="col" th:text="${sanctnLn.deptNm}"></th>
+                        <th scope="col" th:text="${sanctnLn.sanctnLnProgress.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+
+                </div>
                 </tbody>
             </table>
         </div>
@@ -117,7 +161,9 @@
                     <h6 th:text="${sanctnLn.name}">의견자 이름</h6>
                     <div class="media">
                         <div class="media-body">
-                            <p th:text="${sanctnLn.sanctnOpinion}">의견 내용</p>
+                            <span th:text="${sanctnLn.sanctnOpinion}">의견 내용</span>
+                            <img th:if="${sanctnLn.sanctnLnProgress.toString().equals('PROCESS')}" th:src="@{/static/images/goodJob.png}" alt="확인도장" height="100" width="100">
+                            <img th:if="${sanctnLn.sanctnLnProgress.toString().equals('REJECT')}" th:src="@{/static/images/Bad.png}" alt="반려도장" height="100" width="100">
                         </div>
                     </div>
                 </div>
@@ -128,20 +174,21 @@
         <div th:each="sanctnLn : ${sanctnLnList}"
              th:if="${sanctnLn.sanctnLnProgress.toString().equals('REQUEST')} and ${sanctnLn.userNumber == userNumber}"
              class="col-xxl-12 col-lg-6" style="text-align: center; margin: 0 auto;">
-                <label for="opinion">결재의견</label>
-                <input class="form-control btn-square" id="opinion" type="text" placeholder="해당 결재의견을 입력하세요"
-                       data-bs-original-title="" style="text-align: center; margin: 0 auto;">
-                <hr>
-                <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}"
-                        class="btn btn-pill btn-air-success btn-success-gradien" type="button"
-                        title="btn btn-pill btn-air-success btn-success-gradien">최종승인
-                </button>
-                <button class="btn btn-pill btn-air-primary btn-primary-gradien" type="button"
-                        title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인
-                </button>
-                <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
-                        title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려
-                </button>
+            <label for="opinion">결재의견</label>
+            <input class="form-control btn-square" id="opinion" type="text" placeholder="해당 결재의견을 입력하세요"
+                   data-bs-original-title="" style="text-align: center; margin: 0 auto;">
+            <hr>
+            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}"
+                    class="btn btn-pill btn-air-success btn-success-gradien" type="button"
+                    title="btn btn-pill btn-air-success btn-success-gradien" id="btnLastApproval">최종승인
+            </button>
+            <button th:if="${sanctnLn.lastApproval.toString().equals('N')}"
+                    class="btn btn-pill btn-air-primary btn-primary-gradien" type="button"
+                    title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인
+            </button>
+            <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
+                    title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려
+            </button>
             <div style="display:none">
                 <input type="number" th:value="${userNumber}" id="userNumber">
                 <input type="number" th:value="${id}" id="id">
@@ -153,7 +200,10 @@
 
 
 
+
         let btnApproval = document.querySelector("#btnApproval");
+
+        if(btnApproval != null) {
 
         btnApproval.addEventListener("click", function () {
 
@@ -179,19 +229,86 @@
                 success: function (data) {
 
                     document.write(data);
+                    opener.location.reload();
+
+                },
+            });
+
+        })
+}
+
+        let btnReject = document.querySelector("#btnReject");
+
+        btnReject.addEventListener("click", function () {
+
+           let token = $("meta[name='_csrf']").attr("content");
+           let header = $("meta[name='_csrf_header']").attr("content");
+
+           let opinion = document.querySelector('#opinion').value;
+           let userNumber = document.querySelector('#userNumber').value;
+           let id = document.querySelector('#id').value;
+
+           $.ajax({
+
+                type: "POST",
+                url: "/reject",
+                data: {
+                    "opinion": opinion,
+                    "userNumber": userNumber,
+                    "id": id
+                },
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                },
+                success: function (data) {
+
+                    document.write(data);
+                    opener.location.reload();
 
                 },
             });
 
         })
 
-        let btnReject = document.querySelector("#btnReject");
 
-        btnReject.addEventListener("click", function () {
 
-            console.log("반려 눌렀음!")
+        let btnLastApproval = document.querySelector("#btnLastApproval");
+
+        if(btnLastApproval != null) {
+
+        btnLastApproval.addEventListener("click", function () {
+
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            let opinion = document.querySelector('#opinion').value;
+            let userNumber = document.querySelector('#userNumber').value;
+            let id = document.querySelector('#id').value;
+
+          $.ajax({
+
+                type: "POST",
+                url: "/finalApproval",
+                data: {
+                    "opinion": opinion,
+                    "userNumber": userNumber,
+                    "id": id
+                },
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                },
+                success: function (data) {
+
+                    document.write(data);
+                    opener.location.reload();
+
+                },
+            });
 
         })
+}
+
+
 
 
 

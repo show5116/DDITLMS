@@ -15,5 +15,6 @@ public interface SanctnLnRepositoryCustom {
     QueryResults<SanctnLn> inquireTotal(Long userNumber);
     List<SanctnDTO> showSanctnLine2(Long id);
     SanctnLn findSanctnId(Long userNumber, Long id);
+    SanctnLn findNextSanctnId(Long userNumber, Long id);
 
 }

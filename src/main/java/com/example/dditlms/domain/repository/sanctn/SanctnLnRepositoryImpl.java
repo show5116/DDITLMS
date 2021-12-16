@@ -4,6 +4,7 @@ import com.example.dditlms.domain.dto.QSanctnDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
+import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.querydsl.core.QueryResults;
@@ -152,8 +153,20 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .select(sanctnLn1)
                 .from(sanctnLn1)
                 .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
-                        ,sanctnLn1.sanctnSn.sanctnId.eq(id))
+                        , sanctnLn1.sanctnSn.sanctnId.eq(id))
                 .fetchOne();
+
+    }
+
+    @Override
+    public SanctnLn findNextSanctnId(Long userNumber, Long id) {
+
+        return queryFactory
+                .selectFrom(sanctnLn1)
+                .where(sanctnLn1.sanctnSn.sanctnId.eq(id)
+                        , sanctnLn1.sanctnLnProgress.eq(SanctnLnProgress.WAITING))
+                .orderBy(sanctnLn1.sanctnStep.asc())
+                .fetchFirst();
 
     }
 
