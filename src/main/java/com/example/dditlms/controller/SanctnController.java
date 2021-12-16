@@ -9,6 +9,7 @@ import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.security.AccountContext;
+import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,8 @@ public class SanctnController {
     private final SanctnService sanctnService;
 
     private final SanctnRepository sanctnRepository;
+
+    private final SanctnLnService sanctnLnService;
 
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
@@ -273,8 +276,8 @@ public class SanctnController {
         return "/pages/sanction::#test";
 
     }
-    
-    
+
+
     //결재별 상세조회
     @GetMapping("/showSanctn/{id}")
     public String sanctnDetail(@PathVariable("id") Long id, Model model) {
@@ -287,6 +290,7 @@ public class SanctnController {
         }
         Long userNumber = member.getUserNumber();
 
+
         //로그인한 사람의 정보를 넘겨 줌
         model.addAttribute("userNumber", userNumber);
 
@@ -298,8 +302,130 @@ public class SanctnController {
 
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
-        log.info(String.valueOf(sanctnDTOS));
+
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+
 
         return "/pages/sanctionDetail";
     }
+
+    @PostMapping ("/approval")
+    public String apropval(@RequestParam Map<String, Object> param, Model model) {
+
+        //의견 남기기 + 결재승인 처리
+        Object opinion = param.get("opinion");
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        Long id = Long.valueOf((String) param.get("id"));
+
+        sanctnLnService.updateSanctnLn(opinion.toString(), userNumber, id);
+
+
+        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        }catch (ClassCastException e){
+        }
+        Long userNumber2 = member.getUserNumber();
+
+
+        //로그인한 사람의 정보를 넘겨 줌
+        model.addAttribute("userNumber", userNumber2);
+
+        Optional<Sanctn> details = sanctnRepository.findById(id);
+        Sanctn sanctn = details.get();
+        model.addAttribute("details", sanctn);
+
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+
+        model.addAttribute("sanctnLnList", sanctnDTOS);
+
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+
+        return "/pages/sanctionDetail";
+
+    }
+
+    @PostMapping ("/reject")
+    public String reject(@RequestParam Map<String, Object> param, Model model) {
+
+        //의견 남기기 + 결재반려 처리
+
+        Object opinion = param.get("opinion");
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        Long id = Long.valueOf((String) param.get("id"));
+
+        sanctnLnService.rejectSanctnLn(opinion.toString(), userNumber, id);
+
+        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        }catch (ClassCastException e){
+        }
+        Long userNumber2 = member.getUserNumber();
+
+
+        //로그인한 사람의 정보를 넘겨 줌
+        model.addAttribute("userNumber", userNumber2);
+
+        Optional<Sanctn> details = sanctnRepository.findById(id);
+        Sanctn sanctn = details.get();
+        model.addAttribute("details", sanctn);
+
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+
+        model.addAttribute("sanctnLnList", sanctnDTOS);
+
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+
+        return "/pages/sanctionDetail";
+    }
+
+    @PostMapping ("/finalApproval")
+    public String finalApproval(@RequestParam Map<String, Object> param, Model model) {
+
+        //의견 남기기 + 최종결재 처리
+
+        Object opinion = param.get("opinion");
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        Long id = Long.valueOf((String) param.get("id"));
+
+        sanctnLnService.lastUpadteSanctnLn(opinion.toString(), userNumber, id);
+
+        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        }catch (ClassCastException e){
+        }
+        Long userNumber2 = member.getUserNumber();
+
+
+        //로그인한 사람의 정보를 넘겨 줌
+        model.addAttribute("userNumber", userNumber2);
+
+        Optional<Sanctn> details = sanctnRepository.findById(id);
+        Sanctn sanctn = details.get();
+        model.addAttribute("details", sanctn);
+
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+
+        model.addAttribute("sanctnLnList", sanctnDTOS);
+
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+
+        return "/pages/sanctionDetail";
+    }
+
 }

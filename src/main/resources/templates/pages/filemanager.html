@@ -6,6 +6,8 @@
           layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
         <div class="container-fluid">
+            <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+            <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
             <div class="page-header">
                 <div class="row">
                     <div class="col-sm-6">
@@ -115,20 +117,20 @@
 
 <!--                                        </form>-->
                                         <div class="btn btn-outline-primary ms-2">
-                                            <form id="upload-file-form" name="uploadFormName">
+                                            <form type="post" th:action="@{/cloud/upload}" id="upload-file-form" enctype="multipart/form-data" name="uploadFormName">
                                                 <label for="upload-file-input">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                                                     Upload
                                                 </label>
                                                 <input id="upload-file-input" type="file" name="uploadfile" accept="*" style="display: none;"/>
-                                                <input type="file" id="input_img" />
+<!--                                                <input type="file" id="input_img" />-->
                                             </form>
                                         </div>
-                                        <div>
-                                            <div class="img_wrap">
-                                                <img id="img" />
-                                            </div>
-                                        </div>
+<!--                                        <div>-->
+<!--                                            <div class="img_wrap">-->
+<!--                                                <img id="img" />-->
+<!--                                            </div>-->
+<!--                                        </div>-->
 <!--                                        <div class="collapse" id="collapse1" aria-labelledby="heading1" data-bs-parent="#accordionclose" style="">-->
 <!--                                            <div class="card">-->
 <!--                                                <div class="card-header pb-0">-->
@@ -157,19 +159,22 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div id="folderReplace" class="card-body file-manager">
                                 <h4>All Files</h4>
                                 <h6>Recently opened files</h6>
                                 <ul class="files">
-                                    <li class="file-box" th:each="list : ${List}">
+                                    <li class="file-box" th:each="select : ${selectFolder}">
                                         <div class="file-top">
-                                            <i th:if="${list.extension == 'folder'}" class="fa fa-folder f-36 txt-warning"></i>
-                                            <i th:unless="${list.extension == 'folder'}" class="fa fa-file-image-o txt-primary"></i>
+                                            <i class="fa fa-folder f-36 txt-warning"></i>
+<!--                                            <i th:if="${list.extension == 'folder'}" class="fa fa-folder f-36 txt-warning"></i>-->
+<!--                                            <i th:unless="${list.extension == 'folder'}" class="fa fa-file-image-o txt-primary"></i>-->
                                             <i class="fa fa-ellipsis-v f-14 ellips"></i></div>
                                         <div class="file-bottom">
 <!--                                            <h6 th:text="${list.fileName}">Logo.psd </h6>-->
-                                            <h6 th:if="${list.extension == 'folder'}" th:text="${list.fileName}">Logo.psd </h6>
-                                            <h6 th:unless="${list.extension == 'folder'}" th:text="${list.fileName}+${list.extension}">Logo.psd </h6>
+                                            <h6 th:text="${select.fileName}">Logo.psd </h6>
+<!--                                            <h6 th:if="${list.extension == 'folder'}" th:text="${list.fileName}">Logo.psd </h6>-->
+<!--                                            <h6 th:unless="${list.extension == 'folder'}" th:text="${list.fileName}+${list.extension}">Logo.psd </h6>-->
                                             <p class="mb-1">2.0 MB</p>
                                             <p> <b>last open : </b>1 hour ago</p>
                                         </div>
@@ -203,9 +208,10 @@
 <!--                                            </div>-->
 <!--                                        </a> &lt;!&ndash; 상위 폴더 구하는거 아이디로 model통해서 보내 &ndash;&gt;-->
 <!--                                    </li>-->
-                                    <li class="folder-box">
+                                    <li th:if="${parentFolder != null}" class="folder-box" >
 <!--                                        <a class="folder-move" th:id="${objectListing.getCommonPrefixes()[0]}">-->
-                                        <a class="folder-move" th:id="${currentLocation}">
+                                        <!-- 여기에 selectFolder[0].fileIdx를 넣어줘야하는데 마지막 경로의 폴더면 [0]가 없어서 오류남. -->
+                                        <a class="folder-move" th:id="${parentFolder}"> <!-- 폴더 무브의 아이디는 parent idx여야지? 맞지?  th:id="${}"-->
 <!--                                            ${#strings.substringBefore(해당 변수, "문자열")}  이러면 문자열의 이전까지 나옴-->
                                             <div class="media"><i class="fa fa-folder f-36 txt-warning"></i>
                                                 <div class="media-body ms-3">
@@ -214,11 +220,11 @@
                                             </div>
                                         </a> <!-- 상위 폴더 구하는거 아이디로 model통해서 보내 -->
                                     </li>
-                                    <li class="folder-box" th:each="folder : ${objectListing.commonPrefixes}">
-                                        <a class="folder-move" th:id="${folder}">
+                                    <li class="folder-box" th:each="folder : ${selectFolder}"> <!-- 폴더 무브의 아이디는 idx여야지? 맞지?-->
+                                        <a class="folder-move" th:id="${folder.fileIdx}">
                                             <div class="media"><i class="fa fa-file-archive-o f-36 txt-warning"></i>
                                                 <div class="media-body ms-3">
-                                                        <h6 class="mb-0" th:text="${#strings.arraySplit(folder, '/')[#arrays.length(#strings.arraySplit(folder, '/')) -1]}"   >Endless admin</h6>
+                                                        <h6 class="mb-0" th:text="${folder.fileName}"   >Endless admin</h6>
 <!--                                                        <p>? Files</p>-->
                                                 </div>
                                             </div>
@@ -228,13 +234,13 @@
     <!-- ------------------------------------------------------------------------------------------------------------------------------------ -->
                                 <h5 class="mt-4">Files</h5>
                                 <ul class="files">
-                                    <li class="file-box" th:each="last : ${objectListing.objectSummaries}">
-                                        <a class="file-target" th:id="${last.key}">
+                                    <li class="file-box" th:each="files : ${selectFiles}">
+                                        <a class="file-target" th:id="${files.fileIdx}">
                                             <div class="file-top">  <i class="fa fa-file-archive-o txt-secondary"></i><i class="fa fa-ellipsis-v f-14 ellips"></i></div>
                                             <div class="file-bottom">
-                                                <h6 th:text="${#strings.arraySplit(last.key, '/')[#arrays.length(#strings.arraySplit(last.key, '/')) -1]}">Project.zip </h6>
-                                                <p class="mb-1" th:text="${last.size/1024}+KB">1.90 GB</p>
-                                                <p> <b>last modify : </b> <span th:text="${last.lastModified}" 1 hour ago></span></p>
+                                                <h6 th:text="${files.fileName}" >Project.zip </h6>
+                                                <p class="mb-1" th:text="${files.fileSize/1024}+KB">1.90 GB</p>
+                                                <p> <b>last modify : </b> <span th:text="${files.openTime}" 1 hour ago></span></p>
                                             </div>
                                         </a>
                                     </li>
@@ -248,26 +254,26 @@
 
     <!-- Container-fluid Ends-->
     <script th:inline="javascript">
-        var sel_file;
-
-        $(function(){
-            $("#input_img").on("change",handleImgFileSelect);
-        });
-
-        function handleImgFileSelect(e){
-            var files = e.target.files;
-            var filesArr = Array.prototype.slice.call(files);
-
-            filesArr.forEach(function(f){
-                console.log(f);
-                sel_file = f;
-                var reader = new FileReader();
-                reader.onload = function(e){
-                    $("#img").attr("src",e.target.result);
-                }
-                reader.readAsDataURL(f);
-            });
-        }
+        // var sel_file;
+        //
+        // $(function(){
+        //     $("#input_img").on("change",handleImgFileSelect);
+        // });
+        //
+        // function handleImgFileSelect(e){
+        //     var files = e.target.files;
+        //     var filesArr = Array.prototype.slice.call(files);
+        //
+        //     filesArr.forEach(function(f){
+        //         console.log(f);
+        //         sel_file = f;
+        //         var reader = new FileReader();
+        //         reader.onload = function(e){
+        //             $("#img").attr("src",e.target.result);
+        //         }
+        //         reader.readAsDataURL(f);
+        //     });
+        // }
 
         console.log("스크립트 있음");
         const newFolder = document.querySelector("#newFolder");
@@ -276,8 +282,10 @@
         const folderReplaceWith = document.querySelector("#folderReplace");
         const uploadFileInput = document.querySelector("#upload-file-input");
 
-        let targetId = null;
         let fileTargetId = null;
+        /* <![CDATA[ */
+        let targetId = /*[[${idx}]]*/;
+        /* ]]> */
 
         folderMoves.forEach(folderMove => replaceEvent(folderMove));
 
@@ -316,16 +324,25 @@
             newFolder.addEventListener("click", function(){
                 console.log("이벤트 리스너");
                 console.log(targetId);
+                const fileDataDTO = {
+                    fileName : createFolder.value,
+                    extension : "folder",
+                    fileSize : 0,
+                    createFolder: new Date(),
+                    openTime: new Date(),
+                    trash : 0
+                }
+                if(targetId!=null){
 
-                const params = {
-                    targetId : targetId,
-                    createFolder : createFolder.value,
-                    flag : "folder"
-                };
+                    fileDataDTO.parentId = targetId*1;
+                }
+
+                console.log(fileDataDTO);
                 $.ajax({
-                    url:"/cloud/folderUpload",
-                    data:params,
+                    url:"/cloud/addFolder",
+                    data: JSON.stringify(fileDataDTO),
                     type: "POST",
+                    contentType : "application/json; charset=UTF-8",
                     beforeSend: function(xhr){
                         xhr.setRequestHeader(header,token);
                     }
@@ -334,6 +351,7 @@
                     console.log("전" + fragment);
                     $("#folderReplace").replaceWith(fragment);
                     folderMoves = document.querySelectorAll(".folder-move");
+                    fileTargets = document.querySelectorAll(".file-target");
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
                     fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
                 })
@@ -384,15 +402,21 @@
         });
 
         function uploadFile(val){
-            // document.uploadFormName.submit();
             console.log("val : "+ val);
-            console.log("네임 찍는다 : " + document.getElementById("upload-file-input").files[0]);
+            const fileSplit = val.split("\\");
+            const fileName = fileSplit[fileSplit.length-1];
+            console.log(fileName+"dlld")
+            const fileNameSp = fileName.split(".");
+            console.log("확장자찍는다 : " + fileNameSp[fileNameSp.length-1]);
+            console.log("네임 찍는다 : " + fileName.substring(0,fileName.lastIndexOf(".")));
+            document.uploadFormName.submit();
+
             const params = {
                 value : val,
                 targetId : targetId
             }
             $.ajax({
-                url:"/cloud/fileUpload",
+                url:"/cloud/upload",
                 data: params,
                 type: "POST",
                 enctype: "multipart/form-data",

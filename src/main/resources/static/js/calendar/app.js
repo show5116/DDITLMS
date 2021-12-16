@@ -68,13 +68,12 @@
             refreshScheduleVisibility();
         },
         'beforeDeleteSchedule': function(e) {
-            alert("deleteInto");
 
             console.log('beforeDeleteSchedule', e);
 
             myDeleteSchedule(e);
 
-            cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
+            // cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
 
         },
         'afterRenderSchedule': function(e) {
@@ -416,6 +415,7 @@
     function setSchedules() {
 
         cal.clear();
+
         ScheduleList.forEach(Schedule => {
             let findCalender = null;
             CalendarList.forEach(calendar => {
@@ -428,6 +428,7 @@
             schedule.dragBgColor = findCalender.dragBgColor;
             schedule.borderColor = findCalender.borderColor;
         })
+        console.log("--------------SETSCHEDULES(ScheduleList)------------");
         console.log(ScheduleList);
         setTimeout(function (){
 
@@ -465,28 +466,35 @@
 // LNY function STR=================================================================================
     //일정 삭체--------------------------------------------------------------------------------------
     function myDeleteSchedule(scheduleData){
-        alert("deleteSchedule into");
-        console.log(scheduleData.id);
-        const deleteSchedule = scheduleData.id;
+        console.log(scheduleData.schedule.id);
+        const delSchedule = scheduleData.schedule.id;
+        const params = {
+            deleteSchedule : delSchedule
+        };
+
+        console.log(params);
 
         $.ajax({
             url : "/calendar/delete",
-            data : deleteSchedule,
+            data : params,
             method : "Post",
             dataType : "json",
-            befoerSend: function(xhr){
+            beforeSend: function(xhr){
                 xhr.setRequestHeader(header,token);
             }
         })
             .done(function(fragment){
                 if(fragment.state != "true"){
-                    swal("삭제 실패")
+                    swal("본인 일정만 삭제 가능합니다.")
                     return;
                 }
-                swal("삭제 성공");
+                console.log(fragment);
+                // swal("삭제 성공");
 
+                cal.deleteSchedule(scheduleData.schedule.id, scheduleData.schedule.calendarId)
             });
     }
+
     //일정 등록--------------------------------------------------------
     const sendBtn = document.querySelector("#sendBtn");
     const cancelBtn = document.querySelector("#cancel-btn");
@@ -494,7 +502,7 @@
     //일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화 START
     function cleanSchedule(){
         const type = document.querySelector("#new-schedule-type");
-        const typeDetail = document.querySelector("#new-schedule-type-detaile")
+        const typeDetail = document.querySelector("#new-schedule-type-detail")
         const title = document.querySelector("#new-schedule-title");
         const content = document.querySelector("#message-text");
         const location = document.querySelector("#new-schedule-location");
@@ -530,7 +538,7 @@
     sendBtn.addEventListener("click", function(){
         console.log("aaa");
         var type = document.querySelector("#new-schedule-type");
-        var typeDetail = document.querySelector("#new-schedule-type-detaile")
+        var typeDetail = document.querySelector("#new-schedule-type-detail")
         var title = document.querySelector("#new-schedule-title");
         var content = document.querySelector("#message-text");
         var location = document.querySelector("#new-schedule-location");
@@ -550,6 +558,7 @@
             return;
         }
 
+        console.log("------------ADDEVENTLISTENER-------------");
         console.log(startDate.value);
 
         const params = {
@@ -581,11 +590,12 @@
                     swal("예상치 못한 에러가 발생하였습니다.")
                     return;
                 }
-                swal("스케줄이 등록되었습니다.");
+                // swal("스케줄이 등록되었습니다.");
+                console.log("----------ADDEVENTLISTENER(성공후 넘어온 일정리스트)-------------");
                 console.log(fragment.list);
                 const cancelBtn = document.querySelector("#cancel-btn");
                 cancelBtn.click();
-
+                ScheduleList=[];
                 const originScheduleList = new Array();
                 $.each(fragment.list,function(i,v){
                     const schedule = new Object();
@@ -605,9 +615,8 @@
 
                     ScheduleList.push(schedule);
                 })
-                setSchedules();
 
-                cal.createSchedules([schedule]);
+                setSchedules();
                 refreshScheduleVisibility();
                 cleanSchedule();
             })
@@ -617,11 +626,51 @@
             })
 
     })
-    //모달창에 입력받은 값 DB등록 END
+    //모달창에 입력받은 값 DB 등록 END
+
+    // 구분에서 학과 선택시 학과 목록 보이기
+    const scheduleType = document.querySelector("#new-schedule-type");
+
+    scheduleType.onchange = function() {
+        const typeDetail = document.querySelector("#new-schedule-type-detail");
+        const typeOption = scheduleType.options[scheduleType.selectedIndex].innerText;
 
 
+        const typeDetailOptions = {
+            none: ['선택'],
+            private: ['개인'],
+            total: ['학교'],
+            college: ['건축학부', '전기전자학부'],
+            major: ['건축설비학과', '건축학과', '교육학과', '유아교육학과', '응용소프트웨어학과',
+                '전기과', '전자과', '정보통신공학', '조경학과',
+                '초등교육학과', '컴퓨터공학', '컴퓨터통신학부']
 
+        }
+        switch (typeOption) {
+            case '선택':
+                var detailOption = typeDetailOptions.none;
+                break;
+            case '개인':
+                var detailOption = typeDetailOptions.private;
+                break;
+            case '학교':
+                var detailOption = typeDetailOptions.total;
+                break;
+            case '학부':
+                var detailOption = typeDetailOptions.college;
+                break;
+            case '학과':
+                var detailOption = typeDetailOptions.major;
+                break;
+        }
 
+        typeDetail.options.length = 0;
+        for (var i=0; i< detailOption.length; i++){
+            const option = document.createElement('option');
+            option.innerText = detailOption[i];
+            typeDetail.append(option);
+        }
+    }
 
 
 

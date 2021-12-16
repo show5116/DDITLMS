@@ -2,6 +2,7 @@ package com.example.dditlms.domain.repository;
 
 import com.example.dditlms.domain.entity.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityManager;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import static com.example.dditlms.domain.entity.QMajor.major;
 import static com.example.dditlms.domain.entity.QStudent.student;
 
+@Slf4j
 public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
@@ -31,30 +33,64 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
                 .fetchOne();
     }
 
-//    public List<Calendar> getScheduleList(Member userNumber, String scheduleType) {
-//        return queryFactory
-//                .select(QCalendar.calendar)
-//                .from(QCalendar.calendar)
-//                .where(QCalendar.calendar.member.eq(userNumber)
-//                        .or((QCalendar.calendar.scheduleType.eq(scheduleType))
-//                        .and(QCalendar.calendar.scheduleTypeDetail.eq(queryFactory
-//                                                                            .select(major.korean)
-//                                                                            .from(major, student)
-//                                                                            .where(student.member.eq(userNumber), student.major.eq(major))))))
-//                .fetch();
-//    }
-        public List<Calendar> getAllScheduleList(Member userNumber, String scheduleType) {
-            return queryFactory
-                    .select(QCalendar.calendar)
-                    .from(QCalendar.calendar)
-                    .where(QCalendar.calendar.member.eq(userNumber)
-                            .or(QCalendar.calendar.scheduleType.eq("TOTAL"))
-                            .or((QCalendar.calendar.scheduleType.eq(scheduleType))
-                                    .and(QCalendar.calendar.scheduleTypeDetail.eq(queryFactory
-                                                                                .select(major.korean)
-                                                                                .from(student, major)
-                                                                                .where(student.member.eq(userNumber), student.major.eq(major))))))
-                    .fetch();
-        }
+    @Override
+    public List<Calendar> getAllScheduleList(Member userNumber) {
+        return queryFactory
+                .select(QCalendar.calendar)
+                .from(QCalendar.calendar)
+                .where(QCalendar.calendar.member.eq(userNumber)
+                        .or(QCalendar.calendar.scheduleType.eq("TOTAL"))
+                        .or((QCalendar.calendar.scheduleType.eq("MAJOR"))
+                                .and(QCalendar.calendar.scheduleTypeDetail.eq(queryFactory
+                                                                            .select(major.korean)
+                                                                            .from(student, major)
+                                                                            .where(student.member.eq(userNumber), student.major.eq(major))))))
+                .fetch();
+    }
+
+    @Override
+    public int countConfirmScheduleWriter(Calendar calendar) {
+        int count =(int) queryFactory
+                            .select(QCalendar.calendar)
+                            .from(QCalendar.calendar)
+                            .where(QCalendar.calendar.id.eq(calendar.getId()),
+                                    QCalendar.calendar.member.eq(calendar.getMember()))
+                            .fetchCount();
+        log.info("---------------" + count+"");
+        return count;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
