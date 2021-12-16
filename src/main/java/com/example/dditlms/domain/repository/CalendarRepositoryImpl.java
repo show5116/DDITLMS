@@ -60,22 +60,13 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
         return count;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public List<String> getAllMajorList() {
+        return queryFactory
+                .select(major.korean)
+                .from(major)
+                .fetch();
+    }
 
 
 }

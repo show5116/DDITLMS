@@ -5,6 +5,52 @@
 /* global moment, tui, chance */
 /* global findCalendar, CalendarList, ScheduleList, generateSchedule */
 
+var myRole;
+var majorList=[];
+
+getMyInfo();
+getMajor();
+
+
+//로그인한 사람 권한가져오기
+function getMyInfo(){
+    $.ajax({
+        url:"/calendar/memberInfo",
+        method:"get",
+        dataType: "json"
+    })
+        .done(function(fragment){
+            const test1 = fragment.myRole;
+            console.log("ajax 성공후 가져온 본인 역할"+ test1);
+
+            myRole = test1;
+
+        })
+        .fail(function (er){
+            swal("에러");
+            console.log(er);
+        })
+
+}
+
+//학과리스트 가져오기
+function getMajor(){
+    $.ajax({
+        url:"/calendar/getMajor",
+        method:"get",
+        dataType:"json"
+    })
+        .done(function(fragment){
+            const test2 = fragment.getMajorList;
+            console.log("ajax 성공후 가져온 학과 리스트");
+            console.log(test2);
+
+            majorList.push(test2);
+
+        })
+}
+
+
 (function(window, Calendar) {
     var cal, resizeThrottled;
     var useCreationPopup = false;
@@ -43,6 +89,7 @@
         'beforeCreateSchedule': function(e) {
             const modalBtn = document.querySelector("#schedule_modal_btn");
             modalBtn.click();
+            getTypeList();
             console.log('beforeCreateSchedule', e);
             // saveNewSchedule(e);
 
@@ -56,8 +103,6 @@
 
             var schedule = e.schedule;
             var changes = e.changes;
-
-
 
             console.log('beforeUpdateSchedule', e);
 
@@ -499,7 +544,7 @@
     const sendBtn = document.querySelector("#sendBtn");
     const cancelBtn = document.querySelector("#cancel-btn");
 
-    //일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화 START
+    //일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화
     function cleanSchedule(){
         const type = document.querySelector("#new-schedule-type");
         const typeDetail = document.querySelector("#new-schedule-type-detail")
@@ -525,7 +570,6 @@
         alarmSms.value = "";
         alarmKakao.value = "";
     };
-    //일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화 END
 
     //취소버튼 클릭시 모달창 내용 초기와 & 창 닫기
     cancelBtn.addEventListener("click",function(){
@@ -533,8 +577,7 @@
 
     })
 
-
-    //모달창에 입력받은 값 DB등록 START
+    //모달창에 입력받은 값 DB등록
     sendBtn.addEventListener("click", function(){
         console.log("aaa");
         var type = document.querySelector("#new-schedule-type");
@@ -626,26 +669,23 @@
             })
 
     })
-    //모달창에 입력받은 값 DB 등록 END
 
-    // 구분에서 학과 선택시 학과 목록 보이기
+    // 일정 구분에서 학과 선택시 학과 목록 보이기
     const scheduleType = document.querySelector("#new-schedule-type");
 
     scheduleType.onchange = function() {
         const typeDetail = document.querySelector("#new-schedule-type-detail");
         const typeOption = scheduleType.options[scheduleType.selectedIndex].innerText;
 
-
+        console.log("ajax밖에서 majorList : " + majorList);
         const typeDetailOptions = {
             none: ['선택'],
             private: ['개인'],
             total: ['학교'],
             college: ['건축학부', '전기전자학부'],
-            major: ['건축설비학과', '건축학과', '교육학과', '유아교육학과', '응용소프트웨어학과',
-                '전기과', '전자과', '정보통신공학', '조경학과',
-                '초등교육학과', '컴퓨터공학', '컴퓨터통신학부']
-
+            major: majorList[0]
         }
+
         switch (typeOption) {
             case '선택':
                 var detailOption = typeDetailOptions.none;
@@ -671,6 +711,60 @@
             typeDetail.append(option);
         }
     }
+
+
+    //권한별로 다른 일정구분 목록리스트
+    function getTypeList() {
+
+        console.log("getTypeList로 넘어온 role : ");
+        const type = document.querySelector("#new-schedule-type");
+
+
+        const typeOptions = {
+            student: ['선택', '개인'],
+            professor: ['선택', '개인', '학과'],
+            academic: ['선택', '개인', '학과', '학부'],
+            admin: ['선택', '개인', '학교', '학부'],
+            general: ['선택', '개인', '학교'],
+            studentDep: ['선택', '개인', '학교']
+        }
+
+        console.log("switch전 role : " );
+
+        switch (myRole) {
+            case 'ROLE_STUDENT':
+                var typeOption = typeOptions.student;
+                break;
+            case 'ROLE_PROFESSOR':
+                var typeOption = typeOptions.professor;
+                break;
+            case 'ROLE_ACCADEMIC_DEP':
+                var typeOption = typeOptions.academic;
+                break;
+            case 'ROLE_ADMIN_DEP':
+                var typeOption = typeOptions.admin;
+                break;
+            case 'ROLE_GENERAL_DEP':
+                var typeOption = typeOptions.general;
+                break;
+            case 'ROLE_STUDENT_DEP':
+                var typeOption = typeOptions.studentDep;
+                break;
+        }
+
+        type.options.length = 0;
+        for (var i =0; i< typeOption.length; i++){
+            const optionTag = document.createElement('option');
+            optionTag.innerText = typeOption[i];
+            type.append(optionTag);
+        }
+    }
+
+
+
+
+
+
 
 
 
