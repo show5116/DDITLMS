@@ -38,7 +38,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         System.out.println("count : "+ count);
 
-        if (count > 0 ){
+        if (count == 1 ){
             calendarRepository.delete(calendar);
             return true;
         } else {
