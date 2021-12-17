@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Major_Selection {
+public enum MajorSelection {
     HUMANITIES("인문계열"),
     SOCIAL("사회계열"),
     EDUCATION("교육계열"),

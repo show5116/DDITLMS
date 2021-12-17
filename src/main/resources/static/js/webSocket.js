@@ -10,22 +10,18 @@ const param = {
     command : "notice",
     targets : [2014161091,20210100001]
 };
+sendMessage(param);
 */
 
 
 /*
 채팅 form
 const param = {
-    title: "로그인 페이지",
     message : "이준석 바보",
-    url : "/login",
-    command : "chat",
-    target : {
-
-    }
+    target : 2014161091
+    command : "chat"
 };
-
-
+sendMessage(param);
  */
 webSocket.onmessage = function (data){
     var message = decodeURIComponent(atob(data.data));
@@ -41,11 +37,11 @@ webSocket.onmessage = function (data){
     }else if(socketJson.type == "chat"){
 
     }
-
 }
 
 webSocket.onopen = function (data){
     getNotification();
+    getChat();
 }
 
 webSocket.onclose = function (data){}

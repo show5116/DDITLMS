@@ -2,11 +2,14 @@ package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.common.Menu;
 import com.example.dditlms.domain.entity.Bookmark;
+import com.example.dditlms.domain.entity.Chat;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.Notification;
+import com.example.dditlms.domain.repository.ChatRepository;
 import com.example.dditlms.domain.repository.NotificationRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.BookmarkService;
+import com.example.dditlms.service.ChatService;
 import com.example.dditlms.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -38,6 +41,10 @@ public class AdditionalController {
 
     private final NotificationService notificationService;
 
+    private final ChatService chatService;
+
+    private final ChatRepository chatRepository;
+
     @ResponseBody
     @PostMapping("/notification")
     public String getNotification(HttpServletResponse response){
@@ -50,7 +57,7 @@ public class AdditionalController {
             member = ((AccountContext)authentication.getPrincipal()).getMember();
         }catch(ClassCastException e){
         }
-        List<Notification> notificationList = notificationRepository.findAllByMember(member);
+        List<Notification> notificationList = notificationRepository.findAllByMemberOrderByEnterDateDesc(member);
         JSONArray jsonArray = new JSONArray();
         for(Notification notification : notificationList){
             Map<String,Object> map = new HashMap<>();
@@ -79,7 +86,7 @@ public class AdditionalController {
             member = ((AccountContext)authentication.getPrincipal()).getMember();
         }catch(ClassCastException e){
         }
-        List<Notification> notificationList = notificationRepository.findAllByMember(member);
+        List<Notification> notificationList = notificationRepository.findAllByMemberOrderByEnterDateDesc(member);
         JSONArray jsonArray = new JSONArray();
         for(Notification notification : notificationList){
             Map<String,Object> map = new HashMap<>();
@@ -95,6 +102,21 @@ public class AdditionalController {
         return jsonObject.toJSONString();
     }
 
+    @PostMapping("/getChat")
+    @ResponseBody
+    public String getChat(HttpServletResponse response){
+        response.setContentType("text/html; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
+        Member member = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        JSONObject jsonObject = new JSONObject();
+        List<Chat> chatList = chatRepository.findAllBySelfOrderByChatTimeDesc(member);
+        return jsonObject.toJSONString();
+    }
 
     @PostMapping("/bookmark")
     public void addBookmark(HttpServletResponse response, HttpServletRequest request,

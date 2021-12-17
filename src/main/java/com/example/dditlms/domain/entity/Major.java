@@ -1,6 +1,6 @@
 package com.example.dditlms.domain.entity;
 
-import com.example.dditlms.domain.common.Major_Selection;
+import com.example.dditlms.domain.common.MajorSelection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +19,7 @@ public class Major{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "MAJOR_SE",nullable = true)
-    private Major_Selection selection;
+    private MajorSelection selection;
 
     @Column(name = "MAJOR_NM",nullable = true)
     private String name;

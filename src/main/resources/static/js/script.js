@@ -71,26 +71,56 @@ function NotificationList(fragment){
         dotSpan.classList.add("dot-animated");
         let dropboxHtml = "";
         let eleHtml = "";
-        fragment.notificationList.forEach(notifictionEle => {
+        const now = new Date();
+        for(let i=0; i<3; i++){
+            const notifictionEle = fragment.notificationList[i];
+            const that = new Date(notifictionEle.time);
+            let minute = Math.floor((now - that)/1000/60);
+            let timeText = "";
+            if(minute == 0){
+                timeText = "1분미만";
+            }else if(minute <= 60){
+                timeText = `${minute}분전`;
+            }else if(minute >60 && minute<=1440){
+                timeText = `${Math.floor(minute/60)}시간전`;
+            }else if(minute > 1440){
+                timeText = `${Math.floor(minute/1440)}일전`;
+            }
             eleHtml = `
                 <li id="NOT${notifictionEle.id}" class="noti-primary" onclick="removeNotification()">
                     <div class="media">
                         <div class="media-body">
-                            <p><a class="${notifictionEle.url}">${notifictionEle.title}</a></p>
-                            <span>${notifictionEle.time}</span>
+                            <p><a class="${notifictionEle.url}">${notifictionEle.content}</a></p>
+                            <span>${timeText}</span>
                             <i class="icon-trash pull-right"></i>
                         </div>
                     </div>
                 </li>
             `;
-        });
-        dropboxHtml += eleHtml;
+            dropboxHtml += eleHtml;
+        }
         notificationDropbox.innerHTML =
             `<li>
                 <p class="f-w-700 mb-0">${listLength}개의 알림이 있습니다.<span class="pull-right badge badge-primary badge-pill">${listLength}</span></p>
              </li>
              ${dropboxHtml}`;
     }
+}
+
+// chatting
+function getChat(){
+    const chatDropBox = document.querySelector(".chat-dropdown");
+    $.ajax({
+        url: "/getChat",
+        method: "Post",
+        dataType: "json",
+        beforeSend: function (xhr){
+            xhr.setRequestHeader(header,token);
+        }
+    })
+    .done(function (fragment){
+
+    })
 }
 
 // bookmark 삭제
