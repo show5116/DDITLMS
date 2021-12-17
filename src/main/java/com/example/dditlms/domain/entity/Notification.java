@@ -1,9 +1,6 @@
 package com.example.dditlms.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -19,8 +16,8 @@ import java.util.Date;
 @DynamicUpdate
 @Builder
 @Table(name="NTCN")
-@Getter
-@Where(clause = "delete = 'N'")
+@Getter @Setter
+@Where(clause = "DELETE_AT = 'N'")
 public class Notification {
 
     @Id
