@@ -1,7 +1,12 @@
 package com.example.dditlms.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -9,29 +14,37 @@ import java.util.Date;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@DynamicInsert
+@DynamicUpdate
+@Builder
 @Table(name="NTCN")
 @Getter
-@Where(clause = "delete = 'Y'")
+@Where(clause = "delete = 'N'")
 public class Notification {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="NTCN_SN")
     private Long id;
 
-    @Column(name="OCCRRNC_TIME")
+    @Column(name="OCCRRNC_TIME",nullable = false)
     private Date enterDate;
 
-    @Column(name="NTCN_NM")
+    @Column(name="NTCN_NM",nullable = false)
     private String name;
 
-    @Column
+    @Column(name="NTCN_CT",nullable = false)
+    private String content;
+
+    @Column(nullable = false)
     private String URL;
 
-    @Column(name="DELETE_AT")
+    @Column(name="DELETE_AT",nullable = false)
+    @ColumnDefault("'N'")
     private Character delete;
 
-    @ManyToOne
-    @JoinColumn(name="MBER_NO")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MBER_NO",nullable = false)
     private Member member;
 }

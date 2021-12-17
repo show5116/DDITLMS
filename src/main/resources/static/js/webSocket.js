@@ -1,17 +1,36 @@
 
 const webSocket = new WebSocket(`ws://${location.host}/ws`);
 
+
+//알람 form
 const param = {
     title: "로그인 페이지",
     message : "이준석 바보",
     url : "/login",
-    command : "notice"
+    command : "notice",
+    targets : [2014161091,20210100001]
 };
 
+
+
+/*
+채팅 form
+const param = {
+    title: "로그인 페이지",
+    message : "이준석 바보",
+    url : "/login",
+    command : "chat",
+    target : {
+
+    }
+};
+
+
+ */
 webSocket.onmessage = function (data){
     var message = decodeURIComponent(atob(data.data));
     var socketJson = JSON.parse(message);
-    if(socketJson.type == "notice"){
+    if(socketJson.command == "notice"){
         var content = {
             title : socketJson.title,
             message : socketJson.message,
@@ -25,14 +44,14 @@ webSocket.onmessage = function (data){
 
 }
 
-webSocket.onopen = function (data){}
-
-webSocket.onclose = function (data){
-
+webSocket.onopen = function (data){
+    sendMessage(param);
 }
 
-webSocket.onerror = function (data){
+webSocket.onclose = function (data){}
 
+webSocket.onerror = function (data){
+    swal("예기치 못한 에러");
 }
 
 function sendMessage(json){
