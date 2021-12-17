@@ -94,10 +94,8 @@
                                     <th scope="col">결재기한</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr th:each="result : ${results}" style="cursor:pointer;"
-                                    th:value="@{ {id}(id= ${result.sanctnSn.sanctnId})}"
-                                    th:onclick="btnShowSanctn(this)" th:id="idValue">
+                                <tbody th:each="result : ${results}">
+                                <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;" th:value="@{ {id}(id= ${result.sanctnSn.sanctnId})}" th:onclick="btnShowSanctn(this)" th:id="idValue">
                                     <td th:text="${result.sanctnStep}">결재단계</td>
                                     <td th:text="${result.sanctnSn.sanctnSj}">결재명</td>
                                     <td th:text="${result.mberNo.name}">기안자</td>
@@ -112,33 +110,33 @@
                                 <div class="text-center">
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination pagination-sm" id="pageNation">
-                                            <li th:if="${page.isPrev()}" class="page-item"><a
-                                                    th:href="@{/sanctn?page={page}(page = ${page.getStartPage()-1})}"
-                                                    class="page-link" href="#">First</a></li>
+                                            <li th:if="${page.isPrev()}" class="page-item">
+                                                <a th:value="@{/{mapping}?page={page}(page = ${page.getStartPage()-1}, mapping = ${mapping})}"
+                                                   class="page-link" th:onclick="paging(this);">First</a></li>
                                             <li th:unless="${page.isPrev()}" class="page-item disabled"><a
                                                     class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
 
                                             <li th:if="${page.isPrev()}" class="page-item"><a
-                                                    th:href="@{/sanctn?page={page}(page = ${page.getCurPage()-1})}"
-                                                    class="page-link" href="#">Prev</a></li>
+                                                    th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()-1}, mapping = ${mapping})}"
+                                                    class="page-link" th:onclick="paging(this);">Prev</a></li>
                                             <li th:unless="${page.isPrev()}" class="page-item disabled"><a
                                                     class="page-link">Prev</a></li>
 
                                             <li class="page-item"
                                                 th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
-                                                <a th:href="@{/sanctn?page={page}(page = ${index.current-1})}"
+                                                <a th:value="@{/{mapping}?page={page}(page = ${index.current-1}, mapping = ${mapping})}"
                                                    th:text="${num}"
-                                                   class="page-link" href="">1</a>
+                                                   class="page-link" th:onclick="paging(this);">1</a>
                                             </li>
                                             <li th:if="${page.isNext()}" class="page-item"><a
-                                                    th:href="@{/sanctn?page={page}(page = ${page.getCurPage()+1})}"
-                                                    class="page-link" href="#">Next</a></li>
+                                                    th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()+1}, mapping = ${mapping})}"
+                                                    class="page-link" th:onclick="paging(this);">Next</a></li>
                                             <li th:unless="${page.isNext()}" class="page-item disabled"><a
                                                     class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
 
                                             <li th:if="${page.isNext()}" class="page-item"><a
-                                                    th:href="@{/sanctn?page={page}(page = ${page.getEndPage()-1})}"
-                                                    class="page-link" href="#">Last</a></li>
+                                                    th:value="@{/{mapping}?page={page}(page = ${page.getEndPage()-1}, mapping = ${mapping})}"
+                                                    class="page-link" th:onclick="paging(this);">Last</a></li>
                                             <li th:unless="${page.isNext()}" class="page-item disabled"><a
                                                     class="page-link">Last</a></li>
                                         </ul>
@@ -147,6 +145,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -211,6 +210,7 @@
 
         const btnPro = document.querySelector("#btnPro");
 
+
         btnPro.addEventListener("click", function () {
         $.ajax({
                 type: "GET",
@@ -228,7 +228,6 @@
                 type: "GET",
                 url: "/sanctnReject",
                 }).done(function (fragment) {
-                    console.log(fragment);
                     $("#test").replaceWith(fragment);
                 });
         })
@@ -263,8 +262,20 @@
 
 
 
+        function paging(id) {
 
+            let url = id.getAttribute("value");
 
+            $.ajax({
+                type: "GET",
+                url: url ,
+                }).done(function (fragment) {
+
+                $("#test").replaceWith(fragment);
+
+                });
+
+        }
 
 
 
