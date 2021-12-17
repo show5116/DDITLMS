@@ -59,6 +59,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void sendNotification(WebSocketSession session,JSONObject jsonObject,TextMessage message){
         JSONArray targets = (JSONArray)jsonObject.get("targets");
         Iterator targetIterator = targets.iterator();
+        List<Notification> notificationList = new ArrayList<>();
         while(targetIterator.hasNext()){
             try {
                 Optional<Member> targetMemberWrapper = memberRepository.findByUserNumber(Long.parseLong(targetIterator.next()+""));
@@ -70,13 +71,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         .URL(jsonObject.get("url")+"")
                         .delete('N')
                         .member(targetMember).build();
+                notificationList.add(notification);
                 try{
                     map.get(targetMember.getUserNumber()).sendMessage(message);
                 }catch (NullPointerException e){
                 }
-                notificationService.saveNotification(notification);
             } catch (Exception e) {
             }
         }
+        notificationService.saveNotifications(notificationList);
     }
 }

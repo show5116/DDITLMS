@@ -45,6 +45,7 @@ webSocket.onmessage = function (data){
 }
 
 webSocket.onopen = function (data){
+    getNotification();
 }
 
 webSocket.onclose = function (data){}
@@ -81,4 +82,5 @@ function notice(content){
         delay:1000 ,
         z_index:10000
     })
+    getNotification();
 }
