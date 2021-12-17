@@ -7,9 +7,12 @@ import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
 import com.example.dditlms.domain.repository.MemberRepository;
-import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -31,83 +34,6 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
     public SanctnLnRepositoryImpl(EntityManager entityManager, MemberRepository memberRepository) {
         this.queryFactory = new JPAQueryFactory(entityManager);
         this.memberRepository = memberRepository;
-    }
-
-    @Override
-    public QueryResults<SanctnLn> inquireProgress(Long userNumber) {
-
-        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
-
-        return queryFactory
-                .select(sanctnLn1)
-                .from(sanctnLn1)
-                .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn), sanctn.status.eq(SanctnProgress.PROGRESS), sanctnLn1.mberNo.eq(findMember.get()))
-                .groupBy(sanctnLn1.sanctnSn)
-                .fetchResults();
-    }
-
-    @Override
-    public QueryResults<SanctnLn> inquireReject(Long userNumber) {
-
-        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
-
-        return queryFactory
-                .select(sanctnLn1)
-                .from(sanctnLn1)
-                .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn), sanctn.status.eq(SanctnProgress.REJECT), sanctnLn1.mberNo.eq(findMember.get()))
-                .groupBy(sanctnLn1.sanctnSn)
-                .fetchResults();
-
-
-    }
-
-    @Override
-    public QueryResults<SanctnLn> inquirePublicize(Long userNumber) {
-
-        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
-
-        return queryFactory
-                .select(sanctnLn1)
-                .from(sanctnLn1)
-                .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn), sanctn.status.eq(SanctnProgress.PUBLICIZE), sanctnLn1.mberNo.eq(findMember.get()))
-                .groupBy(sanctnLn1.sanctnSn)
-                .fetchResults();
-    }
-
-    @Override
-    public QueryResults<SanctnLn> inquireCompletion(Long userNumber) {
-
-        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
-
-        return queryFactory
-                .select(sanctnLn1)
-                .from(sanctnLn1)
-                .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn), sanctn.status.eq(SanctnProgress.COMPLETION), sanctnLn1.mberNo.eq(findMember.get()))
-                .groupBy(sanctnLn1.sanctnSn)
-                .fetchResults();
-    }
-
-    @Override
-    public QueryResults<SanctnLn> inquireTotal(Long userNumber) {
-
-        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
-
-        return queryFactory
-                .select(sanctnLn1)
-                .from(sanctnLn1)
-                .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn), sanctnLn1.mberNo.eq(findMember.get()))
-                .groupBy(sanctnLn1.sanctnSn)
-                .fetchResults();
     }
 
 
@@ -169,6 +95,77 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .fetchFirst();
 
     }
+
+    @Override
+    public List<SanctnDTO> findRecentOpinion(Long userNumber) {
+
+        return queryFactory
+                .select(new QSanctnDTO(sanctnLn1.sanctnDate
+                        , sanctnLn1.sanctnOpinion
+                        , sanctnLn1.lastApproval
+                        , member.name
+                        , employee.employeeRole
+                        , department.deptNm
+                        , sanctnLn1.sanctnStep
+                        , sanctnLn1.sanctnLnProgress
+                        , sanctnLn1.mberNo.userNumber)).distinct()
+                .from(sanctnLn1,
+                        member,
+                        sanctn,
+                        employee,
+                        department)
+                .join(sanctnLn1.sanctnSn, sanctn)
+                .join(sanctnLn1.mberNo, member)
+                .join(employee.member, member)
+                .join(employee.deptCode, department)
+                .where(sanctnLn1.sanctnSn.eq(sanctn)
+                        , sanctnLn1.mberNo.eq(member)
+                        , employee.member.eq(member)
+                        , employee.deptCode.eq(department)
+                        , sanctnLn1.mberNo.userNumber.notIn(userNumber)
+                        , sanctnLn1.sanctnOpinion.isNotNull())
+                .groupBy(member.name)
+                .groupBy(sanctnLn1.sanctnSn)
+                .orderBy(sanctnLn1.sanctnDate.desc())
+                .fetch();
+
+
+    }
+
+
+    @Override
+    public Page<SanctnLn> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress) {
+
+        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
+
+
+
+        List<SanctnLn> content = queryFactory
+                .select(sanctnLn1)
+                .from(sanctnLn1)
+                .from(sanctn)
+                .join(sanctnLn1.sanctnSn, sanctn)
+                .where(sanctnLn1.sanctnSn.eq(sanctn)
+                        , sanctnLn1.mberNo.eq(findMember.get())
+                        , sanctn.status.eq(sanctnProgress))
+                .groupBy(sanctnLn1.sanctnSn)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<SanctnLn> countQuery = queryFactory
+                .select(sanctnLn1)
+                .from(sanctnLn1)
+                .from(sanctn)
+                .join(sanctnLn1.sanctnSn, sanctn)
+                .where(sanctnLn1.sanctnSn.eq(sanctn), sanctnLn1.mberNo.eq(findMember.get()))
+                .groupBy(sanctnLn1.sanctnSn);
+
+        countQuery.fetchCount();
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+    }
+
 
 }
 

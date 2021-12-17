@@ -32,12 +32,14 @@
                                              style="text-align: center; margin: 0 auto;">
                                             <div class="btn-group mb-0">
                                                 <button class="dropbtn btn-success btn-round justify-content-center"
-                                                        type="button" style="text-align: center; margin: 0 auto;">결재조회
+                                                        type="button" style="text-align: center; margin: 0 auto;">전체조회
                                                     <span><i class="icofont icofont-arrow-down"></i></span></button>
                                                 <div class="dropdown-content justify-content-center"
-                                                     style="text-align: center; margin: 0 auto;"><a href="#">승인완료</a><a
-                                                        href="#">진행중</a><a
-                                                        href="#">반려</a></div>
+                                                     style="text-align: center; margin: 0 auto;"><a href="#">승인완료</a>
+                                                    <a href="#">진행중</a>
+                                                    <a href="#">반려</a>
+                                                    <a href="#">공람</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -48,8 +50,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-7 col-md-7 box-col-7">
-                <div class="file-content">
+            <div class="col-xl-7 col-md-7 box-col-7" style="text-align: center; margin: 0 auto;">
+                <div class="file-content" style="text-align: center; margin: 0 auto;">
                     <div class="card" style="text-align: center; margin: 0 auto;">
                         <div class="card-header center-block style=width:300px; padding:15px;">
                             <ul style='display:inline-block'>
@@ -81,8 +83,8 @@
                         </div>
                         </hr>
                         <br>
-                        <div class="table-responsive">
-                            <table class="table table-border-horizontal">
+                        <div class="table-responsive" id="test">
+                            <table class="table table-border-horizontal" style="text-align: center; margin: 0 auto;">
                                 <thead>
                                 <tr>
                                     <th scope="col">결재단계</th>
@@ -92,18 +94,58 @@
                                     <th scope="col">결재기한</th>
                                 </tr>
                                 </thead>
-                                <tbody id="test">
-                                <tr th:each="proDetail : ${proDetails}" style="cursor:pointer;"
-                                    th:value="@{ {id}(id= ${proDetail.sanctnSn.sanctnId})}"
+                                <tbody>
+                                <tr th:each="result : ${results}" style="cursor:pointer;"
+                                    th:value="@{ {id}(id= ${result.sanctnSn.sanctnId})}"
                                     th:onclick="btnShowSanctn(this)" th:id="idValue">
-                                    <td th:text="${proDetail.sanctnStep}">결재단계</td>
-                                    <td th:text="${proDetail.sanctnSn.sanctnSj}">결재명</td>
-                                    <td th:text="${proDetail.mberNo.name}">기안자</td>
-                                    <td th:text="${proDetail.sanctnSn.status.krName}">상태</td>
-                                    <td th:text="${proDetail.sanctnSn.sanctnUpdde}">기한</td>
+                                    <td th:text="${result.sanctnStep}">결재단계</td>
+                                    <td th:text="${result.sanctnSn.sanctnSj}">결재명</td>
+                                    <td th:text="${result.mberNo.name}">기안자</td>
+                                    <td th:text="${result.sanctnSn.status.krName}">상태</td>
+                                    <td th:text="${result.sanctnSn.sanctnUpdde}">기한</td>
                                 </tr>
                                 </tbody>
                             </table>
+                            <br>
+                            <div class="text-center"
+                                 style="text-align: center; margin: 0 auto; display:inline-block; float:center;">
+                                <div class="text-center">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm" id="pageNation">
+                                            <li th:if="${page.isPrev()}" class="page-item"><a
+                                                    th:href="@{/sanctn?page={page}(page = ${page.getStartPage()-1})}"
+                                                    class="page-link" href="#">First</a></li>
+                                            <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                    class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
+
+                                            <li th:if="${page.isPrev()}" class="page-item"><a
+                                                    th:href="@{/sanctn?page={page}(page = ${page.getCurPage()-1})}"
+                                                    class="page-link" href="#">Prev</a></li>
+                                            <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                    class="page-link">Prev</a></li>
+
+                                            <li class="page-item"
+                                                th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
+                                                <a th:href="@{/sanctn?page={page}(page = ${index.current-1})}"
+                                                   th:text="${num}"
+                                                   class="page-link" href="">1</a>
+                                            </li>
+                                            <li th:if="${page.isNext()}" class="page-item"><a
+                                                    th:href="@{/sanctn?page={page}(page = ${page.getCurPage()+1})}"
+                                                    class="page-link" href="#">Next</a></li>
+                                            <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                    class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
+
+                                            <li th:if="${page.isNext()}" class="page-item"><a
+                                                    th:href="@{/sanctn?page={page}(page = ${page.getEndPage()-1})}"
+                                                    class="page-link" href="#">Last</a></li>
+                                            <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                    class="page-link">Last</a></li>
+                                        </ul>
+                                    </nav>
+                                    <br>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -186,6 +228,7 @@
                 type: "GET",
                 url: "/sanctnReject",
                 }).done(function (fragment) {
+                    console.log(fragment);
                     $("#test").replaceWith(fragment);
                 });
         })
@@ -216,6 +259,12 @@
 
         return false;
     }
+
+
+
+
+
+
 
 
 
