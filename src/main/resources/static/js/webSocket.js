@@ -1,7 +1,7 @@
 
 const webSocket = new WebSocket(`ws://${location.host}/ws`);
 
-
+/*
 //알람 form
 const param = {
     title: "로그인 페이지",
@@ -10,7 +10,7 @@ const param = {
     command : "notice",
     targets : [2014161091,20210100001]
 };
-
+*/
 
 
 /*
@@ -45,7 +45,6 @@ webSocket.onmessage = function (data){
 }
 
 webSocket.onopen = function (data){
-    sendMessage(param);
 }
 
 webSocket.onclose = function (data){}
