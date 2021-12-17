@@ -20,5 +20,7 @@ public interface CalendarRepositoryCustom {
     //학과 리스트
     public List<String> getAllMajorList();
 
+    public Long getLastScheduleNumber();
+
 
 }

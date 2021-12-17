@@ -1,6 +1,5 @@
 package com.example.dditlms.controller;
 
-import com.example.dditlms.DditlmsApplication;
 import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.domain.entity.Calendar;
 import com.example.dditlms.domain.entity.CalendarAlarm;
@@ -23,9 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -62,17 +62,33 @@ public class CalendarController {
 
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
-        JSONObject jsonObject = new JSONObject();
         Member member = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         try{
             member = ((AccountContext)authentication.getPrincipal()).getMember();
         }catch(ClassCastException e){
         }
-        Calendar calendar = null;
-        CalendarAlarm calendarAlarm = null;
-        JSONArray jsonArray = new JSONArray();
 
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Calendar calendar = null;
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        CalendarAlarm calendarAlarmSMS = null;
+        CalendarAlarm calendarAlarmKakako = null;
+        List<String> alarmType = new ArrayList<>();
+        Date date = null;
+        String scheduleStart = null;
+        String sms = null;
+        String kakao = null;
+        Long scheduleMaxId =0L;
+
+        String startDate = paramMap.get("startDate");
+        String alarmTime = paramMap.get("alarmTime");
+        int alarmCount = Integer.parseInt(alarmTime);
+
+        // 알림설정 없이 그냥 일정만 등록
         try {
             calendar = Calendar.builder()
                     .scheduleType(paramMap.get("type"))
@@ -85,15 +101,68 @@ public class CalendarController {
                     .setAlarmTime(paramMap.get("alarmTime"))
                     .content(paramMap.get("text"))
                     .member(member).build();
-            calendarAlarm = calendarAlarm.builder()
-                    .scheduleAlarmTime(paramMap.get("alarmTime"))
-                    .scheduleAlarmType(paramMap.get("alarmSms"))
-                    .member(member).build();
 
         }catch (Exception e){
         }
         //서비스로 save 호출
+        log.info("---------------------일정등록 서비스 시작");
         calendar = calendarService.addSchedule(calendar);
+        log.info("---------------------일정등록 서비스 끝");
+
+        try {
+            date = df.parse(startDate);
+        }catch (ParseException e){
+        }
+        cal.setTime(date);
+
+        if (alarmCount > 0){
+            switch (alarmTime){
+                case "30": cal.add(java.util.Calendar.MINUTE, -30);
+                    log.info("switch에서 30");
+                    break;
+                case "60": cal.add(java.util.Calendar.HOUR, -1);
+                    break;
+                case "1440": cal.add(java.util.Calendar.DATE, -1);
+                    break;
+                case "10080": cal.add(java.util.Calendar.DATE, -7);
+                    break;
+            }
+            scheduleStart = df.format(cal.getTime());
+            sms = paramMap.get("alarmSms");
+            kakao = paramMap.get("alarmKakao");
+            Long maxId = calendarRepository.getLastScheduleNumber();
+            scheduleMaxId = maxId;
+        }
+
+        try {
+            calendarAlarmSMS = calendarAlarmSMS.builder()
+                    .id(scheduleMaxId)
+                    .scheduleContent(paramMap.get("title"))
+                    .scheduleAlarmTime(scheduleStart)
+                    .scheduleAlarmType("SMS")
+                    .member(member).build();
+            calendarAlarmKakako = calendarAlarmKakako.builder()
+                    .id(scheduleMaxId)
+                    .scheduleContent(paramMap.get("title"))
+                    .scheduleAlarmTime(scheduleStart)
+                    .scheduleAlarmType("KAKAO")
+                    .member(member).build();
+        }catch (Exception e){
+
+        }
+        log.info("---------------------if문 들어가기전 sms :" + sms);
+        log.info(sms.equals("true") + "<<<<");
+        if(sms.equals("true")){
+            log.info("----------------alarmSMS insert 시작");
+            calendarService.addAlarm(calendarAlarmSMS);
+            log.info("----------------alarmSMS insert 성공");
+        }
+        if(kakao.equals("true")){
+            calendarService.addAlarm(calendarAlarmKakako);
+            log.info("----------------alarmKAKAO insert 성공");
+        }
+
+
 
         List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member);
 

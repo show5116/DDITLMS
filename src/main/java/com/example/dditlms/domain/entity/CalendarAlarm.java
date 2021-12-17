@@ -22,7 +22,7 @@ public class CalendarAlarm {
     private Long id;
 
     @MapsId
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SCHDUL_SN")
     private Calendar calendar;
 
