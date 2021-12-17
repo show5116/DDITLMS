@@ -7,10 +7,12 @@ import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
 import com.example.dditlms.domain.repository.MemberRepository;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
@@ -139,8 +141,7 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
         Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
 
 
-
-        List<SanctnLn> content = queryFactory
+        QueryResults<SanctnLn> results = queryFactory
                 .select(sanctnLn1)
                 .from(sanctnLn1)
                 .from(sanctn)
@@ -151,19 +152,11 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .groupBy(sanctnLn1.sanctnSn)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .fetchResults();
+        List<SanctnLn> content = results.getResults();
+        long total = results.getTotal();
 
-        JPAQuery<SanctnLn> countQuery = queryFactory
-                .select(sanctnLn1)
-                .from(sanctnLn1)
-                .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn), sanctnLn1.mberNo.eq(findMember.get()))
-                .groupBy(sanctnLn1.sanctnSn);
-
-        countQuery.fetchCount();
-
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+        return new PageImpl<>(content, pageable, total);
     }
 
 

@@ -12,8 +12,6 @@ import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
-import com.querydsl.core.QueryResults;
-import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -64,31 +62,44 @@ public class SanctnController {
         }
         Long userNumber = member.getUserNumber();
 
-        sanctnProgress = SanctnProgress.PROGRESS;
 
         SanctnProgress reject = SanctnProgress.REJECT;
         Page<SanctnLn> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
         long totalRej = rejectResult.getTotalElements();
+
+        log.info("총 반려 결과"+ String.valueOf(rejectResult));
+        log.info("총 반려 갯수" +String.valueOf(totalRej));
         model.addAttribute("totalRej", totalRej);
 
         SanctnProgress pub = SanctnProgress.PUBLICIZE;
         Page<SanctnLn> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
         long totalPub = pubResult.getTotalElements();
+        log.info("총 공람 결과" + String.valueOf(pubResult));
+        log.info("총 공람 갯수" +String.valueOf(totalPub));
         model.addAttribute("totalPub", totalPub);
 
         //전체 조회결과와 페이징 정보를 넘겨준다.
 
-        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, sanctnProgress);
+        SanctnProgress progress = SanctnProgress.PROGRESS;
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+
+
+
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
         long totalPro = results.getTotalElements();
         model.addAttribute("totalPro", totalPro);
+        log.info("총 진행 결과" +String.valueOf(results));
+        log.info("총 진행 갯수" +String.valueOf(totalPro));
 
 
         //로그인 한 사람 이름 조회, 넘기기
         Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
         String findname = findUser.get().getName();
         model.addAttribute("findname", findname);
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnRe");
 
 
         //최근결재의견 조회
@@ -97,6 +108,34 @@ public class SanctnController {
 
         return "/pages/sanction";
     }
+
+    //에이잭스용 페이징 갱신 요청 주소
+    @GetMapping("/sanctnRe")
+    public String sanctnRe(Model model, @PageableDefault(size = 3) Pageable pageable, SanctnProgress sanctnProgress) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+
+        SanctnProgress progress = SanctnProgress.PROGRESS;
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnRe");
+
+        return "/pages/sanction::#test";
+    }
+    
+    
+    // 기안하기 페이지
 
     @GetMapping("/drafting")
     public String drafting(Model model, SanctnForm sanctnForm) {
@@ -119,7 +158,6 @@ public class SanctnController {
         List<EmployeeDTO> dtoList = employeeRepository.viewDetails(userNumber);
         EmployeeDTO empDetails = dtoList.get(0);
         model.addAttribute("empDetails", empDetails);
-
 
         //문서양식 전부 가져옴
         List<DocFormCategory> allDocFormList = docformRepository.allDocFormList();
@@ -221,7 +259,9 @@ public class SanctnController {
 
         return "/pages/sanctionDetail";
     }
-
+    
+    
+    // 결재 승인하기
     @PostMapping("/approval")
     public String apropval(@RequestParam Map<String, Object> param, Model model) {
 
@@ -261,11 +301,12 @@ public class SanctnController {
         return "/pages/sanctionDetail";
 
     }
-
+    
+    
+    //결재 반려처리
     @PostMapping("/reject")
     public String reject(@RequestParam Map<String, Object> param, Model model) {
 
-        //의견 남기기 + 결재반려 처리
 
         Object opinion = param.get("opinion");
         Long userNumber = Long.valueOf((String) param.get("userNumber"));
@@ -300,11 +341,12 @@ public class SanctnController {
 
         return "/pages/sanctionDetail";
     }
-
+    
+    
+    //최종승인
     @PostMapping("/finalApproval")
     public String finalApproval(@RequestParam Map<String, Object> param, Model model) {
 
-        //의견 남기기 + 최종결재 처리
 
         Object opinion = param.get("opinion");
         Long userNumber = Long.valueOf((String) param.get("userNumber"));
@@ -359,6 +401,9 @@ public class SanctnController {
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnProgress");
+
         return "/pages/sanction::#test";
 
     }
@@ -381,6 +426,10 @@ public class SanctnController {
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnReject");
 
         return "/pages/sanction::#test";
     }
@@ -428,6 +477,9 @@ public class SanctnController {
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnPublic");
 
         return "/pages/sanction::#test";
 
