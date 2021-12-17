@@ -1,11 +1,11 @@
 package com.example.dditlms.controller;
 
 import com.example.dditlms.DditlmsApplication;
+import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.domain.entity.Calendar;
 import com.example.dditlms.domain.entity.CalendarAlarm;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.CalendarRepository;
-import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.CalendarService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,6 @@ import org.json.simple.JSONObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +111,7 @@ public class CalendarController {
             map.put("scheduleType",calendarToJson.getScheduleType());
 
             jsonArray.add(map);
+
         };
 
         jsonObject.put("state","true");
@@ -191,6 +190,46 @@ public class CalendarController {
 
     }
 
+    @GetMapping("/calendar/memberInfo")
+    public void getMyInfo(HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member =null;
+        JSONObject jsonObject = new JSONObject();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+
+        Role role = member.getRole();
+        log.info("--------Role:" + role);
+        String myRole = role +"";
+
+        jsonObject.put("myRole", myRole);
+
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
+    }
+
+    @GetMapping("/calendar/getMajor")
+    public void getMajor(HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
+
+        JSONObject jsonObject = new JSONObject();
+
+        List<String> majorList = calendarRepository.getAllMajorList();
+
+        jsonObject.put("getMajorList",majorList);
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
+    }
 
 
 

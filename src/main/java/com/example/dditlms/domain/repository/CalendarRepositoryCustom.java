@@ -17,6 +17,8 @@ public interface CalendarRepositoryCustom {
     // 삭제하려는 일정이 본인이 등록한 일정이 맞는지 확인 (1이면 본인꺼, 0이면 본인등록X)
     public int countConfirmScheduleWriter(Calendar calendar);
 
+    //학과 리스트
+    public List<String> getAllMajorList();
 
 
 }
