@@ -1,16 +1,12 @@
 package com.example.dditlms.domain.entity;
 
-import com.example.dditlms.domain.entity.Calendar;
-import com.example.dditlms.domain.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Table(name = "SCHDUL_NTCN")
 @Entity
 @Getter
-@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,11 +14,11 @@ import java.time.LocalDate;
 public class CalendarAlarm {
 
     @Id
+    @Column(name = "SCHDUL_SN")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SCHDUL_SN")
     private Calendar calendar;
 
@@ -35,8 +31,4 @@ public class CalendarAlarm {
     @Column(name = "SCHDUL_TYPE", length = 200)
     private String scheduleAlarmType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MBER_NO")
-    private Member member;
-
-}
+    }

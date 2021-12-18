@@ -19,16 +19,19 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarAlarmRepository calendarAlarmRepository;
 
 
+    @Transactional
     @Override
-    public Calendar addSchedule(Calendar calendar) {
+    public Calendar addAlarm(Calendar calendar,CalendarAlarm calendarAlarm) {
         calendarRepository.save(calendar);
+        calendarAlarmRepository.save(calendarAlarm);
         return calendar;
     }
 
     @Override
-    public boolean addAlarm(CalendarAlarm calendarAlarm) {
-        calendarAlarmRepository.save(calendarAlarm);
-        return true;
+    @Transactional
+    public Calendar addSchedule(Calendar calendar) {
+        calendarRepository.save(calendar);
+        return calendar;
     }
 
     @Override

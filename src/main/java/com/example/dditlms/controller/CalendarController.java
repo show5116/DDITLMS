@@ -4,6 +4,7 @@ import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.domain.entity.Calendar;
 import com.example.dditlms.domain.entity.CalendarAlarm;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.repository.CalendarAlarmRepository;
 import com.example.dditlms.domain.repository.CalendarRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.CalendarService;
@@ -34,6 +35,8 @@ public class CalendarController {
 
     private final CalendarService calendarService;
     private final CalendarRepository calendarRepository;
+    private final CalendarAlarmRepository calendarAlarmRepository;
+
 
 
 
@@ -73,11 +76,10 @@ public class CalendarController {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         Calendar calendar = null;
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         CalendarAlarm calendarAlarmSMS = null;
         CalendarAlarm calendarAlarmKakako = null;
-        List<String> alarmType = new ArrayList<>();
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         Date date = null;
         String scheduleStart = null;
         String sms = null;
@@ -88,7 +90,13 @@ public class CalendarController {
         String alarmTime = paramMap.get("alarmTime");
         int alarmCount = Integer.parseInt(alarmTime);
 
-        // 알림설정 없이 그냥 일정만 등록
+        try {
+            date = df.parse(startDate);
+        }catch (ParseException e){
+        }
+        cal.setTime(date);
+        scheduleStart = df.format(cal.getTime());
+
         try {
             calendar = Calendar.builder()
                     .scheduleType(paramMap.get("type"))
@@ -101,19 +109,18 @@ public class CalendarController {
                     .setAlarmTime(paramMap.get("alarmTime"))
                     .content(paramMap.get("text"))
                     .member(member).build();
-
+            calendarAlarmSMS = calendarAlarmSMS.builder()
+                    .scheduleContent(paramMap.get("title"))
+                    .scheduleAlarmTime(scheduleStart)
+                    .scheduleAlarmType("SMS")
+                    .build();
+            calendarAlarmKakako = calendarAlarmKakako.builder()
+                    .scheduleContent(paramMap.get("title"))
+                    .scheduleAlarmTime(scheduleStart)
+                    .scheduleAlarmType("KAKAO")
+                    .build();
         }catch (Exception e){
         }
-        //서비스로 save 호출
-        log.info("---------------------일정등록 서비스 시작");
-        calendar = calendarService.addSchedule(calendar);
-        log.info("---------------------일정등록 서비스 끝");
-
-        try {
-            date = df.parse(startDate);
-        }catch (ParseException e){
-        }
-        cal.setTime(date);
 
         if (alarmCount > 0){
             switch (alarmTime){
@@ -130,39 +137,30 @@ public class CalendarController {
             scheduleStart = df.format(cal.getTime());
             sms = paramMap.get("alarmSms");
             kakao = paramMap.get("alarmKakao");
-            Long maxId = calendarRepository.getLastScheduleNumber();
-            scheduleMaxId = maxId;
-        }
 
-        try {
-            calendarAlarmSMS = calendarAlarmSMS.builder()
-                    .id(scheduleMaxId)
-                    .scheduleContent(paramMap.get("title"))
-                    .scheduleAlarmTime(scheduleStart)
-                    .scheduleAlarmType("SMS")
-                    .member(member).build();
-            calendarAlarmKakako = calendarAlarmKakako.builder()
-                    .id(scheduleMaxId)
-                    .scheduleContent(paramMap.get("title"))
-                    .scheduleAlarmTime(scheduleStart)
-                    .scheduleAlarmType("KAKAO")
-                    .member(member).build();
-        }catch (Exception e){
+            log.info("---------------------if문 들어가기전 sms :" + sms);
+            log.info("---------------------if문 들어가기전 title :" + calendarAlarmSMS.getScheduleContent());
 
+            log.info(sms.equals("true") + "<<<<");
+            if(sms.equals("true")){
+                log.info("----------------alarmSMS insert 시작");
+                log.info(calendarAlarmSMS.getId()+"");
+                log.info(calendarAlarmSMS.getScheduleContent()+"");
+                log.info(calendarAlarmSMS.getScheduleAlarmTime()+"");
+                log.info(calendarAlarmSMS.getScheduleAlarmType()+"");
+                calendar = calendarService.addAlarm(calendar, calendarAlarmSMS);
+                log.info("----------------alarmSMS insert 성공");
+            }
+            if(kakao.equals("true")){
+                calendar = calendarService.addAlarm(calendar, calendarAlarmKakako);
+                log.info("----------------alarmKAKAO insert 성공");
+            }
+        } else{
+            //서비스로 save 호출
+            log.info("---------------------일정등록 서비스 시작");
+            calendar = calendarService.addSchedule(calendar);
+            log.info("---------------------일정등록 서비스 끝");
         }
-        log.info("---------------------if문 들어가기전 sms :" + sms);
-        log.info(sms.equals("true") + "<<<<");
-        if(sms.equals("true")){
-            log.info("----------------alarmSMS insert 시작");
-            calendarService.addAlarm(calendarAlarmSMS);
-            log.info("----------------alarmSMS insert 성공");
-        }
-        if(kakao.equals("true")){
-            calendarService.addAlarm(calendarAlarmKakako);
-            log.info("----------------alarmKAKAO insert 성공");
-        }
-
-
 
         List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member);
 
