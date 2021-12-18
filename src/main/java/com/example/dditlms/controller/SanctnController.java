@@ -51,7 +51,7 @@ public class SanctnController {
 
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
-    public String santn(Model model, @PageableDefault(size = 3) Pageable pageable, SanctnProgress sanctnProgress) {
+    public String santn(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
 
         //현재 로그인한 사용자 정보(userNumber)를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -67,15 +67,15 @@ public class SanctnController {
         Page<SanctnLn> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
         long totalRej = rejectResult.getTotalElements();
 
-        log.info("총 반려 결과"+ String.valueOf(rejectResult));
-        log.info("총 반려 갯수" +String.valueOf(totalRej));
+        log.info("총 반려 결과" + String.valueOf(rejectResult));
+        log.info("총 반려 갯수" + String.valueOf(totalRej));
         model.addAttribute("totalRej", totalRej);
 
         SanctnProgress pub = SanctnProgress.PUBLICIZE;
         Page<SanctnLn> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
         long totalPub = pubResult.getTotalElements();
         log.info("총 공람 결과" + String.valueOf(pubResult));
-        log.info("총 공람 갯수" +String.valueOf(totalPub));
+        log.info("총 공람 갯수" + String.valueOf(totalPub));
         model.addAttribute("totalPub", totalPub);
 
         //전체 조회결과와 페이징 정보를 넘겨준다.
@@ -84,13 +84,12 @@ public class SanctnController {
         Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
 
 
-
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
         long totalPro = results.getTotalElements();
         model.addAttribute("totalPro", totalPro);
-        log.info("총 진행 결과" +String.valueOf(results));
-        log.info("총 진행 갯수" +String.valueOf(totalPro));
+        log.info("총 진행 결과" + String.valueOf(results));
+        log.info("총 진행 갯수" + String.valueOf(totalPro));
 
 
         //로그인 한 사람 이름 조회, 넘기기
@@ -99,11 +98,13 @@ public class SanctnController {
         model.addAttribute("findname", findname);
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping","sanctnRe");
+        model.addAttribute("mapping", "sanctnRe");
 
 
         //최근결재의견 조회
-//        List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
+        List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
+
+        log.info(String.valueOf(recentOpinion));
 
 
         return "/pages/sanction";
@@ -111,7 +112,7 @@ public class SanctnController {
 
     //에이잭스용 페이징 갱신 요청 주소
     @GetMapping("/sanctnRe")
-    public String sanctnRe(Model model, @PageableDefault(size = 3) Pageable pageable, SanctnProgress sanctnProgress) {
+    public String sanctnRe(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
 
         //현재 로그인한 사용자 정보(userNumber)를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -129,12 +130,12 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping","sanctnRe");
+        model.addAttribute("mapping", "sanctnRe");
 
         return "/pages/sanction::#test";
     }
-    
-    
+
+
     // 기안하기 페이지
 
     @GetMapping("/drafting")
@@ -259,8 +260,8 @@ public class SanctnController {
 
         return "/pages/sanctionDetail";
     }
-    
-    
+
+
     // 결재 승인하기
     @PostMapping("/approval")
     public String apropval(@RequestParam Map<String, Object> param, Model model) {
@@ -301,8 +302,8 @@ public class SanctnController {
         return "/pages/sanctionDetail";
 
     }
-    
-    
+
+
     //결재 반려처리
     @PostMapping("/reject")
     public String reject(@RequestParam Map<String, Object> param, Model model) {
@@ -341,8 +342,8 @@ public class SanctnController {
 
         return "/pages/sanctionDetail";
     }
-    
-    
+
+
     //최종승인
     @PostMapping("/finalApproval")
     public String finalApproval(@RequestParam Map<String, Object> param, Model model) {
@@ -384,7 +385,7 @@ public class SanctnController {
 
     //진행 조회
     @GetMapping("/sanctnProgress")
-    public String sanctnProgress(Model model, @PageableDefault(size = 3) Pageable pageable) {
+    public String sanctnProgress(Model model, @PageableDefault(size = 8) Pageable pageable) {
         //현재 로그인한 사용자 정보(userNumber)를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = null;
@@ -402,7 +403,7 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping","sanctnProgress");
+        model.addAttribute("mapping", "sanctnProgress");
 
         return "/pages/sanction::#test";
 
@@ -410,7 +411,7 @@ public class SanctnController {
 
     //반려 조회
     @GetMapping("/sanctnReject")
-    public String sanctnReject(Model model, @PageableDefault(size = 3) Pageable pageable) {
+    public String sanctnReject(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
         //현재 로그인한 사용자 정보(userNumber)를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -429,7 +430,7 @@ public class SanctnController {
 
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping","sanctnReject");
+        model.addAttribute("mapping", "sanctnReject");
 
         return "/pages/sanction::#test";
     }
@@ -458,10 +459,10 @@ public class SanctnController {
 //
 //    }
 
-    //    //공람 조회
+    //공람 조회
 
     @GetMapping("/sanctnPublic")
-    public String sanctnPublic(Model model, @PageableDefault(size = 3) Pageable pageable) {
+    public String sanctnPublic(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
         //현재 로그인한 사용자 정보(userNumber)를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -479,10 +480,59 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping","sanctnPublic");
+        model.addAttribute("mapping", "sanctnPublic");
 
         return "/pages/sanction::#test";
 
     }
 
+    // 전체 조회
+
+    @GetMapping("/sanctnAll")
+    public String sanctnAll(Model model, @PageableDefault(size = 8) Pageable pageable) {
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+
+        Page<SanctnLn> results = sanctnLnRepository.inquireAll(userNumber, pageable);
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping", "sanctnAll");
+
+
+        return "pages/sanction::#test";
+
+    }
+    
+    
+    // 완료 조회
+    @GetMapping("/sanctnCom")
+    public String sanctnCom(Model model, @PageableDefault(size = 8) Pageable pageable) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+
+        SanctnProgress completion = SanctnProgress.COMPLETION;
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+        return "/pages/sanction::#test";
+
+    }
 }

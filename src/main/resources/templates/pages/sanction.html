@@ -9,7 +9,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-2 box-col-2 pe-0">
-                <div class="job-sidebar"><a class="btn btn-primary job-toggle" href="javascript:void(0)">file filter</a>
+                <div class="job-sidebar"><a class="btn btn-primary job-toggle" href="javascript:void(0)">전체조회</a>
                     <div class="job-left-aside custom-scrollbar">
                         <div class="file-sidebar">
                             <div class="card">
@@ -25,20 +25,21 @@
                                             <a class="btn btn-light justify-content-center" href="/sanctn">공람처리</a>
                                         </li>
                                     </ul>
-                                    <hr>
 
                                     <div class="card-body dropdown-basic" style="text-align: center; margin: 0 auto;">
                                         <div class="dropdown justify-content-center"
                                              style="text-align: center; margin: 0 auto;">
                                             <div class="btn-group mb-0">
                                                 <button class="dropbtn btn-success btn-round justify-content-center"
-                                                        type="button" style="text-align: center; margin: 0 auto;">전체조회
+                                                        type="button" style="text-align: center; margin: 0 auto;"
+                                                        id="btnSanctnAll">전체조회
                                                     <span><i class="icofont icofont-arrow-down"></i></span></button>
                                                 <div class="dropdown-content justify-content-center"
-                                                     style="text-align: center; margin: 0 auto;"><a href="#">승인완료</a>
-                                                    <a href="#">진행중</a>
-                                                    <a href="#">반려</a>
-                                                    <a href="#">공람</a>
+                                                     style="text-align: center; margin: 0 auto;">
+                                                    <a id="btnSanctnCom" style="cursor:pointer;">승인완료</a>
+                                                    <a style="cursor:pointer;" th:onclick="btnPro()">진행중</a>
+                                                    <a style="cursor:pointer;" th:onclick="btnReject()">반려</a>
+                                                    <a style="cursor:pointer;" th:onclick="btnPublic()">공람</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -72,13 +73,13 @@
                         <hr>
                         <div class="select-button">
                             <button class="btn btn-square btn-outline-success btn-lg" type="button"
-                                    data-bs-original-title="" id="btnPro">진행중
+                                    data-bs-original-title="" th:onclick="btnPro()">진행중
                             </button>
                             <button class="btn btn-square btn-outline-success btn-lg" type="button"
-                                    data-bs-original-title="" id="btnReject">반려
+                                    data-bs-original-title="" th:onclick="btnReject()">반려
                             </button>
                             <button class="btn btn-square btn-outline-success btn-lg" type="button"
-                                    data-bs-original-title="" id="btnPublic">공람
+                                    data-bs-original-title="" th:onclick="btnPublic()">공람
                             </button>
                         </div>
                         </hr>
@@ -95,7 +96,9 @@
                                 </tr>
                                 </thead>
                                 <tbody th:each="result : ${results}">
-                                <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;" th:value="@{ {id}(id= ${result.sanctnSn.sanctnId})}" th:onclick="btnShowSanctn(this)" th:id="idValue">
+                                <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;"
+                                    th:value="@{ {id}(id= ${result.sanctnSn.sanctnId})}"
+                                    th:onclick="btnShowSanctn(this)" th:id="idValue">
                                     <td th:text="${result.sanctnStep}">결재단계</td>
                                     <td th:text="${result.sanctnSn.sanctnSj}">결재명</td>
                                     <td th:text="${result.mberNo.name}">기안자</td>
@@ -112,13 +115,15 @@
                                         <ul class="pagination pagination-sm" id="pageNation">
                                             <li th:if="${page.isPrev()}" class="page-item">
                                                 <a th:value="@{/{mapping}?page={page}(page = ${page.getStartPage()-1}, mapping = ${mapping})}"
-                                                   class="page-link" th:onclick="paging(this);">First</a></li>
+                                                   class="page-link" th:onclick="paging(this);" style="cursor:pointer;">First</a>
+                                            </li>
                                             <li th:unless="${page.isPrev()}" class="page-item disabled"><a
                                                     class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
 
                                             <li th:if="${page.isPrev()}" class="page-item"><a
                                                     th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()-1}, mapping = ${mapping})}"
-                                                    class="page-link" th:onclick="paging(this);">Prev</a></li>
+                                                    class="page-link" th:onclick="paging(this);"
+                                                    style="cursor:pointer;">Prev</a></li>
                                             <li th:unless="${page.isPrev()}" class="page-item disabled"><a
                                                     class="page-link">Prev</a></li>
 
@@ -126,17 +131,19 @@
                                                 th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
                                                 <a th:value="@{/{mapping}?page={page}(page = ${index.current-1}, mapping = ${mapping})}"
                                                    th:text="${num}"
-                                                   class="page-link" th:onclick="paging(this);">1</a>
+                                                   class="page-link" th:onclick="paging(this);" style="cursor:pointer;">1</a>
                                             </li>
                                             <li th:if="${page.isNext()}" class="page-item"><a
                                                     th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()+1}, mapping = ${mapping})}"
-                                                    class="page-link" th:onclick="paging(this);">Next</a></li>
+                                                    class="page-link" th:onclick="paging(this);"
+                                                    style="cursor:pointer;">Next</a></li>
                                             <li th:unless="${page.isNext()}" class="page-item disabled"><a
                                                     class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
 
                                             <li th:if="${page.isNext()}" class="page-item"><a
                                                     th:value="@{/{mapping}?page={page}(page = ${page.getEndPage()-1}, mapping = ${mapping})}"
-                                                    class="page-link" th:onclick="paging(this);">Last</a></li>
+                                                    class="page-link" th:onclick="paging(this);"
+                                                    style="cursor:pointer;">Last</a></li>
                                             <li th:unless="${page.isNext()}" class="page-item disabled"><a
                                                     class="page-link">Last</a></li>
                                         </ul>
@@ -208,41 +215,81 @@
     <!-- Container-fluid Ends-->
     <script>
 
-        const btnPro = document.querySelector("#btnPro");
+         function btnPro() {
 
 
-        btnPro.addEventListener("click", function () {
-        $.ajax({
+            $.ajax({
                 type: "GET",
                 url: "/sanctnProgress",
                 }).done(function (fragment) {
                     $("#test").replaceWith(fragment);
                 });
-        })
 
-        const btnReject = document.querySelector("#btnReject");
+        }
 
-        btnReject.addEventListener("click", function () {
+        function btnPro() {
 
-        $.ajax({
+
+            $.ajax({
+                type: "GET",
+                url: "/sanctnProgress",
+                }).done(function (fragment) {
+                    $("#test").replaceWith(fragment);
+                });
+
+        }
+
+        function btnReject() {
+
+
+            $.ajax({
                 type: "GET",
                 url: "/sanctnReject",
                 }).done(function (fragment) {
                     $("#test").replaceWith(fragment);
                 });
-        })
 
-        const btnPublic = document.querySelector("#btnPublic");
+        }
 
-        btnPublic.addEventListener("click", function () {
+        function btnPublic() {
 
-        $.ajax({
+
+            $.ajax({
                 type: "GET",
                 url: "/sanctnPublic",
                 }).done(function (fragment) {
                     $("#test").replaceWith(fragment);
                 });
+
+        }
+
+
+
+        const btnSanctnAll = document.querySelector("#btnSanctnAll");
+
+        btnSanctnAll.addEventListener("click", function () {
+
+        $.ajax({
+                type: "GET",
+                url: "/sanctnAll",
+                }).done(function (fragment) {
+                    $("#test").replaceWith(fragment);
+                });
         })
+
+        const btnSanctnCom = document.querySelector("#btnSanctnCom");
+
+        btnSanctnCom.addEventListener("click", function () {
+
+        $.ajax({
+                type: "GET",
+                url: "/sanctnCom",
+                }).done(function (fragment) {
+                    $("#test").replaceWith(fragment);
+                });
+        })
+
+
 
         function btnShowSanctn(id){
 
@@ -276,7 +323,6 @@
                 });
 
         }
-
 
 
 
