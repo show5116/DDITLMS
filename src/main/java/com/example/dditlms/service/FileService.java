@@ -11,4 +11,6 @@ public interface FileService {
     FileData addRootFolder(Member member);
 
     FileData addFolder(FileDataDTO fileDataDTO, Member member);
+
+    void addFiles(List<FileData> fileDataList);
 }

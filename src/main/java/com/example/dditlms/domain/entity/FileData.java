@@ -40,6 +40,9 @@ public class FileData {
     @Column(name = "OPEN_TIME")
     private Date openTime;
 
+    @Column(name = "CONTENT_TYPE")
+    private String contentType;
+
     private Integer trash;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +50,7 @@ public class FileData {
     private Member member;
 
     @Builder
-    public FileData(Integer fileIdx, FileData parent, List<FileData> children, String fileName, String extension, Long fileSize, Date createTime, Date openTime, Integer trash, Member member) {
+    public FileData(Integer fileIdx, FileData parent, List<FileData> children, String fileName, String extension, Long fileSize, Date createTime, Date openTime, String contentType, Integer trash, Member member) {
         this.fileIdx = fileIdx;
         this.parent = parent;
         this.children = children;
@@ -56,6 +59,7 @@ public class FileData {
         this.fileSize = fileSize;
         this.createTime = createTime;
         this.openTime = openTime;
+        this.contentType = contentType;
         this.trash = trash;
         this.member = member;
     }

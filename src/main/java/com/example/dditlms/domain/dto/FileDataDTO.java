@@ -1,7 +1,6 @@
 package com.example.dditlms.domain.dto;
 
 import com.example.dditlms.domain.entity.FileData;
-import com.example.dditlms.domain.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +28,8 @@ public class FileDataDTO {
 
     private Integer trash;
 
+    private String contentType;
+
     private Long userNumber;
 
     public FileData toEntity(){
@@ -38,6 +39,7 @@ public class FileDataDTO {
                 .fileSize(this.fileSize)
                 .createTime(this.createTime)
                 .openTime(this.openTime)
+                .contentType(this.contentType)
                 .trash(this.trash)
                 .build();
         return fileData;

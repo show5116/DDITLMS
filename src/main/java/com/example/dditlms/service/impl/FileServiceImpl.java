@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,7 @@ public class FileServiceImpl implements FileService {
                 .createTime(new Date())
                 .openTime(new Date())
                 .trash(0)
+                .contentType("application/x-directory")
                 .build();
 
         fileDataRepository.save(fileData);
@@ -52,5 +54,9 @@ public class FileServiceImpl implements FileService {
         return fileData;
     }
 
+    @Override
+    public void addFiles(List<FileData> fileDataList) {
+        fileDataRepository.saveAll(fileDataList);
+    }
 
 }

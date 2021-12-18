@@ -114,15 +114,16 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <a href="https://kr.object.ncloudstorage.com/lms-project/user1/14.%E1%84%92%E1%85%AA%E1%84%86%E1%85%A7%E1%86%AB%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%B4%E1%84%89%E1%85%A5%28%E1%84%8B%E1%85%B5%E1%84%82%E1%85%A1%E1%84%8B%E1%85%A7%E1%86%BC%29%28%E1%84%8E%E1%85%A1%E1%86%A8%E1%84%89%E1%85%AE%E1%84%87%E1%85%A1%E1%86%AF%E1%84%91%E1%85%AD%29.pptx">dkdkkdkdkdkkddsjladNdjldsvnfasjlfsnjlds</a>
 
 <!--                                        </form>-->
                                         <div class="btn btn-outline-primary ms-2">
-                                            <form type="post" th:action="@{/cloud/upload}" id="upload-file-form" enctype="multipart/form-data" name="uploadFormName">
+                                            <form id="upload-file-form" method="POST" enctype="multipart/form-data" name="uploadFormName">
                                                 <label for="upload-file-input">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                                                     Upload
                                                 </label>
-                                                <input id="upload-file-input" type="file" name="uploadfile" accept="*" style="display: none;"/>
+                                                <input id="upload-file-input" type="file" name="files" accept="*" style="display: none;" multiple/>
 <!--                                                <input type="file" id="input_img" />-->
                                             </form>
                                         </div>
@@ -235,7 +236,7 @@
                                 <h5 class="mt-4">Files</h5>
                                 <ul class="files">
                                     <li class="file-box" th:each="files : ${selectFiles}">
-                                        <a class="file-target" th:id="${files.fileIdx}">
+                                        <a th:href="@{http://localhost:8094/cloud/download/{id}(id=${files.fileIdx})}" class="file-target" th:id="${files.fileIdx}">
                                             <div class="file-top">  <i class="fa fa-file-archive-o txt-secondary"></i><i class="fa fa-ellipsis-v f-14 ellips"></i></div>
                                             <div class="file-bottom">
                                                 <h6 th:text="${files.fileName}" >Project.zip </h6>
@@ -308,9 +309,9 @@
                     console.log("전" + fragment);
                     $("#folderReplace").replaceWith(fragment);
                     folderMoves = document.querySelectorAll(".folder-move");
-                    fileTargets = document.querySelectorAll(".file-target");
+                    // fileTargets = document.querySelectorAll(".file-target");
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
-                    fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
+                    // fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
 
                     //이걸 백에서 하면서 변수로 넣는 법이 있을까?
                 }).fail(function (data, textStatus, errorThrown){
@@ -330,6 +331,7 @@
                     fileSize : 0,
                     createFolder: new Date(),
                     openTime: new Date(),
+                    contentType : "application/x-directory",
                     trash : 0
                 }
                 if(targetId!=null){
@@ -351,37 +353,40 @@
                     console.log("전" + fragment);
                     $("#folderReplace").replaceWith(fragment);
                     folderMoves = document.querySelectorAll(".folder-move");
-                    fileTargets = document.querySelectorAll(".file-target");
+                    // fileTargets = document.querySelectorAll(".file-target");
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
-                    fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
+                    // fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
                 })
             });
 
+        function download(){
 
-        fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
-
-        function downloadEvent(target){
-            target.addEventListener("click", function(event){
-                console.log("타겟" + event.currentTarget.id);
-                fileTargetId = event.currentTarget.id;
-                const params = {
-                    fileTargetId : fileTargetId
-                };
-                $.ajax({
-                    url:"/cloud/download",
-                    data:params,
-                    type: "GET",
-                    beforeSend: function(xhr){
-                        xhr.setRequestHeader(header,token);
-                    }
-                }).done(function(){
-                    console.log("성공했어요");
-                })
-            })
         }
 
+        // fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
+
+        // function downloadEvent(target){
+        //     target.addEventListener("click", function(event){
+        //         console.log("타겟" + event.currentTarget.id);
+        //         fileTargetId = event.currentTarget.id;
+        //         const params = {
+        //             fileTargetId : fileTargetId
+        //         };
+        //         $.ajax({
+        //             url:"/cloud/download",
+        //             data:params,
+        //             type: "GET",
+        //             beforeSend: function(xhr){
+        //                 xhr.setRequestHeader(header,token);
+        //             }
+        //         }).done(function(){
+        //             console.log("성공했어요");
+        //         })
+        //     })
+        // }
 
         uploadFileInput.addEventListener("change", function () {
+
             const fileVal = uploadFileInput.value;
             const fileSplit = fileVal.split("\\");
             const fileNameSp = fileSplit[fileSplit.length-1].split(".");
@@ -394,30 +399,29 @@
                 console.log("오 이게 될까?");
                 console.log(targetId);
                 const data = reader.result;
-                uploadFile(fileVal);
+                uploadFile(fileVal, targetId);
             }
 
             reader.readAsBinaryString(uploadFileInput.files[0], "utf-8");
             // 파일 읽기 시작
         });
 
-        function uploadFile(val){
-            console.log("val : "+ val);
+        function uploadFile(val, parIdx){
+            const form = $("#upload-file-form")[0];
+            let data = new FormData(form);
+            data.append("parIdx", parIdx);
             const fileSplit = val.split("\\");
             const fileName = fileSplit[fileSplit.length-1];
-            console.log(fileName+"dlld")
             const fileNameSp = fileName.split(".");
+
+            console.log("val : "+ val);
+            console.log(fileName+"dlld")
             console.log("확장자찍는다 : " + fileNameSp[fileNameSp.length-1]);
             console.log("네임 찍는다 : " + fileName.substring(0,fileName.lastIndexOf(".")));
-            document.uploadFormName.submit();
 
-            const params = {
-                value : val,
-                targetId : targetId
-            }
             $.ajax({
                 url:"/cloud/upload",
-                data: params,
+                data: data,
                 type: "POST",
                 enctype: "multipart/form-data",
                 processData : false,
@@ -425,8 +429,14 @@
                 beforeSend: function(xhr){
                     xhr.setRequestHeader(header,token);
                 }
-            }).done(function (){
+            }).done(function (fragment) {
                 console.log("성공입니다.");
+                $("#folderReplace").replaceWith(fragment);
+                folderMoves = document.querySelectorAll(".folder-move");
+                // fileTargets = document.querySelectorAll(".file-target");
+                folderMoves.forEach(folderMove => replaceEvent(folderMove));
+                // fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
+                console.log(fragment);
             }).fail(function (){
                 console.log("실패입니다.");
             });
