@@ -10,6 +10,119 @@ function checkInputNum(){
 const token = $("meta[name='_csrf']").attr("content");
 const header = $("meta[name='_csrf_header']").attr("content");
 
+
+// Notification
+function getNotification(){
+    $.ajax({
+        url: "/notification",
+        method: "Post",
+        dataType: "json",
+        beforeSend: function (xhr){
+            xhr.setRequestHeader(header,token);
+        }
+    })
+    .done(function (fragment){
+        NotificationList(fragment);
+    })
+    .fail(function (e){});
+}
+
+
+function removeNotification(){
+    const notiTarget = event.currentTarget;
+    const targetTagName = event.target.tagName;
+    let id = notiTarget.id.replace("NOT","");
+    const param = {
+        id : id
+    }
+    $.ajax({
+        url: "/deleteNotification",
+        data: param,
+        method: "Post",
+        dataType: "json",
+        beforeSend: function (xhr){
+            xhr.setRequestHeader(header,token);
+        }
+    })
+    .done(function(fragment){
+        if(targetTagName != "I"){
+            let href = notiTarget.querySelector("a").classList.item(0);
+            location.href = href;
+        }
+        NotificationList(fragment);
+    });
+}
+
+function NotificationList(fragment){
+    if(fragment.success != "true"){
+        swal("알림목록을 들고오는데 실패하였습니다.")
+    }
+    let listLength = fragment.notificationList.length;
+    const notificationBox = document.querySelector(".notification-box");
+    const notificationDropbox = document.querySelector(".notification-dropdown");
+    const dotSpan = document.querySelector("#notification-dot");
+    if(listLength == 0){
+        dotSpan.classList.remove("dot-animated");
+        notificationDropbox.innerHTML =
+            `<li>
+                <p class="f-w-700 mb-0">알림이 없습니다.<span class="pull-right badge badge-primary badge-pill"></span></p>
+             </li>`;
+    }else{
+        dotSpan.classList.add("dot-animated");
+        let dropboxHtml = "";
+        let eleHtml = "";
+        const now = new Date();
+        for(let i=0; i<3; i++){
+            const notifictionEle = fragment.notificationList[i];
+            const that = new Date(notifictionEle.time);
+            let minute = Math.floor((now - that)/1000/60);
+            let timeText = "";
+            if(minute == 0){
+                timeText = "1분미만";
+            }else if(minute <= 60){
+                timeText = `${minute}분전`;
+            }else if(minute >60 && minute<=1440){
+                timeText = `${Math.floor(minute/60)}시간전`;
+            }else if(minute > 1440){
+                timeText = `${Math.floor(minute/1440)}일전`;
+            }
+            eleHtml = `
+                <li id="NOT${notifictionEle.id}" class="noti-primary" onclick="removeNotification()">
+                    <div class="media">
+                        <div class="media-body">
+                            <p><a class="${notifictionEle.url}">${notifictionEle.content}</a></p>
+                            <span>${timeText}</span>
+                            <i class="icon-trash pull-right"></i>
+                        </div>
+                    </div>
+                </li>
+            `;
+            dropboxHtml += eleHtml;
+        }
+        notificationDropbox.innerHTML =
+            `<li>
+                <p class="f-w-700 mb-0">${listLength}개의 알림이 있습니다.<span class="pull-right badge badge-primary badge-pill">${listLength}</span></p>
+             </li>
+             ${dropboxHtml}`;
+    }
+}
+
+// chatting
+function getChat(){
+    const chatDropBox = document.querySelector(".chat-dropdown");
+    $.ajax({
+        url: "/getChat",
+        method: "Post",
+        dataType: "json",
+        beforeSend: function (xhr){
+            xhr.setRequestHeader(header,token);
+        }
+    })
+    .done(function (fragment){
+
+    })
+}
+
 // bookmark 삭제
 function removeBookmark(){
     const parentli = event.target.parentNode;

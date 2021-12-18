@@ -1,8 +1,10 @@
 package com.example.dditlms.websocket;
 
+import com.example.dditlms.domain.entity.Chat;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.Notification;
 import com.example.dditlms.domain.repository.MemberRepository;
+import com.example.dditlms.service.ChatService;
 import com.example.dditlms.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -26,6 +28,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private final NotificationService notificationService;
 
+    private final ChatService chatService;
+
     private static Map<Long,WebSocketSession> map = new HashMap<>();
 
     @Override
@@ -38,7 +42,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if(command.equals("notice")){
             sendNotification(session,jsonObject,message);
         }else if(command.equals("chat")){
-
+            sendChat(session,jsonObject,message);
         }
     }
 
@@ -59,6 +63,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private void sendNotification(WebSocketSession session,JSONObject jsonObject,TextMessage message){
         JSONArray targets = (JSONArray)jsonObject.get("targets");
         Iterator targetIterator = targets.iterator();
+        List<Notification> notificationList = new ArrayList<>();
         while(targetIterator.hasNext()){
             try {
                 Optional<Member> targetMemberWrapper = memberRepository.findByUserNumber(Long.parseLong(targetIterator.next()+""));
@@ -70,13 +75,33 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         .URL(jsonObject.get("url")+"")
                         .delete('N')
                         .member(targetMember).build();
+                notificationList.add(notification);
                 try{
                     map.get(targetMember.getUserNumber()).sendMessage(message);
                 }catch (NullPointerException e){
                 }
-                notificationService.saveNotification(notification);
             } catch (Exception e) {
             }
+        }
+        notificationService.saveNotifications(notificationList);
+    }
+
+    private void sendChat(WebSocketSession session,JSONObject jsonObject,TextMessage message){
+        Long targetId = Long.parseLong(jsonObject.get("target")+"");
+        Optional<Member> targetWrapper = memberRepository.findByUserNumber(targetId);
+        Member target = targetWrapper.orElse(null);
+        Optional<Member> selfWrapper = memberRepository.findByMemberId(session.getPrincipal().getName());
+        Member self = selfWrapper.orElse(null);
+        Chat chat = Chat.builder()
+                .self(self)
+                .target(target)
+                .content(jsonObject.get("message")+"")
+                .chatTime(new Date()).build();
+        chatService.saveChat(chat);
+        try{
+            map.get(self.getUserNumber()).sendMessage(message);
+            map.get(targetId).sendMessage(message);
+        }catch (IOException e){
         }
     }
 }

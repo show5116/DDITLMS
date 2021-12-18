@@ -2,6 +2,7 @@ package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.dto.DocFormDTO;
 import com.example.dditlms.domain.dto.EmployeeDTO;
+import com.example.dditlms.domain.dto.PageDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
@@ -11,9 +12,11 @@ import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
-import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -48,37 +51,46 @@ public class SanctnController {
 
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
-    public String santn(Model model) {
+    public String santn(Model model, @PageableDefault(size = 3) Pageable pageable, SanctnProgress sanctnProgress) {
 
         //현재 로그인한 사용자 정보(userNumber)를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = null;
         try {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
         }
         Long userNumber = member.getUserNumber();
 
-//        //진행중인 결재 내용 조회
-        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquireProgress(userNumber);
-        long totalPro = resultsPro.getTotal();
-        QueryResults<SanctnLn> resultsRej = sanctnLnRepository.inquireReject(userNumber);
-        long totalRej = resultsRej.getTotal();
-        QueryResults<SanctnLn> resultsPub = sanctnLnRepository.inquirePublicize(userNumber);
-        long totalPub = resultsPub.getTotal();
-        QueryResults<SanctnLn> resultsCom = sanctnLnRepository.inquireCompletion(userNumber);
-        long totalCom = resultsCom.getTotal();
-        QueryResults inquireTotal = sanctnLnRepository.inquireTotal(userNumber);
 
+        SanctnProgress reject = SanctnProgress.REJECT;
+        Page<SanctnLn> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+        long totalRej = rejectResult.getTotalElements();
 
-        List proDetails = inquireTotal.getResults();
-        model.addAttribute("proDetails", proDetails);
-
-        model.addAttribute("totalPro", totalPro);
+        log.info("총 반려 결과"+ String.valueOf(rejectResult));
+        log.info("총 반려 갯수" +String.valueOf(totalRej));
         model.addAttribute("totalRej", totalRej);
-        model.addAttribute("totalPub", totalPub);
-        model.addAttribute("totalCom", totalCom);
 
+        SanctnProgress pub = SanctnProgress.PUBLICIZE;
+        Page<SanctnLn> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
+        long totalPub = pubResult.getTotalElements();
+        log.info("총 공람 결과" + String.valueOf(pubResult));
+        log.info("총 공람 갯수" +String.valueOf(totalPub));
+        model.addAttribute("totalPub", totalPub);
+
+        //전체 조회결과와 페이징 정보를 넘겨준다.
+
+        SanctnProgress progress = SanctnProgress.PROGRESS;
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+
+
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+        long totalPro = results.getTotalElements();
+        model.addAttribute("totalPro", totalPro);
+        log.info("총 진행 결과" +String.valueOf(results));
+        log.info("총 진행 갯수" +String.valueOf(totalPro));
 
 
         //로그인 한 사람 이름 조회, 넘기기
@@ -86,11 +98,44 @@ public class SanctnController {
         String findname = findUser.get().getName();
         model.addAttribute("findname", findname);
 
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnRe");
 
-        //결재단계 불러오기 테스트
+
+        //최근결재의견 조회
+//        List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
+
 
         return "/pages/sanction";
     }
+
+    //에이잭스용 페이징 갱신 요청 주소
+    @GetMapping("/sanctnRe")
+    public String sanctnRe(Model model, @PageableDefault(size = 3) Pageable pageable, SanctnProgress sanctnProgress) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+
+        SanctnProgress progress = SanctnProgress.PROGRESS;
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnRe");
+
+        return "/pages/sanction::#test";
+    }
+    
+    
+    // 기안하기 페이지
 
     @GetMapping("/drafting")
     public String drafting(Model model, SanctnForm sanctnForm) {
@@ -99,7 +144,7 @@ public class SanctnController {
         Member member = null;
         try {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
         }
         Long userNumber = member.getUserNumber();
         model.addAttribute("drafter", userNumber);
@@ -114,14 +159,13 @@ public class SanctnController {
         EmployeeDTO empDetails = dtoList.get(0);
         model.addAttribute("empDetails", empDetails);
 
-
         //문서양식 전부 가져옴
         List<DocFormCategory> allDocFormList = docformRepository.allDocFormList();
         model.addAttribute("allDocFormList", allDocFormList);
 
         //부서 목록 전체 조회
         List<Department> departmentList = departmentRepository.findAll();
-        model.addAttribute("departmentList",departmentList);
+        model.addAttribute("departmentList", departmentList);
 
 
         return "/pages/drafting";
@@ -136,6 +180,7 @@ public class SanctnController {
 
         return result;
     }
+
     //부서별 직원목록 반환
     @GetMapping("/sendDept")
     @ResponseBody
@@ -162,119 +207,24 @@ public class SanctnController {
     @ResponseBody
     public List<EmployeeDTO> viewDetails(@RequestParam Map<String, Object> param) {
 
-        List<EmployeeDTO> viewDetails = employeeRepository.viewDetails(Long.valueOf((String)param.get("userNumber")));
+        List<EmployeeDTO> viewDetails = employeeRepository.viewDetails(Long.valueOf((String) param.get("userNumber")));
 
         return viewDetails;
     }
+
     //기안하기
     @PostMapping("/sanctnSubmit")
     public RedirectView submitSanctn(SanctnForm sanctnForm) {
 
 
         sanctnService.saveSanctn(sanctnForm.getSanctnSj()
-                ,sanctnForm.getDocformSn()
-                ,sanctnForm.getDrafter()
-                ,sanctnForm.getSanctnCn()
-                ,sanctnForm.getUserNumber());
+                , sanctnForm.getDocformSn()
+                , sanctnForm.getDrafter()
+                , sanctnForm.getSanctnCn()
+                , sanctnForm.getUserNumber());
 
 
         return new RedirectView("/sanctn");
-    }
-
-    //진행 조회
-    @GetMapping("/sanctnProgress")
-    public String sanctnProgress(Model model) {
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
-        }
-        Long userNumber = member.getUserNumber();
-
-        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquireProgress(userNumber);
-        long totalPro = resultsPro.getTotal();
-
-        List<SanctnLn> proDetails = resultsPro.getResults();
-        model.addAttribute("proDetails", proDetails);
-
-        return "/pages/sanction::#test";
-
-    }
-
-
-    //반려 조회
-    @GetMapping("/sanctnReject")
-    public String sanctnReject(Model model) {
-
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
-        }
-        Long userNumber = member.getUserNumber();
-
-        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquireReject(userNumber);
-        long totalPro = resultsPro.getTotal();
-
-
-        List<SanctnLn> proDetails = resultsPro.getResults();
-        model.addAttribute("proDetails", proDetails);
-
-        return "/pages/sanction::#test";
-
-    }
-
-    //공람 조회
-    @GetMapping("/sanctnPublic")
-    public String sanctnPublic(Model model) {
-
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
-        }
-        Long userNumber = member.getUserNumber();
-
-        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquirePublicize(userNumber);
-        long totalPro = resultsPro.getTotal();
-
-
-        List<SanctnLn> proDetails = resultsPro.getResults();
-        model.addAttribute("proDetails", proDetails);
-
-        return "/pages/sanction::#test";
-
-    }
-
-    //승인 완료
-
-    @GetMapping("/sanctnCom")
-    public String sanctnCom(Model model) {
-
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
-        }
-        Long userNumber = member.getUserNumber();
-
-        QueryResults<SanctnLn> resultsPro = sanctnLnRepository.inquireCompletion(userNumber);
-        long totalPro = resultsPro.getTotal();
-
-
-        List<SanctnLn> proDetails = resultsPro.getResults();
-        model.addAttribute("proDetails", proDetails);
-
-        return "/pages/sanction::#test";
-
     }
 
 
@@ -286,7 +236,7 @@ public class SanctnController {
         Member member = null;
         try {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
         }
         Long userNumber = member.getUserNumber();
 
@@ -309,8 +259,10 @@ public class SanctnController {
 
         return "/pages/sanctionDetail";
     }
-
-    @PostMapping ("/approval")
+    
+    
+    // 결재 승인하기
+    @PostMapping("/approval")
     public String apropval(@RequestParam Map<String, Object> param, Model model) {
 
         //의견 남기기 + 결재승인 처리
@@ -327,7 +279,7 @@ public class SanctnController {
         Member member = null;
         try {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
         }
         Long userNumber2 = member.getUserNumber();
 
@@ -349,11 +301,12 @@ public class SanctnController {
         return "/pages/sanctionDetail";
 
     }
-
-    @PostMapping ("/reject")
+    
+    
+    //결재 반려처리
+    @PostMapping("/reject")
     public String reject(@RequestParam Map<String, Object> param, Model model) {
 
-        //의견 남기기 + 결재반려 처리
 
         Object opinion = param.get("opinion");
         Long userNumber = Long.valueOf((String) param.get("userNumber"));
@@ -367,7 +320,47 @@ public class SanctnController {
         Member member = null;
         try {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
+        }
+        Long userNumber2 = member.getUserNumber();
+
+
+        //로그인한 사람의 정보를 넘겨 줌
+        model.addAttribute("userNumber", userNumber2);
+
+        Optional<Sanctn> details = sanctnRepository.findById(id);
+        Sanctn sanctn = details.get();
+        model.addAttribute("details", sanctn);
+
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+
+        model.addAttribute("sanctnLnList", sanctnDTOS);
+
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+
+        return "/pages/sanctionDetail";
+    }
+    
+    
+    //최종승인
+    @PostMapping("/finalApproval")
+    public String finalApproval(@RequestParam Map<String, Object> param, Model model) {
+
+
+        Object opinion = param.get("opinion");
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        Long id = Long.valueOf((String) param.get("id"));
+
+        sanctnLnService.lastUpadteSanctnLn(opinion.toString(), userNumber, id);
+
+        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
         }
         Long userNumber2 = member.getUserNumber();
 
@@ -389,43 +382,107 @@ public class SanctnController {
         return "/pages/sanctionDetail";
     }
 
-    @PostMapping ("/finalApproval")
-    public String finalApproval(@RequestParam Map<String, Object> param, Model model) {
-
-        //의견 남기기 + 최종결재 처리
-
-        Object opinion = param.get("opinion");
-        Long userNumber = Long.valueOf((String) param.get("userNumber"));
-        Long id = Long.valueOf((String) param.get("id"));
-
-        sanctnLnService.lastUpadteSanctnLn(opinion.toString(), userNumber, id);
-
-        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
-
+    //진행 조회
+    @GetMapping("/sanctnProgress")
+    public String sanctnProgress(Model model, @PageableDefault(size = 3) Pageable pageable) {
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = null;
         try {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
         }
-        Long userNumber2 = member.getUserNumber();
+        Long userNumber = member.getUserNumber();
+
+        SanctnProgress progress = SanctnProgress.PROGRESS;
+
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnProgress");
+
+        return "/pages/sanction::#test";
+
+    }
+
+    //반려 조회
+    @GetMapping("/sanctnReject")
+    public String sanctnReject(Model model, @PageableDefault(size = 3) Pageable pageable) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+
+        SanctnProgress reject = SanctnProgress.REJECT;
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
 
-        //로그인한 사람의 정보를 넘겨 줌
-        model.addAttribute("userNumber", userNumber2);
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnReject");
 
-        Optional<Sanctn> details = sanctnRepository.findById(id);
-        Sanctn sanctn = details.get();
-        model.addAttribute("details", sanctn);
+        return "/pages/sanction::#test";
+    }
 
-        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+    //승인 완료
 
-        model.addAttribute("sanctnLnList", sanctnDTOS);
+//    @GetMapping("/sanctnCom")
+//    public String sanctnCom(Model model, @PageableDefault(size = 3) Pageable pageable) {
+//
+//        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Member member = null;
+//        try {
+//            member = ((AccountContext) authentication.getPrincipal()).getMember();
+//        } catch (ClassCastException e) {
+//        }
+//        Long userNumber = member.getUserNumber();
+//
+//        SanctnProgress completion = SanctnProgress.COMPLETION;
+//        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
+//
+//        model.addAttribute("results", results);
+//        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+//
+//        return "/pages/sanction::#test";
+//
+//    }
 
-        //문서 ID 넘겨줌
-        model.addAttribute("id", id);
+    //    //공람 조회
 
-        return "/pages/sanctionDetail";
+    @GetMapping("/sanctnPublic")
+    public String sanctnPublic(Model model, @PageableDefault(size = 3) Pageable pageable) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+
+        SanctnProgress publicize = SanctnProgress.PUBLICIZE;
+        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, publicize);
+
+        model.addAttribute("results", results);
+        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
+
+        // 페이징 페이지 주소 매핑
+        model.addAttribute("mapping","sanctnPublic");
+
+        return "/pages/sanction::#test";
+
     }
 
 }
