@@ -546,40 +546,6 @@ function getMajor(){
 
     //일정 등록 및 취소 버튼 클릭시 모달창 내용 초기화
     function cleanSchedule(){
-        const type = document.querySelector("#new-schedule-type");
-        const typeDetail = document.querySelector("#new-schedule-type-detail")
-        const title = document.querySelector("#new-schedule-title");
-        const content = document.querySelector("#message-text");
-        const location = document.querySelector("#new-schedule-location");
-        const startDate = document.querySelector("#startDate");
-        const endDate = document.querySelector("#endDate")
-        const isAllday = document.querySelector("#new-schedule-allday");
-        const alarmTime = document.querySelector("#new-schedule-alam-time");
-        const alarmSms = document.querySelector("#schedule-alam-sms");
-        const alarmKakao = document.querySelector("#schedule-alam-kakao");
-
-        type.value = "none";
-        typeDetail.value = "none";
-        title.value = "";
-        content.value = "";
-        location.value = "";
-        startDate.value = "";
-        endDate.value = "";
-        isAllday.value = "";
-        alarmTime.value = "none";
-        alarmSms.value = "";
-        alarmKakao.value = "";
-    };
-
-    //취소버튼 클릭시 모달창 내용 초기와 & 창 닫기
-    cancelBtn.addEventListener("click",function(){
-        cleanSchedule();
-
-    })
-
-    //모달창에 입력받은 값 DB등록
-    sendBtn.addEventListener("click", function(){
-        console.log("aaa");
         var type = document.querySelector("#new-schedule-type");
         var typeDetail = document.querySelector("#new-schedule-type-detail")
         var title = document.querySelector("#new-schedule-title");
@@ -592,30 +558,89 @@ function getMajor(){
         var alarmSms = document.querySelector("#schedule-alam-sms");
         var alarmKakao = document.querySelector("#schedule-alam-kakao");
 
-        const isTitle = title.value;
-        const isType = type.value;
-        const isStr = startDate.value;
-        const isEnd = endDate.value;
-        if(!isTitle || !isType || !isStr || !isEnd){
+        type.value = "none";
+        typeDetail.value = "none";
+        title.value = "";
+        content.value = "";
+        location.value = "";
+        startDate.value = "";
+        endDate.value = "";
+        isAllday.checked = false;
+        alarmTime.value = "none";
+        alarmSms.checked = false;
+        alarmKakao.checked = false;
+    };
+
+    //취소버튼 클릭시 모달창 내용 초기와 & 창 닫기
+    cancelBtn.addEventListener("click",function(){
+        cleanSchedule();
+
+    })
+
+    //모달창에 입력받은 값 DB등록
+    sendBtn.addEventListener("click", function(){
+
+        var type = document.querySelector("#new-schedule-type").value;
+        var typeDetail = document.querySelector("#new-schedule-type-detail").value;
+        var title = document.querySelector("#new-schedule-title").value;
+        var content = document.querySelector("#message-text").value;
+        var location = document.querySelector("#new-schedule-location").value;
+        var startDate = document.querySelector("#startDate").value;
+        var endDate = document.querySelector("#endDate").value;
+        var isAllday = document.querySelector("#new-schedule-allday");
+        var alarmTime = document.querySelector("#new-schedule-alam-time").value;
+        var alarmSms = document.querySelector("#schedule-alam-sms");
+        var alarmKakao = document.querySelector("#schedule-alam-kakao");
+
+        const strArr = startDate.split("T");
+        const str = strArr[0] + " " +strArr[1];
+        const strDate = new Date(str);
+
+        const endArr = endDate.split("T");
+        const end = endArr[0] + " " + endArr[1];
+        const enddate = new Date(end);
+
+        const selectedIsAllday = isAllday.checked;
+        const selectedAlarmSMS = alarmSms.checked;
+        const selectedAlarmKakao = alarmKakao.checked;
+
+
+        if(!title || !type || !startDate || !endDate){
             swal("필수 항목을 입력해주세요");
             return;
         }
 
-        console.log("------------ADDEVENTLISTENER-------------");
-        console.log(startDate.value);
+        if (strDate > enddate ){
+            swal("시간설정이 잘못 되었습니다.");
+            return;
+        }
+
+        if (selectedIsAllday){
+            const alldayStrTime = '00:00';
+            const alldayEndTime = '23:59';
+            startDate = strArr[0] + 'T' + alldayStrTime;
+            endDate = endArr[0] + 'T' + alldayEndTime;
+        }
+
+        if (alarmTime != "none"){
+            if (!selectedAlarmSMS && !selectedAlarmKakao){
+                swal("알람 유형을 선택하세요.");
+                return;
+            }
+        }
 
         const params = {
-            type : type.value,
-            typeDetail : typeDetail.value,
-            title : title.value,
-            content : content.value,
-            location : location.value,
-            startDate : startDate.value,
-            endDate : endDate.value,
-            isAllday : isAllday.value,
-            alarmTime : alarmTime.value,
-            alarmSms : alarmSms.value,
-            alarmKakao : alarmKakao.value
+            type : type,
+            typeDetail : typeDetail,
+            title : title,
+            content : content,
+            location : location,
+            startDate : startDate,
+            endDate : endDate,
+            isAllday : selectedIsAllday,
+            alarmTime : alarmTime,
+            alarmSms : selectedAlarmSMS,
+            alarmKakao : selectedAlarmKakao
 
         };
 
@@ -677,36 +702,49 @@ function getMajor(){
         const typeDetail = document.querySelector("#new-schedule-type-detail");
         const typeOption = scheduleType.options[scheduleType.selectedIndex].innerText;
 
+        console.log("구분 선택했을때의 구분의 value값 : ");
+        const typevaule = scheduleType.options[scheduleType.selectedIndex].value;
+        console.log(typevaule);
         console.log("ajax밖에서 majorList : " + majorList);
         const typeDetailOptions = {
             none: ['선택'],
-            private: ['개인'],
+            noneValue : ['NONE'],
+            private: ['선택'],
+            privateValue: ['PRIVATE'],
             total: ['학교'],
+            totalValue:['TOTAL'],
             college: ['건축학부', '전기전자학부'],
+            collegeValue: ['CONSTRUCT','ELECTRICALELECTRONIC'],
             major: majorList[0]
         }
 
         switch (typeOption) {
             case '선택':
                 var detailOption = typeDetailOptions.none;
+                var detailOptionValue = typeDetailOptions.noneValue;
                 break;
             case '개인':
                 var detailOption = typeDetailOptions.private;
+                var detailOptionValue = typeDetailOptions.privateValue;
                 break;
             case '학교':
                 var detailOption = typeDetailOptions.total;
+                var detailOptionValue = typeDetailOptions.totalValue;
                 break;
             case '학부':
                 var detailOption = typeDetailOptions.college;
+                var detailOptionValue = typeDetailOptions.collegeValue;
                 break;
             case '학과':
                 var detailOption = typeDetailOptions.major;
+                var detailOptionValue = typeDetailOptions.major;
                 break;
         }
 
         typeDetail.options.length = 0;
         for (var i=0; i< detailOption.length; i++){
             const option = document.createElement('option');
+            option.setAttribute('value',detailOptionValue[i]);
             option.innerText = detailOption[i];
             typeDetail.append(option);
         }
@@ -716,45 +754,58 @@ function getMajor(){
     //권한별로 다른 일정구분 목록리스트
     function getTypeList() {
 
-        console.log("getTypeList로 넘어온 role : ");
-        const type = document.querySelector("#new-schedule-type");
-
-
+        console.log("getTypeList로 넘어온 role : " + myRole);
         const typeOptions = {
             student: ['선택', '개인'],
+            studentValue: ['NONE','PRIVATE'],
             professor: ['선택', '개인', '학과'],
+            professorValue: ['NONE','PRIVATE','MAJOR'],
             academic: ['선택', '개인', '학과', '학부'],
+            academicValue: ['NONE','PRIVATE','MAJOR','COLLEGE'],
             admin: ['선택', '개인', '학교', '학부'],
+            adminValue: ['NONE','PRIVATE','TOTAL','COLLEGE'],
             general: ['선택', '개인', '학교'],
-            studentDep: ['선택', '개인', '학교']
+            generalValue: ['NONE','PRIVATE','TOTAL'],
+            studentDep: ['선택', '개인', '학교'],
+            studentDepValue: ['NONE','PRIVATE','TOTAL']
         }
 
-        console.log("switch전 role : " );
+
+        const type = document.querySelector("#new-schedule-type");
+
+        console.log("switch전 role : " + myRole);
 
         switch (myRole) {
             case 'ROLE_STUDENT':
                 var typeOption = typeOptions.student;
+                var typeOptionValue = typeOptions.studentValue;
                 break;
             case 'ROLE_PROFESSOR':
                 var typeOption = typeOptions.professor;
+                var typeOptionValue = typeOptions.professorValue;
                 break;
             case 'ROLE_ACCADEMIC_DEP':
                 var typeOption = typeOptions.academic;
+                var typeOptionValue = typeOptions.academicValue;
                 break;
             case 'ROLE_ADMIN_DEP':
                 var typeOption = typeOptions.admin;
+                var typeOptionValue = typeOptions.adminValue;
                 break;
             case 'ROLE_GENERAL_DEP':
                 var typeOption = typeOptions.general;
+                var typeOptionValue = typeOptions.generalValue;
                 break;
             case 'ROLE_STUDENT_DEP':
                 var typeOption = typeOptions.studentDep;
+                var typeOptionValue = typeOptions.studentDepValue;
                 break;
         }
 
         type.options.length = 0;
         for (var i =0; i< typeOption.length; i++){
             const optionTag = document.createElement('option');
+            optionTag.setAttribute('value',typeOptionValue[i]);
             optionTag.innerText = typeOption[i];
             type.append(optionTag);
         }

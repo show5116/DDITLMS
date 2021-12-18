@@ -68,6 +68,13 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
                 .fetch();
     }
 
+    @Override
+    public Long getLastScheduleNumber(){
+        return queryFactory
+                .select(QCalendar.calendar.id.max())
+                .from(QCalendar.calendar)
+                .fetchOne();
+    }
 
 }
 

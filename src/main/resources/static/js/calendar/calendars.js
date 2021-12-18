@@ -67,6 +67,16 @@ function hexToRGBA(hex) {
 
     calendar = new CalendarInfo();
     // id += 1;
+    calendar.id = 'COLLEGE';
+    calendar.name = '학부';
+    calendar.color = '#ffffff';
+    calendar.bgColor = '#03bd9e';
+    calendar.dragBgColor = '#03bd9e';
+    calendar.borderColor = '#03bd9e';
+    addCalendar(calendar);
+
+    calendar = new CalendarInfo();
+    // id += 1;
     calendar.id = 'TOTAL';
     calendar.name = '학교';
     calendar.color = '#FFFFFF';
@@ -76,16 +86,6 @@ function hexToRGBA(hex) {
     addCalendar(calendar);
 
     /*calendar = new CalendarInfo();
-    id += 1;
-    calendar.id = String(id);
-    calendar.name = 'Friend';
-    calendar.color = '#ffffff';
-    calendar.bgColor = '#03bd9e';
-    calendar.dragBgColor = '#03bd9e';
-    calendar.borderColor = '#03bd9e';
-    addCalendar(calendar);
-
-    calendar = new CalendarInfo();
     id += 1;
     calendar.id = String(id);
     calendar.name = 'Travel';
