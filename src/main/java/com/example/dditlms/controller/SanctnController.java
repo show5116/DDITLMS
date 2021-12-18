@@ -67,15 +67,11 @@ public class SanctnController {
         Page<SanctnLn> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
         long totalRej = rejectResult.getTotalElements();
 
-        log.info("총 반려 결과" + String.valueOf(rejectResult));
-        log.info("총 반려 갯수" + String.valueOf(totalRej));
         model.addAttribute("totalRej", totalRej);
 
         SanctnProgress pub = SanctnProgress.PUBLICIZE;
         Page<SanctnLn> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
         long totalPub = pubResult.getTotalElements();
-        log.info("총 공람 결과" + String.valueOf(pubResult));
-        log.info("총 공람 갯수" + String.valueOf(totalPub));
         model.addAttribute("totalPub", totalPub);
 
         //전체 조회결과와 페이징 정보를 넘겨준다.
@@ -88,8 +84,6 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
         long totalPro = results.getTotalElements();
         model.addAttribute("totalPro", totalPro);
-        log.info("총 진행 결과" + String.valueOf(results));
-        log.info("총 진행 갯수" + String.valueOf(totalPro));
 
 
         //로그인 한 사람 이름 조회, 넘기기
@@ -103,7 +97,8 @@ public class SanctnController {
 
         //최근결재의견 조회
         List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
-
+        model.addAttribute("recentOpinions" , recentOpinion);
+        log.info("-----------------------" + String.valueOf(recentOpinion));
 
 
         return "/pages/sanction";
@@ -534,4 +529,5 @@ public class SanctnController {
         return "/pages/sanction::#test";
 
     }
+
 }
