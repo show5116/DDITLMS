@@ -110,31 +110,28 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                         , department.deptNm
                         , sanctnLn1.sanctnStep
                         , sanctnLn1.sanctnLnProgress
-                        , sanctnLn1.mberNo.userNumber)).distinct()
-                .from(sanctnLn1,
-                        member,
-                        sanctn,
-                        employee,
-                        department)
+                        , sanctnLn1.mberNo.userNumber))
+                .from(sanctn
+                        ,sanctnLn1
+                        , member
+                        , employee
+                        , department)
                 .join(sanctnLn1.sanctnSn, sanctn)
+                .where(sanctnLn1.mberNo.userNumber.notIn(userNumber))
+                .groupBy(sanctn.sanctnId)
                 .join(sanctnLn1.mberNo, member)
                 .join(employee.member, member)
                 .join(employee.deptCode, department)
-                .where(sanctnLn1.sanctnSn.eq(sanctn)
-                        , sanctnLn1.mberNo.eq(member)
+                .where(sanctnLn1.mberNo.eq(member)
                         , employee.member.eq(member)
-                        , employee.deptCode.eq(department)
-                        , sanctnLn1.mberNo.userNumber.notIn(userNumber)
-                        , sanctnLn1.sanctnOpinion.isNotNull())
-                .groupBy(member.name)
-                .groupBy(sanctnLn1.sanctnSn)
+                        , employee.deptCode.eq(department),
+                        sanctnLn1.sanctnOpinion.isNotNull())
                 .orderBy(sanctnLn1.sanctnDate.desc())
                 .fetch();
 
-
     }
 
-
+    // 결재 조회 (페이징 + 상태조건별 조회)
     @Override
     public Page<SanctnLn> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress) {
 
@@ -159,6 +156,35 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    // 결재 전체 조회
+   @Override
+    public Page<SanctnLn> inquireAll(Long userNumber, Pageable pageable) {
+       Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
+
+       List<SanctnLn> content = queryFactory
+               .select(sanctnLn1)
+               .from(sanctnLn1)
+               .from(sanctn)
+               .join(sanctnLn1.sanctnSn, sanctn)
+               .where(sanctnLn1.sanctnSn.eq(sanctn)
+                       , sanctnLn1.mberNo.eq(findMember.get()))
+               .groupBy(sanctnLn1.sanctnSn)
+               .offset(pageable.getOffset())
+               .limit(pageable.getPageSize())
+               .fetch();
+
+       JPAQuery<SanctnLn> countQuery = queryFactory
+               .select(sanctnLn1)
+               .from(sanctnLn1)
+               .from(sanctn)
+               .join(sanctnLn1.sanctnSn, sanctn)
+               .where(sanctnLn1.sanctnSn.eq(sanctn), sanctnLn1.mberNo.eq(findMember.get()))
+               .groupBy(sanctnLn1.sanctnSn);
+
+       countQuery.fetchCount();
+
+       return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+   }
 
 }
 
