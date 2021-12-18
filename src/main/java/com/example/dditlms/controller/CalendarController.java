@@ -35,11 +35,6 @@ public class CalendarController {
 
     private final CalendarService calendarService;
     private final CalendarRepository calendarRepository;
-    private final CalendarAlarmRepository calendarAlarmRepository;
-
-
-
-
 
     @GetMapping("/calendar")
     public ModelAndView calendar(ModelAndView mav){
@@ -61,7 +56,6 @@ public class CalendarController {
     @PostMapping("/calendar/add")
     public void addSchedule(HttpServletRequest request , HttpServletResponse response,
                             @RequestParam Map<String,String> paramMap){
-        log.info("---------------------addSchedule");
 
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
@@ -97,31 +91,6 @@ public class CalendarController {
         cal.setTime(date);
         scheduleStart = df.format(cal.getTime());
 
-        try {
-            calendar = Calendar.builder()
-                    .scheduleType(paramMap.get("type"))
-                    .scheduleTypeDetail(paramMap.get("typeDetail"))
-                    .title(paramMap.get("title"))
-                    .content(paramMap.get("content"))
-                    .scheduleLocation(paramMap.get("location"))
-                    .scheduleStr(paramMap.get("startDate"))
-                    .scheduleEnd(paramMap.get("endDate"))
-                    .setAlarmTime(paramMap.get("alarmTime"))
-                    .content(paramMap.get("text"))
-                    .member(member).build();
-            calendarAlarmSMS = calendarAlarmSMS.builder()
-                    .scheduleContent(paramMap.get("title"))
-                    .scheduleAlarmTime(scheduleStart)
-                    .scheduleAlarmType("SMS")
-                    .build();
-            calendarAlarmKakako = calendarAlarmKakako.builder()
-                    .scheduleContent(paramMap.get("title"))
-                    .scheduleAlarmTime(scheduleStart)
-                    .scheduleAlarmType("KAKAO")
-                    .build();
-        }catch (Exception e){
-        }
-
         if (alarmCount > 0){
             switch (alarmTime){
                 case "30": cal.add(java.util.Calendar.MINUTE, -30);
@@ -138,28 +107,41 @@ public class CalendarController {
             sms = paramMap.get("alarmSms");
             kakao = paramMap.get("alarmKakao");
 
-            log.info("---------------------if문 들어가기전 sms :" + sms);
-            log.info("---------------------if문 들어가기전 title :" + calendarAlarmSMS.getScheduleContent());
+            try {
+                calendar = Calendar.builder()
+                        .scheduleType(paramMap.get("type"))
+                        .scheduleTypeDetail(paramMap.get("typeDetail"))
+                        .title(paramMap.get("title"))
+                        .content(paramMap.get("content"))
+                        .scheduleLocation(paramMap.get("location"))
+                        .scheduleStr(paramMap.get("startDate"))
+                        .scheduleEnd(paramMap.get("endDate"))
+                        .setAlarmTime(paramMap.get("alarmTime"))
+                        .content(paramMap.get("text"))
+                        .member(member).build();
+                calendarAlarmSMS = calendarAlarmSMS.builder()
+                        .calendar(calendar)
+                        .scheduleContent(paramMap.get("title"))
+                        .scheduleAlarmTime(scheduleStart)
+                        .scheduleAlarmType("SMS")
+                        .build();
+                calendarAlarmKakako = calendarAlarmKakako.builder()
+                        .calendar(calendar)
+                        .scheduleContent(paramMap.get("title"))
+                        .scheduleAlarmTime(scheduleStart)
+                        .scheduleAlarmType("KAKAO")
+                        .build();
+            }catch (Exception e){
+            }
 
-            log.info(sms.equals("true") + "<<<<");
             if(sms.equals("true")){
-                log.info("----------------alarmSMS insert 시작");
-                log.info(calendarAlarmSMS.getId()+"");
-                log.info(calendarAlarmSMS.getScheduleContent()+"");
-                log.info(calendarAlarmSMS.getScheduleAlarmTime()+"");
-                log.info(calendarAlarmSMS.getScheduleAlarmType()+"");
                 calendar = calendarService.addAlarm(calendar, calendarAlarmSMS);
-                log.info("----------------alarmSMS insert 성공");
             }
             if(kakao.equals("true")){
                 calendar = calendarService.addAlarm(calendar, calendarAlarmKakako);
-                log.info("----------------alarmKAKAO insert 성공");
             }
         } else{
-            //서비스로 save 호출
-            log.info("---------------------일정등록 서비스 시작");
             calendar = calendarService.addSchedule(calendar);
-            log.info("---------------------일정등록 서비스 끝");
         }
 
         List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member);
@@ -178,7 +160,6 @@ public class CalendarController {
             map.put("scheduleType",calendarToJson.getScheduleType());
 
             jsonArray.add(map);
-
         };
 
         jsonObject.put("state","true");
@@ -188,8 +169,6 @@ public class CalendarController {
             response.getWriter().print(jsonObject.toJSONString());
         } catch (IOException e) {
         }
-
-
     }
 
     @PostMapping("/calendar/delete")

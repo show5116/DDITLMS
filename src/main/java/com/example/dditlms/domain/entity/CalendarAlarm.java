@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class CalendarAlarm {
 
     @Id
-    @Column(name = "SCHDUL_SN")
+    @Column(name = "SCHDUL_NTCN_SN")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
