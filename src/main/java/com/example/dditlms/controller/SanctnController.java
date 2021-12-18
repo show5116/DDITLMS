@@ -104,7 +104,6 @@ public class SanctnController {
         //최근결재의견 조회
         List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
 
-        log.info(String.valueOf(recentOpinion));
 
 
         return "/pages/sanction";
