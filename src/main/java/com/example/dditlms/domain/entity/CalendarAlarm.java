@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CalendarAlarm {
+public class CalendarAlarm{
 
     @Id
     @Column(name = "SCHDUL_NTCN_SN")

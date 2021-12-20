@@ -4,7 +4,6 @@ import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.domain.entity.Calendar;
 import com.example.dditlms.domain.entity.CalendarAlarm;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.repository.CalendarAlarmRepository;
 import com.example.dditlms.domain.repository.CalendarRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.CalendarService;
@@ -23,9 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -33,7 +29,7 @@ import java.util.*;
 @Slf4j
 public class CalendarController {
 
-    private final CalendarService calendarService;
+    private final CalendarService service;
     private final CalendarRepository calendarRepository;
 
     @GetMapping("/calendar")
@@ -54,122 +50,64 @@ public class CalendarController {
     }
 
     @PostMapping("/calendar/add")
-    public void addSchedule(HttpServletRequest request , HttpServletResponse response,
-                            @RequestParam Map<String,String> paramMap){
-
+    public void addSchedule(HttpServletResponse response, @RequestParam Map<String, Object> paramMap){
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
-        Member member = null;
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try{member = ((AccountContext)authentication.getPrincipal()).getMember();}  //로그인한 member 정보 저장
+        catch(ClassCastException e){}
 
-        try{
-            member = ((AccountContext)authentication.getPrincipal()).getMember();
-        }catch(ClassCastException e){
-        }
+        /** 파라미터 조회 */
+        Object alarmTime = paramMap.get("alarmTime");
+//        int alarmCount = Integer.parseInt(alarmTime);
+        Object sms = paramMap.get("alarmSms"); // sms알림 설정 여부
+        Object kakao = paramMap.get("alarmKakao"); // kakao알림 설정 여부
+        Object scheduleType = paramMap.get("type");
+        Object scheduleTypeDetail = paramMap.get("typeDetail");
+        Object title = paramMap.get("title");
+        Object content = paramMap.get("content");
+        Object scheduleLocation = paramMap.get("location");
+        Object scheduleStr = paramMap.get("startDate");
+        Object scheduleEnd = paramMap.get("endDate");
 
+        /** 파라미서 생생*/
         JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        Calendar calendar = null;
-        CalendarAlarm calendarAlarmSMS = null;
-        CalendarAlarm calendarAlarmKakako = null;
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        Date date = null;
-        String scheduleStart = null;
-        String sms = null;
-        String kakao = null;
-        Long scheduleMaxId =0L;
+        Map<String, Object> map = new HashMap<>();
 
-        String startDate = paramMap.get("startDate");
-        String alarmTime = paramMap.get("alarmTime");
-        int alarmCount = Integer.parseInt(alarmTime);
+        /** 서비스 호출 파라미터 구성 */
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("member",member);
+        paramsMap.put("alarmTime",alarmTime);
+        paramsMap.put("sms",sms);
+        paramsMap.put("kakao",kakao);
+        paramsMap.put("scheduleType",scheduleType);
+        paramsMap.put("scheduleTypeDetail",scheduleTypeDetail);
+        paramsMap.put("title",title);
+        paramsMap.put("content",content);
+        paramsMap.put("scheduleLocation",scheduleLocation);
+        paramsMap.put("scheduleStr",scheduleStr);
+        paramsMap.put("scheduleEnd",scheduleEnd);
+        paramsMap.put("jsonArray", map);
 
-        try {
-            date = df.parse(startDate);
-        }catch (ParseException e){
-        }
-        cal.setTime(date);
-        scheduleStart = df.format(cal.getTime());
+        /** 서비스 호출*/
+        service.addSchedule(paramMap);
 
-        if (alarmCount > 0){
-            switch (alarmTime){
-                case "30": cal.add(java.util.Calendar.MINUTE, -30);
-                    log.info("switch에서 30");
-                    break;
-                case "60": cal.add(java.util.Calendar.HOUR, -1);
-                    break;
-                case "1440": cal.add(java.util.Calendar.DATE, -1);
-                    break;
-                case "10080": cal.add(java.util.Calendar.DATE, -7);
-                    break;
-            }
-            scheduleStart = df.format(cal.getTime());
-            sms = paramMap.get("alarmSms");
-            kakao = paramMap.get("alarmKakao");
-
-            try {
-                calendar = Calendar.builder()
-                        .scheduleType(paramMap.get("type"))
-                        .scheduleTypeDetail(paramMap.get("typeDetail"))
-                        .title(paramMap.get("title"))
-                        .content(paramMap.get("content"))
-                        .scheduleLocation(paramMap.get("location"))
-                        .scheduleStr(paramMap.get("startDate"))
-                        .scheduleEnd(paramMap.get("endDate"))
-                        .setAlarmTime(paramMap.get("alarmTime"))
-                        .content(paramMap.get("text"))
-                        .member(member).build();
-                calendarAlarmSMS = calendarAlarmSMS.builder()
-                        .calendar(calendar)
-                        .scheduleContent(paramMap.get("title"))
-                        .scheduleAlarmTime(scheduleStart)
-                        .scheduleAlarmType("SMS")
-                        .build();
-                calendarAlarmKakako = calendarAlarmKakako.builder()
-                        .calendar(calendar)
-                        .scheduleContent(paramMap.get("title"))
-                        .scheduleAlarmTime(scheduleStart)
-                        .scheduleAlarmType("KAKAO")
-                        .build();
-            }catch (Exception e){
-            }
-
-            if(sms.equals("true")){
-                calendar = calendarService.addAlarm(calendar, calendarAlarmSMS);
-            }
-            if(kakao.equals("true")){
-                calendar = calendarService.addAlarm(calendar, calendarAlarmKakako);
-            }
-        } else{
-            calendar = calendarService.addSchedule(calendar);
-        }
-
-        List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member);
-
-        for(Calendar calendarToJson  : scheduleList ){
-            Map<String, Object> map = new HashMap<>();
-            map.put("id",calendarToJson.getId());
-            map.put("member",calendarToJson.getMember().getUserNumber());
-            map.put("title",calendarToJson.getTitle());
-            map.put("content",calendarToJson.getContent());
-            map.put("schedulePlace",calendarToJson.getScheduleLocation());
-            map.put("scheduleStr",calendarToJson.getScheduleStr());
-            map.put("scheduleEnd",calendarToJson.getScheduleEnd());
-            map.put("alarmTime",calendarToJson.getSetAlarmTime());
-            map.put("scheduleTypeDetail",calendarToJson.getScheduleTypeDetail());
-            map.put("scheduleType",calendarToJson.getScheduleType());
-
-            jsonArray.add(map);
-        };
+        Calendar calendar =(Calendar)paramsMap.get("calendar");
+        map = (Map<String, Object>)paramsMap.get("jsonArray");
 
         jsonObject.put("state","true");
         jsonObject.put("id",calendar.getId());
-        jsonObject.put("list",jsonArray);
+        jsonObject.put("list",map);
         try {
             response.getWriter().print(jsonObject.toJSONString());
         } catch (IOException e) {
         }
     }
+
+
+
 
     @PostMapping("/calendar/delete")
     public void deleteSchedule(HttpServletRequest request , HttpServletResponse response,
@@ -186,6 +124,7 @@ public class CalendarController {
         }catch(ClassCastException e){
         }
         Calendar calendar = null;
+        CalendarAlarm calendarAlarm = null;
         Object id = paramMap.get("deleteSchedule");
         Long scheduleId = Long.valueOf(String.valueOf(id));
         try {
@@ -196,7 +135,7 @@ public class CalendarController {
         }catch (Exception e){
         }
 
-        boolean result = calendarService.deleteSchedule(calendar);
+        boolean result = service.deleteSchedule(calendar);
 
         if(result ==true){
             log.info("---------------------deleteSchedule SUCCESS");
