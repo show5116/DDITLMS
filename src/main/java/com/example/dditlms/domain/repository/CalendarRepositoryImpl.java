@@ -76,6 +76,15 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
                 .fetchOne();
     }
 
+    @Override
+    public Calendar getSchedule(Long id){
+        return queryFactory
+                .select(QCalendar.calendar)
+                .from(QCalendar.calendar)
+                .where(QCalendar.calendar.id.eq(id))
+                .fetchOne();
+    }
+
 }
 
 

@@ -2,51 +2,223 @@ package com.example.dditlms.service.impl;
 
 import com.example.dditlms.domain.entity.Calendar;
 import com.example.dditlms.domain.entity.CalendarAlarm;
+import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.CalendarAlarmRepository;
 import com.example.dditlms.domain.repository.CalendarRepository;
 import com.example.dditlms.service.CalendarService;
+import com.querydsl.jpa.impl.JPADeleteClause;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CalendarServiceImpl implements CalendarService {
 
-    private final CalendarRepository calendarRepository;
-    private final CalendarAlarmRepository calendarAlarmRepository;
-
-
-    @Transactional
-    @Override
-    public Calendar addAlarm(Calendar calendar,CalendarAlarm calendarAlarm) {
-        calendarRepository.save(calendar);
-        calendarAlarmRepository.save(calendarAlarm);
-        return calendar;
-    }
+    private final CalendarRepository repository;
+    private final CalendarAlarmRepository alarmRepository;
 
     @Override
     @Transactional
-    public Calendar addSchedule(Calendar calendar) {
-        calendarRepository.save(calendar);
-        return calendar;
+    public void addSchedule(Map<String, Object> paramsMap) {
+
+        /** 파라미터 조회 ***************************************************************************/
+        Member member =(Member)paramsMap.get("member");
+        String alarmTime =(String)paramsMap.get("alarmTime");
+        String sms = (String) paramsMap.get("sms");
+        String kakao =(String) paramsMap.get("kakao");
+        String type = (String)paramsMap.get("scheduleType");
+        String typeDetail =(String)paramsMap.get("scheduleTypeDetail");
+        String title = (String)paramsMap.get("title");
+        String content =(String)paramsMap.get("content");
+        String place = (String)paramsMap.get("scheduleLocation");
+        String scheduleStr = (String)paramsMap.get("scheduleStr");
+        String scheduleEnd = (String)paramsMap.get("scheduleEnd");
+
+        log.info("---------addschedule params --------------- ");
+        log.info(member.getName());
+        log.info(alarmTime);
+        log.info(sms);
+        log.info(kakao);
+        log.info(type);
+        log.info(typeDetail);
+        log.info(title);
+        log.info(content);
+        log.info(place);
+        log.info(scheduleStr);
+        log.info(scheduleEnd);
+        log.info("---------------------------------------------------- ");
+
+        /** 파라미터 생성 */
+        JSONArray jsonArray = new JSONArray();
+        Calendar calendar = null;
+        CalendarAlarm calendarAlarmSMS = null;
+        CalendarAlarm calendarAlarmKakako = null;
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        Date date = null;
+        String scheduleStart = ""; //알람시간
+
+        /** 로직 처리 구간 *******************************************************************/
+
+        try {date = df.parse(scheduleStr);}catch (ParseException e){}
+        cal.setTime(date);
+
+        if (!alarmTime.equals("none")){
+            switch (alarmTime){
+                case "30": cal.add(java.util.Calendar.MINUTE, -30);
+                    log.info("switch에서 30");
+                    break;
+                case "60": cal.add(java.util.Calendar.HOUR, -1);
+                    break;
+                case "1440": cal.add(java.util.Calendar.DATE, -1);
+                    break;
+                case "10080": cal.add(java.util.Calendar.DATE, -7);
+                    break;
+            }
+            scheduleStart = df.format(cal.getTime());
+            try {
+                calendar = Calendar.builder()
+                        .scheduleType(type)
+                        .scheduleTypeDetail(typeDetail)
+                        .title(title)
+                        .content(content)
+                        .scheduleLocation(place)
+                        .scheduleStr(scheduleStr)
+                        .scheduleEnd(scheduleEnd)
+                        .setAlarmTime(alarmTime)
+                        .member(member).build();
+                calendarAlarmSMS = CalendarAlarm.builder()
+                        .scheduleContent(title)
+                        .scheduleAlarmTime(scheduleStart)
+                        .scheduleAlarmType("SMS")
+                        .calendar(calendar).build();
+                calendarAlarmKakako = CalendarAlarm.builder()
+                        .scheduleContent(title)
+                        .scheduleAlarmTime(scheduleStart)
+                        .scheduleAlarmType("KAKAO")
+                        .calendar(calendar).build();
+            }catch (Exception e){
+            }
+
+            if(sms.equals("true")){
+                log.info("-----service에서 sms schedule 등록");
+                calendar = repository.save(calendar);
+                paramsMap.put("calendar", calendar);
+                alarmRepository.save(calendarAlarmSMS);
+                log.info("-----service에서 sms schedule 등록 성공");
+            }
+            if(kakao.equals("true")){
+                log.info("-----service에서 kakao schedule 등록");
+                calendar = repository.save(calendar);
+                paramsMap.put("calendar", calendar);
+                alarmRepository.save(calendarAlarmKakako);
+                log.info("-----service에서 kakao schedule 등록 성공");
+            }
+        } else{
+            try {
+                calendar = Calendar.builder()
+                        .scheduleType(type)
+                        .scheduleTypeDetail(typeDetail)
+                        .title(title)
+                        .content(content)
+                        .scheduleLocation(place)
+                        .scheduleStr(scheduleStr)
+                        .scheduleEnd(scheduleEnd)
+                        .setAlarmTime(alarmTime)
+                        .member(member).build();
+            }catch (Exception e){
+            }
+
+            log.info("-----service에서 schedule 등록");
+            calendar = repository.save(calendar);
+            paramsMap.put("calendar", calendar);
+            log.info("-----service에서 schedule 등록 성공");
+        }
+
+        log.info("-----service에서 scheduleList 조회");
+        List<Calendar> scheduleList = repository.getAllScheduleList(member);
+        log.info("-----service에서 scheduleList 조회 성공" );
+
+        for(Calendar calendarToJson  : scheduleList ){
+            Map<String, Object> map = new HashMap<>();
+            map.put("id",calendarToJson.getId());
+            map.put("member",calendarToJson.getMember().getUserNumber());
+            map.put("title",calendarToJson.getTitle());
+            map.put("content",calendarToJson.getContent());
+            map.put("schedulePlace",calendarToJson.getScheduleLocation());
+            map.put("scheduleStr",calendarToJson.getScheduleStr());
+            map.put("scheduleEnd",calendarToJson.getScheduleEnd());
+            map.put("alarmTime",calendarToJson.getSetAlarmTime());
+            map.put("scheduleTypeDetail",calendarToJson.getScheduleTypeDetail());
+            map.put("scheduleType",calendarToJson.getScheduleType());
+
+            jsonArray.add(map);
+
+        };
+        log.info(jsonArray.get(0)+"");
+            paramsMap.put("jsonArray", jsonArray);
     }
 
     @Override
     public boolean deleteSchedule(Calendar calendar) {
-
-        int count = calendarRepository.countConfirmScheduleWriter(calendar);
+        CalendarAlarm calendarAlarm = new CalendarAlarm();
+        int count = repository.countConfirmScheduleWriter(calendar);
 
         System.out.println("count : "+ count);
 
         if (count == 1 ){
-            calendarRepository.delete(calendar);
+            log.info("----CalendarServiceImpl/deleteSchedule :: if문의 count " + count);
+            Long id = alarmRepository.getAlarmId(calendar);
+            try {
+                calendarAlarm = CalendarAlarm.builder()
+                        .id(id)
+                        .build();
+            }catch (Exception e){}
+            log.info("----CalendarServiceImpl/deleteSchedule :: if문의 alarmID" + id);
+            log.info("-----alarm 삭제 ");
+            alarmRepository.delete(calendarAlarm);
+            log.info("-----alarm 삭제 성공");
+            log.info("-----schedule 삭제 ");
+            repository.delete(calendar);
+            log.info("-----schedule 삭제 성공");
             return true;
         } else {
             return false;
         }
 
     }
+
+    public void findAlarmType(Map<String, Object> map){
+
+        String id = (String)map.get("scheduleId");
+        Long scheduleId = Long.parseLong(id);
+        log.info("-----service-findAlarmType :: scheduleId = " + scheduleId);
+        List<String> types = new ArrayList<>();
+        Calendar calendar = new Calendar();
+
+        calendar = repository.getSchedule(scheduleId);
+        String time = calendar.getSetAlarmTime();
+        log.info("-----service-findAlarmType :: calendar = {}",calendar);
+        log.info("-----service-findAlarmType :: time = {}",time);
+        map.put("alarmTime",time);
+        String alarm = calendar.getSetAlarmTime();
+        log.info("-----service-findAlarmType :: alarm = {}",alarm);
+
+        if (!alarm.equals("none")){
+            types = alarmRepository.findAlarmType(scheduleId);
+            log.info("-----service-findAlarmType :: types = {}",types);
+            map.put("types",types);
+        }
+    }
+
 }

@@ -97,7 +97,9 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .fetchFirst();
 
     }
-
+    
+    
+    // 최근 결재의견 조회
     @Override
     public List<SanctnDTO> findRecentOpinion(Long userNumber) {
 
@@ -127,6 +129,7 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                         , employee.deptCode.eq(department),
                         sanctnLn1.sanctnOpinion.isNotNull())
                 .orderBy(sanctnLn1.sanctnDate.desc())
+                .limit(5)
                 .fetch();
 
     }
