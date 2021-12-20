@@ -4,6 +4,7 @@ plugins {
     //querydsl 추가
     id "com.ewerk.gradle.plugins.querydsl" version '1.0.10'
     id 'java'
+
 }
 
 group = 'com.example'
@@ -37,8 +38,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-    //oracle JDBC, 추후 오라클로 변경될 때 적용할 것!
-    //runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -55,6 +55,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    // java simple mail
+    implementation group: 'org.simplejavamail', name: 'simple-java-mail', version: '6.6.1'
+    // java mail api
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 }
 
 test {
