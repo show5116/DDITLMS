@@ -46,7 +46,8 @@
                     </li>
                     <li class="onhover-dropdown"><i data-feather="message-square"></i>
                         <ul class="chat-dropdown onhover-show-div">
-                            <!-- 채팅 리스트 -->
+                            <li class="text-center" onclick="seeMore();"> <a id="see-all-btn" class="f-w-700">더보기     </a></li>
+                            <li id="add-chat-btn-modal" data-bs-toggle="modal" data-bs-target="#addchatmodal" data-bs-original-title="" class="text-center"> <a class="f-w-700">채팅방 만들기    </a></li>
                         </ul>
                     </li>
                     <li class="onhover-dropdown p-0">
@@ -61,5 +62,202 @@
             <div class="d-lg-none mobile-toggle pull-right w-auto"><i data-feather="more-horizontal"></i></div>
         </div>
     </div>
+    <div class="modal fade" id="addchatmodal" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">채팅방 만들기</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" data-bs-original-title="" title=""></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>채팅방 이미지</label>
+                        <img id="chat-img" style="cursor:pointer;" class="img-70 rounded-circle img-fluid pull-right" alt="" src="/static/images/memberImg/user.png">
+                        <div style="height: 0px;width: 0px; overflow:hidden;">
+                            <input id="chat-file-img" type="file" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>채팅방 이름</label>
+                        <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
+                            <input id="chat-name" class="form-control" type="text" required="" placeholder="채팅방 이름" onkeyup="checkDisable();">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>채팅방 초대</label>
+                        <div class="search-bg"><i class="fa fa-search"></i>
+                            <input style="display:inline-block; width:50%;" id="search-member" class="form-control-plaintext" placeholder="검색" onkeyup="enterEvent()">
+                            <select id="search-member-select" class="pull-right" style="width:30%;">
+                                <option value="number" selected>고유번호</option>
+                                <option value="name">이름</option>
+                            </select>
+                        </div>
+                        <select id="chat-members" class="form-control" size="5"></select>
+                        <div class="btn-group btn-group-square" role="group" aria-label="Basic example">
+                            <button id="add-member-btn" class="btn btn-primary" type="button">추가</button>
+                            <button class="btn btn-primary" type="button">다음</button>
+                        </div>
+                        <select id="chat-members-add" class="form-control" size="5"></select>
+                        <div class="btn-group btn-group-square" role="group" aria-label="Basic example">
+                            <button id="delete-member-btn" class="btn btn-primary" type="button">삭제</button>
+                            <button class="btn btn-primary" type="button">다음</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="add-chat-close-btn" class="btn btn-secondary" type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">Close</button>
+                    <button id="add-chat-btn" class="btn btn-primary disabled" type="button" data-bs-original-title="" title="">채팅방 추가</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const seeAllBtn = document.querySelector("#see-all-btn");
+        const chatImg = document.querySelector("#chat-img");
+        const chatFileImg = document.querySelector("#chat-file-img")
+        const chatMembers = document.querySelector("#chat-members");
+        const addChatBtn = document.querySelector("#add-chat-btn");
+        let changeImgFlag = false;
+        let seeMoreFlag = false;
+        function seeMore(){
+            if(seeMoreFlag){
+                seeAllBtn.innerText = "더보기";
+            }else{
+                seeAllBtn.innerText = "축소하기";
+            }
+            seeMoreFlag = !seeMoreFlag;
+            getChat();
+        }
+        chatImg.addEventListener("click",function (){
+            chatFileImg.click();
+        });
+        chatFileImg.addEventListener("change",function (){
+            let files = chatFileImg.files;
+            let file = files[0];
+            let reader = new FileReader();
+            reader.onload = function (e){
+                const newImg = document.createElement("img");
+                newImg.src = e.target.result;
+                const canvas = document.createElement("canvas");
+                canvas.width = 70;
+                canvas.height = 70;
+                const ctx = canvas.getContext("2d");
+
+                setTimeout(function(){
+                    ctx.drawImage(newImg,0,0,70,70);
+                    const base64 = canvas.toDataURL('image/*');
+                    chatImg.src = base64;
+                },100);
+                changeImgFlag = true;
+            }
+            reader.readAsDataURL(file);
+        });
+        function enterEvent(){
+            if(window.event.keyCode !=13){
+                return;
+            }
+            const searchData = document.querySelector("#search-member");
+            const selectSearch = document.querySelector("#search-member-select");
+            const params = {
+                data : searchData.value,
+                select : selectSearch.value
+            };
+            $.ajax({
+                url: "/getMember",
+                data: params,
+                method: "Post",
+                dataType: "json",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done(function (fragment){
+                if(fragment.success != "true"){
+                    swal("검색 결과가 없습니다.");
+                    return;
+                }
+                chatMembers.innerHTML = "";
+                fragment.memberList.forEach(member =>{
+                    const memberOption = document.createElement("option");
+                    memberOption.value = member.number;
+                    memberOption.innerText = `${member.number}  ${member.name}`;
+                    chatMembers.appendChild(memberOption);
+                });
+            });
+        }
+        const chatMembersList = document.querySelector("#chat-members-add");
+        const addMemberBtn = document.querySelector("#add-member-btn");
+        addMemberBtn.addEventListener("click",function (){
+            if(chatMembers.selectedIndex == -1){
+                swal("선택된 회원이 없습니다.");
+                return;
+            }
+            let optionValue = chatMembers.options[chatMembers.selectedIndex].value;
+            for(let i=0; i<chatMembersList.options.length; i++){
+                if(chatMembersList.options[i].value == optionValue){
+                    swal("이미 추가한 회원입니다.")
+                    return;
+                }
+            }
+            const optionEle = document.createElement("option");
+            optionEle.value = optionValue;
+            optionEle.innerText = chatMembers.options[chatMembers.selectedIndex].text;
+            chatMembersList.appendChild(optionEle);
+            checkDisable();
+        });
+        const deleteMemberBtn = document.querySelector("#delete-member-btn");
+        deleteMemberBtn.addEventListener("click",function (){
+            if(chatMembersList.selectedIndex == -1){
+                swal("선택된 회원이 없습니다.");
+                return;
+            }
+            chatMembersList.options[chatMembersList.selectedIndex].remove();
+            checkDisable();
+        });
+        const chatName = document.querySelector("#chat-name");
+        function checkDisable(){
+            if(chatName.value == null || chatName.value == ""){
+                addChatBtn.classList.add("disabled");
+            }else if(chatMembersList.options.length == 0){
+                addChatBtn.classList.add("disabled");
+            }else{
+                addChatBtn.classList.remove("disabled");
+            }
+        }
+        addChatBtn.addEventListener("click",function (){
+            const memberList = [];
+            for(let i=0; i< chatMembersList.options.length;i++){
+                const member = {
+                    id : chatMembersList.options[i].value
+                };
+                memberList.unshift(member);
+            }
+            const params = {
+                name : chatName.value,
+                list : memberList
+            }
+            if(changeImgFlag){
+                params.img = chatImg.src;
+            }
+            $.ajax({
+                url: "/addChat",
+                data: JSON.stringify(params),
+                method: "Post",
+                contentType : "application/json; charset=UTF-8",
+                dataType: "json",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done(function(fragment){
+                if(fragment.success !="true"){
+                    swal("예상치 못한 에러가 발생하였습니다.");
+                }
+                document.querySelector("#add-chat-close-btn").click();
+                getChat();
+            });
+
+        });
+    </script>
 </th:block>
 </html>

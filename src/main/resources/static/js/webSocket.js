@@ -18,7 +18,7 @@ sendMessage(param);
 채팅 form
 const param = {
     message : "이준석 바보",
-    target : 2014161091
+    target : 채팅방Id
     command : "chat"
 };
 sendMessage(param);

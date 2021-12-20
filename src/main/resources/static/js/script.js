@@ -71,21 +71,10 @@ function NotificationList(fragment){
         dotSpan.classList.add("dot-animated");
         let dropboxHtml = "";
         let eleHtml = "";
-        const now = new Date();
         for(let i=0; i<3; i++){
             const notifictionEle = fragment.notificationList[i];
             const that = new Date(notifictionEle.time);
-            let minute = Math.floor((now - that)/1000/60);
-            let timeText = "";
-            if(minute == 0){
-                timeText = "1분미만";
-            }else if(minute <= 60){
-                timeText = `${minute}분전`;
-            }else if(minute >60 && minute<=1440){
-                timeText = `${Math.floor(minute/60)}시간전`;
-            }else if(minute > 1440){
-                timeText = `${Math.floor(minute/1440)}일전`;
-            }
+            const timeText = getTimeGap(that);
             eleHtml = `
                 <li id="NOT${notifictionEle.id}" class="noti-primary" onclick="removeNotification()">
                     <div class="media">
@@ -108,8 +97,9 @@ function NotificationList(fragment){
 }
 
 // chatting
+const chatDropBox = document.querySelector(".chat-dropdown");
+let chatList = {};
 function getChat(){
-    const chatDropBox = document.querySelector(".chat-dropdown");
     $.ajax({
         url: "/getChat",
         method: "Post",
@@ -119,8 +109,76 @@ function getChat(){
         }
     })
     .done(function (fragment){
-
+        if(fragment.success == "false"){
+            return;
+        }
+        chatDropBox.querySelectorAll(".chatRoomList").forEach(chatRoom=>{
+            chatRoom.remove();
+        });
+        chatList = fragment.chatRoomList;
+        if(seeMoreFlag){
+            for(let i=chatList.length-1; i>=0; i--){
+                seeChatRoom(i);
+            }
+            chatDropBox.style="height: 480px;overflow: scroll;";
+        }else{
+            for(let i=4; i>=0; i--){
+                seeChatRoom(i);
+            }
+            chatDropBox.style="";
+        }
     })
+}
+
+function seeChatRoom(i){
+    const chatRoom = chatList[i];
+    let firstChat = `채팅 내역이 없습니다.`;
+    let imgSrc = "/static/images/memberImg/user.png"
+    if(chatRoom.isEmpty != "true"){
+        firstChat = chatRoom.chatList[0].content;
+        if(chatRoom.chatList[0].status == "NOTREAD"){
+
+        }
+    }
+    if(chatRoom.img != "null"){
+        imgSrc = chatRoom.img;
+    }
+    const that = new Date(chatRoom.time);
+    const timeText = getTimeGap(that);
+    const chatRoomHtml = document.createElement("li");
+    chatRoomHtml.classList.add("chatRoomList");
+    chatRoomHtml.id = `CHT${chatRoom.id}`;
+    chatRoomHtml.addEventListener("click",function(){
+        seeChatContent(i);
+    });
+    chatRoomHtml.innerHTML =
+        `<div class="media"><img class="img-fluid rounded-circle me-3" src="${imgSrc}" alt="">
+                  <div class="media-body"><span>${chatRoom.name}</span>
+                    <p class="f-12 light-font">${firstChat}</p>
+                  </div>
+                  <p class="f-12">${timeText}</p>
+                </div>`;
+    chatDropBox.prepend(chatRoomHtml);
+}
+
+function seeChatContent(i){
+    console.log(chatList[i]);
+}
+
+function getTimeGap(that){
+    const now = new Date();
+    let minute = Math.floor((now - that)/1000/60);
+    let timeText = "";
+    if(minute == 0){
+        timeText = "1분미만";
+    }else if(minute <= 60){
+        timeText = `${minute}분전`;
+    }else if(minute >60 && minute<=1440){
+        timeText = `${Math.floor(minute/60)}시간전`;
+    }else if(minute > 1440){
+        timeText = `${Math.floor(minute/1440)}일전`;
+    }
+    return timeText;
 }
 
 // bookmark 삭제

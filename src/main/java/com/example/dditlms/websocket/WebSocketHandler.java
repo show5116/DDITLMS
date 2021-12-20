@@ -92,12 +92,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         Member target = targetWrapper.orElse(null);
         Optional<Member> selfWrapper = memberRepository.findByMemberId(session.getPrincipal().getName());
         Member self = selfWrapper.orElse(null);
-        Chat chat = Chat.builder()
-                .self(self)
-                .target(target)
-                .content(jsonObject.get("message")+"")
-                .chatTime(new Date()).build();
-        chatService.saveChat(chat);
         try{
             map.get(self.getUserNumber()).sendMessage(message);
             map.get(targetId).sendMessage(message);

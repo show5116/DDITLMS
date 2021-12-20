@@ -34,10 +34,11 @@ public class Chat {
     private ChatStatus chatStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CHTT_SELF")
-    private Member self;
+    @JoinColumn(name="CHTT_MEBR")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CHTT_PARTN")
-    private Member target;
+    @JoinColumn(name="CHTTROOM_SN")
+    private ChatRoom chatRoom;
+
 }
