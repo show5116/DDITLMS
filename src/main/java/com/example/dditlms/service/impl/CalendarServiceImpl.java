@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,11 +41,24 @@ public class CalendarServiceImpl implements CalendarService {
         String title = (String)paramsMap.get("title");
         String content =(String)paramsMap.get("content");
         String place = (String)paramsMap.get("scheduleLocation");
-        String scheduleStr = (String)paramsMap.get("startDate");
-        String scheduleEnd = (String)paramsMap.get("endDate");
+        String scheduleStr = (String)paramsMap.get("scheduleStr");
+        String scheduleEnd = (String)paramsMap.get("scheduleEnd");
+
+        log.info("---------addschedule params --------------- ");
+        log.info(member.getName());
+        log.info(alarmTime);
+        log.info(sms);
+        log.info(kakao);
+        log.info(type);
+        log.info(typeDetail);
+        log.info(title);
+        log.info(content);
+        log.info(place);
+        log.info(scheduleStr);
+        log.info(scheduleEnd);
+        log.info("---------------------------------------------------- ");
 
         /** 파라미터 생성 */
-        JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         Calendar calendar = null;
         CalendarAlarm calendarAlarmSMS = null;
@@ -56,7 +66,7 @@ public class CalendarServiceImpl implements CalendarService {
         java.util.Calendar cal = java.util.Calendar.getInstance();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         Date date = null;
-        String scheduleStart = null; //알람시간
+        String scheduleStart = ""; //알람시간
 
         /** 로직 처리 구간 *******************************************************************/
 
@@ -101,21 +111,43 @@ public class CalendarServiceImpl implements CalendarService {
             }
 
             if(sms.equals("true")){
+                log.info("-----service에서 sms schedule 등록");
                 calendar = repository.save(calendar);
                 paramsMap.put("calendar", calendar);
                 alarmRepository.save(calendarAlarmSMS);
+                log.info("-----service에서 sms schedule 등록 성공");
             }
             if(kakao.equals("true")){
+                log.info("-----service에서 kakao schedule 등록");
                 calendar = repository.save(calendar);
                 paramsMap.put("calendar", calendar);
                 alarmRepository.save(calendarAlarmKakako);
+                log.info("-----service에서 kakao schedule 등록 성공");
             }
         } else{
+            try {
+                calendar = Calendar.builder()
+                        .scheduleType(type)
+                        .scheduleTypeDetail(typeDetail)
+                        .title(title)
+                        .content(content)
+                        .scheduleLocation(place)
+                        .scheduleStr(scheduleStr)
+                        .scheduleEnd(scheduleEnd)
+                        .setAlarmTime(alarmTime)
+                        .member(member).build();
+            }catch (Exception e){
+            }
+
+            log.info("-----service에서 schedule 등록");
             calendar = repository.save(calendar);
             paramsMap.put("calendar", calendar);
+            log.info("-----service에서 schedule 등록 성공");
         }
 
+        log.info("-----service에서 scheduleList 조회");
         List<Calendar> scheduleList = repository.getAllScheduleList(member);
+        log.info("-----service에서 scheduleList 조회 성공" );
 
         for(Calendar calendarToJson  : scheduleList ){
             Map<String, Object> map = new HashMap<>();
@@ -131,25 +163,62 @@ public class CalendarServiceImpl implements CalendarService {
             map.put("scheduleType",calendarToJson.getScheduleType());
 
             jsonArray.add(map);
+
         };
+        log.info(jsonArray.get(0)+"");
             paramsMap.put("jsonArray", jsonArray);
     }
 
     @Override
     public boolean deleteSchedule(Calendar calendar) {
-
+        CalendarAlarm calendarAlarm = new CalendarAlarm();
         int count = repository.countConfirmScheduleWriter(calendar);
 
         System.out.println("count : "+ count);
 
         if (count == 1 ){
             log.info("----CalendarServiceImpl/deleteSchedule :: if문의 count " + count);
-            alarmRepository.deleteAlarm(calendar);
+            Long id = alarmRepository.getAlarmId(calendar);
+            try {
+                calendarAlarm = CalendarAlarm.builder()
+                        .id(id)
+                        .build();
+            }catch (Exception e){}
+            log.info("----CalendarServiceImpl/deleteSchedule :: if문의 alarmID" + id);
+            log.info("-----alarm 삭제 ");
+            alarmRepository.delete(calendarAlarm);
+            log.info("-----alarm 삭제 성공");
+            log.info("-----schedule 삭제 ");
             repository.delete(calendar);
+            log.info("-----schedule 삭제 성공");
             return true;
         } else {
             return false;
         }
 
     }
+
+    public void findAlarmType(Map<String, Object> map){
+
+        String id = (String)map.get("scheduleId");
+        Long scheduleId = Long.parseLong(id);
+        log.info("-----service-findAlarmType :: scheduleId = " + scheduleId);
+        List<String> types = new ArrayList<>();
+        Calendar calendar = new Calendar();
+
+        calendar = repository.getSchedule(scheduleId);
+        String time = calendar.getSetAlarmTime();
+        log.info("-----service-findAlarmType :: calendar = {}",calendar);
+        log.info("-----service-findAlarmType :: time = {}",time);
+        map.put("alarmTime",time);
+        String alarm = calendar.getSetAlarmTime();
+        log.info("-----service-findAlarmType :: alarm = {}",alarm);
+
+        if (!alarm.equals("none")){
+            types = alarmRepository.findAlarmType(scheduleId);
+            log.info("-----service-findAlarmType :: types = {}",types);
+            map.put("types",types);
+        }
+    }
+
 }

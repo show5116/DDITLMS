@@ -22,5 +22,7 @@ public interface CalendarRepositoryCustom {
 
     public Long getLastScheduleNumber();
 
+    public Calendar getSchedule(Long id);
+
 
 }

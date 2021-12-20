@@ -97,9 +97,10 @@ function getMajor(){
         },
         'beforeUpdateSchedule': function(e) {
             alert("UpdateA");
-            console.log(e);
-            const modalBtn = document.querySelector("#schedule_modal_btn");
-            modalBtn.click();
+            console.log(e.schedule);
+            updateModal(e.schedule);
+            // const modalBtn = document.querySelector("#schedule_modal_btn");
+            // modalBtn.click();
 
             var schedule = e.schedule;
             var changes = e.changes;
@@ -574,12 +575,10 @@ function getMajor(){
     //취소버튼 클릭시 모달창 내용 초기와 & 창 닫기
     cancelBtn.addEventListener("click",function(){
         cleanSchedule();
-
     })
 
     //모달창에 입력받은 값 DB등록
     sendBtn.addEventListener("click", function(){
-
         var type = document.querySelector("#new-schedule-type").value;
         var typeDetail = document.querySelector("#new-schedule-type-detail").value;
         var title = document.querySelector("#new-schedule-title").value;
@@ -603,7 +602,6 @@ function getMajor(){
         const selectedIsAllday = isAllday.checked;
         const selectedAlarmSMS = alarmSms.checked;
         const selectedAlarmKakao = alarmKakao.checked;
-
 
         if(!title || !type || !startDate || !endDate){
             swal("필수 항목을 입력해주세요");
@@ -641,7 +639,6 @@ function getMajor(){
             alarmTime : alarmTime,
             alarmSms : selectedAlarmSMS,
             alarmKakao : selectedAlarmKakao
-
         };
 
         $.ajax({
@@ -683,7 +680,8 @@ function getMajor(){
 
                     ScheduleList.push(schedule);
                 })
-
+                console.log("등록성공후 scheduleList0----------------------");
+                console.log(ScheduleList);
                 setSchedules();
                 refreshScheduleVisibility();
                 cleanSchedule();
@@ -750,7 +748,6 @@ function getMajor(){
         }
     }
 
-
     //권한별로 다른 일정구분 목록리스트
     function getTypeList() {
 
@@ -812,7 +809,72 @@ function getMajor(){
     }
 
 
+    function updateModal(fragment) {
+        console.log("updateModal 이벤트에 들어옴");
+        console.log(fragment);
+        var type = document.querySelector("#update-schedule-type").value;
+        var typeDetail = document.querySelector("#update-schedule-type-detail").value;
+        var title = document.querySelector("#update-schedule-title").value;
+        var content = document.querySelector("#update-message-text").value;
+        var location = document.querySelector("#update-schedule-location").value;
+        var startDate = document.querySelector("#update-startDate").value;
+        var endDate = document.querySelector("#update-endDate").value;
+        var isAllday = document.querySelector("#update-schedule-allday");
+        var alarmTime = document.querySelector("#update-schedule-alam-time").value;
+        var alarmSms = document.querySelector("#update-schedule-alam-sms");
+        var alarmKakao = document.querySelector("#update-schedule-alam-kakao");
+        const scheduleId = fragment.id;
+        console.log("updateModal- scheduleId : " + scheduleId);
 
+
+        type = fragment.calendarId;
+        title = fragment.title;
+        content = fragment.body;
+        location = fragment.location;
+        startDate = fragment.start;
+        endDate = fragment.end;
+        isAllday = fragment.isAllday;
+
+
+        const params = {
+            scheduleId: scheduleId
+        }
+        $.ajax({
+            url: "/calendar/findAlarmType",
+            data: params,
+            method: "Post",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            }
+        })
+            .done(function (fragment) {
+                alert("success");
+                console.log(fragment);
+                alarmTime = fragment.alarmTime;
+
+                if (fragment.types.length >0){
+                    const typeList = fragment.types;
+                    for (i =0; i < typeList.length; i++){
+                        const type = fragment.types[i];
+                        if (type.equals('SMS')){
+                            alarmSms = alarmSms.setAttribute("checked",true);
+                        }
+                        if (type.equals('KAKAO')){
+                            alarmKakao = alarmSms.setAttribute("checked",true);
+                        }
+
+                    }
+
+                }
+
+                alarmSms
+                alarmKakao
+             })
+
+        const updateModalBtn = document.querySelector("#update_modal_btn");
+        updateModalBtn.click();
+    }
 
 
 

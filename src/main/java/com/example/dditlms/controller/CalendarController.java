@@ -60,25 +60,27 @@ public class CalendarController {
         catch(ClassCastException e){}
 
         /** 파라미터 조회 */
-        Object alarmTime = paramMap.get("alarmTime");
+        String alarmTime = (String)paramMap.get("alarmTime");
 //        int alarmCount = Integer.parseInt(alarmTime);
-        Object sms = paramMap.get("alarmSms"); // sms알림 설정 여부
-        Object kakao = paramMap.get("alarmKakao"); // kakao알림 설정 여부
-        Object scheduleType = paramMap.get("type");
-        Object scheduleTypeDetail = paramMap.get("typeDetail");
-        Object title = paramMap.get("title");
-        Object content = paramMap.get("content");
-        Object scheduleLocation = paramMap.get("location");
-        Object scheduleStr = paramMap.get("startDate");
-        Object scheduleEnd = paramMap.get("endDate");
+        String sms = (String)paramMap.get("alarmSms"); // sms알림 설정 여부
+        String kakao = (String)paramMap.get("alarmKakao"); // kakao알림 설정 여부
+        String scheduleType = (String)paramMap.get("type");
+        String scheduleTypeDetail = (String)paramMap.get("typeDetail");
+        String title = (String)paramMap.get("title");
+        String content = (String)paramMap.get("content");
+        String scheduleLocation = (String)paramMap.get("location");
+        String scheduleStr = (String)paramMap.get("startDate");
+        String scheduleEnd = (String)paramMap.get("endDate");
 
         /** 파라미서 생생*/
         JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
         Map<String, Object> map = new HashMap<>();
 
         /** 서비스 호출 파라미터 구성 */
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("member",member);
+        log.info(member.toString());
         paramsMap.put("alarmTime",alarmTime);
         paramsMap.put("sms",sms);
         paramsMap.put("kakao",kakao);
@@ -90,27 +92,39 @@ public class CalendarController {
         paramsMap.put("scheduleStr",scheduleStr);
         paramsMap.put("scheduleEnd",scheduleEnd);
         paramsMap.put("jsonArray", map);
+        log.info("---------Controller-addschedule params --------------- ");
+//        log.info(member.getName());
+        log.info(alarmTime);
+        log.info(sms);
+        log.info(kakao);
+        log.info(scheduleType);
+        log.info(scheduleTypeDetail);
+        log.info(title);
+        log.info(content);
+        log.info(scheduleLocation);
+        log.info(scheduleStr);
+        log.info(scheduleEnd);
+        log.info("---------------------------------------------------- ");
 
         /** 서비스 호출*/
-        service.addSchedule(paramMap);
+        service.addSchedule(paramsMap);
 
         Calendar calendar =(Calendar)paramsMap.get("calendar");
-        map = (Map<String, Object>)paramsMap.get("jsonArray");
+        jsonArray = (JSONArray)paramsMap.get("jsonArray");
+
+        log.info("------controller-jsonArray : " + jsonArray.get(0));
 
         jsonObject.put("state","true");
         jsonObject.put("id",calendar.getId());
-        jsonObject.put("list",map);
+        jsonObject.put("list",jsonArray);
         try {
             response.getWriter().print(jsonObject.toJSONString());
         } catch (IOException e) {
         }
     }
 
-
-
-
     @PostMapping("/calendar/delete")
-    public void deleteSchedule(HttpServletRequest request , HttpServletResponse response,
+    public void deleteSchedule(HttpServletResponse response,
                                @RequestParam Map<String, Object> paramMap){
 
         response.setCharacterEncoding("UTF-8");
@@ -216,6 +230,34 @@ public class CalendarController {
         }
     }
 
+    @PostMapping("/calendar/findAlarmType")
+    public void findAlarmType(HttpServletResponse response, @RequestParam Map<String, Object> paramMap){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
+
+        String id = (String)paramMap.get("scheduleId");
+
+        log.info("-----controller-findAlarmType :: id = " + id);
+
+        JSONObject jsonObject = new JSONObject();
+        List<String> typeList = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        String alarmTime = null;
+
+        map.put("scheduleId", id);
+        map.put("alarmTime",alarmTime);
+        map.put("types",typeList);
+
+        service.findAlarmType(map);
+
+        log.info("-----controller-findAlarmType :: result = {}" ,map);
+
+        jsonObject.put("param",map);
+        try {
+            response.getWriter().print(jsonObject.toJSONString());
+        } catch (IOException e) {
+        }
+    }
 
 
 
