@@ -492,27 +492,43 @@
 
 
 
+            // jsonObj.data.forEach(element=>{
+            //     console.log(element.extension);
+            // });
         $(function (){
-            jsonObj.data.forEach(element=>{
-                console.log(element.extension);
-            });
             $('#tree').jstree({
-                'core' : jsonObj,
-                "types" : {
+                "core" : jsonObj,
+                "conditionalselect" : function (node, event) {
 
-                    "default" : {
-                        "icon" : 'icofont icofont-file-alt font-dark'
-                    },
-                    "demo" : {
-                        "icon" : 'icofont icofont-folder font-theme'
-                    },
-                    "folder" : {
-                        "icon" : 'icofont icofont-folder font-theme'
-                    }
+                    const params = {
+                        targetId : node.id
+                    };
+                    $.ajax({
+                        url:"/cloud/storageList",
+                        data:params,
+                        type: "POST",
+                        beforeSend: function(xhr){
+                            xhr.setRequestHeader(header,token);
+                        }
+                    }).done(function (fragment){
+                        console.log("전" + fragment);
+                        $("#folderReplace").replaceWith(fragment);
+                        folderMoves = document.querySelectorAll(".folder-move");
+                        folderMoves.forEach(folderMove => replaceEvent(folderMove));
+
+                        //이걸 백에서 하면서 변수로 넣는 법이 있을까?
+                    }).fail(function (data, textStatus, errorThrown){
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                        console.log(data);
+                    })
+
+                    console.log(node.id);
 
                 },
-                "plugins" : [ "types" ]
-
+                "plugins" : [ "types",
+                            "conditionalselect"
+                            ]
                 // {
                 //     'data' : [
                 //         // for문 돌려서 id에는 idx, parent에는 parentidx를 root면 # text에는 filename을

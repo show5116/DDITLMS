@@ -105,7 +105,12 @@ public class FileDataController {
                 data.put("parent", fileData.getParent().getFileIdx());
             }
             data.put("text", fileData.getFileName());
-            data.put("extension", fileData.getExtension());
+            if(fileData.getExtension().equals("folder")){
+                data.put("icon", "icofont icofont-folder font-theme");
+            } else {
+                data.put("icon", "icofont icofont-file-alt font-dark");
+            }
+
 
             jsonArr.add(data);
         }
