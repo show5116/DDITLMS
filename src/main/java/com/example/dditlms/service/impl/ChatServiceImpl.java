@@ -63,6 +63,9 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void saveChat(Chat chat){
+        ChatRoom chatRoom = chat.getChatRoom();
+        chatRoom.setUpdateTime(new Date());
+        chatRoomRepository.save(chatRoom);
         chatRepository.save(chat);
     }
 

@@ -47,6 +47,8 @@ public class AdditionalController {
 
     private final ChatRoomRepository chatRoomRepository;
 
+    private final ChatMemberRepository chatMemberRepository;
+
     private final ChatRepository chatRepository;
 
     @ResponseBody
@@ -176,6 +178,13 @@ public class AdditionalController {
         JSONArray jsonArray = new JSONArray();
         for(ChatRoom chatRoom :chatRooms){
             Map<String,Object> map = new HashMap<>();
+            JSONArray memberArray= new JSONArray();
+            List<ChatMember> chatMemberList = chatMemberRepository.findAllByChatRoom(chatRoom);
+            for(ChatMember chatMember :chatMemberList){
+                Map<String,Object> memberMap = new HashMap<>();
+                memberMap.put("userName",chatMember.getMember().getName());
+                memberArray.add(memberMap);
+            }
             List<Chat> chatList = chatRepository.findAllByChatRoomOrderByChatTimeDesc(chatRoom);
             JSONArray chatArray= new JSONArray();
             if(chatList.isEmpty()){
@@ -187,7 +196,18 @@ public class AdditionalController {
                     chatMap.put("status",chat.getChatStatus()+"");
                     chatMap.put("time",chat.getChatTime()+"");
                     chatMap.put("content",chat.getContent());
+                    if(member.getUserNumber().equals(chat.getMember().getUserNumber())){
+                        chatMap.put("self","true");
+                    }else{
+                        chatMap.put("self","false");
+                    }
                     chatMap.put("userNumber",chat.getMember().getUserNumber());
+                    if(chat.getMember().getMemberImg() == null){
+                        chatMap.put("userImg","/static/images/memberImg/user.png");
+                    }else{
+                        chatMap.put("userImg",chat.getMember().getMemberImg());
+                    }
+                    chatMap.put("userName",chat.getMember().getName());
                     chatArray.add(chatMap);
                 }
             }
@@ -196,6 +216,7 @@ public class AdditionalController {
             map.put("id",chatRoom.getId());
             map.put("time",chatRoom.getUpdateTime()+"");
             map.put("chatList",chatArray);
+            map.put("memberList",memberArray);
             jsonArray.add(map);
         }
         jsonObject.put("chatRoomList",jsonArray);

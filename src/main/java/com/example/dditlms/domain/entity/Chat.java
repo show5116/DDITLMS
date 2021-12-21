@@ -3,12 +3,14 @@ package com.example.dditlms.domain.entity;
 import com.example.dditlms.domain.common.ChatStatus;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

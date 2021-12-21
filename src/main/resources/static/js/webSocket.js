@@ -34,8 +34,11 @@ webSocket.onmessage = function (data){
             target : "_blank"
         }
         notice(content);
-    }else if(socketJson.type == "chat"){
-
+    }else if(socketJson.command == "chat"){
+        getChat();
+        setTimeout(()=>{
+            resetChat(socketJson.target)
+        },100);
     }
 }
 

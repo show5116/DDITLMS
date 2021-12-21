@@ -1,9 +1,9 @@
 package com.example.dditlms.websocket;
 
-import com.example.dditlms.domain.entity.Chat;
-import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.Notification;
+import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.MemberRepository;
+import com.example.dditlms.domain.repository.chat.ChatMemberRepository;
+import com.example.dditlms.domain.repository.chat.ChatRoomRepository;
 import com.example.dditlms.service.ChatService;
 import com.example.dditlms.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final MemberRepository memberRepository;
 
     private final NotificationService notificationService;
+
+    private final ChatRoomRepository chatRoomRepository;
+
+    private final ChatMemberRepository chatMemberRepository;
 
     private final ChatService chatService;
 
@@ -88,14 +92,25 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private void sendChat(WebSocketSession session,JSONObject jsonObject,TextMessage message){
         Long targetId = Long.parseLong(jsonObject.get("target")+"");
-        Optional<Member> targetWrapper = memberRepository.findByUserNumber(targetId);
-        Member target = targetWrapper.orElse(null);
+        Optional<ChatRoom> chatRoomWrapper = chatRoomRepository.findById(targetId);
+        ChatRoom chatRoom = chatRoomWrapper.orElse(null);
         Optional<Member> selfWrapper = memberRepository.findByMemberId(session.getPrincipal().getName());
         Member self = selfWrapper.orElse(null);
-        try{
-            map.get(self.getUserNumber()).sendMessage(message);
-            map.get(targetId).sendMessage(message);
-        }catch (IOException e){
+        Chat chat = Chat.builder()
+                .content(jsonObject.get("message")+"")
+                .member(self)
+                .chatRoom(chatRoom)
+                .chatTime(new Date()).build();
+        chatService.saveChat(chat);
+        List<ChatMember> chatMemberList = chatMemberRepository.findAllByChatRoom(chatRoom);
+        for(ChatMember chatMember : chatMemberList){
+            if(map.get(chatMember.getMember().getUserNumber())!=null){
+                System.out.println(chatMember.getMember().getUserNumber());
+                try{
+                    map.get(chatMember.getMember().getUserNumber()).sendMessage(message);
+                }catch (IOException e){
+                }
+            }
         }
     }
 }
