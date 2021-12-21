@@ -16,18 +16,17 @@ import com.example.dditlms.service.FileService;
 import com.example.dditlms.util.AmazonS3Util;
 import com.example.dditlms.util.FileUtil;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
@@ -58,7 +57,7 @@ public class FileDataController {
 
 
     @GetMapping("/cloud")
-    public ModelAndView storageList(ModelAndView mav) {
+    public ModelAndView storageList(ModelAndView mav, HttpServletResponse response) {
         // 멤버 세션 객체
         Member member = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -89,6 +88,38 @@ public class FileDataController {
             } catch (SdkClientException e) {
             }
         }
+
+        // json parser
+        List<FileData> selectAll = fileDataRepository.findAllByMember(member);
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonArr = new JSONArray();
+
+        for(FileData fileData : selectAll){
+            JSONObject data = new JSONObject();
+
+            data.put("id", fileData.getFileIdx());
+
+            if(fileData.getParent()==null){
+                data.put("parent","#");
+            } else {
+                data.put("parent", fileData.getParent().getFileIdx());
+            }
+            data.put("text", fileData.getFileName());
+            if(fileData.getExtension().equals("folder")){
+                data.put("icon", "icofont icofont-folder font-theme");
+            } else {
+                data.put("icon", "icofont icofont-file-alt font-dark");
+            }
+
+
+            jsonArr.add(data);
+        }
+
+        jsonObj.put("data", jsonArr);
+        System.out.println(jsonObj);
+        logger.info(jsonObj.toJSONString());
+
+        mav.addObject("jsonObj", jsonObj);
         mav.addObject("idx", rootFolder.getFileIdx());
         mav.addObject("selectFiles",
                 fileDataRepository.findAllByMemberAndParentAndExtensionIsNot(member, rootFolder, "folder"));
@@ -171,7 +202,7 @@ public class FileDataController {
         }
 
         if (current.getParent() != null) {
-            mav.addObject("parentFolder", current.getParent().getParent().getFileIdx());
+            mav.addObject("parentFolder", current.getParent().getFileIdx());
         }
         mav.addObject("selectFiles",
                 fileDataRepository.findAllByMemberAndParentAndExtensionIsNot(member, current.getParent(), "folder"));
@@ -310,6 +341,7 @@ public class FileDataController {
 
         return mav;
     }
+
 
     //아작스 안쓰고 a태그 쓸건데 idx값만 보내줄거야
     @GetMapping("/cloud/download/{id}")
