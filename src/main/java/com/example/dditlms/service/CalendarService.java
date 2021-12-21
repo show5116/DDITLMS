@@ -15,6 +15,8 @@ public interface CalendarService {
     //일정 삭제 (return true:본인일정이라 삭제성공
     public boolean deleteSchedule(Calendar calendar);
 
-    public void findAlarmType(Map<String,Object> paramMap);
+    public void updateSetting(Map<String,Object> paramMap);
+
+    public void updateSchedule(Map<String,Object> map);
 
 }

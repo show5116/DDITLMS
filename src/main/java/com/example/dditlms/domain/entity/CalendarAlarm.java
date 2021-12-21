@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Table(name = "SCHDUL_NTCN")
 @Entity
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

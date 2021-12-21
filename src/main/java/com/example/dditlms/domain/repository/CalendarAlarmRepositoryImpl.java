@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Map;
 
 public class CalendarAlarmRepositoryImpl implements CalendarAlarmRepositoryCustom{
 
@@ -17,16 +18,19 @@ public class CalendarAlarmRepositoryImpl implements CalendarAlarmRepositoryCusto
     }
 
     @Override
-    public Long getAlarmId(Calendar calendar){
+    public List<Long> getAlarmId(Calendar calendar){
         return queryFactory
                 .select(QCalendarAlarm.calendarAlarm.id)
                 .from(QCalendarAlarm.calendarAlarm)
                 .where(QCalendarAlarm.calendarAlarm.calendar.id.eq(calendar.getId()))
-                .fetchOne();
+                .fetch();
     }
 
     @Override
     public List<String> findAlarmType(Long scheduleId){
+
+
+
          return queryFactory
                  .select(QCalendarAlarm.calendarAlarm.scheduleAlarmType)
                  .from(QCalendarAlarm.calendarAlarm)
@@ -34,5 +38,15 @@ public class CalendarAlarmRepositoryImpl implements CalendarAlarmRepositoryCusto
                  .fetch();
     }
 
+    @Override
+    public List<CalendarAlarm> getAlarmSchedule(Long scheduleId){
+        return queryFactory
+                .select(QCalendarAlarm.calendarAlarm)
+                .from(QCalendarAlarm.calendarAlarm)
+                .where(QCalendarAlarm.calendarAlarm.calendar.id.eq(scheduleId))
+                .fetch();
+
+
+    }
 
 }
