@@ -14,6 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class FileDataDTO {
 
+    private Integer fileIdx;
+
     private Integer parentId;
 
     private String fileName;
@@ -31,6 +33,8 @@ public class FileDataDTO {
     private String contentType;
 
     private Long userNumber;
+
+    private String token;
 
     public FileData toEntity(){
         FileData fileData = FileData.builder()
