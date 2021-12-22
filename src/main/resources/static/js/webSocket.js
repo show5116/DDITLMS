@@ -18,7 +18,7 @@ sendMessage(param);
 채팅 form
 const param = {
     message : "이준석 바보",
-    target : 2014161091
+    target : 채팅방Id
     command : "chat"
 };
 sendMessage(param);
@@ -34,8 +34,11 @@ webSocket.onmessage = function (data){
             target : "_blank"
         }
         notice(content);
-    }else if(socketJson.type == "chat"){
-
+    }else if(socketJson.command == "chat"){
+        getChat();
+        setTimeout(()=>{
+            resetChat(socketJson.target)
+        },100);
     }
 }
 

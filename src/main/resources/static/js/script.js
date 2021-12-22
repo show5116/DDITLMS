@@ -71,21 +71,10 @@ function NotificationList(fragment){
         dotSpan.classList.add("dot-animated");
         let dropboxHtml = "";
         let eleHtml = "";
-        const now = new Date();
         for(let i=0; i<3; i++){
             const notifictionEle = fragment.notificationList[i];
             const that = new Date(notifictionEle.time);
-            let minute = Math.floor((now - that)/1000/60);
-            let timeText = "";
-            if(minute == 0){
-                timeText = "1분미만";
-            }else if(minute <= 60){
-                timeText = `${minute}분전`;
-            }else if(minute >60 && minute<=1440){
-                timeText = `${Math.floor(minute/60)}시간전`;
-            }else if(minute > 1440){
-                timeText = `${Math.floor(minute/1440)}일전`;
-            }
+            const timeText = getTimeGap(that);
             eleHtml = `
                 <li id="NOT${notifictionEle.id}" class="noti-primary" onclick="removeNotification()">
                     <div class="media">
@@ -107,20 +96,20 @@ function NotificationList(fragment){
     }
 }
 
-// chatting
-function getChat(){
-    const chatDropBox = document.querySelector(".chat-dropdown");
-    $.ajax({
-        url: "/getChat",
-        method: "Post",
-        dataType: "json",
-        beforeSend: function (xhr){
-            xhr.setRequestHeader(header,token);
-        }
-    })
-    .done(function (fragment){
-
-    })
+function getTimeGap(that){
+    const now = new Date();
+    let minute = Math.floor((now - that)/1000/60);
+    let timeText = "";
+    if(minute == 0){
+        timeText = "1분미만";
+    }else if(minute <= 60){
+        timeText = `${minute}분전`;
+    }else if(minute >60 && minute<=1440){
+        timeText = `${Math.floor(minute/60)}시간전`;
+    }else if(minute > 1440){
+        timeText = `${Math.floor(minute/1440)}일전`;
+    }
+    return timeText;
 }
 
 // bookmark 삭제

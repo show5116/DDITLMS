@@ -7,11 +7,12 @@ import javax.persistence.*;
 @Table(name = "SCHDUL_NTCN")
 @Entity
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CalendarAlarm{
+public class CalendarAlarm {
 
     @Id
     @Column(name = "SCHDUL_NTCN_SN")

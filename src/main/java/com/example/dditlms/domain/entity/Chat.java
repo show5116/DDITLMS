@@ -3,12 +3,14 @@ package com.example.dditlms.domain.entity;
 import com.example.dditlms.domain.common.ChatStatus;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -34,10 +36,11 @@ public class Chat {
     private ChatStatus chatStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CHTT_SELF")
-    private Member self;
+    @JoinColumn(name="CHTT_MEBR")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CHTT_PARTN")
-    private Member target;
+    @JoinColumn(name="CHTTROOM_SN")
+    private ChatRoom chatRoom;
+
 }

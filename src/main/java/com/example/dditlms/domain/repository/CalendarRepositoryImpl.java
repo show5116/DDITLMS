@@ -22,15 +22,24 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
 
 
     @Override
-    public Student getMajor(Long userNumber) {
+    public String getMajor(Long userNumber) {
+         Major myMajor = queryFactory
+                            .select(student.major)
+                            .from(student)
+                            .from(major)
+                            .join(student.major, major)
+                            .where(student.major.eq(major), student.userNumber.eq(userNumber))
+                            .fetchOne();
 
-        return queryFactory
-                .select(student)
-                .from(student)
-                .from(major)
-                .join(student.major, major)
-                .where(student.major.eq(major), student.userNumber.eq(userNumber))
-                .fetchOne();
+         String majorCode = myMajor.getId();
+
+         String majorKr = queryFactory
+                 .select(major.korean)
+                 .from(major)
+                 .where(major.id.eq(majorCode))
+                 .fetchOne();
+
+         return majorKr;
     }
 
     @Override
@@ -84,6 +93,7 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
                 .where(QCalendar.calendar.id.eq(id))
                 .fetchOne();
     }
+
 
 }
 

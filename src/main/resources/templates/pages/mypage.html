@@ -153,12 +153,10 @@
             fileImg.click();
         });
         fileImg.addEventListener("change",function (){
-            console.log("파일 변화");
             let files = fileImg.files;
             let file = files[0];
             let reader = new FileReader();
             reader.onload = function (e){
-                console.log("이미지 업로드");
                 const newImg = document.createElement("img");
                 newImg.src = e.target.result;
                 const canvas = document.createElement("canvas");

@@ -4,6 +4,7 @@ import com.example.dditlms.domain.common.Role;
 import com.example.dditlms.domain.entity.Calendar;
 import com.example.dditlms.domain.entity.CalendarAlarm;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.entity.Student;
 import com.example.dditlms.domain.repository.CalendarRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.CalendarService;
@@ -61,7 +62,6 @@ public class CalendarController {
 
         /** 파라미터 조회 */
         String alarmTime = (String)paramMap.get("alarmTime");
-//        int alarmCount = Integer.parseInt(alarmTime);
         String sms = (String)paramMap.get("alarmSms"); // sms알림 설정 여부
         String kakao = (String)paramMap.get("alarmKakao"); // kakao알림 설정 여부
         String scheduleType = (String)paramMap.get("type");
@@ -231,24 +231,37 @@ public class CalendarController {
     }
 
     @PostMapping("/calendar/findAlarmType")
-    public void findAlarmType(HttpServletResponse response, @RequestParam Map<String, Object> paramMap){
+    public void updateSetting(HttpServletResponse response, @RequestParam Map<String, Object> paramMap){
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member =null;
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+
         String id = (String)paramMap.get("scheduleId");
+        String mem = member.getMemberId();
 
         log.info("-----controller-findAlarmType :: id = " + id);
+        log.info("-----controller-findAlarmType :: memId = " + mem);
 
         JSONObject jsonObject = new JSONObject();
         List<String> typeList = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         String alarmTime = null;
+        String typeDetail = null;
+        List<String> majorList = new ArrayList<>();
 
         map.put("scheduleId", id);
         map.put("alarmTime",alarmTime);
         map.put("types",typeList);
+        map.put("typeDetail", typeDetail);
+        map.put("majorList", majorList);
 
-        service.findAlarmType(map);
+        service.updateSetting(map);
 
         log.info("-----controller-findAlarmType :: result = {}" ,map);
 
@@ -259,6 +272,70 @@ public class CalendarController {
         }
     }
 
+    @PostMapping("/calendar/updateSchedule")
+    public void updateSchedule(HttpServletResponse response, @RequestParam Map<String, Object> paramMap){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try{member = ((AccountContext)authentication.getPrincipal()).getMember();}  //로그인한 member 정보 저장
+        catch(ClassCastException e){}
+
+        /** 파라미터 조회 */
+        log.info("-----updateController-파라미터조회");
+        String scheduleNo = (String)paramMap.get("scheduleNo");
+        String type = (String)paramMap.get("type");
+        String typeDetaile = (String)paramMap.get("typeDetail");
+        String title = (String)paramMap.get("title");
+        String content = (String)paramMap.get("content");
+        String location = (String)paramMap.get("location");
+        String startDate = (String)paramMap.get("startDate");
+        String endDate = (String)paramMap.get("endDate");
+        String alarmTime = (String)paramMap.get("alarmTime");
+        String alarmSMS = (String)paramMap.get("alarmSms");
+        String alarmKAKAO = (String)paramMap.get("alarmKakao");
+
+        /** 파라미서 생생*/
+        log.info("-----updateController-파라미터 생성");
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        Map<String, Object> jsonMap = new HashMap<>();
+
+        /** 서비스 호출 파라미터 구성 */
+        log.info("-----updateController-서비스 호출 파라미터 구성");
+        Map<String, Object> map = new HashMap<>();
+        map.put("member",member);
+        map.put("scheduleNo",scheduleNo);
+        map.put("type",type);
+        map.put("typeDetaile",typeDetaile);
+        map.put("title",title);
+        map.put("content",content);
+        map.put("location",location);
+        map.put("startDate",startDate);
+        map.put("endDate",endDate);
+        map.put("alarmTime",alarmTime);
+        map.put("alarmSMS",alarmSMS);
+        map.put("alarmKAKAO",alarmKAKAO);
+        map.put("jsonArray",jsonMap);
+
+        /** 서비스 호출*/
+        log.info("-----updateController-서비스 호출");
+        service.updateSchedule(map);
+        log.info("-----updateController-서비스 끝");
+
+        jsonArray = (JSONArray) map.get("jsonArray");
+        Long id = (Long) map.get("scheduleId");
+
+        jsonObject.put("state","true");
+        jsonObject.put("id", id);
+        jsonObject.put("list", jsonArray);
+        try{
+            response.getWriter().print(jsonObject.toJSONString());
+        }catch (IOException e){
+
+        }
+    }
 
 
 
