@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='예비 수강 신청')"></th:block>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card m-b-10">
+                <div class="card-body">
+                    <div class="mb-2 row row justify-content-around">
+                        <div class="col-sm row ">
+                            <label class="col-sm-3 align-self-center bookmark">이수구분</label>
+                            <select class="col form-select">
+                                <option>핵심교양필수</option>
+                                <option>교양필수</option>
+                                <option>전공필수</option>
+                                <option>전공선택</option>
+                                <option>학부필수</option>
+                            </select>
+                        </div>
+                        <div class="col-sm row justify-content-around">
+                            <label class="col-sm-4 align-self-center bookmark">개설학부(과)</label>
+                            <select class="col form-select">
+                                <option>(전체)</option>
+                                <option>전자과</option>
+                                <option>컴퓨터 공학과</option>
+                                <option>기계과</option>
+                            </select>
+                        </div>
+                        <div class="col-sm row justify-content-around">
+                            <label class="col-sm-3 align-self-center bookmark">학년도</label>
+                            <input type="text" class="col form-control" placeholder="2022" readonly>
+                        </div>
+                        <div class="col-sm row justify-content-around">
+                            <label class="col-sm-3 align-self-center bookmark">학기구분</label>
+                            <input type="text" class="col form-control" placeholder="1학기"readonly>
+                        </div>
+                    </div>
+                    <div class="mb-2 row row justify-content-around">
+                        <div class="col-sm row ">
+                            <label class="col-sm-3 align-self-center bookmark">개설과목</label>
+                            <input type="text" class="col form-control">
+                        </div>
+                        <div class="col-sm row justify-content-start p-l-20">
+                            <button class="col-3 btn btn-outline-secondary-2x txt-secondary">조회</button>
+                        </div>
+                        <div class="col-sm row justify-content-around">
+                            <label class="col-sm-3 align-self-center bookmark">학번</label>
+                            <input type="text" class="col form-control" placeholder="14132131" readonly>
+                        </div>
+                        <div class="col-sm row justify-content-around">
+                            <label class="col-sm-3 align-self-center bookmark">이름</label>
+                            <input type="text" class="col form-control" placeholder="이나영" readonly>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <div class="card-body-left">
+                                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                                            <div class="row col-sm-4 align-self-center">
+                                                <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">개설강좌</h4>
+                                                <span class="col text-muted p-l-10 m-t-10">12건</span>
+                                            </div>
+                                            <div class="col-sm-6 row justify-content-end">
+                                                <div class="col-sm-4 text-center ">
+                                                    <button type="button" class="btn btn-outline-info">강의평가</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <table class="table table-bordered text-center" >
+                                                <thead class="table-secondary">
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>대학구분</th>
+                                                        <th>학부(과)</th>
+                                                        <th>과목코드</th>
+                                                        <th>교과목명</th>
+                                                        <th>분반</th>
+                                                        <th>이수구분</th>
+                                                        <th>강의구분</th>
+                                                        <th>정원</th>
+                                                        <th>수강인원</th>
+                                                        <th>담당교수</th>
+                                                        <th>강의시간</th>
+                                                        <th>강의실</th>
+                                                        <th>강의계획서</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>학부</td>
+                                                        <td>전기-전자-통신공학과</td>
+                                                        <td>IFA100</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>25</td>
+                                                        <td>24</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                        <td><button>보기</button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="card-body-right">
+                                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                                            <div class="row col-sm-7 align-self-center">
+                                                <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">예비수강과목</h4>
+                                                <span class="col text-muted p-l-10 m-t-10">0건</span>
+                                            </div>
+                                            <div class="row col-sm-5 justify-content-end">
+                                                <div class="col-sm-5 p-0 text-center">
+                                                    <button type="button" class="btn btn-outline-info">시간표</button>
+                                                </div>
+                                                <div class="col-sm-5 p-0 text-center">
+                                                    <button type="button" class="btn btn-outline-info">저장</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <table class="table table-bordered text-center" >
+                                                <thead class="table-secondary">
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>교과목명</th>
+                                                        <th>분반</th>
+                                                        <th>이수구분</th>
+                                                        <th>강의구분</th>
+                                                        <th>담당교수</th>
+                                                        <th>강의시간</th>
+                                                        <th>강의실</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>기초전기전자실습</td>
+                                                        <td>01</td>
+                                                        <td>전필</td>
+                                                        <td>이론+실습</td>
+                                                        <td>안치형</td>
+                                                        <td>금03A~04B,06A~09B</td>
+                                                        <td>공학1관(B404)</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>
