@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <script type="text/javascript" th:src="@{/static/js/ckeditor/ckeditor.js}"></script>
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='메일함')"></th:block>
+    <div class="container-fluid">
+        <div class="email-wrap">
+            <div class="row">
+                <div class="col-xl-3 col-md-6 xl-30">
+                    <div class="email-sidebar"><a class="btn btn-primary email-aside-toggle" href="javascript:void(0)">email
+                        filter</a>
+                        <div class="email-left-aside">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="email-app-sidebar">
+                                        <div class="media">
+                                            <div class="media-size-email"><img class="me-3 rounded-circle"
+                                                                               src=""
+                                                                               alt=""></div>
+                                            <div class="media-body">
+                                                <h6 class="f-w-600" th:text="${name}">사용자이름</h6>
+                                                <p th:text="${user}">사용자ID@ddit.site</p>
+                                            </div>
+                                        </div>
+                                        <ul class="nav main-menu" role="tablist">
+                                            <li class="nav-item"><a class="btn-primary btn-block btn-mail w-100"
+                                                                    id="pills-darkhome-tab" data-bs-toggle="pill"
+                                                                    href="#" onclick="writeMail(); return false;" role="tab" aria-controls="pills-darkhome" aria-selected="true"><i
+                                                    class="icofont icofont-envelope me-2"></i>메일 쓰기</a></li>
+                                            <li class="nav-item"><a class="show" id="pills-darkprofile-tab"
+                                                                    data-bs-toggle="pill" href="#pills-darkprofile"
+                                                                    role="tab" aria-controls="pills-darkprofile"
+                                                                    aria-selected="false"><span class="title"><i
+                                                    class="icon-import"></i>받은 메일함</span><span class="badge pull-right" th:text="|(${mailCount})|"></span></a>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-folder"></i>모든 메일함</span></a></li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-new-window"></i>보낸 메일함</span><span
+                                                    class="badge pull-right">(69)</span></a></li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-pencil-alt"></i>임시 보관함</span><span
+                                                    class="badge pull-right">(59)</span></a></li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-trash"></i>지운 메일함</span><span class="badge pull-right">(99)</span></a>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-info-alt"></i>중요 메일함</span></a>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-star"></i>별표 메일함</span></a>
+                                            </li>
+                                            <li>
+                                                <hr>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-email"></i>읽지않음</span></a>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-export"></i>스팸메일</span></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-9 col-md-12 xl-70" >
+                    <div class="email-right-aside" id="mailbox">
+                        <div class="card email-body">
+                            <div class="email-profile">
+                                <div>
+                                    <div class="pe-0 b-r-light"></div>
+                                    <div class="email-top">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="media">
+                                                    <label class="email-chek d-block" for="chk-ani">
+                                                        <input class="checkbox_animated" id="chk-ani" type="checkbox"
+                                                               checked="">
+                                                    </label>
+                                                    <div class="media-body">
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-primary dropdown-toggle"
+                                                                    id="dropdownMenuButton" type="button"
+                                                                    data-bs-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">이동
+                                                            </button>
+                                                            <div class="dropdown-menu"
+                                                                 aria-labelledby="dropdownMenuButton"><a
+                                                                    class="dropdown-item" href="javascript:void(0)">Refresh</a><a
+                                                                    class="dropdown-item" href="javascript:void(0)">중요메일함으로</a><a
+                                                                    class="dropdown-item"
+                                                                    href="javascript:void(0)">스팸메일로</a><a
+                                                                    class="dropdown-item"
+                                                                    href="javascript:void(0)">휴지통으로 </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="inbox" th:each="inbox : ${inboxes}">
+                                        <div class="media">
+                                            <div class="media-size-email">
+                                                <label class="d-block mb-0" for="chk-ani">
+                                                    <input class="checkbox_animated" id="chk-ani" type="checkbox"
+                                                           checked="">
+                                                </label><i class="like" data-feather="star"></i><img
+                                                    class="me-3 rounded-circle" src="../assets/images/user/user.png"
+                                                    alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 th:text="${inbox.fromAddress}">Pork Lorn </h6>
+                                                <p th:text="${inbox.subject}"
+                                                   th:value="@{ {id}(id= ${inbox.messageNumber})}"
+                                                   th:onclick="viewMail(this)" style="cursor:pointer;">Contrary to
+                                                    popular belief, Lorem Ipsum is not simply random text. It
+                                                    has roots in a piece of classical Latin literature from 45 BC.</p>
+                                                <span th:text="${#temporals.format(inbox.sentDate, 'MM-dd HH:mm')}">11:59 PM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function viewMail(id) {
+
+        let ids = id.getAttribute("value");
+
+        var _width = '800';
+        var _height = '800';
+
+        var _left = Math.ceil(( window.screen.width - _width )/2);
+        var _top = Math.ceil(( window.screen.height - _height )/2);
+
+        window.open("/mailView/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
+
+        return false;
+    }
+
+        function writeMail() {
+
+         $.ajax({
+                type: "GET",
+                url: "/writeMail",
+                }).done(function (fragment) {
+                $("#mailbox").empty();
+                let innerContents = document.querySelector("#mailbox");
+                innerContents.innerHTML = fragment
+
+                CKEDITOR.replace('text-box');
+
+                });
+
+    }
+
+    function btnSubmit() {
+        console.log("눌렀당!")
+        document.querySelector("#dto").submit();
+
+     }
+
+
+
+    </script>
+</th:block>
+</html>

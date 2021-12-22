@@ -1,8 +1,10 @@
 package com.example.dditlms.util;
 
 import com.example.dditlms.domain.entity.Attachment;
+import com.example.dditlms.domain.entity.FileData;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.AttachmentRepository;
+import com.example.dditlms.domain.repository.FileDataRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.security.JwtSecurityService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -23,6 +25,7 @@ import java.util.*;
 public class FileUtil {
 
     private final AttachmentRepository attachmentRepository;
+    private final FileDataRepository fileDataRepository;
 
     private final JwtSecurityService jwtSecurityService;
 
@@ -39,6 +42,21 @@ public class FileUtil {
         originToken.append(id);
         originToken.append("&");
         originToken.append(order);
+        return jwtSecurityService.createToken(originToken.toString(),60000L);
+    }
+
+    public String makeFileDownToken(int fileIdx){
+        Member member =null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        StringBuilder originToken = new StringBuilder();
+        originToken.append(member.getUserNumber());
+        originToken.append("&");
+        originToken.append(fileIdx);
+
         return jwtSecurityService.createToken(originToken.toString(),60000L);
     }
 
@@ -67,6 +85,35 @@ public class FileUtil {
 
         map.put("success","Y");
         map.put("path",attachment.getSource());
+        return map;
+    }
+
+    public Map<String,String> getDownToken(String token){
+        Map<String,String> map = new HashMap<String, String>();
+        String parseToken = null;
+        try{
+            parseToken = jwtSecurityService.getToken(token);
+        }catch (ExpiredJwtException e){
+            map.put("success","N");
+            return map;
+        }
+        String[] parses = parseToken.split("&");
+        Member member = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        if(member.getUserNumber() != Long.parseLong(parses[0])){
+            map.put("success","N");
+            return map;
+        }
+        Optional<FileData> fileDataWrapper = fileDataRepository.findByFileIdx(Integer.parseInt(parses[1]));
+        FileData filedata = fileDataWrapper.orElse(null);
+
+        map.put("success","Y");
+        map.put("cloudToken", String.valueOf(Long.parseLong(parses[1])));
+//        map.put("cloudToken", String.valueOf(filedata.getFileIdx()));
         return map;
     }
 

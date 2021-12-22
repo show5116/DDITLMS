@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface FileDataRepository extends JpaRepository<FileData, Integer> {
     List<FileData> findAllByMember(Member member);
     Optional<FileData> findByMemberAndParentIsNull(Member member);
+    List<FileData> findAllByMemberAndParentIsNull(Member member);
     List<FileData> findAllByMemberAndParent(Member member, FileData parent);
     Optional<FileData> findByFileIdx(Integer fileIdx);
     List<FileData> findAllByMemberAndParentAndExtension(Member member, FileData parent, String extension);

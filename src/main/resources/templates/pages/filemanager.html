@@ -51,9 +51,10 @@
                             <div class="file-sidebar">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div id="tree">
+<!--                                            <input id="tree_q" value class="input" type="text" style="margin:0em auto 1em auto; display:block; padding:4px; border-radius:4px; border:1px solid silver;">-->
+                                            <div id="tree">
 
-                                        </div>
+                                            </div>
 <!--                                        <ul>-->
 <!--                                            <li>-->
 <!--                                                <div class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Home </div>-->
@@ -246,9 +247,8 @@
                                 <h5 class="mt-4">Files</h5>
                                 <ul class="files">
                                     <li class="file-box" th:each="files : ${selectFiles}">
-                                        <a th:href="@{http://192.168.0.21:8094/cloud/download/{id}(id=${files.fileIdx})}" class="file-target" th:id="${files.fileIdx}">
+                                        <a th:href="@{/cloud/download/{id}(id=${files.token})}" class="file-target" th:id="${files.fileIdx}">
                                             <div class="file-top">
-
                                                 <i class="fa fa-file-archive-o txt-secondary"></i>
 <!--                                                <i class="fa fa-ellipsis-v f-14 ellips">-->
                                                     <input type="checkbox" name="chklist" class="bg fa f-14 ellips" th:value="${files.fileIdx}">
@@ -271,26 +271,6 @@
 
     <!-- Container-fluid Ends-->
     <script th:inline="javascript">
-        // var sel_file;
-        //
-        // $(function(){
-        //     $("#input_img").on("change",handleImgFileSelect);
-        // });
-        //
-        // function handleImgFileSelect(e){
-        //     var files = e.target.files;
-        //     var filesArr = Array.prototype.slice.call(files);
-        //
-        //     filesArr.forEach(function(f){
-        //         console.log(f);
-        //         sel_file = f;
-        //         var reader = new FileReader();
-        //         reader.onload = function(e){
-        //             $("#img").attr("src",e.target.result);
-        //         }
-        //         reader.readAsDataURL(f);
-        //     });
-        // }
 
         console.log("스크립트 있음");
         const newFolder = document.querySelector("#newFolder");
@@ -302,11 +282,7 @@
         const chklist = document.querySelectorAll("input[name='chklist']");
         let chkArr = [];
 
-
-
-
         chklist.forEach(chk => checkList(chk));
-
 
         function checkList(chk){
             chk.addEventListener("click", function (){
@@ -319,7 +295,6 @@
             });
         }
 
-
         zipDown.addEventListener("click", function (){
             console.log(chkArr);
             jsonObj.data.forEach(element=>{
@@ -328,7 +303,6 @@
             console.log(jsonObj.data);
             //여기서부터는 application/download
         });
-
 
 
         let fileTargetId = null;
@@ -410,29 +384,6 @@
                 })
             });
 
-
-        // fileTargets.forEach(fileTarget => downloadEvent(fileTarget));
-
-        // function downloadEvent(target){
-        //     target.addEventListener("click", function(event){
-        //         console.log("타겟" + event.currentTarget.id);
-        //         fileTargetId = event.currentTarget.id;
-        //         const params = {
-        //             fileTargetId : fileTargetId
-        //         };
-        //         $.ajax({
-        //             url:"/cloud/download",
-        //             data:params,
-        //             type: "GET",
-        //             beforeSend: function(xhr){
-        //                 xhr.setRequestHeader(header,token);
-        //             }
-        //         }).done(function(){
-        //             console.log("성공했어요");
-        //         })
-        //     })
-        // }
-
         uploadFileInput.addEventListener("change", function () {
 
             const fileVal = uploadFileInput.value;
@@ -491,15 +442,10 @@
         }
 
 
-
-            // jsonObj.data.forEach(element=>{
-            //     console.log(element.extension);
-            // });
         $(function (){
             $('#tree').jstree({
                 "core" : jsonObj,
                 "conditionalselect" : function (node, event) {
-
                     const params = {
                         targetId : node.id
                     };
@@ -521,29 +467,12 @@
                         console.log(textStatus);
                         console.log(errorThrown);
                         console.log(data);
-                    })
-
-                    console.log(node.id);
-
+                    });
                 },
                 "plugins" : [ "types",
                             "conditionalselect"
                             ]
-                // {
-                //     'data' : [
-                //         // for문 돌려서 id에는 idx, parent에는 parentidx를 root면 # text에는 filename을
-                //         //ajax로 바꿔서 넣으면? 폴더 이동때마다 or 파일이나 폴더 추가 할때마다
-                //         // 디비 변경되는 매핑 설정
-                //         //findAllByMemberAndParent
-                //         // /cloud에서 json파일로 보내고 data안에 json을 받기만해
-                //         // for(Map<String, Object> map : <List>타입findAllByMemberAndParent)
-                //         // extension 나눠서 폴더면 폴더모양 나머진 파일모양으로 구분 "icon" : "folder"
-                //         { "id" : "ajson1", "parent" : "#", "text" : "Simple root node", "name" : "a" },
-                //         { "id" : "ajson2", "parent" : "#", "text" : "Root node 2", "name" : "b" },
-                //         { "id" : "ajson3", "parent" : "ajson2", "text" : "Child 1", "name" : "c" },
-                //         { "id" : "ajson4", "parent" : "ajson2", "text" : "Child 2", "name" : "d" },
-                //     ]
-                // }
+
             });
         });
 
