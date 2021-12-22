@@ -11,5 +11,13 @@ public class SignupController {
     @GetMapping("/signUpSearch")
     public String signUpsearch() {return "pages/signUpSearch";}
 
+    @GetMapping("/preCourseRegistration")
+    public String preliminaryCourseRegistration(){ return "pages/preCourseRegistration";}
+
+    @GetMapping("/courseRegistration")
+    public String courseRegistration() {return "pages/courseRegistration";}
+
+
+
 
 }

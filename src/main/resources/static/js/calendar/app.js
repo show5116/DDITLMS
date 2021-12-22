@@ -1107,6 +1107,33 @@ function getMajor(){
                     return;
                 }
                 swal("수정완료");
+                const cancelBtn = document.querySelector("#update-cancel-btn");
+                cancelBtn.click();
+                ScheduleList=[];
+                const originScheduleList = new Array();
+                $.each(fragment.list,function(i,v){
+                    const schedule = new Object();
+                    schedule.id = v.id;
+                    schedule.calendarId = v.scheduleType;
+                    schedule.title = v.title;
+                    schedule.body = v.content;
+                    schedule.location = v.schedulePlace;
+                    schedule.isAllDay = false;
+                    schedule.start = new Date(v.scheduleStr);
+                    schedule.end = new Date(v.scheduleEnd);
+                    schedule.category = 'time';
+                    schedule.raw ={
+                        class:'class'
+                    };
+                    schedule.dueDateClass ='';
+
+                    ScheduleList.push(schedule);
+                })
+                console.log("등록성공후 scheduleList0----------------------");
+                console.log(ScheduleList);
+                setSchedules();
+                refreshScheduleVisibility();
+                cleanSchedule();
             })
 
 

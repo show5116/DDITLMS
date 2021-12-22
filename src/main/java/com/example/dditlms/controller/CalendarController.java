@@ -299,8 +299,6 @@ public class CalendarController {
         /** 파라미서 생생*/
         log.info("-----updateController-파라미터 생성");
         JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        Map<String, Object> jsonMap = new HashMap<>();
 
         /** 서비스 호출 파라미터 구성 */
         log.info("-----updateController-서비스 호출 파라미터 구성");
@@ -317,15 +315,17 @@ public class CalendarController {
         map.put("alarmTime",alarmTime);
         map.put("alarmSMS",alarmSMS);
         map.put("alarmKAKAO",alarmKAKAO);
-        map.put("jsonArray",jsonMap);
 
         /** 서비스 호출*/
         log.info("-----updateController-서비스 호출");
         service.updateSchedule(map);
         log.info("-----updateController-서비스 끝");
-
-        jsonArray = (JSONArray) map.get("jsonArray");
+        log.info(map+"");
+        log.info("-----map get1");
+        JSONArray jsonArray = (JSONArray) map.get("jsonArray");
+        log.info("-----map get2");
         Long id = (Long) map.get("scheduleId");
+        log.info("-----map get3");
 
         jsonObject.put("state","true");
         jsonObject.put("id", id);
