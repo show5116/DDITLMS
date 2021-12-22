@@ -78,6 +78,7 @@ public class MailController {
     @PostMapping("/writeMail")
     public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
 
+
         EmailDTO emailDTO = dto;
         emailService.writeMail(emailDTO);
 

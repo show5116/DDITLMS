@@ -27,6 +27,7 @@
                 <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
                     <h6>첨부파일을 넣으세요</h6>
                     <input type="file" th:field="*{multipartFile}">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 </div>
             </div>
         </div>
