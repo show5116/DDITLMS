@@ -4,6 +4,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
+    <script type="text/javascript" th:src="@{/static/js/ckeditor/ckeditor.js}"></script>
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='메일함')"></th:block>
     <div class="container-fluid">
         <div class="email-wrap">
@@ -20,21 +23,20 @@
                                                                                src=""
                                                                                alt=""></div>
                                             <div class="media-body">
-                                                <h6 class="f-w-600">사용자이름</h6>
-                                                <p>사용자ID@ddit.site</p>
+                                                <h6 class="f-w-600" th:text="${name}">사용자이름</h6>
+                                                <p th:text="${user}">사용자ID@ddit.site</p>
                                             </div>
                                         </div>
                                         <ul class="nav main-menu" role="tablist">
                                             <li class="nav-item"><a class="btn-primary btn-block btn-mail w-100"
                                                                     id="pills-darkhome-tab" data-bs-toggle="pill"
-                                                                    href="#pills-darkhome" role="tab"
-                                                                    aria-controls="pills-darkhome" aria-selected="true"><i
+                                                                    href="#" onclick="writeMail(); return false;" role="tab" aria-controls="pills-darkhome" aria-selected="true"><i
                                                     class="icofont icofont-envelope me-2"></i>메일 쓰기</a></li>
                                             <li class="nav-item"><a class="show" id="pills-darkprofile-tab"
                                                                     data-bs-toggle="pill" href="#pills-darkprofile"
                                                                     role="tab" aria-controls="pills-darkprofile"
                                                                     aria-selected="false"><span class="title"><i
-                                                    class="icon-import"></i>받은편지함</span><span class="badge pull-right">(236)</span></a>
+                                                    class="icon-import"></i>받은 메일함</span><span class="badge pull-right" th:text="|(${mailCount})|"></span></a>
                                             </li>
                                             <li><a href="#"><span class="title"><i
                                                     class="icon-folder"></i>모든 메일함</span></a></li>
@@ -45,13 +47,13 @@
                                                     class="icon-pencil-alt"></i>임시 보관함</span><span
                                                     class="badge pull-right">(59)</span></a></li>
                                             <li><a href="#"><span class="title"><i
-                                                    class="icon-trash"></i>지운 편지함</span><span class="badge pull-right">(99)</span></a>
+                                                    class="icon-trash"></i>지운 메일함</span><span class="badge pull-right">(99)</span></a>
                                             </li>
                                             <li><a href="#"><span class="title"><i
-                                                    class="icon-info-alt"></i>중요 편지함</span></a>
+                                                    class="icon-info-alt"></i>중요 메일함</span></a>
                                             </li>
                                             <li><a href="#"><span class="title"><i
-                                                    class="icon-star"></i>별표 편지함</span></a>
+                                                    class="icon-star"></i>별표 메일함</span></a>
                                             </li>
                                             <li>
                                                 <hr>
@@ -69,8 +71,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-9 col-md-12 xl-70">
-                    <div class="email-right-aside">
+                <div class="col-xl-9 col-md-12 xl-70" >
+                    <div class="email-right-aside" id="mailbox">
                         <div class="card email-body">
                             <div class="email-profile">
                                 <div>
@@ -93,7 +95,7 @@
                                                             <div class="dropdown-menu"
                                                                  aria-labelledby="dropdownMenuButton"><a
                                                                     class="dropdown-item" href="javascript:void(0)">Refresh</a><a
-                                                                    class="dropdown-item" href="javascript:void(0)">중요편지함으로</a><a
+                                                                    class="dropdown-item" href="javascript:void(0)">중요메일함으로</a><a
                                                                     class="dropdown-item"
                                                                     href="javascript:void(0)">스팸메일로</a><a
                                                                     class="dropdown-item"
@@ -117,7 +119,10 @@
                                             </div>
                                             <div class="media-body">
                                                 <h6 th:text="${inbox.fromAddress}">Pork Lorn </h6>
-                                                <p th:text="${inbox.subject}">Contrary to popular belief, Lorem Ipsum is not simply random text. It
+                                                <p th:text="${inbox.subject}"
+                                                   th:value="@{ {id}(id= ${inbox.messageNumber})}"
+                                                   th:onclick="viewMail(this)" style="cursor:pointer;">Contrary to
+                                                    popular belief, Lorem Ipsum is not simply random text. It
                                                     has roots in a piece of classical Latin literature from 45 BC.</p>
                                                 <span th:text="${#temporals.format(inbox.sentDate, 'MM-dd HH:mm')}">11:59 PM</span>
                                             </div>
@@ -131,5 +136,82 @@
             </div>
         </div>
     </div>
+    <script>
+
+        function viewMail(id) {
+
+        let ids = id.getAttribute("value");
+
+        var _width = '800';
+        var _height = '800';
+
+        var _left = Math.ceil(( window.screen.width - _width )/2);
+        var _top = Math.ceil(( window.screen.height - _height )/2);
+
+        window.open("/mailView/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
+
+        return false;
+    }
+
+        function writeMail() {
+
+         $.ajax({
+                type: "GET",
+                url: "/writeMail",
+                }).done(function (fragment) {
+                $("#mailbox").empty();
+                let innerContents = document.querySelector("#mailbox");
+                innerContents.innerHTML = fragment
+
+                CKEDITOR.replace('text-box');
+
+                });
+
+    }
+
+    function btnSubmit() {
+        console.log("눌렀당!")
+        document.querySelector("#dto").submit();
+
+     }
+
+       Dropzone.options.myGreatDropzone = { // camelized version of the `id`
+            // The configuration we've talked about above
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
+            headers: {
+                'X-CSRF-Token': $('meta[name="_csrf"]').attr('content')
+            },
+            // The setting up of the dropzone
+            init: function() {
+                var myDropzone = this;
+                // First change the button to actually tell Dropzone to process the queue.
+                this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
+                    // Make sure that the form isn't actually being sent.
+                    e.preventDefault();
+                    e.stopPropagation();
+                    myDropzone.processQueue();
+                });
+                // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
+                // of the sending event because uploadMultiple is set to true.
+                this.on("sendingmultiple", function() {
+                    // Gets triggered when the form is actually being sent.
+                    // Hide the success button or the complete form.
+                });
+                this.on("successmultiple", function(files, response) {
+                    // Gets triggered when the files have successfully been sent.
+                    // Redirect user or notify of success.
+                });
+                this.on("errormultiple", function(files, response) {
+                    // Gets triggered when there was an error sending the files.
+                    // Maybe show form again, and notify user of error
+                });
+            }
+        };
+
+
+    </script>
 </th:block>
 </html>

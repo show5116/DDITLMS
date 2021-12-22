@@ -5,6 +5,7 @@ import com.example.dditlms.domain.dto.EmailDTO;
 import java.util.List;
 
 public interface EmailService {
-    List<EmailDTO> receiveEmailList(String pop3Host, String storeType, String user, String password);
+    List<EmailDTO> receiveEmailList(String folderName);
     EmailDTO viewMail(int messageNumber, List<EmailDTO> emailDTOList);
+    void writeMail(EmailDTO emailDTO);
 }

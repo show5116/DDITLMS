@@ -10,8 +10,12 @@ import java.time.LocalDateTime;
 @ToString
 public class EmailDTO {
     Address fromAddress;
+    String toAddress;
     String subject;
     Object content;
     LocalDateTime sentDate;
     Integer messageNumber;
+    String contentType;
+    Address[] toList;
+    Address[] ccList;
 }
