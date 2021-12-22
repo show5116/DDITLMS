@@ -7,6 +7,7 @@
 
 var myRole;
 var majorList=[];
+var updateScheduleId;
 
 getMyInfo();
 getMajor();
@@ -96,10 +97,10 @@ function getMajor(){
             e.guide.clearGuideElement();
         },
         'beforeUpdateSchedule': function(e) {
-            alert("UpdateA");
-            console.log(e);
-            const modalBtn = document.querySelector("#schedule_modal_btn");
-            modalBtn.click();
+            console.log(e.schedule);
+            updateModal(e.schedule);
+            // const modalBtn = document.querySelector("#schedule_modal_btn");
+            // modalBtn.click();
 
             var schedule = e.schedule;
             var changes = e.changes;
@@ -433,9 +434,9 @@ function getMajor(){
     }
 
     function currentCalendarDate(format) {
-      var currentDate = moment([cal.getDate().getFullYear(), cal.getDate().getMonth(), cal.getDate().getDate()]);
+        var currentDate = moment([cal.getDate().getFullYear(), cal.getDate().getMonth(), cal.getDate().getDate()]);
 
-      return currentDate.format(format);
+        return currentDate.format(format);
     }
 
     function setRenderRangeText() {
@@ -574,12 +575,10 @@ function getMajor(){
     //취소버튼 클릭시 모달창 내용 초기와 & 창 닫기
     cancelBtn.addEventListener("click",function(){
         cleanSchedule();
-
     })
 
     //모달창에 입력받은 값 DB등록
     sendBtn.addEventListener("click", function(){
-
         var type = document.querySelector("#new-schedule-type").value;
         var typeDetail = document.querySelector("#new-schedule-type-detail").value;
         var title = document.querySelector("#new-schedule-title").value;
@@ -592,6 +591,7 @@ function getMajor(){
         var alarmSms = document.querySelector("#schedule-alam-sms");
         var alarmKakao = document.querySelector("#schedule-alam-kakao");
 
+
         const strArr = startDate.split("T");
         const str = strArr[0] + " " +strArr[1];
         const strDate = new Date(str);
@@ -603,7 +603,6 @@ function getMajor(){
         const selectedIsAllday = isAllday.checked;
         const selectedAlarmSMS = alarmSms.checked;
         const selectedAlarmKakao = alarmKakao.checked;
-
 
         if(!title || !type || !startDate || !endDate){
             swal("필수 항목을 입력해주세요");
@@ -641,7 +640,6 @@ function getMajor(){
             alarmTime : alarmTime,
             alarmSms : selectedAlarmSMS,
             alarmKakao : selectedAlarmKakao
-
         };
 
         $.ajax({
@@ -683,7 +681,8 @@ function getMajor(){
 
                     ScheduleList.push(schedule);
                 })
-
+                console.log("등록성공후 scheduleList0----------------------");
+                console.log(ScheduleList);
                 setSchedules();
                 refreshScheduleVisibility();
                 cleanSchedule();
@@ -697,8 +696,63 @@ function getMajor(){
 
     // 일정 구분에서 학과 선택시 학과 목록 보이기
     const scheduleType = document.querySelector("#new-schedule-type");
+    var updateSchduleType = document.querySelector("#update-schedule-type");
 
-    scheduleType.onchange = function() {
+    updateSchduleType.onchange = function(){
+        const typeDetail = document.querySelector("#update-schedule-type-detail");
+        const typeOption = updateSchduleType.options[updateSchduleType.selectedIndex].innerText;
+
+        console.log("구분 선택했을때의 구분의 value값 : ");
+        const typevaule = updateSchduleType.options[updateSchduleType.selectedIndex].value;
+        console.log(typevaule);
+        console.log("ajax밖에서 majorList : " + majorList);
+        const typeDetailOptions = {
+            none: ['선택'],
+            noneValue : ['NONE'],
+            private: ['선택'],
+            privateValue: ['PRIVATE'],
+            total: ['학교'],
+            totalValue:['TOTAL'],
+            college: ['건축학부', '전기전자학부'],
+            collegeValue: ['CONSTRUCT','ELECTRICALELECTRONIC'],
+            major: majorList[0]
+        }
+
+        switch (typeOption) {
+            case '선택':
+                var detailOption = typeDetailOptions.none;
+                var detailOptionValue = typeDetailOptions.noneValue;
+                break;
+            case '개인':
+                var detailOption = typeDetailOptions.private;
+                var detailOptionValue = typeDetailOptions.privateValue;
+                break;
+            case '학교':
+                var detailOption = typeDetailOptions.total;
+                var detailOptionValue = typeDetailOptions.totalValue;
+                break;
+            case '학부':
+                var detailOption = typeDetailOptions.college;
+                var detailOptionValue = typeDetailOptions.collegeValue;
+                break;
+            case '학과':
+                var detailOption = typeDetailOptions.major;
+                var detailOptionValue = typeDetailOptions.major;
+                break;
+        }
+
+        typeDetail.options.length = 0;
+        for (var i=0; i< detailOption.length; i++){
+            const option = document.createElement('option');
+            option.setAttribute('value',detailOptionValue[i]);
+            option.innerText = detailOption[i];
+            typeDetail.append(option);
+        }
+
+    }
+
+
+    scheduleType.onchange = function () {
         const typeDetail = document.querySelector("#new-schedule-type-detail");
         const typeOption = scheduleType.options[scheduleType.selectedIndex].innerText;
 
@@ -772,6 +826,7 @@ function getMajor(){
 
 
         const type = document.querySelector("#new-schedule-type");
+        const updatetype = document.querySelector("#update-schedule-type");
 
         console.log("switch전 role : " + myRole);
 
@@ -808,7 +863,254 @@ function getMajor(){
             optionTag.setAttribute('value',typeOptionValue[i]);
             optionTag.innerText = typeOption[i];
             type.append(optionTag);
+            // updatetype.append(optionTag);
         }
+
+        updatetype.options.length = 0;
+        for (var i =0; i< typeOption.length; i++){
+            const optionTag = document.createElement('option');
+            optionTag.setAttribute('value',typeOptionValue[i]);
+            optionTag.innerText = typeOption[i];
+            // type.append(optionTag);
+            updatetype.append(optionTag);
+        }
+    }
+
+
+    function updateModal(fragment) {
+        getTypeList();
+
+        console.log("updateModal 이벤트에 들어옴");
+        console.log(fragment);
+        var type = document.querySelector("#update-schedule-type");
+        var typeDetail = document.querySelector("#update-schedule-type-detail");
+        var title = document.querySelector("#update-schedule-title");
+        var content = document.querySelector("#update-message-text");
+        var location = document.querySelector("#update-schedule-location");
+        var startDate = document.querySelector("#update-startDate");
+        var endDate = document.querySelector("#update-endDate");
+        var isAllday = document.querySelector("#update-schedule-allday");
+        var alarmTime = document.querySelector("#update-schedule-alam-time");
+        var alarmSms = document.querySelector("#update-schedule-alam-sms");
+        var alarmKakao = document.querySelector("#update-schedule-alam-kakao");
+
+        const scheduleId = fragment.id;
+        updateScheduleId = scheduleId;
+        var typeValue = fragment.calendarId;
+        var titleValue = fragment.title;
+        var contentValue = fragment.body;
+        var locationValue = fragment.location;
+        var startDateValue = fragment.start;
+        var endDateValue = fragment.end;
+        var isAlldayValue = fragment.isAllDay;
+
+        var typeOptions = {
+            major: majorList[0]
+        }
+
+        var detailOption = typeOptions.major;
+        var detailOptionValue = typeOptions.major;
+        typeDetail.options.length = 0;
+        for(var i=0; i< detailOption.length; i++){
+            const option = document.createElement('option');
+            option.setAttribute('value',detailOptionValue[i]);
+            option.innerText = detailOption[i];
+            typeDetail.append(option);
+        }
+
+        var typeDetailValue;
+        var typeDetailIdx =0;
+        var typeDetailOptions = typeDetail.options.length;
+
+        var typeOptions = type.options.length;
+        var typeOptionIdx = 0;
+
+        for (var i=0; i < typeOptions; i++){
+            var optionValue = type.options[i].value;
+            if(optionValue == typeValue){
+                type.selectedIndex = i;
+                typeOptionIdx =i;
+            }
+        }
+
+        const params = {
+            scheduleId: scheduleId
+        }
+        $.ajax({
+            url: "/calendar/findAlarmType",
+            data: params,
+            method: "Post",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            }
+        })
+            .done(function (fragment) {
+                var isAlarmSMS, isAlarmKAKAO;
+                var getAlarmTime = fragment.param.alarmTime;
+                const type = fragment.param.types;
+                var alarmOptions = alarmTime.options.length;
+                var alarmOptionIdx =0;
+
+                typeDetailValue = fragment.param.typeDetail;
+
+                if (getAlarmTime != 'none'){
+                    for (var c=0; c < alarmOptions; c++){
+                        var optionValue = alarmTime.options[c].value;
+                        if (optionValue == getAlarmTime ){
+                            alarmTime.selectedIndex = c;
+                            alarmOptionIdx = c;
+                        }
+                    }
+
+                    for (c=0; c < type.length; c ++){
+                        const alarmType = type[c];
+                        if (alarmType == "SMS"){
+                            isAlarmSMS = alarmSms.checked
+                            console.log(isAlarmSMS);
+                            isAlarmSMS = true;
+                            console.log(isAlarmSMS);
+                        }
+                        if (alarmType == "KAKAO"){
+                            isAlarmKAKAO = alarmKakao.checked
+                            console.log(isAlarmKAKAO);
+                            isAlarmKAKAO = true;
+                            console.log(isAlarmKAKAO);
+                        }
+                    }
+                }
+
+                console.log("=====if문 들어가기전 typeDetaileValue : " + typeDetailValue);
+                if (typeDetailValue != 'none' || typeDetailValue != 'PRIVATE' || typeDetailValue != 'TOTAL'){
+                    console.log("=====if문 안 typeDetaileValue : " + typeDetailValue);
+                    console.log("=====if문 안 majorList : ");
+                    console.log(majorList[0][1]);
+                    for (var c=0; c < majorList[0].length; c++) {
+                        var optionValue = majorList[0][c];
+                        if (optionValue == typeDetailValue) {
+                            typeDetail.selectedIndex = c;
+                            typeDetailIdx = c;
+                        }
+                    }
+                }
+
+                const KR_TIME_DIFF = 9 * 60 * 60 * 1000; //한국시간표시
+
+                console.log(new Date(startDateValue + KR_TIME_DIFF).toISOString().slice(0,16))
+                console.log(typeDetailIdx);
+
+                type.selectedIndex = typeOptionIdx;
+                typeDetail.selectedIndex = typeDetailIdx;
+                title.value = titleValue;
+                content.value = contentValue;
+                location.value = locationValue;
+                startDate.value = new Date(startDateValue + KR_TIME_DIFF).toISOString().slice(0,16);
+                endDate.value = new Date(endDateValue + KR_TIME_DIFF).toISOString().slice(0,16);;
+                isAllday.checked = isAlldayValue;
+                alarmTime.selectedIndex = alarmOptionIdx;
+                alarmSms.checked = isAlarmSMS;
+                alarmKakao.checked = isAlarmKAKAO;
+            })
+
+
+        const updateModalBtn = document.querySelector("#schedule_update_modal_btn");
+        updateModalBtn.click();
+
+    }
+
+    var updateBtn = document.querySelector("#updateBtn");
+    updateBtn.addEventListener("click", updateSchedule);
+
+    function updateSchedule(){
+        console.log("updateSchedule들어옴");
+        var type = document.querySelector("#update-schedule-type").value;
+        var typeDetail = document.querySelector("#update-schedule-type-detail").value;
+        var title = document.querySelector("#update-schedule-title").value;
+        var content = document.querySelector("#update-message-text").value;
+        var location = document.querySelector("#update-schedule-location").value;
+        var startDate = document.querySelector("#update-startDate").value;
+        var endDate = document.querySelector("#update-endDate").value;
+        var isAllday = document.querySelector("#update-schedule-allday").checked;
+        var alarmTime = document.querySelector("#update-schedule-alam-time").value;
+        var alarmSms = document.querySelector("#update-schedule-alam-sms").checked;
+        var alarmKakao = document.querySelector("#update-schedule-alam-kakao").checked;
+
+
+        console.log("updateSchedule - getValue ::=========================");
+        console.log("type : " + type);
+        console.log("typeDetail : " + typeDetail);
+        console.log("title : " + title);
+        console.log("content : " + content)
+
+
+
+
+        var strArr = startDate.split("T");
+        var str = strArr[0] + " " + strArr[1];
+        var strDate = new Date(str);
+
+        var endArr = endDate.split("T");
+        var end = endArr[0] + " " + endArr[1];
+        var enddate = new Date(end);
+
+        if(!title || !type || !startDate || !endDate){
+            swal("필수 항목을 입력해주세요");
+            return;
+        }
+
+        if (strDate > enddate ){
+            swal("시간설정이 잘못 되었습니다.");
+            return;
+        }
+
+        if (isAllday){
+            var alldayStrTime = '00:00';
+            var alldayEndTime = '23:59';
+            startDate = strArr[0] + 'T' + alldayStrTime;
+            endDate = endArr[0] + 'T' + alldayEndTime;
+        }
+
+        if (alarmTime != "none"){
+            if (!alarmSms && !alarmKakao){
+                swal("알람 유형을 선택하세요.");
+                return;
+            }
+        }
+
+        const params = {
+            scheduleNo : updateScheduleId,
+            type : type,
+            typeDetail : typeDetail,
+            title : title,
+            content : content,
+            location : location,
+            startDate : startDate,
+            endDate : endDate,
+            isAllday : isAllday,
+            alarmTime : alarmTime,
+            alarmSms : alarmSms,
+            alarmKakao : alarmKakao
+        };
+
+        $.ajax({
+            url: "/calendar/updateSchedule",
+            data: params,
+            method: "post",
+            dataType: "json",
+            beforeSend: function(xhr){
+                xhr.setRequestHeader(header,token);
+            }
+        })
+            .done(function(fragment){
+                if(fragment.state != "true"){
+                    swal("예상치 못한 에러가 발생하였습니다.")
+                    return;
+                }
+                swal("수정완료");
+            })
+
+
+
     }
 
 
@@ -835,12 +1137,12 @@ function getMajor(){
 
 
 
-    window.cal = cal;
+window.cal = cal;
 
-    setDropdownCalendarType();
-    setRenderRangeText();
-    setSchedules();
-    setEventListener();
+setDropdownCalendarType();
+setRenderRangeText();
+setSchedules();
+setEventListener();
 })(window, tui.Calendar);
 
 

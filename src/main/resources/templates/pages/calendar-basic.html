@@ -13,21 +13,17 @@
         <div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="tooltipmodal" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">일정 등록</h5>
+                    <div class="modal-header" id="modal-header">
+                        <h5 class="modal-title" id="modal-title">일정 등록</h5>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3 row">
                             <div class="col-sm-2">
-                                <label class="col-form-label" >구분 *</label>
+                                <label class="col-form-label"  >구분 *</label>
                             </div>
                             <div class="col-sm-4">
                                 <select id="new-schedule-type" class="form-control btn-square">
                                     <option value="none">선택</option>
-                                    <option value="PRIVATE">개인</option>
-                                    <option value="#">학부</option>
-                                    <option value="MAJOR">학과</option>
-                                    <option value="TOTAL">학교</option>
                                 </select>
                             </div>
                             <div class="col-sm-2">
@@ -112,8 +108,111 @@
                 </div>
             </div>
         </div>
-  </div>
-<!--  일정 등록 모달창 끝-->
+    </div>
+    <!--  일정 등록 모달창 끝-->
+
+    <!--  일정 수정 모달창 시작-->
+    <div id="update-modal_box">
+        <div class="modal fade" id="open-update-modal" tabindex="-1" role="dialog" aria-labelledby="tooltipmodal" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" id="update-modal-header">
+                        <h5 class="modal-title" id="update-modal-title">일정 수정</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <div class="col-sm-2">
+                                <label class="col-form-label"  >구분 *</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <select id="update-schedule-type" class="form-control btn-square">
+                                    <option value="none">선택</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="col-form-label" >대상</label>
+                            </div>
+                            <div class="col-sm-4" >
+                                <select id="update-schedule-type-detail" class="form-control btn-square">
+                                    <option value="none">선택</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row" >
+                            <div class="col-sm-2">
+                                <label class="col-form-label" for="message-text">제목 *</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <input class="form-control" type="text" id="update-schedule-title" autocomplete="off" placeholder="Title">
+                            </div>
+                        </div>
+                        <p></p>
+                        <div class="mb-3 row">
+                            <label class="col-sm-2 col-form-label" for="message-text">내용</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" id="update-message-text" placeholder="Content" ></textarea>
+                            </div>
+                        </div>
+                        <div class="mb-3 row" >
+                            <div class="col-sm-2">
+                                <label class="col-form-label" for="message-text">위치</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <input class="form-control" type="text" id="update-schedule-location" autocomplete="off" placeholder="Location">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3 row">
+                            <div class="col-md-3">
+                                <label class="col-form-label" for="message-text">날짜 *</label><br>
+                            </div>
+                            <div class="col">
+                                <input type="datetime-local" id="update-startDate" class="form-control" placeholder="Strart date">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col-md-3 align-self-center">
+                                <input id="update-schedule-allday" type="checkbox" value="true" >
+                                <span class="tui-full-calendar-section-allday">All day</span>
+                            </div>
+                            <div class="col">
+                                <input type="datetime-local" id="update-endDate" class="form-control" placeholder="End date">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3 row">
+                            <div class="col-md-3">
+                                <label class="col-form-label">알람설정</label>
+                            </div>
+                            <div class="col-md-4 align-self-center">
+                                <select id="update-schedule-alam-time" class="form-control btn-square">
+                                    <option value="none">선택</option>
+                                    <option value="30">30분전</option>
+                                    <option value="60">1시간전</option>
+                                    <option value="1440">1일전</option>
+                                    <option value="10080">7일전</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 align-self-center">
+                                <input id="update-schedule-alam-sms" type="checkbox" value="true" >
+                                <span class="tui-full-calendar-section-allday">SMS</span>
+                            </div>
+                            <div class="col-md-3 align-self-center">
+                                <input id="update-schedule-alam-kakao" type="checkbox" value="true" >
+                                <span class="tui-full-calendar-section-allday">카카오톡</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" id="updateBtn" type="button">수정</button>
+                        <button class="btn btn-secondary" id="update-cancel-btn" type="button" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  일정 수정 모달창 끝-->
 
    <div class="container-fluid calendar-basic">
     <div class="row">
@@ -145,6 +244,7 @@
                 <div id="lnb">
                   <div class="lnb-new-schedule">
                     <button class="btn btn-primary" type="button" data-bs-toggle="modal" id="schedule_modal_btn" data-bs-target="#openModal">New schedule</button>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" id="schedule_update_modal_btn" data-bs-target="#open-update-modal" hidden>Update schedule</button>
                   </div>
                   <div class="lnb-calendars" id="lnb-calendars">
                     <div class="lnb-calendars-d1" id="calendarList">
