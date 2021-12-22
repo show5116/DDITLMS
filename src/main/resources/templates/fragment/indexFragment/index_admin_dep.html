@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="index_admin_depFragment">
+    <div class="container-fluid">
+        <div class="row ui-sortable" id="draggable">
+            <div id="to-do-div" class="col-sm-12 col-xl-6">
+                <th:block th:replace="/fragment/indexFragment/todoList.html :: toDoListFragment"></th:block>
+            </div>
+        </div>
+    </div>
+    <script>
+        "use strict";
+        const draggable = document.querySelector("#draggable");
+        Sortable.create(draggable, {
+            ghostClass : 'blue-background-class',
+            handle : '.handle',
+            animation: 150
+        })
+    </script>
+</th:block>
+</html>
