@@ -183,6 +183,11 @@ public class AdditionalController {
             for(ChatMember chatMember :chatMemberList){
                 Map<String,Object> memberMap = new HashMap<>();
                 memberMap.put("userName",chatMember.getMember().getName());
+                if(chatMember.getMember().getMemberImg() == null){
+                    memberMap.put("userImg","/static/images/memberImg/user.png");
+                }else{
+                    memberMap.put("userImg",chatMember.getMember().getMemberImg());
+                }
                 memberArray.add(memberMap);
             }
             List<Chat> chatList = chatRepository.findAllByChatRoomOrderByChatTimeDesc(chatRoom);

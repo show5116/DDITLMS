@@ -17,12 +17,18 @@ function getChat(){
                 chatRoom.remove();
             });
             chatRoomList = fragment.chatRoomList;
+            let length = chatRoomList.length;
             if(seeMoreFlag){
                 for(let i=chatRoomList.length-1; i>=0; i--){
                     seeChatRoom(i);
                 }
                 chatDropBox.style="height: 480px;overflow: scroll;";
-            }else{
+            }else if(length<4){
+                for(let i=chatRoomList.length-1; i>=0; i--){
+                    seeChatRoom(i);
+                }
+                chatDropBox.style="";
+            } else{
                 for(let i=4; i>=0; i--){
                     seeChatRoom(i);
                 }
@@ -34,6 +40,7 @@ function getChat(){
 
 function seeChatRoom(i){
     const chatRoom = chatRoomList[i];
+    console.log(chatRoom);
     let firstChat = `채팅 내역이 없습니다.`;
     if(chatRoom.isEmpty != "true"){
         firstChat = chatRoom.chatList[0].content;
@@ -93,8 +100,9 @@ function seeChatContent(i){
                                     <div class="status digits">${chatRoom.time}</div>
                                 </div>
                             </div>
-                            <div class="chat-member-list">
-                                
+                            <div class="customers d-inline-block avatar-group">
+                                <ul class="avatar-group-ul">
+                                </ul>
                             </div>
                             <ul class="list-inline float-start float-sm-end chat-menu-icons">
                                 <li class="list-inline-item toogle-bar"><i class="icon-menu"></i></a></li>
@@ -118,12 +126,16 @@ function seeChatContent(i){
                     </div>
                 </div>
             </div>`;
-    const chatMemberDiv = chat.querySelector(".chat-member-list");
+    const chatMemberImgUl = chat.querySelector(".avatar-group-ul");
     const chatMemberList = chatRoom.memberList;
     chatMemberList.forEach(chatMember=>{
-        let chatMemberHtml = document.createElement("span");
-        chatMemberHtml.innerText = `${chatMember.userName} `;
-        chatMemberDiv.append(chatMemberHtml);
+        let chatMemberImgLi = document.querySelector("li");
+        chatMemberImgLi.setAttribute("data-bs-toggle","tooltip");
+        chatMemberImgLi.setAttribute("data-bs-placement","bottom");
+        chatMemberImgLi.setAttribute("title",chatMember.userName);
+        chatMemberImgLi.classList.add("d-inline-block");
+        chatMemberImgLi.innerHTML = `<img class="img-40 rounded-circle" src="${chatMember.userImg}" alt="">`;
+        chatMemberImgUl.append(chatMemberImgLi);
     });
     const scrollControl = chat.querySelector(".custom-scrollbar");
     const chatContentul = scrollControl.querySelector("ul");
@@ -191,6 +203,7 @@ function sendChat(id){
         command : "chat"
     };
     sendMessage(param);
+    content.value= "";
 }
 
 function resetChat(id){
