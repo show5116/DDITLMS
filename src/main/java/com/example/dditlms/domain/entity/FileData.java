@@ -1,5 +1,6 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.dto.FileDataDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,6 +10,8 @@ import java.util.List;
 @Entity
 @Table(name = "FILEDATA")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class FileData {
@@ -49,18 +52,17 @@ public class FileData {
     @JoinColumn(name="USERNUMBER")
     private Member member;
 
-    @Builder
-    public FileData(Integer fileIdx, FileData parent, List<FileData> children, String fileName, String extension, Long fileSize, Date createTime, Date openTime, String contentType, Integer trash, Member member) {
-        this.fileIdx = fileIdx;
-        this.parent = parent;
-        this.children = children;
-        this.fileName = fileName;
-        this.extension = extension;
-        this.fileSize = fileSize;
-        this.createTime = createTime;
-        this.openTime = openTime;
-        this.contentType = contentType;
-        this.trash = trash;
-        this.member = member;
+
+    public FileDataDTO toDTO(){
+        FileDataDTO fileDataDTO = FileDataDTO.builder()
+                .fileName(this.fileName)
+                .extension(this.extension)
+                .fileSize(this.fileSize)
+                .openTime(this.openTime)
+                .fileIdx(this.fileIdx)
+                .build();
+        return fileDataDTO;
     }
+
+
 }
