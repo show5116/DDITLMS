@@ -8,7 +8,7 @@
     </div>
 </div>
 <div class="email-wrapper">
-    <form class="theme-form" th:action="@{/writeMail}" th:object="${dto}" method="post" id="dto">
+    <form class="theme-form" th:action="@{/writeMail}" th:object="${dto}" method="post" id="dto" enctype=multipart/form-data>
         <div class="form-group">
             <label class="col-form-label pt-0" for="exampleInputEmail1">받는사람</label>
             <input class="form-control" id="exampleInputEmail1" type="email" th:field="*{toAddress}">
@@ -25,10 +25,8 @@
             <div class="dropzone digits text-center dz-clickable" id="singleFileUpload"
                  action="/upload.php">
                 <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
-                    <h6>첨부파일을 넣으세요</h6><span
-                    <form th:action="@{/upload}" enctype="multipart/form-data" class="dropzone" id="my-great-dropzone">
-                        <button type="submit">Submit data and files!</button>
-                    </form>
+                    <h6>첨부파일을 넣으세요</h6>
+                    <input type="file" th:field="*{multipartFile}">
                 </div>
             </div>
         </div>
@@ -44,6 +42,9 @@
 <script th:inline="javascript">
 
 <!--   ajax로 불러오기 때문에, mailbox에 자바스크립트 넣을 것!!!-->
+
+
+
 
 
 </script>

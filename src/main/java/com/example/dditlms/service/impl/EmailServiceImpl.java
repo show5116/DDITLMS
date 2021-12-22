@@ -9,13 +9,16 @@ import com.sun.mail.pop3.POP3Store;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import lombok.extern.slf4j.Slf4j;
 import org.simplejavamail.api.email.Email;
+import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.DataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -198,19 +201,19 @@ public class EmailServiceImpl implements EmailService {
         String subject = emailDTO.getSubject();
         Object content = emailDTO.getContent();
         String toAddress = emailDTO.getToAddress();
-
+        MultipartFile multipartFile = emailDTO.getMultipartFile();
 
         Email email = EmailBuilder.startingBlank()
                 .from(fromName, fromAddress)
                 .to(toAddress, toAddress)
                 .withSubject(subject)
                 .withHTMLText((String) content)
+                .withAttachment(multipartFile.getName(), (DataSource) multipartFile.getResource())
                 .buildEmail();
 
-        MailerBuilder
+        Mailer inhouseMailer = MailerBuilder
                 .withSMTPServer("mail.ddit.site", 25, fromAddress, "java")
-                .buildMailer()
-                .sendMail(email);
+                .buildMailer();
 
     }
 }

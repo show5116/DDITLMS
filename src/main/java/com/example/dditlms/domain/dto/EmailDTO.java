@@ -2,6 +2,7 @@ package com.example.dditlms.domain.dto;
 
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.Address;
 import java.time.LocalDateTime;
@@ -18,4 +19,5 @@ public class EmailDTO {
     String contentType;
     Address[] toList;
     Address[] ccList;
+    MultipartFile multipartFile;
 }
