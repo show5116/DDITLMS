@@ -10,12 +10,10 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.dditlms.controller.FileDataController;
 import com.example.dditlms.domain.dto.FileDataDTO;
 import com.example.dditlms.domain.entity.FileData;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.FileDataRepository;
-import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.FileService;
 import com.example.dditlms.util.AmazonS3Util;
@@ -131,6 +129,8 @@ public class FileServiceImpl implements FileService {
         } catch (AmazonS3Exception e) {
         } catch (SdkClientException e) {
         }
+
+        map.put("member", member);
         map.put("current", fileData);
 
 
@@ -176,6 +176,7 @@ public class FileServiceImpl implements FileService {
 
     }
 
+
     @Override
     public void jstree(Map<String, Object> map){
         Member member = null;
@@ -200,8 +201,11 @@ public class FileServiceImpl implements FileService {
                 data.put("parent", fileData.getParent().getFileIdx());
             }
             data.put("text", fileData.getFileName());
-            if(fileData.getExtension().equals("folder")){
-                data.put("icon", "icofont icofont-folder font-theme");
+            if(fileData.getExtension().equals("folder")) {
+//                data.put("icon", "icofont icofont-folder font-theme");
+                data.put("icon", "icofont icofont-ui-folder font-theme");
+            } else if(fileData.getFileIdx()==1){
+                data.put("icon", "icofont icofont-ui-folder font-theme");
             } else {
                 data.put("icon", "icofont icofont-file-alt font-dark");
             }
