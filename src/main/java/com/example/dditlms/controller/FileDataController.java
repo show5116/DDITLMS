@@ -31,10 +31,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -121,18 +121,21 @@ public class FileDataController {
 
         FileData current = (FileData) map.get("current");
         Member member = (Member) map.get("member");
-        map.put("rootFolder", current);
+        map.put("rootFolder", current.getParent());
 
         fileService.tokenService(map);
         List<FileDataDTO> dtoList = (List<FileDataDTO>) map.get("dtoList");
+        logger.info("current : " + current.getFileName());
+        logger.info("parent : " + current.getParent().getFileName());
+        logger.info("member : " + member);
 
-        if (current.getParent() != null) {
-            mav.addObject("parentFolder", current.getParent().getFileIdx());
+        if (current.getParent().getParent() != null) {
+            mav.addObject("parentFolder", current.getParent().getParent().getFileIdx());
         }
         mav.addObject("selectFiles",
                 dtoList);
         mav.addObject("selectFolder",
-                fileDataRepository.findAllByMemberAndParentAndExtension(member, current, "folder"));
+                fileDataRepository.findAllByMemberAndParentAndExtension(member, current.getParent(), "folder"));
         mav.setViewName("pages/filemanager :: #folderReplace");
 
         return mav;
@@ -187,6 +190,7 @@ public class FileDataController {
             int fileTargetId = Integer.parseInt(cloudToken);
 
         logger.info("fileIdx : " + fileTargetId);
+
         Optional<FileData> fileDataWrapper = fileDataRepository.findByFileIdx(fileTargetId);
         FileData fileData = fileDataWrapper.orElse(null);
 
@@ -253,5 +257,74 @@ public class FileDataController {
         return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/cloud/deleteObject")
+    public ModelAndView deleteObject(ModelAndView mav, @RequestParam Map<String, Object> paramMap) {
+        String objectIdx = (String) paramMap.get("objectIdx");
+        logger.info("objectIdx : " + Integer.parseInt(objectIdx));
+        Optional<FileData> currentWrapper = fileDataRepository.findByFileIdx(Integer.parseInt(objectIdx));
+        FileData current = currentWrapper.orElse(null);
+        Map<String, Object> map = new HashMap<>();
+        fileDataRepository.delete(current);
+
+
+
+        Member member = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+
+        map.put("rootFolder", current.getParent());
+
+        fileService.tokenService(map);
+
+        List<FileDataDTO> dtoList = (List<FileDataDTO>) map.get("dtoList");
+
+
+        if (current.getParent().getParent() != null) {
+            mav.addObject("parentFolder", current.getParent().getParent().getFileIdx());
+        }
+        mav.addObject("selectFiles",
+                dtoList);
+        mav.addObject("selectFolder",
+                fileDataRepository.findAllByMemberAndParentAndExtension(member, current.getParent(), "folder"));
+
+        mav.setViewName("pages/filemanager :: #folderReplace");
+        return mav;
+    }
+
+
+    @PostMapping("/cloud/zipDownload")
+    public ModelAndView zipDownload(ModelAndView mav,
+                                    @RequestBody Map<String, Object> paramMap){
+        List<String> chkArr = (List<String>) paramMap.get("chkArr");
+        logger.info("chkArr : " + chkArr);
+
+
+        byte[] buffer = new byte[1024];
+
+        try{
+            FileOutputStream fos = new FileOutputStream("넣을 파일 경로 + 새로운 zip이름");
+            ZipOutputStream zos = new ZipOutputStream(fos);
+            ZipEntry ze = new ZipEntry("경로를 뺀 파일의 이름(txt)");
+            zos.putNextEntry(ze);
+            FileInputStream in = new FileInputStream("내 컴퓨터의 경로상 파일 너을거야");
+
+            int len;
+            while ((len = in.read(buffer)) > 0) {
+                zos.write(buffer, 0, len);
+            }
+            in.close();
+            zos.closeEntry();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mav.setViewName("pages/filemanager");
+        return mav;
+    }
 
 }
