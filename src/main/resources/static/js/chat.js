@@ -1,46 +1,46 @@
 const chatDropBox = document.querySelector(".chat-dropdown");
 let chatRoomList = [];
-function getChat(){
+async function getChat(){
     $.ajax({
         url: "/getChat",
+        async: false,
         method: "Post",
         dataType: "json",
         beforeSend: function (xhr){
             xhr.setRequestHeader(header,token);
         }
     })
-        .done(function (fragment){
-            if(fragment.success == "false"){
-                return;
+    .done(function (fragment){
+        if(fragment.success == "false"){
+            return;
+        }
+        chatDropBox.querySelectorAll(".chatRoomList").forEach(chatRoom=>{
+            chatRoom.remove();
+        });
+        chatRoomList = fragment.chatRoomList;
+        let length = chatRoomList.length;
+        if(seeMoreFlag){
+            for(let i=chatRoomList.length-1; i>=0; i--){
+                seeChatRoom(i);
             }
-            chatDropBox.querySelectorAll(".chatRoomList").forEach(chatRoom=>{
-                chatRoom.remove();
-            });
-            chatRoomList = fragment.chatRoomList;
-            let length = chatRoomList.length;
-            if(seeMoreFlag){
-                for(let i=chatRoomList.length-1; i>=0; i--){
-                    seeChatRoom(i);
-                }
-                chatDropBox.style="height: 480px;overflow: scroll;";
-            }else if(length<4){
-                for(let i=chatRoomList.length-1; i>=0; i--){
-                    seeChatRoom(i);
-                }
-                chatDropBox.style="";
-            } else{
-                for(let i=4; i>=0; i--){
-                    seeChatRoom(i);
-                }
-                chatDropBox.style="";
+            chatDropBox.style="height: 480px;overflow: scroll;";
+        }else if(length<4){
+            for(let i=chatRoomList.length-1; i>=0; i--){
+                seeChatRoom(i);
             }
-            return true;
-        })
+            chatDropBox.style="";
+        } else{
+            for(let i=4; i>=0; i--){
+                seeChatRoom(i);
+            }
+            chatDropBox.style="";
+        }
+    })
+    return await chatRoomList;
 }
 
 function seeChatRoom(i){
     const chatRoom = chatRoomList[i];
-    console.log(chatRoom);
     let firstChat = `채팅 내역이 없습니다.`;
     if(chatRoom.isEmpty != "true"){
         firstChat = chatRoom.chatList[0].content;
