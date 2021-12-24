@@ -12,7 +12,7 @@
                     <div class="mb-2 row justify-content-around">
                         <div class="col-sm row ">
                             <label class="col-sm-3 align-self-center bookmark">학년도</label>
-                            <select class="col form-select">
+                            <select class="col form-select" id="course-year">
                                 <option>2022</option>
                                 <option>2021</option>
                                 <option>2020</option>
@@ -20,21 +20,21 @@
                         </div>
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">학기구분</label>
-                            <select class="col form-select">
+                            <select class="col form-select" id="semester-division">
                                 <option>1학기</option>
                                 <option>2학기</option>
                             </select>
                         </div>
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">대학구분</label>
-                            <select class="col form-select">
+                            <select class="col form-select" id="college-division">
                                 <option>(전체)</option>
                                 <option>학부</option>
                             </select>
                         </div>
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">학부(과)</label>
-                            <select class="col form-select">
+                            <select class="col form-select" id="department">
                                 <option>전자과</option>
                                 <option>컴퓨터 공학과</option>
                                 <option>기계과</option>
@@ -44,11 +44,11 @@
                     <div class="mb-2 row row justify-content-around">
                         <div class="col-sm row ">
                             <label class="col-sm-3 align-self-center bookmark">개설과목</label>
-                            <input type="text" class="col form-control">
+                            <input type="text" class="col form-control" id="open-subject">
                         </div>
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">이수구분</label>
-                            <select class="col form-select">
+                            <select class="col form-select" id="completion-division">
                                 <option>핵심교양필수</option>
                                 <option>교양필수</option>
                                 <option>전공필수</option>
@@ -59,9 +59,9 @@
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">강의계획</label>
                             <div class="col align-self-center">
-                                <input type="radio" name="total" id="total-lecture" class="col-sm-1">전체
-                                <input type="radio" name="input" id="input-lecture" class="col-sm-1">입력
-                                <input type="radio" name="undefine" id="undefine-lecture" class="col-sm-1">미정
+                                <input type="radio" name="syllabus" id="total-lecture" class="col-sm-1">전체
+                                <input type="radio" name="syllabus" id="input-lecture" class="col-sm-1">입력
+                                <input type="radio" name="syllabus" id="undefine-lecture" class="col-sm-1">미정
                             </div>
                         </div>
                         <div class="col-sm row justify-content-around">
@@ -84,7 +84,7 @@
                                 <span class="col-sm-2 text-muted p-l-0">90건</span>
                             </div>
                             <div>
-                                <table class="table table-bordered text-center" >
+                                <table class="table table-bordered text-center" id="open-lecture">
                                     <thead class="table-secondary">
                                         <tr>
                                             <th>No.</th>
