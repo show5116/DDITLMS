@@ -64,28 +64,6 @@ public class EmailServiceImpl implements EmailService {
             emailStore.connect(user, password);
 
 
-            Folder sentFolder = emailStore.getFolder("Sent");
-            Folder spamFolder = emailStore.getFolder("Spam");
-            if (!sentFolder.exists()) {
-                sentFolder.create(1);
-                sentFolder.renameTo(sentFolder);
-                log.info("---------------" + sentFolder);
-                System.out.println("Sent Folder was created successfully");
-            }
-//
-//            if (!spamFolder.exists()) {
-//                spamFolder.create(Folder.HOLDS_FOLDERS);
-//                spamFolder.renameTo(spamFolder);
-//                spamFolder.setSubscribed(true);
-//                spamFolder.delete(false);
-//                log.info("Spam 폴더 생성" + spamFolder);
-//                System.out.println("Spam Folder was created successfully");
-//            }
-//            log.info("--------------" + sentFolder);
-//            log.info("--------------" + spamFolder);
-//            Folder sent = emailStore.getFolder("Sent");
-//            log.info("sent 폴더 겟" + sent);
-
             //3) 받은 메일함에 폴더에 접근 한다.
             Folder[] folders = emailStore.getDefaultFolder().list("*");
             log.info("-----------------" + Arrays.toString(folders));
