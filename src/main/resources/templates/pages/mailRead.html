@@ -43,6 +43,7 @@
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/responsive.css}">
     <script th:src="@{/static/js/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/static/js/jquery.ui.min.js}"></script>
     <script th:src="@{/static/js/sweetalert.min.js}"></script>
     <script th:src="@{/static/js/dropzone/dropzone.js}"></script>
 </head>
@@ -91,9 +92,11 @@
                                     <div class="emailread-group">
                                         <div class="action-wrapper">
                                             <ul class="actions" style="text-align: center; margin: 0 auto;">
-                                                <li style='display:inline-block'><a class="btn btn-primary" href="javascript:void(0)"><i
+                                                <li style='display:inline-block'><a class="btn btn-primary"
+                                                                                    th:onclick="reply(this)" th:value="${mail.messageNumber}"><i
                                                         class="fa fa-reply me-2"></i>답장</a></li>
-                                                <li style='display:inline-block'><a class="btn btn-danger" href="javascript:void(0)"><i
+                                                <li style='display:inline-block'><a class="btn btn-danger"
+                                                                                    href="javascript:void(0)"><i
                                                         class="fa fa-share me-2"></i>전달</a></li>
                                             </ul>
                                         </div>
@@ -108,3 +111,24 @@
         </div>
     </div>
 </th:block>
+
+<script>
+
+    function reply(id) {
+
+        console.log(id);
+        let ids = id.getAttribute("value");
+
+        var _width = '800';
+        var _height = '800';
+
+        var _left = Math.ceil(( window.screen.width - _width )/2);
+        var _top = Math.ceil(( window.screen.height - _height )/2);
+
+        window.open("/replyMail/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
+
+        return false;
+    }
+
+
+</script>

@@ -19,5 +19,5 @@ public class EmailDTO {
     String contentType;
     Address[] toList;
     Address[] ccList;
-    MultipartFile multipartFile;
+    MultipartFile[] multipartFile;
 }

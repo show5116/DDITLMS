@@ -3,8 +3,10 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="~{layout/layout}">
+<head>
+
+</head>
 <th:block layout:fragment="content">
-    <script type="text/javascript" th:src="@{/static/js/ckeditor/ckeditor.js}"></script>
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='메일함')"></th:block>
     <div class="container-fluid">
         <div class="email-wrap">
@@ -27,8 +29,8 @@
                                         </div>
                                         <ul class="nav main-menu" role="tablist">
                                             <li class="nav-item"><a class="btn-primary btn-block btn-mail w-100"
-                                                                    id="pills-darkhome-tab" data-bs-toggle="pill"
-                                                                    href="#" onclick="writeMail(); return false;" role="tab" aria-controls="pills-darkhome" aria-selected="true"><i
+                                                                    id="btnWriteMail" data-bs-toggle="pill"
+                                                                    href="" role="tab" aria-controls="pills-darkhome" aria-selected="true"><i
                                                     class="icofont icofont-envelope me-2"></i>메일 쓰기</a></li>
                                             <li class="nav-item"><a class="show" id="pills-darkprofile-tab"
                                                                     data-bs-toggle="pill" href="#pills-darkprofile"
@@ -134,7 +136,7 @@
             </div>
         </div>
     </div>
-    <script>
+    <script th:inline="javascript">
 
         function viewMail(id) {
 
@@ -151,30 +153,34 @@
         return false;
     }
 
-        function writeMail() {
+<!--        function writeMail() {-->
 
-         $.ajax({
-                type: "GET",
-                url: "/writeMail",
-                }).done(function (fragment) {
-                $("#mailbox").empty();
-                let innerContents = document.querySelector("#mailbox");
-                innerContents.innerHTML = fragment
+<!--         $.ajax({-->
+<!--                type: "GET",-->
+<!--                url: "/writeMail",-->
+<!--                }).done(function (fragment) {-->
+<!--                $("#mailbox").empty();-->
+<!--                let innerContents = document.querySelector("#mailbox");-->
+<!--                innerContents.innerHTML = fragment-->
 
-                CKEDITOR.replace('text-box');
+<!--                CKEDITOR.replace('text-box');-->
 
-                });
+<!--                });-->
 
-    }
+<!--    }-->
+      const btnWriteMail = document.querySelector("#btnWriteMail");
 
-    function btnSubmit() {
-        console.log("눌렀당!")
-        document.querySelector("#dto").submit();
+      btnWriteMail.addEventListener("click", function () {
+        var _width = '800';
+        var _height = '800';
 
-     }
+        var _left = Math.ceil(( window.screen.width - _width )/2);
+        var _top = Math.ceil(( window.screen.height - _height )/2);
 
+        window.open("/writeMail", 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
 
+        return false;
 
-    </script>
-</th:block>
-</html>
+      })
+
+ </script>
