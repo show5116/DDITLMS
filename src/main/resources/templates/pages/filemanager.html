@@ -106,12 +106,22 @@
 <!--                                                <input type="file" id="input_img" />-->
                                             </form>
                                         </div>
-                                        <div class="btn btn-outline-primary ms-2">
-                                                <label for="zip-download">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                                    Zip download
-                                                </label>
-                                                <button id="zip-download" style="display: none;"/>
+                                        <div id="zipReplace" class="btn btn-outline-primary ms-2">
+<!--                                                <label th:for="${chkArr}">-->
+
+<!--                                                </label>-->
+<!--                                            @{/cloud/download/{id}(id=${files.token})}-->
+<!--                                            <li th:if="${parentFolder != null}" class="folder-box" >-->
+
+<!--                                            <a th:if="${chkArr != null}" th:href=@"{/cloud/zipDownload/{chkArr}(chkArr=${chkArr})}">-->
+                                            <a th:if="${chkArr != null}" th:href="@{/cloud/zipDownload/{chkArr}/(chkArr=${chkArr})}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                Zip download
+                                            </a>
+                                            <a th:unless="${chkArr != null}" href="{/cloud/zipDownload/2}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                Zip download
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -185,7 +195,7 @@
         let fileTargets = document.querySelectorAll(".file-target");
         const folderReplaceWith = document.querySelector("#folderReplace");
         const uploadFileInput = document.querySelector("#upload-file-input");
-        const zipDown = document.querySelector("#zip-download");
+        // const zipDown = document.querySelector("#zip-download");
         const chklist = document.querySelectorAll("input[name='chklist']");
         // let rightClick = document.querySelectorAll(".right-click");
 
@@ -201,33 +211,53 @@
                     chkArr = chkArr.filter((e) => e !== chk.value);
                 }
                 console.log(chkArr);
+                const param = {
+                            chkArr : chkArr
+                        }
+                $.ajax({
+                    url:"/cloud/chkList",
+                    contentType : "application/json; charset=UTF-8",
+                    type: "POST",
+                    data: JSON.stringify(param),
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header,token);
+                    }
+                }).done(function (fragment){
+                    $("#zipReplace").replaceWith(fragment);
+                    console.log("fragment입니다. : "+fragment);
+                    // const chklist = document.querySelectorAll("input[name='chklist']");
+                    // chklist.forEach(chk => checkList(chk));
+                    console.log("chkArr : " + chkArr);
+                }).fail(function (){
+
+                });
             });
         }
 
-        zipDown.addEventListener("click", function (){
-            console.log(chkArr);
-            jsonObj.data.forEach(element=>{
-               console.log(element.extension);
-            });
-            // console.log(jsonObj.data);
-            //여기서부터는 application/download
-            const param = {
-                chkArr : chkArr
-            }
-            $.ajax({
-                url:"/cloud/zipDownload",
-                contentType : "application/json; charset=UTF-8",
-                type: "POST",
-                data: JSON.stringify(param),
-                beforeSend: function(xhr){
-                    xhr.setRequestHeader(header,token);
-               }
-            }).done(function (){
-                console.log("이ㅏ난");
-            }).fail(function (){
-
-            });
-        });
+        // zipDown.addEventListener("click", function (){
+        //     console.log(chkArr);
+        //     jsonObj.data.forEach(element=>{
+        //        console.log(element.extension);
+        //     });
+        //     // console.log(jsonObj.data);
+        //     //여기서부터는 application/download
+        //     const param = {
+        //         chkArr : chkArr
+        //     }
+        //     $.ajax({
+        //         url:"/cloud/zipDownload",
+        //         contentType : "application/json; charset=UTF-8",
+        //         type: "POST",
+        //         data: JSON.stringify(param),
+        //         beforeSend: function(xhr){
+        //             xhr.setRequestHeader(header,token);
+        //        }
+        //     }).done(function (){
+        //         console.log("이ㅏ난");
+        //     }).fail(function (){
+        //
+        //     });
+        // });
 
 
         let fileTargetId = null;
