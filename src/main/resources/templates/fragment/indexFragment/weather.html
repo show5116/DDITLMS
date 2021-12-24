@@ -3,11 +3,11 @@
 <th:block th:fragment="weatherFragment">
     <link rel="stylesheet" th:src="@{/static/css/date-picker.css}">
     <div class="card position-relative">
-        <ul style="z-index: 1; right: 50px; top: 50px;" class="position-absolute list-inline float-start float-sm-end chat-menu-icons">
+        <ul style="z-index: 1; right: 50px; top: 10px;" class="position-absolute list-inline float-start float-sm-end chat-menu-icons">
             <li style="cursor: move;" class="handle list-inline-item toogle-bar"><i class="icon-menu"></i></a></li>
-            <li style="cursor: pointer;" class="list-inline-item toogle-bar"><i class="icon-close"></i></a></li>
+            <li style="cursor: pointer;" class="list-inline-item toogle-bar" onclick="widgetClose('WID102');"><i class="icon-close"></i></a></li>
         </ul>
-        <div style="height: 450px;" class="mobile-clock-widget">
+        <div style="height: 350px;" class="mobile-clock-widget">
             <div class="bg-svg">
                 <svg class="climacon climacon_cloudLightningMoon" id="cloudLightningMoon" version="1.1" viewBox="15 15 70 70">
                     <clippath id="moonCloudFillClipfill11">

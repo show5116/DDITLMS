@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="toDoListFragment">
-    <div style="height: 450px; overflow: auto;" class="card">
+    <div style="height: 350px; overflow: auto;" class="card">
         <div class="card-header">
-            <h5>To-Do</h5>
+            <h5 style="display:inline-block;">To-Do</h5>
             <ul class="list-inline float-start float-sm-end chat-menu-icons">
                 <li style="cursor: move;" class="handle list-inline-item toogle-bar"><i class="icon-menu"></i></a></li>
-                <li style="cursor: pointer;" class="list-inline-item toogle-bar"><i class="icon-close"></i></a></li>
+                <li style="cursor: pointer;" class="list-inline-item toogle-bar" onclick="widgetClose('WID101');"><i class="icon-close"></i></a></li>
             </ul>
         </div>
         <div class="card-body pt-0">

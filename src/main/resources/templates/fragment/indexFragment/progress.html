@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="progressFragment">
+    <div style="height: 350px;" class="card">
+        <div class="card-header">
+            <h5 style="display:inline-block;">학기진행</h5>
+            <ul class="list-inline float-start float-sm-end chat-menu-icons">
+                <li style="cursor: move;" class="handle list-inline-item toogle-bar"><i class="icon-menu"></i></a></li>
+                <li style="cursor: pointer;" class="list-inline-item toogle-bar" onclick="widgetClose('WID201');"><i class="icon-close"></i></a></li>
+            </ul>
+        </div>
+        <div class="card-body progress-showcase row">
+            <div class="col">
+                <h6>2021년 6월반</h6>
+                <span>시작일: 21년 06월 07일</span><br/>
+                <span>종료일: 22년 01월 18일</span><br/>
+                <span class="semester-text"></span><br/>
+                <div class="progress">
+                    <div id="semester-bar" class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const startDate = new Date(2021,6,7);
+        const endDate = new Date(2022,1,18);
+        const now = new Date();
+        let percentage = Math.floor((startDate-now)/(startDate - endDate)*100);
+        document.querySelector(".semester-text").innerText = `진행률 :${percentage}% ${Math.floor((now - startDate)/1000/60/60/24/7)}주차`;
+        const semesterBar = document.querySelector("#semester-bar");
+        semesterBar.style.width = `${percentage}%`;
+        semesterBar.setAttribute("aria-valuenow",percentage);
+    </script>
+</th:block>
+</html>

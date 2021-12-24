@@ -1,5 +1,36 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="index_student_depFragment">
+    <link rel="stylesheet" th:href="@{/static/css/todo.css}">
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div>
+                    <div class="dropdown-basic">
+                        <div class="dropdown">
+                            <button class="dropbtn btn-primary" type="button">위젯 추가 <span><i class="icofont icofont-arrow-down"></i></span></button>
+                            <div class="dropdown-content">
+                                <a style="" id="WID101-add" onclick="widgetOpen('WID101')">todoList</a>
+                                <a style="" id="WID102-add" onclick="widgetOpen('WID102')">날씨</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row ui-sortable" id="draggable">
+            <div style="display:none;" id="WID101" class="col-sm-12 col-xl-6 widget ui-sortable-handle">
+                <th:block th:replace="/fragment/indexFragment/todoList.html :: toDoListFragment"></th:block>
+            </div>
+            <div style="display:none;" id="WID102" class="col-sm-12 col-xl-6 widget ui-sortable-handle">
+                <th:block th:replace="/fragment/indexFragment/weather.html :: weatherFragment"></th:block>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/static/js/todo.js}"></script>
+    <script th:src="@{/static/js/todoCustom.js}"></script>
+    <script th:src="@{/static/js/widget.js}"></script>
 </th:block>
 </html>
