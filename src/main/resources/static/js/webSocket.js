@@ -35,10 +35,10 @@ webSocket.onmessage = function (data){
         }
         notice(content);
     }else if(socketJson.command == "chat"){
-        getChat();
-        setTimeout(()=>{
-            resetChat(socketJson.target)
-        },100);
+        getChat()
+        .then(()=>{
+            resetChat(socketJson.target);
+        });
     }
 }
 

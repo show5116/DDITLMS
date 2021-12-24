@@ -60,6 +60,23 @@ public class FileUtil {
         return jwtSecurityService.createToken(originToken.toString(),60000L);
     }
 
+    public String makeZipDownToken(List<String> list){
+        Member member =null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        StringBuilder originToken = new StringBuilder();
+        originToken.append(member.getUserNumber());
+        for(String fileIdx : list){
+            originToken.append("&");
+            originToken.append(fileIdx);
+        }
+
+        return jwtSecurityService.createToken(originToken.toString(),60000L);
+    }
+
     public Map<String,String> getToken(String token){
         Map<String,String> map = new HashMap<String, String>();
         String parseToken = null;
@@ -113,6 +130,40 @@ public class FileUtil {
 
         map.put("success","Y");
         map.put("cloudToken", String.valueOf(Long.parseLong(parses[1])));
+//        map.put("cloudToken", String.valueOf(filedata.getFileIdx()));
+        return map;
+    }
+
+    public Map<String,List<FileData>> getZipDownToken(String token){
+        Map<String,List<FileData>> map = new HashMap<String, List<FileData>>();
+        String parseToken = null;
+        try{
+            parseToken = jwtSecurityService.getToken(token);
+        }catch (ExpiredJwtException e){
+//            map.put("success","N");
+            return map;
+        }
+        String[] parses = parseToken.split("&");
+        Member member = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try{
+            member = ((AccountContext)authentication.getPrincipal()).getMember();
+        }catch(ClassCastException e){
+        }
+        if(member.getUserNumber() != Long.parseLong(parses[0])){
+//            map.put("success","N");
+            return map;
+        }
+        List<FileData> list = new ArrayList<>();
+        for(int i = 1; i<parses.length; i++){
+            Optional<FileData> fileDataWrapper = fileDataRepository.findByFileIdx(Integer.parseInt(parses[i]));
+            FileData filedata = fileDataWrapper.orElse(null);
+
+            list.add(filedata);
+        }
+
+//        map.put("success","Y");
+        map.put("cloudToken", list);
 //        map.put("cloudToken", String.valueOf(filedata.getFileIdx()));
         return map;
     }

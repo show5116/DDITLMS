@@ -15,15 +15,15 @@ import java.util.Date;
 @Builder
 @Table(name="CHTTROOM")
 @Getter
-@Setter
-public class ChatRoom {
+            @Setter
+            public class ChatRoom {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="CHTTROOM_SN",nullable = false)
-    private Long id;
+            @Id
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            @Column(name="CHTTROOM_SN",nullable = false)
+            private Long id;
 
-    @Column(name="CHTTROOM_NM",nullable = false)
+            @Column(name="CHTTROOM_NM",nullable = false)
     private String name;
 
     @Column(name="RECENT_UPDT_TIME",nullable = false)

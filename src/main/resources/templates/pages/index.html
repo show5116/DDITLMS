@@ -4,9 +4,11 @@
           xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
           layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
-    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='인덱스 페이지')"></th:block>
-    <div class="container-fluid">
-
-    </div>
+    <th:block sec:authorize="hasRole('ROLE_STUDENT')" th:replace="/fragment/indexFragment/index_student.html :: index_studentFragment"></th:block>
+    <th:block sec:authorize="hasRole('ROLE_PROFESSOR')" th:replace="/fragment/indexFragment/index_professor.html :: index_professorFragment"></th:block>
+    <th:block sec:authorize="hasRole('ROLE_ACCADEMIC_DEP')" th:replace="/fragment/indexFragment/index_accademic_dep.html :: index_accademic_depFragment"></th:block>
+    <th:block sec:authorize="hasRole('ROLE_ADMIN_DEP')" th:replace="/fragment/indexFragment/index_admin_dep.html :: index_admin_depFragment"></th:block>
+    <th:block sec:authorize="hasRole('ROLE_GENERAL_DEP')" th:replace="/fragment/indexFragment/index_general_dep.html :: index_general_depFragment"></th:block>
+    <th:block sec:authorize="hasRole('ROLE_STUDENT_DEP')" th:replace="/fragment/indexFragment/index_student_dep.html :: index_student_depFragment"></th:block>
 </th:block>
 </html>
