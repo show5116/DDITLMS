@@ -54,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
 
 
         try {
-            //1) 세션값 받아옴, 메일 수신은 pop3프로토콜로만 받기로 함.
+            //1) 세션값 받아옴, 일반 수신은 pop3프로토콜로만 받기로 함.
             Properties properties = new Properties();
             properties.put("mail.pop3.host", pop3Host);
             Session emailSession = Session.getDefaultInstance(properties);
@@ -69,7 +69,6 @@ public class EmailServiceImpl implements EmailService {
             log.info("-----------------" + Arrays.toString(folders));
             Folder emailFolder = emailStore.getFolder(folderName);
             emailFolder.open(Folder.READ_WRITE);
-            // 보낸메일, 휴지통 폴더를 생성한다.
 
 
             //4) 받은 메세지 정보를 순차별로 담고, 반환한다.
@@ -321,7 +320,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     }
-
+    // 메일별 폴더 생성 테스트 코드 (메일 폴더 생성은 반드시 imap 프로토콜로만 접근 가능함!!)
     @Override
     public void testCreateBox() {
 
@@ -342,12 +341,12 @@ public class EmailServiceImpl implements EmailService {
 
 
         try {
-            //1) 세션값 받아옴, 메일 수신은 pop3프로토콜로만 받기로 함.
+            //1) 세션값 받아옴, 메일 수신 방식은 imap을 사용함 (폴더 생성, 접근 권한 가능)
             Properties properties = new Properties();
             properties.put("mail.host", imapHost);
             Session emailSession = Session.getDefaultInstance(properties);
 
-            //2) pop3서버로 연결 함.
+            //2) imap서버로 연결 함.
             IMAPStore emailStore = (IMAPStore) emailSession.getStore(storeType);
             emailStore.connect(user, password);
 
@@ -356,9 +355,30 @@ public class EmailServiceImpl implements EmailService {
             if (!sentFolder.exists()) {
                 sentFolder.create(1);
                 sentFolder.renameTo(sentFolder);
-                log.info("---------------" + sentFolder);
-                System.out.println("Sent Folder was created successfully");
+                sentFolder.close();
             }
+
+            Folder TrashFolder = emailStore.getFolder("Trash");
+            if (!TrashFolder.exists()) {
+                TrashFolder.create(1);
+                TrashFolder.renameTo(TrashFolder);
+                TrashFolder.close();
+            }
+
+            Folder ImportantFolder = emailStore.getFolder("Important");
+            if (!ImportantFolder.exists()) {
+                ImportantFolder.create(1);
+                ImportantFolder.renameTo(ImportantFolder);
+                ImportantFolder.close();
+            }
+
+            Folder StarFolder = emailStore.getFolder("Star");
+            if (!StarFolder.exists()) {
+                StarFolder.create(1);
+                StarFolder.renameTo(StarFolder);
+                StarFolder.close();
+            }
+
 
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
@@ -367,4 +387,97 @@ public class EmailServiceImpl implements EmailService {
         }
 
     }
+
+    @Override
+    public void moveMail(String folderName, int messageNumber) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+        String domain = "@ddit.site";
+
+        String imapHost = "mail.ddit.site";
+        String storeType = "imap";
+        String user = (member.getMemberId() + domain);
+        String password = "java";
+
+        try {
+            //1) 세션값 받아옴, 메일 수신 방식은 imap을 사용함 (폴더 생성, 접근 권한 가능)
+            Properties properties = new Properties();
+            properties.put("mail.host", imapHost);
+            Session emailSession = Session.getDefaultInstance(properties);
+
+            //2) imap서버로 연결 함.
+            IMAPStore emailStore = (IMAPStore) emailSession.getStore(storeType);
+            emailStore.connect(user, password);
+
+
+            switch (folderName) {
+                case "Sent": {
+                    Folder sentFolder = emailStore.getFolder("Sent");
+                    if (!sentFolder.exists()) {
+                        sentFolder.create(1);
+                        sentFolder.renameTo(sentFolder);
+
+                    }
+                    sentFolder.getFolder("Sent");
+                    sentFolder.open(Folder.READ_WRITE);
+                    Message message = sentFolder.getMessage(messageNumber);
+                    sentFolder.appendMessages(new Message[] {message});
+                    break;
+                }
+                case "Trash": {
+
+                    Folder TrashFolder = emailStore.getFolder("Trash");
+                    if (!TrashFolder.exists()) {
+                        TrashFolder.create(1);
+                        TrashFolder.renameTo(TrashFolder);
+
+                    }
+                    Folder emailFolder = emailStore.getFolder("INBOX");
+                    emailFolder.open(Folder.READ_WRITE);
+//                    TrashFolder.getFolder("Trash");
+//                    TrashFolder.open(Folder.READ_WRITE);
+                    Message message = emailFolder.getMessage(messageNumber);
+                    emailFolder.appendMessages(new Message[] {message});
+                    emailFolder.close();
+                    break;
+                }
+                case "Important": {
+                    Folder ImportantFolder = emailStore.getFolder("Important");
+                    if (!ImportantFolder.exists()) {
+                        ImportantFolder.create(1);
+                        ImportantFolder.renameTo(ImportantFolder);
+
+                    }
+                    break;
+                }
+                case "Star": {
+                    Folder StarFolder = emailStore.getFolder("Star");
+                    if (!StarFolder.exists()) {
+                        StarFolder.create(1);
+                        StarFolder.renameTo(StarFolder);
+
+                    }
+                    break;
+                }
+            }
+
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    }
+
+
 }

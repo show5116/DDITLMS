@@ -12,4 +12,5 @@ public interface EmailService {
     EmailDTO replyMailRead(int id);
     void replyMail(EmailDTO emailDTO) throws IOException;
     void testCreateBox();
+    void moveMail(String folderName, int messageNumber);
 }

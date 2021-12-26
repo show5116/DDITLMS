@@ -98,6 +98,9 @@
                                                 <li style='display:inline-block'><a class="btn btn-danger"
                                                                                     href="javascript:void(0)"><i
                                                         class="fa fa-share me-2"></i>전달</a></li>
+                                                <li style='display:inline-block'><a class="btn btn-danger"
+                                                                                    th:onclick="trash(this)" th:value="${mail.messageNumber}"><i
+                                                        class="fa fa-share me-2"></i>삭제</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -116,7 +119,6 @@
 
     function reply(id) {
 
-        console.log(id);
         let ids = id.getAttribute("value");
 
         var _width = '800';
@@ -128,6 +130,23 @@
         window.open("/replyMail/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
 
         return false;
+
+    }
+
+     function trash(id) {
+
+        let ids = id.getAttribute("value");
+
+        var _width = '800';
+        var _height = '800';
+
+        var _left = Math.ceil(( window.screen.width - _width )/2);
+        var _top = Math.ceil(( window.screen.height - _height )/2);
+
+        window.open("/toTrash/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
+
+        return false;
+
     }
 
 

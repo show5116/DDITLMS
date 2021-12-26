@@ -118,4 +118,12 @@ public class MailController {
         return "redirect:/mail";
     }
 
+    @GetMapping("/toTrash/{id}")
+    public String toTrash(@PathVariable("id") int id) {
+
+        emailService.moveMail("Trash", id);
+
+        return "null";
+
+    }
 }
