@@ -74,4 +74,10 @@ function saveTodo(){
             xhr.setRequestHeader(header,token);
         }
     })
+    .done((fragment)=>{
+        const deleteBtns = document.querySelectorAll(".delete-btn");
+        const completeBtns = document.querySelectorAll(".complete-btn");
+        deleteBtns[deleteBtns.length-1].setAttribute("onclick",`deleteTask(${fragment.id})`);
+        completeBtns[completeBtns.length-1].setAttribute("onclick",`updateTask(${fragment.id})`);
+    });
 }
