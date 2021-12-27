@@ -39,12 +39,16 @@ public class Member {
     private String password;
 
     @Lob
-    @Column(name="member_img")
+    @Column(name="MEMBER_IMG")
     private String memberImg;
 
-    @Column(name ="fail_count")
+    @Column(name ="FAIL_COUNT")
     @ColumnDefault("0")
     private Integer failCount;
+
+    @Column(name ="MENU_OD")
+    @ColumnDefault("'WID101 WID102'")
+    private String order;
 
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn

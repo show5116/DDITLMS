@@ -21,7 +21,7 @@ public class FileData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer fileIdx;
 
-    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
     @JoinColumn(name="PAR_FILEDATA_CODE")
     private FileData parent;
 

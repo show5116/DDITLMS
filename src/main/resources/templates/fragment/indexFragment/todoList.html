@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="toDoListFragment">
-    <link rel="stylesheet" th:href="@{/static/css/todo.css}">
-    <div class="card">
+    <div style="height: 350px; overflow: auto;" class="card">
         <div class="card-header">
-            <h5>To-Do</h5>
+            <h5 style="display:inline-block;">To-Do</h5>
+            <ul class="list-inline float-start float-sm-end chat-menu-icons">
+                <li style="cursor: move;" class="handle list-inline-item toogle-bar"><i class="icon-menu"></i></a></li>
+                <li style="cursor: pointer;" class="list-inline-item toogle-bar" onclick="widgetClose('WID101');"><i class="icon-close"></i></a></li>
+            </ul>
         </div>
         <div class="card-body pt-0">
             <div class="todo">
@@ -45,87 +48,5 @@
             </script>
         </div>
     </div>
-    <script th:src="@{/static/js/todo.js}"></script>
-    <script>
-        $(function (){
-            $.ajax({
-                url: "/getTodo",
-                method: "Post",
-                dataType: "json",
-                beforeSend: function (xhr){
-                    xhr.setRequestHeader(header,token);
-                }
-            })
-            .done(function(fragment){
-                const todoUl = document.querySelector("#todo-list")
-                const todoList = fragment.todoList;
-                console.log(fragment);
-                todoList.forEach(todo=>{
-                    console.log(todo);
-                    const todoLi = document.createElement("li");
-                    todoLi.classList.add("task");
-                    if(todo.status == "DONE"){
-                        todoLi.classList.add("completed");
-                    }
-                    todoLi.innerHTML = `
-                        <div class="task-container">
-                            <h4 class="task-label">${todo.content}</h4>
-                            <span class="task-action-btn"><span onclick="deleteTask(${todo.id})" class="action-box large delete-btn" title="Delete Task"><i class="icon"><i class="icon-trash"></i></i></span><span onclick="updateTask(${todo.id})" class="action-box large complete-btn" title="Mark Complete"><i class="icon"><i class="icon-check"></i></i></span></span>
-                        </div>`;
-                    todoUl.prepend(todoLi);
-                });
-            });
-        });
-        function deleteTask(id){
-            $.ajax({
-                url: "/deleteTodo",
-                data : {
-                    id : id
-                },
-                method: "Post",
-                dataType: "json",
-                beforeSend: function (xhr){
-                    xhr.setRequestHeader(header,token);
-                }
-            })
-        }
-        function updateTask(id){
-            $.ajax({
-                url: "/updateTodo",
-                data : {
-                    id : id
-                },
-                method: "Post",
-                dataType: "json",
-                beforeSend: function (xhr){
-                    xhr.setRequestHeader(header,token);
-                }
-            })
-        }
-        const newTaskContent = document.querySelector("#new-task");
-        const addNewTaskBtn = document.querySelector(".add-new-task-btn");
-        newTaskContent.addEventListener("keydown",function (){
-            if(event.keyCode != 13){
-                return;
-            }
-            saveTodo();
-        });
-        addNewTaskBtn.addEventListener("click",function (){
-            saveTodo();
-        });
-        function saveTodo(){
-            $.ajax({
-                url: "/saveTodo",
-                data : {
-                    content : newTaskContent.value
-                },
-                method: "Post",
-                dataType: "json",
-                beforeSend: function (xhr){
-                    xhr.setRequestHeader(header,token);
-                }
-            })
-        }
-    </script>
 </th:block>
 </html>
