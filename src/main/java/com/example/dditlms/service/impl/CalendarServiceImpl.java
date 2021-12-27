@@ -225,6 +225,7 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
+    @Transactional
     public void updateSchedule(Map<String, Object> map) {
 
         /** 파라미터 조회 ***************************************************************************/
@@ -298,7 +299,7 @@ public class CalendarServiceImpl implements CalendarService {
             findCaledar.setScheduleStr(startDate);
             findCaledar.setScheduleEnd(endDate);
             findCaledar.setSetAlarmTime(alarmTime);
-
+            repository.save(findCaledar);
             for (CalendarAlarm alarm: calendarAlarmList ) {
                 if(alarmSMS.equals("true")) {
                     String getAlarmType = alarm.getScheduleAlarmType();
@@ -308,6 +309,7 @@ public class CalendarServiceImpl implements CalendarService {
                         calendarAlarm.setScheduleContent(title);
                         calendarAlarm.setScheduleAlarmTime(scheduleStart);
                         calendarAlarm.setScheduleAlarmType("SMS");
+                        alarmRepository.save(calendarAlarm);
                     }
                 }
                 if(alarmKAKAO.equals("true")) {
@@ -318,6 +320,7 @@ public class CalendarServiceImpl implements CalendarService {
                         calendarAlarm.setScheduleContent(title);
                         calendarAlarm.setScheduleAlarmTime(scheduleStart);
                         calendarAlarm.setScheduleAlarmType("KAKAO");
+                        alarmRepository.save(calendarAlarm);
                     }
                 }
             }
@@ -332,6 +335,7 @@ public class CalendarServiceImpl implements CalendarService {
             findCaledar.setScheduleStr(startDate);
             findCaledar.setScheduleEnd(endDate);
             findCaledar.setSetAlarmTime(alarmTime);
+            repository.save(findCaledar);
         }
 
         List<Calendar> scheduleList = repository.getAllScheduleList(member);
@@ -351,9 +355,9 @@ public class CalendarServiceImpl implements CalendarService {
             listMap.put("scheduleTypeDetail",calendarToJson.getScheduleTypeDetail());
             listMap.put("scheduleType",calendarToJson.getScheduleType());
 
-            jsonArray.add(map);
+            jsonArray.add(listMap);
         };
-
+        log.info(jsonArray.toString());
             map.put("jsonArray", jsonArray);
             log.info("-----updateService-update 끝");
     }

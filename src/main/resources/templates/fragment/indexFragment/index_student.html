@@ -12,6 +12,8 @@
                             <div class="dropdown-content">
                                 <a style="" id="WID101-add" onclick="widgetOpen('WID101')">todoList</a>
                                 <a style="" id="WID102-add" onclick="widgetOpen('WID102')">날씨</a>
+                                <a style="" id="WID103-add" onclick="widgetOpen('WID103')">학교사진</a>
+                                <a style="" id="WID201-add" onclick="widgetOpen('WID201')">학기진행</a>
                             </div>
                         </div>
                     </div>
@@ -26,6 +28,12 @@
             </div>
             <div style="display:none;" id="WID102" class="col-sm-12 col-xl-6 widget ui-sortable-handle">
                 <th:block th:replace="/fragment/indexFragment/weather.html :: weatherFragment"></th:block>
+            </div>
+            <div style="display:none;" id="WID103" class="col-sm-12 col-xl-6 widget ui-sortable-handle">
+                <th:block th:replace="/fragment/indexFragment/imgSlider.html :: imgSliderFragment"></th:block>
+            </div>
+            <div style="display:none;" id="WID201" class="col-sm-12 col-xl-6 widget ui-sortable-handle">
+                <th:block th:replace="/fragment/indexFragment/progress.html :: progressFragment"></th:block>
             </div>
         </div>
     </div>

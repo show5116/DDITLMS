@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -55,7 +54,7 @@ public class MailController {
         return "/pages/mailbox";
     }
 
-    //메일 상세보기("INBOX")
+    //메일 상세보기
     @GetMapping("/mailView/{id}")
     public String mailView(Model model, @PathVariable("id") int id) {
 
@@ -63,6 +62,7 @@ public class MailController {
         EmailDTO mail = emailService.viewMail((id - 1), inboxes);
 
         model.addAttribute("mail", mail);
+
         return "/pages/mailRead";
     }
 
@@ -77,53 +77,11 @@ public class MailController {
     //메일 쓰기(보내기)
     @PostMapping("/writeMail")
     public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
-        log.info("----------------" + String.valueOf(dto));
+
+
         EmailDTO emailDTO = dto;
-        log.info("----------------" + String.valueOf(emailDTO));
-        try {
-            emailService.writeMail(emailDTO);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        emailService.writeMail(emailDTO);
 
         return "redirect:/mail";
-    }
-
-    @GetMapping("/replyMail/{id}")
-    public String replyMailView(Model model,  @PathVariable("id") int id) {
-        EmailDTO dto = emailService.replyMailRead(id);
-        model.addAttribute("dto", dto);
-        return "/pages/mailWrite";
-    }
-
-    @PostMapping("/replyMail")
-    public String replyMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
-        EmailDTO emailDTO = dto;
-        try {
-            emailService.replyMail(emailDTO);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "redirect:/mail";
-    }
-
-
-    @GetMapping("/testMail")
-
-    public String testMail() {
-
-        emailService.testCreateBox();
-
-        return "redirect:/mail";
-    }
-
-    @GetMapping("/toTrash/{id}")
-    public String toTrash(@PathVariable("id") int id) {
-
-        emailService.moveMail("Trash", id);
-
-        return "null";
-
     }
 }

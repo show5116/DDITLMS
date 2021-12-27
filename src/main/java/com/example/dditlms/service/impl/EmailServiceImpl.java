@@ -47,20 +47,20 @@ public class EmailServiceImpl implements EmailService {
         Long userNumber = member.getUserNumber();
         String domain = "@ddit.site";
 
-        String imapHost = "mail.ddit.site";
-        String storeType = "imap";
+        String pop3Host = "mail.ddit.site";
+        String storeType = "pop3";
         String user = (member.getMemberId() + domain);
         String password = "java";
 
 
         try {
-            //1) 세션값 받아옴, 메일 수신 방식은 imap을 사용함 (폴더 생성, 접근 권한 가능)
+            //1) 세션값 받아옴, 일반 수신은 pop3프로토콜로만 받기로 함.
             Properties properties = new Properties();
-            properties.put("mail.host", imapHost);
+            properties.put("mail.pop3.host", pop3Host);
             Session emailSession = Session.getDefaultInstance(properties);
 
-            //2) imap서버로 연결 함.
-            IMAPStore emailStore = (IMAPStore) emailSession.getStore(storeType);
+            //2) pop3서버로 연결 함.
+            POP3Store emailStore = (POP3Store) emailSession.getStore(storeType);
             emailStore.connect(user, password);
 
 
@@ -439,13 +439,13 @@ public class EmailServiceImpl implements EmailService {
                         TrashFolder.renameTo(TrashFolder);
 
                     }
-
                     Folder emailFolder = emailStore.getFolder("INBOX");
                     emailFolder.open(Folder.READ_WRITE);
 //                    TrashFolder.getFolder("Trash");
 //                    TrashFolder.open(Folder.READ_WRITE);
                     Message message = emailFolder.getMessage(messageNumber);
                     emailFolder.appendMessages(new Message[] {message});
+                    emailFolder.close();
                     break;
                 }
                 case "Important": {
