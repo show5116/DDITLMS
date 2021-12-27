@@ -16,10 +16,16 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@SequenceGenerator(
+        name="SANCTN_LN_SEQ_GEN",
+        sequenceName = "SANCTN_LN_SEQ",
+        initialValue =1
+)
 public class SanctnLn {
     @Id
     @Column(name = "SANCTN_LN_SN", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "SANCTN_LN_SEQ_GEN")
     private Long sanctnLn;
 
     @Column(name = "SANCTN_STTUS", length = 30)

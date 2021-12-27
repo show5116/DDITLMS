@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Builder
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userNumber;
 
     @MapsId

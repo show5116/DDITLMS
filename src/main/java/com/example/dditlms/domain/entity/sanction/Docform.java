@@ -13,10 +13,16 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
+@SequenceGenerator(
+        name="DOCFORM_SEQ_GEN",
+        sequenceName = "DOCFORM_SEQ",
+        initialValue =1
+)
 public class Docform {
     @Id
     @Column(name = "DOCFORM_SN", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "DOCFORM_SEQ_GEN")
     private Long docformId;
 
     @Column(name = "DOCFORM_NM")

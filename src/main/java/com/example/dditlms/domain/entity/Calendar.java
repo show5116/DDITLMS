@@ -14,9 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SequenceGenerator(
+        name="SCHDUL_SEQ_GEN",
+        sequenceName = "SCHDUL_SEQ",
+        initialValue =1
+)
 public class Calendar {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "SCHDUL_SEQ_GEN")
     @Column(name = "SCHDUL_SN", nullable = false)
     private Long id;
 

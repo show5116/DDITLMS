@@ -15,10 +15,16 @@ import javax.persistence.*;
 @Builder
 @Table(name="TODO")
 @Getter @Setter
+@SequenceGenerator(
+        name="TODO_SEQ_GEN",
+        sequenceName = "TODO_SEQ",
+        initialValue =1
+)
 public class Todo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "TODO_SEQ_GEN")
     @Column(name ="TODO_SN")
     private Long id;
 

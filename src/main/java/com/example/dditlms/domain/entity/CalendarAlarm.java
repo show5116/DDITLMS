@@ -12,11 +12,17 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SequenceGenerator(
+        name="SCHDUL_NTCN_SEQ_GEN",
+        sequenceName = "SCHDUL_NTCN_SEQ",
+        initialValue =1
+)
 public class CalendarAlarm {
 
     @Id
     @Column(name = "SCHDUL_NTCN_SN")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "SCHDUL_NTCN_SEQ_GEN")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

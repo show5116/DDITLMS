@@ -14,10 +14,16 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
+@SequenceGenerator(
+        name="SANCTN_LN_INDV_SEQ_GEN",
+        sequenceName = "SANCTN_LN_INDV_SEQ",
+        initialValue =1
+)
 public class SanctnLnIndv {
     @Id
     @Column(name = "SANCTN_LN_SN", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "SANCTN_LN_INDV_SEQ_GEN")
     private Long sanctnLnIndvId;
 
     @Column(name = "SANCTNER", length = 200)

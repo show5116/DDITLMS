@@ -14,10 +14,16 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
+@SequenceGenerator(
+        name="SANCTN_SEQ_GEN",
+        sequenceName = "SANCTN_SEQ",
+        initialValue =1
+)
 public class Sanctn {
     @Id
     @Column(name = "SANCTN_SN", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "SANCTN_SEQ_GEN")
     private Long sanctnId;
 
     @Column(name = "SANCTN_SJ")

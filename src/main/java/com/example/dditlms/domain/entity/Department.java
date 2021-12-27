@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class Department {
     @Id
     @Column(name = "DEPT_CODE", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long departmentCode;
 
     @Column(name = "DEPT_SE", length = 200)

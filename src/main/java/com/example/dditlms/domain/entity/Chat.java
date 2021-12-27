@@ -17,10 +17,16 @@ import java.util.Date;
 @Table(name="CHTT")
 @Getter @Setter
 @Where(clause = "CHTT_STTUS != 'DELETED'")
+@SequenceGenerator(
+        name="CHTT_SEQ_GEN",
+        sequenceName = "CHTT_SEQ",
+        initialValue =1
+)
 public class Chat {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "CHTT_SEQ_GEN")
     @Column(name="CHTT_SN")
     private Long id;
 

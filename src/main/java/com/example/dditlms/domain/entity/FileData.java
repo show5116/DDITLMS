@@ -14,11 +14,17 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@SequenceGenerator(
+        name="FILEDATA_SEQ_GEN",
+        sequenceName = "FILEDATA_SEQ",
+        initialValue =1
+)
 public class FileData {
 
     @Id
     @Column(name="FILE_IDX")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "FILEDATA_SEQ_GEN")
     private Integer fileIdx;
 
     @ManyToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)

@@ -15,15 +15,21 @@ import java.util.Date;
 @Builder
 @Table(name="CHTTROOM")
 @Getter
-            @Setter
-            public class ChatRoom {
+@Setter
+@SequenceGenerator(
+        name="CHTTROOM_SEQ_GEN",
+        sequenceName = "CHTTROOM_SEQ",
+        initialValue =1
+)
+public class ChatRoom {
 
-            @Id
-            @GeneratedValue(strategy = GenerationType.IDENTITY)
-            @Column(name="CHTTROOM_SN",nullable = false)
-            private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "CHTTROOM_SEQ_GEN")
+    @Column(name="CHTTROOM_SN",nullable = false)
+    private Long id;
 
-            @Column(name="CHTTROOM_NM",nullable = false)
+    @Column(name="CHTTROOM_NM",nullable = false)
     private String name;
 
     @Column(name="RECENT_UPDT_TIME",nullable = false)

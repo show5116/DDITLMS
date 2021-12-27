@@ -18,10 +18,16 @@ import java.util.Date;
 @Table(name="NTCN")
 @Getter @Setter
 @Where(clause = "DELETE_AT = 'N'")
+@SequenceGenerator(
+        name="NTCN_SEQ_GEN",
+        sequenceName = "NTCN_SEQ",
+        initialValue =1
+)
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "NTCN_SEQ_GEN")
     @Column(name="NTCN_SN")
     private Long id;
 
