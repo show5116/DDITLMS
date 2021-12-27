@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <div class="container-fluid">
+        <link rel="stylesheet" href="../../static/css/academic.css" />
+
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="icon-tab" role="tablist">
+
+                    <li class="nav-item"><a class="nav-link active" id="basic-information-tab" data-bs-toggle="tab" href="#basic-information" role="tab"
+                                            aria-controls="basic-information" aria-selected="true">
+                        <i class="icofont icofont-ui-home"></i>기본정보</a></li>
+
+                    <li class="nav-item"><a class="nav-link" id="variation-history-tab" data-bs-toggle="tab" href="#variation-history" role="tab"
+                                            aria-controls="variation-history" aria-selected="false">
+                        <i class="icofont icofont-man-in-glasses"></i>변동이력</a></li>
+
+                    <li class="nav-item"><a class="nav-link" id="course-history-tab" data-bs-toggle="tab" href="#course-history" role="tab"
+                                            aria-controls="course-history" aria-selected="false">
+                        <i class="icofont icofont-contacts"></i>수강이력</a></li>
+
+                </ul>
+                <div class="tab-content" id="icon-tabContent">
+                    <div class="tab-pane fade active show" id="basic-information" role="tabpanel" aria-labelledby="basic-information-tab">
+                        <div class="card-body mb-0 m-t-30">
+                            <form>
+                                <h4 style="display: inline-block">1.인적정보</h4> <button class="button-right" type="submit">저장</button>
+                                    <tr>
+                                        <div>
+                                            <label for="input-text-1">이름(영문)</label>
+                                            <input class="form-control btn-square input-d" id="input-text-1" type="text" placeholder="aaa" data-bs-original-title="" title="">
+                                            <label for="input-text-2">휴대전화</label>
+                                            <input class="form-control btn-square input-d" id="input-text-2" type="text" placeholder="bbb" data-bs-original-title="" title="">
+                                        </div>
+<!--                                        <td><strong>휴대전화</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value="010-1234-5678"></td>-->
+<!--                                        <td><strong>집전화번호</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value="042-999-8888"></td>-->
+<!--                                        <td><strong>은행구분</strong>-->
+<!--                                            <select class="input-d">-->
+<!--                                                <option value="" selected="selected">신한은행</option>-->
+<!--                                                <option value="">국민은행</option>-->
+<!--                                            </select>-->
+<!--                                        </td>-->
+<!--                                        <td rowspan="4"><img class="img-p"-->
+<!--                                                             src="../../static/images/goodJob.png" alt="sadadf" /></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td><strong class="strong1 col-2">이름(한문)</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value="류령찐"></td>-->
+<!--                                        <td><strong>국가구분</strong>-->
+<!--                                            <select class="input-d">-->
+<!--                                                <option value="" selected="selected">선택</option>-->
+<!--                                                <option value="">대한민국</option>-->
+<!--                                                <option value="">미국</option>-->
+<!--                                                <option value="">일본</option>-->
+<!--                                                <option value="">중국</option>-->
+<!--                                            </select>-->
+<!--                                        </td>-->
+<!--                                        <td><strong>가상계좌번호</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value="" style="background-color: #e1e4ee;"-->
+<!--                                                   readonly></td>-->
+<!--                                        <td><strong>계좌번호</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value="000-000-1111111"></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td><strong class="strong1 col-2">우편번호</strong>-->
+<!--                                            <input type="text" id="sample4_postcode" placeholder="우편번호" style="margin-left: 15px;">-->
+<!--                                            <input type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>-->
+<!--                                        </td>-->
+<!--                                        <td><strong>학년/학제</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value="4 / 150" readonly></td>-->
+<!--                                        <td><strong>최종변동</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value="전기수료 / 2021.02.19"-->
+<!--                                                   readonly></td>-->
+<!--                                        <td><strong>복학예정</strong>-->
+<!--                                            <input type="text" class="input-d col-2" value=""  readonly></td>-->
+<!--                                    </tr>-->
+
+<!--                                    <tr>-->
+<!--                                        <td>-->
+<!--&lt;!&ndash;                                            <strong class="strong1">주소</strong>&ndash;&gt;-->
+<!--                                            <input type="text" class="input-a col-4" value="yu yeong jin">-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <input type="text" class="input-a" value="4 / 150">-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade" id="variation-history" role="tabpanel" aria-labelledby="variation-history-tab">
+                            <p class="mb-0 m-t-30">B</p>
+                    </div>
+                    <div class="tab-pane fade" id="course-history" role="tabpanel" aria-labelledby="course-history-tab">
+                            <p class="mb-0 m-t-30">C</p>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+</th:block>
+</html>

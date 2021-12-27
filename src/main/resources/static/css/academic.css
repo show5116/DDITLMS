@@ -1,0 +1,35 @@
+strong{
+    text-align: right;
+    width: 75px;
+}
+
+.strong1{
+    margin-left: 15px;
+}
+
+.input-d{
+    display: inline-block;
+    margin: 15px;
+    width: 300px;
+    height: 25px;
+    /*background-color: #e1e4ee;*/
+}
+.input-a{
+    /*margin-left: 15px;*/
+    width: 600px;
+    height: 25px;
+    /*background-color: #e1e4ee;*/
+}
+
+.img-p {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+}
+
+.button-right{
+    display: inline-block;
+    padding: 5px;
+    margin: 0 5px;
+    float: right;
+}
