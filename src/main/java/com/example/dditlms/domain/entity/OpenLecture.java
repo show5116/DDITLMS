@@ -5,34 +5,34 @@ import lombok.*;
 import javax.persistence.*;
 
 @Getter
-@Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "ESTBL_COURS")
-public class OpenSubject {
+public class OpenLecture {
     @Id
     @Column(name = "ESTBL_COURS_CD", nullable = false, length = 200)
     private String id;
 
-    @Column(name = "ATCHMNFL_ID")
-    private Long syllabusFileId;        //첨부파일번호(강의계획서)
-
-    @Column(name = "LCTRE_NMPR")
-    private Long peopleNumber;
-
     @Column(name = "LCTRE_SE", length = 50)
-    private String completionDiv;
+    private String lectureSection;
 
     @Column(name = "LCTRE_KND")
-    private Boolean lectureKind;
+    private Boolean lectureKind;;
+
+    @Column(name = "LCTRE_NMPR")
+    private int peopleNumber;;
 
     @Column(name = "LCTRE_STUT", length = 200)
-    private String state;
+    private String state;;
+
+    @Column(name = "ATCHMNFL_ID")
+    private Long syllabusFileId;   //첨부파일번호(강의계획서)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SBJECT_CD")
-    private Subject subjectCode;
+    @JoinColumn(name = "LCTRUM_CD")
+    private LectureRoom lectureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MAJOR_CODE")
@@ -40,14 +40,17 @@ public class OpenSubject {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "YEAR_SEME")
-    private SemesterByYear openYear;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LCTRUM_CD")
-    private LectureRoom lectureId;
+    private SemesterByYear yearSeme;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MBER_NO")
-    private Professor professorNo;
+    private Professor professorNo;;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SBJECT_CD")
+    private Subject subjectCode;;
+
+    @Column(name = "LCTRE_SCHEDULE", length = 30)
+    private String lectureSchedule;
 
 }

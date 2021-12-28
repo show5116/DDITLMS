@@ -13,9 +13,7 @@
                         <div class="col-sm row ">
                             <label class="col-sm-3 align-self-center bookmark">학년도</label>
                             <select class="col form-select" id="course-year">
-                                <option>2022</option>
-                                <option>2021</option>
-                                <option>2020</option>
+                                <option th:each="yearL: ${yearList}" th:value="${yearL}" th:text="${yearL}"</option>
                             </select>
                         </div>
                         <div class="col-sm row justify-content-around">
@@ -29,15 +27,19 @@
                             <label class="col-sm-3 align-self-center bookmark">대학구분</label>
                             <select class="col form-select" id="college-division">
                                 <option>(전체)</option>
-                                <option>학부</option>
+                                <option value="HUMANITIES">인문대학</option>
+                                <option value="SOCIAL">사회과학대학</option>
+                                <option value="SCIENCE">자연과학대학</option>
+                                <option value="BUSINESS">경영대학</option>
+                                <option value="ENGINEERING">공과대학</option>
+                                <option value="ART">미술대학</option>
+                                <option value="EDUCATION">사범대학</option>
                             </select>
                         </div>
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">학부(과)</label>
                             <select class="col form-select" id="department">
-                                <option>전자과</option>
-                                <option>컴퓨터 공학과</option>
-                                <option>기계과</option>
+                                <option>선택</option>
                             </select>
                         </div>
                     </div>
@@ -49,7 +51,6 @@
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">이수구분</label>
                             <select class="col form-select" id="completion-division">
-                                <option>핵심교양필수</option>
                                 <option>교양필수</option>
                                 <option>전공필수</option>
                                 <option>전공선택</option>
@@ -64,104 +65,53 @@
                                 <input type="radio" name="syllabus" id="undefine-lecture" class="col-sm-1">미정
                             </div>
                         </div>
-                        <div class="col-sm row justify-content-around">
-
+                        <div class="col-sm row justify-content-end text-end">
+                            <button type="button" class="col-sm-3 btn btn-air-light m-l-30" id="btn-search">검색</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">개설강좌</a></li>
-                        <li class="nav-item"><a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">대체강좌</a></li>
-                    </ul>
-                    <div class="tab-content p-t-10" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <div class="row b-l-warning border-6 m-t-10 m-b-15">
-                                <h4 class="col-sm-1 f-w-700 p-l-10 m-b-0 align-self-center ">개설강좌</h4>
-                                <span class="col-sm-2 text-muted p-l-0">90건</span>
-                            </div>
-                            <div>
-                                <table class="table table-bordered text-center" id="open-lecture">
-                                    <thead class="table-secondary">
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>학부(과)</th>
-                                            <th>과목코드</th>
-                                            <th>교과목명</th>
-                                            <th>분반</th>
-                                            <th>이수구분</th>
-                                            <th>강의구분</th>
-                                            <th>정원</th>
-                                            <th>수강인원</th>
-                                            <th>담당교수</th>
-                                            <th>강의시간</th>
-                                            <th>강의실</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>전기-전자-통신공학과</td>
-                                            <td>IFA100</td>
-                                            <td><a>기초전기전자실습</a></td>
-                                            <td>01</td>
-                                            <td>전필</td>
-                                            <td>이론+실습</td>
-                                            <td>25</td>
-                                            <td>24</td>
-                                            <td>안치형</td>
-                                            <td>금03A~04B,06A~09B</td>
-                                            <td>공학1관(B404)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="row b-l-warning border-6 m-t-10 m-b-15">
+                            <h4 class="col-sm-1 f-w-700 p-l-10 m-b-0 align-self-center ">개설강좌</h4>
+                            <span class="col-sm-2 text-muted p-l-0">90건</span>
                         </div>
-                        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                            <div class="row b-l-warning border-6 m-t-10 m-b-15">
-                                <h4 class="col-sm-1 f-w-700 p-l-10 m-b-0 align-self-center ">대체강좌</h4>
-                                <span class="col-sm-2 text-muted p-l-0">23건</span>
-                            </div>
-                            <div>
-                                <table class="table table-bordered text-center" >
-                                    <thead class="table-secondary">
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>학부(과)</th>
-                                            <th>과목코드</th>
-                                            <th>교과목명</th>
-                                            <th>분반</th>
-                                            <th>이수구분</th>
-                                            <th>강의구분</th>
-                                            <th>정원</th>
-                                            <th>수강인원</th>
-                                            <th>담당교수</th>
-                                            <th>강의시간</th>
-                                            <th>강의실</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>전기-전자-통신공학과</td>
-                                            <td>IFA100</td>
-                                            <td>기초전기전자실습</td>
-                                            <td>01</td>
-                                            <td>전필</td>
-                                            <td>이론+실습</td>
-                                            <td>25</td>
-                                            <td>24</td>
-                                            <td>안치형</td>
-                                            <td>금03A~04B,06A~09B</td>
-                                            <td>공학1관(B404)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div style="height: 640px; overflow-y: auto;">
+                            <table class="table table-bordered text-center" id="open-lecture" >
+                                <thead class="table-secondary">
+                                    <tr style="height: 1px;">
+                                        <th>개설년도</th>
+                                        <th>학부(과)</th>
+                                        <th>이수구분</th>
+                                        <th>학점</th>
+                                        <th>교과목명</th>
+                                        <th>담당교수</th>
+                                        <th>강의시간</th>
+                                        <th>강의실</th>
+                                        <th>정원</th>
+                                        <th>과목코드</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="lecture : ${openLectures}" style="height: 1px;">
+                                        <td th:text="${lecture.getYearSeme()}"></td>
+                                        <td th:text="${lecture.getMajorKr()}"></td>
+                                        <td th:if="${lecture.getLectureSection().toString().equals('CULTURE_SELECT')}">교선</td>
+                                        <td th:if="${lecture.getLectureSection().toString().equals('CULTURE_REQUIRED')}">교필</td>
+                                        <td th:if="${lecture.getLectureSection().toString().equals('MAJOR_REQUIRED')}">전필</td>
+                                        <td th:if="${lecture.getLectureSection().toString().equals('MAJOR_SELECT')}">전선</td>
+                                        <td th:text="${lecture.getPoint()}"></td>
+                                        <td th:text="${lecture.getLectureName()}"></td>
+                                        <td th:text="${lecture.getProfessorName()}"></td>
+                                        <td th:text="${lecture.getLectureSchedule()}"></td>
+                                        <td th:text="${lecture.getLectureRoom()}"></td>
+                                        <td th:text="${lecture.getPeopleNumber()}"></td>
+                                        <td th:text="${lecture.getLectureCode()}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

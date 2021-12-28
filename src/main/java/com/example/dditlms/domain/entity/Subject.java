@@ -29,10 +29,7 @@ public class Subject {
     private String courseOutline;
 
     @Column(name = "SBJECT_PNT")
-    private Long point;               //과목학점
-
-    @Column(name = "DV_CLSSRM", length = 30)
-    private String divisionClassroom;  //분반
+    private int point;               //과목학점
 
     @Column(name = "PAR_SBJECT_CODE", length = 200)
     private String prerequisiteCode;    //선수과목 코드
