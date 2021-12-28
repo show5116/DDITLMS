@@ -5,6 +5,8 @@
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='장학금 신청')"></th:block>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <div class="container-fluid">
         <div class="col-lg-12">
             <div class="card">
@@ -12,104 +14,108 @@
                     <div>
                         <div class="tab-content m-t-15">
                             <div class="row">
-                                <div class="col-lg-7">
-                                    <div class="card-body-left">
-                                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
-                                            <div class="align-self-center">
-                                                <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">신청정보</h4>
-                                                <span class="text-muted p-l-10 m-t-10">0건</span>
-                                            </div>
+                                <div style="height:400px;" class="card col-lg-6">
+                                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                                        <div class="align-self-center">
+                                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">신청정보</h4>
+                                            <span class="text-muted p-l-10 m-t-10">0건</span>
                                         </div>
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th>장학명칭</th>
-                                                    <th>등급</th>
-                                                    <th>신청일</th>
-                                                    <th>신청상태</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>24</td>
-                                                    <td>안치형</td>
-                                                    <td>금03A~04B,06A~09B</td>
-                                                    <td>공학1관(B404)</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <colgroup>
+                                                <col width="25%"/>
+                                                <col width="15%"/>
+                                                <col width="20%"/>
+                                                <col width="20%"/>
+                                                <col width="20%"/>
+                                            </colgroup>
+                                            <thead>
+                                            <tr>
+                                                <th>장학명칭</th>
+                                                <th>신청일</th>
+                                                <th>신청상태</th>
+                                                <th>장학금액</th>
+                                                <th>지급방식</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="scholarshipList">
+                                            <tr th:each="scholarship : ${scholarshipList}">
+                                                <td th:text="${scholarship.getKind().getKorean()}"></td>
+                                                <td th:text="${#dates.format(scholarship.getApliDate(),'yy-MM-dd')}"></td>
+                                                <td th:text="${scholarship.getStatus().getKorean()}"></td>
+                                                <td th:text="${#numbers.formatInteger(scholarship.getPrice(),3,'COMMA')}"></td>
+                                                <td th:text="${scholarship.getMethod().getKorean()}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <div class="col-lg-5">
-                                    <div class="card-body-right">
-                                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
-                                            <div class="align-self-center">
-                                                <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5  ">예비수강과목</h4>
-                                                <span class="text-muted p-l-10 m-t-10">0건</span>
-                                            </div>
-                                        </div>
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>장학구분</th>
-                                                    <th>장학명칭</th>
-                                                    <th>등급</th>
-                                                    <th>선발기준</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>기초전기전자실습</td>
-                                                    <td>01</td>
-                                                    <td>전필</td>
-                                                    <td>이론+실습</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                <div style="height:400px;" class="card col-lg-6">
+                                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                                        <div class="align-self-center">
+                                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">장학신청</h4>
+                                            <span class="text-muted p-l-10 m-t-10">0건</span>
+                                            <button id="aplication-btn" class="pull-right btn btn-primary" type="button">신청</button>
                                         </div>
                                     </div>
+                                    <form id="scholarship-form">
+                                        <div>
+                                            <label>장학명칭</label>
+                                            <div class="search-bg"><i class="fa fa-search"></i>
+                                                <select name="kindId" style="width:80%;" id="scholarship-search" onchange="scholarSelected()">
+                                                    <option th:each="scholarshipKind : ${scholarshipKindList}" th:value="${scholarshipKind.getId()}" th:text="${scholarshipKind.getKorean()}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <br/>
+                                            <label style="display: block;">첨부파일</label>
+                                            <input id="attachment-text" style="display: inline-block; width: 70%;" class="form-control-plaintext disabled" type="text" placeholder="파일이름" readonly>
+                                            <button id="attachment-btn" type="button" class="btn-success btn-sm"> <span class="icon-import"></span></button>
+                                            <input name="attachment" id="attachment-file" style="width: 0px;height: 0px;overflow: hidden" type="file">
+                                        </div>
+                                        <div>
+                                            <br/>
+                                            <label>지급기준</label>
+                                            <textarea id="criteria" style="display:block; width:85%;" readonly th:text="${scholarshipKindList[0].getSelectionCriteria()}"></textarea>
+                                        </div>
+                                    </form>
                                 </div>
                                 <div class="col-lg-12">
-                                    <div class="card-body-right">
-                                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
-                                            <div class="align-self-center">
-                                                <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5  ">진행현황</h4>
-                                                <span class="text-muted p-l-10 m-t-10">0건</span>
-                                            </div>
+                                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                                        <div class="align-self-center">
+                                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5  ">진행현황</h4>
+                                            <span class="text-muted p-l-10 m-t-10">0건</span>
                                         </div>
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>단계구분</th>
-                                                    <th>결재부서</th>
-                                                    <th>결재자구분</th>
-                                                    <th>결재자성명</th>
-                                                    <th>처리결과</th>
-                                                    <th>처리일자</th>
-                                                    <th>처리의견</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>기초전기전자실습</td>
-                                                    <td>01</td>
-                                                    <td>전필</td>
-                                                    <td>이론+실습</td>
-                                                    <td>이론+실습</td>
-                                                    <td>이론+실습</td>
-                                                    <td>이론+실습</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>단계구분</th>
+                                                <th>결재부서</th>
+                                                <th>결재자구분</th>
+                                                <th>결재자성명</th>
+                                                <th>처리결과</th>
+                                                <th>처리일자</th>
+                                                <th>처리의견</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>기초전기전자실습</td>
+                                                <td>01</td>
+                                                <td>전필</td>
+                                                <td>이론+실습</td>
+                                                <td>이론+실습</td>
+                                                <td>이론+실습</td>
+                                                <td>이론+실습</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -119,5 +125,68 @@
             </div>
         </div>
     </div>
+    <script>
+        $('#scholarship-search').select2();
+        const scholarSelect = document.querySelector("#scholarship-search");
+        function scholarSelected(){
+            const params = {
+                id : scholarSelect.value
+            };
+            $.ajax({
+                url: "/student/scholarshipApplication/select",
+                data: params,
+                method: "Post",
+                dataType: "json",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done((fragment)=>{
+                const criteriaBox = document.querySelector("#criteria");
+                criteriaBox.innerText = fragment.criteria;
+            });
+        }
+        const attachmentFile = document.querySelector("#attachment-file");
+        document.querySelector("#attachment-btn").addEventListener("click",()=>{
+            attachmentFile.click();
+        });
+        attachmentFile.addEventListener("change",()=>{
+            let files = attachmentFile.files;
+            let file = files[0];
+            let reader = new FileReader();
+            reader.onload = function (e){
+                document.querySelector("#attachment-text").value = file.name;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        const aplicationBtn = document.querySelector("#aplication-btn");
+        aplicationBtn.addEventListener("click",()=>{
+            const file = attachmentFile.files[0];
+            if(file == undefined){
+                swal("첨부파일이 없습니다.")
+                return;
+            }
+            const form = document.querySelector("#scholarship-form");
+            const formData = new FormData(form);
+            console.log(formData);
+            $.ajax({
+                url: "/student/scholarshipApplication/aplication",
+                enctype : "multipart/form-data",
+                processData : false,
+                contentType : false,
+                cache : false,
+                data: formData,
+                method: "Post",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done((fragment)=>{
+                console.log("시발");
+                $("#scholarshipList").replaceWith(fragment);
+            });
+        });
+    </script>
 </th:block>
 </html>
