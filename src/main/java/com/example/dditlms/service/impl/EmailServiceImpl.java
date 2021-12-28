@@ -68,6 +68,7 @@ public class EmailServiceImpl implements EmailService {
             Folder[] folders = emailStore.getDefaultFolder().list("*");
             log.info("-----------------" + Arrays.toString(folders));
             Folder emailFolder = emailStore.getFolder(folderName);
+            UIDFolder uf = (UIDFolder)  emailFolder;
             emailFolder.open(Folder.READ_WRITE);
 
 
@@ -96,6 +97,9 @@ public class EmailServiceImpl implements EmailService {
                 LocalDateTime localDateTime = new Timestamp(messages.get(i).getSentDate().getTime()).toLocalDateTime();
                 emailDTO.setSentDate(localDateTime);
                 emailDTO.setMessageNumber(messages.get(i).getMessageNumber());
+                emailDTO.setMailUID(uf.getUID(messages.get(i)));
+
+
 
                 String contentType = messages.get(i).getContentType();
                 String messageContent = "";
@@ -157,7 +161,6 @@ public class EmailServiceImpl implements EmailService {
     // 이메일 상세 읽기
     @Override
     public EmailDTO viewMail(int messageNumber, List<EmailDTO> emailDTOList) {
-
         EmailDTO email = emailDTOList.get(messageNumber);
 
         return email;
@@ -475,6 +478,66 @@ public class EmailServiceImpl implements EmailService {
         }
 
 
+
+
+    }
+
+    @Override
+    public void moveMailTest(String folderName, Long mailUID) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+        Long userNumber = member.getUserNumber();
+        String domain = "@ddit.site";
+
+        String imapHost = "mail.ddit.site";
+        String storeType = "imap";
+        String user = (member.getMemberId() + domain);
+        String password = "java";
+
+
+        try {
+            //1) 세션값 받아옴, 메일 수신 방식은 imap을 사용함 (폴더 생성, 접근 권한 가능)
+            Properties properties = new Properties();
+            properties.put("mail.host", imapHost);
+            Session emailSession = Session.getDefaultInstance(properties);
+
+            //2) imap서버로 연결 함.
+            IMAPStore emailStore = (IMAPStore) emailSession.getStore(storeType);
+            emailStore.connect(user, password);
+
+            switch (folderName) {
+
+                case "Trash": {
+                    Folder TrashFolder = emailStore.getFolder("Trash");
+                    if (!TrashFolder.exists()) {
+                        TrashFolder.create(1);
+                        TrashFolder.renameTo(TrashFolder);
+                        TrashFolder.close();
+
+                    }
+                    Folder emailFolder = emailStore.getFolder("INBOX");
+                    UIDFolder uf = (UIDFolder)  emailFolder;
+                    Message messageByUID = uf.getMessageByUID(mailUID);
+                    Message[] moveMessage = {messageByUID};
+                    Folder trash = emailStore.getFolder("Trash");
+                    emailFolder.copyMessages(moveMessage, trash);
+
+                }
+            }
+
+
+
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
 
 
     }
