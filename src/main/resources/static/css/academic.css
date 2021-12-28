@@ -10,15 +10,19 @@ strong{
 .input-d{
     display: inline-block;
     margin: 15px;
-    width: 300px;
-    height: 25px;
+    width: 200px;
+    height: 30px;
     /*background-color: #e1e4ee;*/
 }
-.input-a{
-    /*margin-left: 15px;*/
-    width: 600px;
-    height: 25px;
-    /*background-color: #e1e4ee;*/
+.input-email{
+    display: inline-block;
+    margin: 15px;
+    width: 350px;
+    height: 30px;
+}
+.btn-search{
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .img-p {
@@ -32,4 +36,14 @@ strong{
     padding: 5px;
     margin: 0 5px;
     float: right;
+}
+
+.table-container{
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+table{
+    width: auto;
 }
