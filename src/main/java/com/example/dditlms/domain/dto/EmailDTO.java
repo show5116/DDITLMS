@@ -21,4 +21,5 @@ public class EmailDTO {
     Address[] ccList;
     MultipartFile[] multipartFile;
     Long mailUID;
+    String mailBox;
 }
