@@ -12,4 +12,6 @@ public interface ScholarshipRepository extends JpaRepository<Scholarship,Long> {
     List<Scholarship> findAllByMemberAndSemesterAndStatusNot(Member member, SemesterByYear semester, ScholarshipStatus status);
 
     List<Scholarship> findAllByMemberAndStatus(Member member,ScholarshipStatus status);
+
+    List<Scholarship> findAllByMemberAndStatusNot(Member member,ScholarshipStatus status);
 }

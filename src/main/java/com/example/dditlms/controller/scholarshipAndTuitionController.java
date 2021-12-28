@@ -46,8 +46,18 @@ public class scholarshipAndTuitionController {
     }
 
     @GetMapping("/student/scholarshipShow")
-    public String scholarshipShow(){
-        return "";
+    public ModelAndView scholarshipShow(ModelAndView mav){
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByMemberAndStatusNot(MemberUtil.getLoginMember(), ScholarshipStatus.STANDBY);
+        long sum = 0;
+        for(Scholarship scholarship : scholarshipList){
+            if(scholarship.getStatus().equals(ScholarshipStatus.APPROVAL)){
+                sum += scholarship.getPrice();
+            }
+        }
+        mav.addObject("sum",sum);
+        mav.addObject("scholarshipList",scholarshipList);
+        mav.setViewName("/pages/scholarshipShow");
+        return mav;
     }
 
     @GetMapping("/student/scholarshipApplication")

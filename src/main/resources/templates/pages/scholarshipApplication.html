@@ -14,21 +14,21 @@
                     <div>
                         <div class="tab-content m-t-15">
                             <div class="row">
-                                <div style="height:400px;" class="card col-lg-6">
+                                <div id="scholarshipList" style="height:400px;" class="card col-lg-6">
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="align-self-center">
                                             <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">신청정보</h4>
-                                            <span class="text-muted p-l-10 m-t-10">0건</span>
+                                            <span class="text-muted p-l-10 m-t-10" th:text="${#lists.size(scholarshipList)}+'건'"></span>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <colgroup>
-                                                <col width="25%"/>
+                                                <col width="30%"/>
                                                 <col width="15%"/>
-                                                <col width="20%"/>
-                                                <col width="20%"/>
-                                                <col width="20%"/>
+                                                <col width="19%"/>
+                                                <col width="18%"/>
+                                                <col width="18%"/>
                                             </colgroup>
                                             <thead>
                                             <tr>
@@ -39,7 +39,7 @@
                                                 <th>지급방식</th>
                                             </tr>
                                             </thead>
-                                            <tbody id="scholarshipList">
+                                            <tbody>
                                             <tr th:each="scholarship : ${scholarshipList}">
                                                 <td th:text="${scholarship.getKind().getKorean()}"></td>
                                                 <td th:text="${#dates.format(scholarship.getApliDate(),'yy-MM-dd')}"></td>
@@ -55,7 +55,6 @@
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="align-self-center">
                                             <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">장학신청</h4>
-                                            <span class="text-muted p-l-10 m-t-10">0건</span>
                                             <button id="aplication-btn" class="pull-right btn btn-primary" type="button">신청</button>
                                         </div>
                                     </div>
