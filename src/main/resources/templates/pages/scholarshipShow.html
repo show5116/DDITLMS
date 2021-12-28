@@ -5,6 +5,53 @@
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='장학금 조회')"></th:block>
-
+    <div class="col-lg-12">
+        <div style="height:500px;" class="card">
+            <div class="p-20">
+                <div class="tab-content m-t-15">
+                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                        <div class="align-self-center">
+                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">신청정보</h4>
+                            <span class="text-muted p-l-10 m-t-10" th:text="${#lists.size(scholarshipList)+'건'}"></span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>학년도</th>
+                                <th>학기</th>
+                                <th>장학명칭</th>
+                                <th>장학금액</th>
+                                <th>지급방식</th>
+                                <th>지급일자</th>
+                                <th>취소일자</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="scholarship : ${scholarshipList}">
+                                <td th:text="${#strings.substring(scholarship.getSemester().getYear(),0,4)}"></td>
+                                <td th:text="${#strings.substring(scholarship.getSemester().getYear(),5,6)}"></td>
+                                <td th:text="${scholarship.getKind().getKorean()}"></td>
+                                <td th:text="${#numbers.formatInteger(scholarship.getPrice(),3,'COMMA')}"></td>
+                                <td th:text="${scholarship.getMethod().getKorean()}"></td>
+                                <td th:if="${scholarship.getStatus().getKorean().equals('승인')}" th:text="${#dates.format(scholarship.getApliDate(),'yy-MM-dd')}"></td>
+                                <td th:unless="${scholarship.getStatus().getKorean().equals('승인')}"></td>
+                                <td th:if="${scholarship.getStatus().getKorean().equals('반려')}" th:text="${#dates.format(scholarship.getApliDate(),'yy-MM-dd')}"></td>
+                                <td th:unless="${scholarship.getStatus().getKorean().equals('반려')}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td scope="row">총합</td>
+                                <td scope="row" th:text="${sum}"></td>
+                                <td colspan="3"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </th:block>
 </html>

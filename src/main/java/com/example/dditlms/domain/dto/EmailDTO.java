@@ -20,4 +20,6 @@ public class EmailDTO {
     Address[] toList;
     Address[] ccList;
     MultipartFile[] multipartFile;
+    Long mailUID;
+    String mailBox;
 }
