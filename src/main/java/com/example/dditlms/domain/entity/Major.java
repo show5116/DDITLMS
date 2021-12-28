@@ -27,6 +27,9 @@ public class Major{
     @Column(name = "MAJOR_NM_KR")
     private String korean;
 
+    @Column(name = "REGISTER_AMOUNT")
+    private Long payment;
+
     @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     @JoinColumn(name = "PAR_MAJOR_CODE")
     private Major parent;
