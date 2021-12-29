@@ -98,8 +98,7 @@
                                                 <li style='display:inline-block'><a class="btn btn-danger"
                                                                                     href="javascript:void(0)"><i
                                                         class="fa fa-share me-2"></i>전달</a></li>
-                                                <li style='display:inline-block'><a class="btn btn-danger"
-                                                                                    th:onclick="trash(this)" th:value="${mail.mailUID}"><i
+                                                <li style='display:inline-block'><a class="btn btn-danger" th:value="${mail.mailUID}" onclick="trash()" id="uid"><i
                                                         class="fa fa-share me-2"></i>삭제</a></li>
                                             </ul>
                                         </div>
@@ -133,21 +132,32 @@
 
     }
 
-     function trash(id) {
+    function trash() {
+        let URL = window.location.href
+        let SURLS = URL.split("?id=");
+        let url = SURLS[1].split("&box=");
 
-        let ids = id.getAttribute("value");
+        let id = document.querySelector("#uid").getAttribute("value");
+        let mailBox = url[1]
+        let target = "Trash";
 
-        var _width = '800';
-        var _height = '800';
+        $.ajax({
 
-        var _left = Math.ceil(( window.screen.width - _width )/2);
-        var _top = Math.ceil(( window.screen.height - _height )/2);
-
-        window.open("/toTrash/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
-
-        return false;
-
+              type: "GET",
+              url: "/moveMail",
+              data: {
+                  "id": id,
+                  "mailBox": mailBox,
+                  "target": target
+              },
+              success: function (fragment) {
+                  opener.location.reload();
+                  window.close();
+              },
+        });
     }
+
+
 
 
 </script>

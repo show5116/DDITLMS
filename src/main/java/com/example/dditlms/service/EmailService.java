@@ -11,9 +11,7 @@ public interface EmailService {
     void writeMail(EmailDTO emailDTO) throws IOException;
     EmailDTO replyMailRead(int id);
     void replyMail(EmailDTO emailDTO) throws IOException;
-    void testCreateBox();
-    void moveMail(String folderName, int messageNumber);
-    void moveMailTest(String folderName, Long mailUID);
-    void sentMailCopy();
+    void sentMailCopy(EmailDTO emailDTO);
     void tempMail(EmailDTO emailDTO) throws IOException;
+    void moveMail(String folderName, Long mailUID, String TargetFolderName);
 }
