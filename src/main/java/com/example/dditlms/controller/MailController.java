@@ -11,9 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -123,7 +126,7 @@ public class MailController {
     }
 
     @PostMapping("/tempMail")
-    public String tempMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
+    public String tempMail(@ModelAttribute("dto") EmailDTO dto, Model model, HttpServletResponse response) throws IOException {
         log.info("----------------" + String.valueOf(dto));
         EmailDTO emailDTO = dto;
         log.info("----------------" + String.valueOf(emailDTO));
@@ -133,6 +136,11 @@ public class MailController {
             e.printStackTrace();
         }
 
-        return "redirect:/mail";
+        response.setContentType("text/html; charset=euc-kr");
+        PrintWriter out = response.getWriter();
+        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.flush();
+
+        return "/mail";
     }
 }

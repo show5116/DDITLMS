@@ -627,9 +627,17 @@ public class EmailServiceImpl implements EmailService {
 
             Message message = new MimeMessage(emailSession);
 
+
             message.addRecipient(
                     Message.RecipientType.TO,
                     new InternetAddress(emailDTO.getToAddress()));
+
+            InternetAddress internetAddress = new InternetAddress();
+            internetAddress.setAddress(user);
+            Address address;
+            address = (Address) internetAddress;
+
+            message.setFrom(address);
 
             message.setSubject(emailDTO.getSubject());
 
