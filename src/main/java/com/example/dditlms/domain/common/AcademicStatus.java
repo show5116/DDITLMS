@@ -9,7 +9,9 @@ public enum AcademicStatus {
     ATTENDING("ATTENDING","재학"),
     TAKEABREAK("TAKEABREAK","휴학"),
     COMPLETION("COMPLETION","수료"),
-    GRADUATE("GRADUATE","졸업");
+    GRADUATE("GRADUATE","졸업"),
+    EXPULSION("EXPULSION","제적"),
+    WITHDRAW("WITHDRAW","퇴학");
 
     private String value;
     private String korean;

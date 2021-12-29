@@ -10,14 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -44,22 +44,29 @@ public class MailController {
         model.addAttribute("name", name);
         model.addAttribute("user", user);
 
-
         List<EmailDTO> inboxes = emailService.receiveEmailList("INBOX");
-
+        List<EmailDTO> trash = emailService.receiveEmailList("Trash");
+        List<EmailDTO> sent = emailService.receiveEmailList("Sent");
+        List<EmailDTO> draft = emailService.receiveEmailList("Drafts");
         model.addAttribute("inboxes", inboxes);
         Integer mailCount = inboxes.size();
+        Integer trashMailCount = trash.size();
+        Integer sentMailCount = sent.size();
+        Integer draftMailCount = draft.size();
         model.addAttribute("mailCount", mailCount);
-
+        model.addAttribute("trashMailCount", trashMailCount);
+        model.addAttribute("sentMailCount", sentMailCount);
+        model.addAttribute("draftMailCount", draftMailCount);
 
         return "/pages/mailbox";
     }
 
-    //메일 상세보기("INBOX")
-    @GetMapping("/mailView/{id}")
-    public String mailView(Model model, @PathVariable("id") int id) {
+    //메일 상세보기
+    @GetMapping("/mailView")
+    public String mailView(Model model, @RequestParam("id") int id, @RequestParam("box") String mailBox) {
 
-        List<EmailDTO> inboxes = emailService.receiveEmailList("INBOX");
+
+        List<EmailDTO> inboxes = emailService.receiveEmailList(mailBox);
         EmailDTO mail = emailService.viewMail((id - 1), inboxes);
 
         model.addAttribute("mail", mail);
@@ -74,21 +81,27 @@ public class MailController {
         return "/pages/mailWrite";
     }
 
-    //메일 쓰기(보내기)
+    //메일 쓰기(보내기 + 보낸편지함 저장)
     @PostMapping("/writeMail")
-    public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
+    public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletResponse response) throws IOException {
         log.info("----------------" + String.valueOf(dto));
         EmailDTO emailDTO = dto;
         log.info("----------------" + String.valueOf(emailDTO));
         try {
             emailService.writeMail(emailDTO);
+            emailService.sentMailCopy(emailDTO);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        response.setContentType("text/html; charset=euc-kr");
+        PrintWriter out = response.getWriter();
+        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.flush();
+
         return "redirect:/mail";
     }
-
+    
     @GetMapping("/replyMail/{id}")
     public String replyMailView(Model model,  @PathVariable("id") int id) {
         EmailDTO dto = emailService.replyMailRead(id);
@@ -107,23 +120,44 @@ public class MailController {
 
         return "redirect:/mail";
     }
+    //메일함별 조회
+    @GetMapping("/mailBox")
+    public String mailBox(Model model, @RequestParam Map<String, Object> param) {
 
+        List<EmailDTO> inboxes = emailService.receiveEmailList(param.get("mailName").toString());
+        model.addAttribute("inboxes", inboxes);
 
-    @GetMapping("/testMail")
+        return "/pages/mailbox::#mail";
+    }
+    //메일 임시 저장
+    @PostMapping("/tempMail")
+    public String tempMail(@ModelAttribute("dto") EmailDTO dto, Model model, HttpServletResponse response) throws IOException {
+        log.info("----------------" + String.valueOf(dto));
+        EmailDTO emailDTO = dto;
+        log.info("----------------" + String.valueOf(emailDTO));
+        try {
+            emailService.tempMail(emailDTO);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    public String testMail() {
+        response.setContentType("text/html; charset=euc-kr");
+        PrintWriter out = response.getWriter();
+        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.flush();
 
-        emailService.testCreateBox();
-
-        return "redirect:/mail";
+        return "/mail";
     }
 
-    @GetMapping("/toTrash/{id}")
-    public String toTrash(@PathVariable("id") int id) {
+    
+    //메일 이동
+    @GetMapping("/moveMail")
+    public String moveMail(@RequestParam Map<String, Object> param) {
+        String mailBox = param.get("mailBox").toString();
+        Long id = Long.valueOf(param.get("id").toString());
+        String target = param.get("target").toString();
+        emailService.moveMail(mailBox, id, target);
 
-        emailService.moveMail("Trash", id);
-
-        return "null";
-
+        return "/pages/mailbox";
     }
 }

@@ -50,53 +50,61 @@
 </head>
 
 
-
-
 <div class="email-top compose-border" id="mailbox">
     <div class="compose-header">
         <h4 class="mb-0" style='display:inline-block'>메일 쓰기</h4>
         <button class="btn btn-primary" type="button" style="float:right;"><i class="fa fa-file me-2"></i> 임시저장</button>
     </div>
 </div>
-<div class="email-wrapper">
-    <form class="theme-form" th:action="@{|/replyMail?${_csrf.parameterName}=${_csrf.token}|}" th:object="${dto}" method="post" id="dto" enctype=multipart/form-data>
-        <div class="form-group">
-            <label class="col-form-label pt-0" for="exampleInputEmail1">받는사람</label>
-            <input class="form-control" id="exampleInputEmail1" type="email" th:field="*{toAddress}">
-            <input type="hidden" th:field="*{messageNumber}">
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">제목</label>
-            <input class="form-control" id="exampleInputPassword1" type="text" th:field="*{subject}">
-        </div>
-        <div class="form-group">
-            <label>내용</label>
-            <textarea id="text-box" name="text-box" cols="10" rows="2" th:field="*{content}"></textarea>
-        </div>
-        <div class="form-group">
+    <div class="email-wrapper">
+        <form class="theme-form" th:action="@{|/writeMail?${_csrf.parameterName}=${_csrf.token}|}" th:object="${dto}"
+              method="post" id="dto" enctype=multipart/form-data>
+            <div class="form-group">
+                <label class="col-form-label pt-0" for="exampleInputEmail1">받는사람</label>
+                <input class="form-control" id="exampleInputEmail1" type="email" th:field="*{toAddress}">
+                <input type="hidden" th:field="*{messageNumber}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">제목</label>
+                <input class="form-control" id="exampleInputPassword1" type="text" th:field="*{subject}">
+            </div>
+            <div class="form-group">
+                <label>내용</label>
+                <textarea id="text-box" name="text-box" cols="10" rows="2" th:field="*{content}"></textarea>
+            </div>
+            <div class="form-group">
                 <div class="dropzone digits text-center dz-clickable">
                     <div class="dz-message needsclick"><i class="icon-cloud-up"></i>
                         <input type="file" th:field="*{multipartFile}" multiple>
                         <h6>파일 첨부하기</h6>
                     </div>
                 </div>
-        </div>
-    <div class="action-wrapper" style="text-align: center; margin: 0 auto;">
-        <ul class="actions" style="text-align: center; margin: 0 auto;">
-            <li style='display:inline-block'><a class="btn btn-secondary" th:onclick="btnSubmit()"><i class="fa fa-paper-plane me-2"></i>보내기 </a></li>
-            <li style='display:inline-block'><a class="btn btn-danger" href="javascript:void(0)"> <i
-                    class="fa fa-times me-2" style="text-align: center; margin: 0 auto;"></i>취소 </a></li>
-        </ul>
-    </div>
-    </form>
+            </div>
+            <div class="action-wrapper" style="text-align: center; margin: 0 auto;">
+                <ul class="actions" style="text-align: center; margin: 0 auto;">
+                    <li style='display:inline-block'><a class="btn btn-secondary" th:onclick="btnSubmit()"><i
+                            class="fa fa-paper-plane me-2"></i>보내기 </a></li>
+                    <li style='display:inline-block'><a class="btn btn-danger" href="javascript:void(0)"> <i
+                            class="fa fa-times me-2" style="text-align: center; margin: 0 auto;"></i>취소 </a></li>
+                </ul>
+            </div>
+        </form>
 </div>
 <script th:inline="javascript">
 
 CKEDITOR.replace('text-box');
 
 function btnSubmit() {
+
         document.querySelector("#dto").submit();
+
+
      }
+
+function btnTempSubmit() {
+        document.querySelector("#tempDto").submit();
+     }
+
 
 </script>
 </html>

@@ -514,15 +514,6 @@ public class FileDataController {
                 }
             }
         }
-
     }
-
-
-    @GetMapping("/cloud/academic")
-    public ModelAndView academic(ModelAndView mav){
-        mav.setViewName("pages/academic");
-        return mav;
-    }
-
 
 }

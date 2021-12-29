@@ -3,9 +3,6 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="~{layout/layout}">
-<head>
-
-</head>
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='메일함')"></th:block>
     <div class="container-fluid">
@@ -30,24 +27,27 @@
                                         <ul class="nav main-menu" role="tablist">
                                             <li class="nav-item"><a class="btn-primary btn-block btn-mail w-100"
                                                                     id="btnWriteMail" data-bs-toggle="pill"
-                                                                    href="" role="tab" aria-controls="pills-darkhome" aria-selected="true"><i
+                                                                    href="" role="tab" aria-controls="pills-darkhome"
+                                                                    aria-selected="true"><i
                                                     class="icofont icofont-envelope me-2"></i>메일 쓰기</a></li>
                                             <li class="nav-item"><a class="show" id="pills-darkprofile-tab"
-                                                                    data-bs-toggle="pill" href="#pills-darkprofile"
+                                                                    data-bs-toggle="pill" href="#" onclick="mailBox('INBOX');return false;"
                                                                     role="tab" aria-controls="pills-darkprofile"
-                                                                    aria-selected="false"><span class="title"><i
-                                                    class="icon-import"></i>받은 메일함</span><span class="badge pull-right" th:text="|(${mailCount})|"></span></a>
+                                                                    aria-selected="false" ><span class="title"><i
+                                                    class="icon-import"></i>받은 메일함</span><span class="badge pull-right"
+                                                                                               th:text="|(${mailCount})|"></span></a>
                                             </li>
-                                            <li><a href="#"><span class="title"><i
-                                                    class="icon-folder"></i>모든 메일함</span></a></li>
-                                            <li><a href="#"><span class="title"><i
-                                                    class="icon-new-window"></i>보낸 메일함</span><span
-                                                    class="badge pull-right">(69)</span></a></li>
-                                            <li><a href="#"><span class="title"><i
+                                            <li><a href="#" onclick="mailBox('Sent');return false;">
+                                                <span class="title"><i class="icon-new-window"></i>보낸 메일함</span>
+                                                <span class="badge pull-right"
+                                                      th:text="|(${sentMailCount})|">(69)</span></a>
+                                            </li>
+                                            <li><a href="#" onclick="mailBox('Drafts');return false;"><span class="title"><i
                                                     class="icon-pencil-alt"></i>임시 보관함</span><span
-                                                    class="badge pull-right">(59)</span></a></li>
-                                            <li><a href="#"><span class="title"><i
-                                                    class="icon-trash"></i>지운 메일함</span><span class="badge pull-right">(99)</span></a>
+                                                    class="badge pull-right" th:text="|(${draftMailCount})|">(59)</span></a></li>
+                                            <li><a  href="#" onclick="mailBox('Trash');return false;"><span class="title"><i
+                                                    class="icon-trash"></i>지운 메일함</span><span class="badge pull-right"
+                                                                                              th:text="|(${trashMailCount})|">(99)</span></a>
                                             </li>
                                             <li><a href="#"><span class="title"><i
                                                     class="icon-info-alt"></i>중요 메일함</span></a>
@@ -71,8 +71,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-9 col-md-12 xl-70" >
-                    <div class="email-right-aside" id="mailbox">
+                <div class="col-xl-9 col-md-12 xl-70">
+                    <div class="email-right-aside">
                         <div class="card email-body">
                             <div class="email-profile">
                                 <div>
@@ -107,24 +107,27 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="inbox" th:each="inbox : ${inboxes}">
-                                        <div class="media">
-                                            <div class="media-size-email">
-                                                <label class="d-block mb-0" for="chk-ani">
-                                                    <input class="checkbox_animated" id="chk-ani" type="checkbox"
-                                                           checked="">
-                                                </label><i class="like" data-feather="star"></i><img
-                                                    class="me-3 rounded-circle" src="../assets/images/user/user.png"
-                                                    alt="">
-                                            </div>
-                                            <div class="media-body">
-                                                <h6 th:text="${inbox.fromAddress}">Pork Lorn </h6>
-                                                <p th:text="${inbox.subject}"
-                                                   th:value="@{ {id}(id= ${inbox.messageNumber})}"
-                                                   th:onclick="viewMail(this)" style="cursor:pointer;">Contrary to
-                                                    popular belief, Lorem Ipsum is not simply random text. It
-                                                    has roots in a piece of classical Latin literature from 45 BC.</p>
-                                                <span th:text="${#temporals.format(inbox.sentDate, 'MM-dd HH:mm')}">11:59 PM</span>
+                                    <div id="mail">
+                                        <div class="inbox" th:each="inbox : ${inboxes}">
+                                            <div class="media">
+                                                <div class="media-size-email">
+                                                    <label class="d-block mb-0" for="chk-ani">
+                                                        <input class="checkbox_animated" id="chk-ani" type="checkbox"
+                                                               checked="">
+                                                    </label><i class="like" data-feather="star"></i><img
+                                                        class="me-3 rounded-circle" src="../assets/images/user/user.png"
+                                                        alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <h6 th:text="${inbox.fromAddress}">Pork Lorn </h6>
+                                                    <p th:text="${inbox.subject}"
+                                                       th:value="@{ {id}/{box}(id= ${inbox.messageNumber}, box = ${inbox.mailBox})}"
+                                                       th:onclick="viewMail(this)" style="cursor:pointer;">Contrary to
+                                                        popular belief, Lorem Ipsum is not simply random text. It
+                                                        has roots in a piece of classical Latin literature from 45
+                                                        BC.</p>
+                                                    <span th:text="${#temporals.format(inbox.sentDate, 'MM-dd HH:mm')}">11:59 PM</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -137,50 +140,59 @@
         </div>
     </div>
     <script th:inline="javascript">
-
-        function viewMail(id) {
+    function viewMail(id) {
 
         let ids = id.getAttribute("value");
-
+        let spIds = ids.split('/')
+        let fIds = spIds[0]
+        let sIds = spIds[1]
+        console.log(fIds);
+        console.log(sIds);
         var _width = '800';
         var _height = '800';
 
-        var _left = Math.ceil(( window.screen.width - _width )/2);
-        var _top = Math.ceil(( window.screen.height - _height )/2);
+        var _left = Math.ceil((window.screen.width - _width) / 2);
+        var _top = Math.ceil((window.screen.height - _height) / 2);
 
-        window.open("/mailView/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
+        window.open("/mailView?id=" + fIds + "&box=" + sIds, 'popup-test', 'width=' + _width + ', height=' + _height + ', left=' + _left +
+            ', top=' + _top)
 
         return false;
     }
 
-<!--        function writeMail() {-->
+    const btnWriteMail = document.querySelector("#btnWriteMail");
 
-<!--         $.ajax({-->
-<!--                type: "GET",-->
-<!--                url: "/writeMail",-->
-<!--                }).done(function (fragment) {-->
-<!--                $("#mailbox").empty();-->
-<!--                let innerContents = document.querySelector("#mailbox");-->
-<!--                innerContents.innerHTML = fragment-->
-
-<!--                CKEDITOR.replace('text-box');-->
-
-<!--                });-->
-
-<!--    }-->
-      const btnWriteMail = document.querySelector("#btnWriteMail");
-
-      btnWriteMail.addEventListener("click", function () {
+    btnWriteMail.addEventListener("click", function () {
         var _width = '800';
         var _height = '800';
 
-        var _left = Math.ceil(( window.screen.width - _width )/2);
-        var _top = Math.ceil(( window.screen.height - _height )/2);
+        var _left = Math.ceil((window.screen.width - _width) / 2);
+        var _top = Math.ceil((window.screen.height - _height) / 2);
 
-        window.open("/writeMail", 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
+        window.open("/writeMail", 'popup-test', 'width=' + _width + ', height=' + _height + ', left=' + _left +
+            ', top=' + _top)
 
         return false;
 
-      })
+    })
 
- </script>
+
+    function mailBox(mailName) {
+
+        let boxName = mailName
+
+      $.ajax({
+
+                type: "GET",
+                url: "/mailBox",
+                data: {
+                    "mailName": boxName
+                },
+                success: function (fragment) {
+                    $("#mail").empty();
+                    $("#mail").replaceWith(fragment);
+                },
+            });
+    }
+
+    </script>
