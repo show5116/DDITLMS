@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +57,10 @@ public class SignupSearchController {
         }
 
         log.info("-----SignUpSearchController[getYear]- yearList ={}", yearList);
-
-        List<SignupDTO> openLectures = repository.totalLectureList();
+        Map<String,Object> search = new HashMap<>();
+        String param = "totalList";
+        search.put("name","totalList");
+        List<SignupDTO> openLectures = repository.totalLectureList(search);
 
         model.addAttribute("yearList", yearList);
         model.addAttribute("openLectures", openLectures);
@@ -99,13 +102,114 @@ public class SignupSearchController {
 
     @PostMapping("/signUpSearch/searchSubject")
     public String searchSubject(Model model, @RequestParam Map<String, Object> paramMap){
+        String searchSubject = (String) paramMap.get("subject");
+
+        Map<String,Object> search = new HashMap<>();
+        search.put("name","searchSubject");
+        search.put("subject", searchSubject);
+        List<SignupDTO> openLectures = repository.totalLectureList(search);
+
+        model.addAttribute("openLectures",openLectures);
 
 
-
-        return "pages/signUpSearch";
+        log.info("-----signupSearchController-searchSubject :: openLectures = {}", openLectures);
+        return "pages/signUpSearch::#list";
     }
 
+    @PostMapping("/signUpSearch/searchYear")
+    public String searchYear(Model model, @RequestParam Map<String, Object> paramMap){
+        String searchYear = (String) paramMap.get("selectYear");
+        String getSearchSeme = (String) paramMap.get("selectSeme");
+        String[] division = getSearchSeme.split("학기");
+        String searchSeme = division[0];
+        log.info("-----signupSearchController-searchYear :: searchYear = {}", searchYear);
+        log.info("-----signupSearchController-searchYear :: searchSeme = {}", searchSeme);
 
+        Map<String, Object> search = new HashMap<>();
+        search.put("name", "searchYear");
+        search.put("searchYear",searchYear);
+        search.put("searchSeme",searchSeme);
+        List<SignupDTO> result = repository.totalLectureList(search);
+        log.info("-----signupSearchController-searchYear :: result = {}", result);
+
+        model.addAttribute("openLectures", result);
+
+        return "pages/signUpSearch::#list";
+    }
+
+    @PostMapping("/signUpSearch/searchMajor")
+    public String searchMajor(Model model, @RequestParam Map<String, Object> paramMap){
+        String college = (String) paramMap.get("college");
+        String major =(String)paramMap.get("major");
+        log.info("-----signupSearchController-searchCollege :: college = {}", college);
+        log.info("-----signupSearchController-searchCollege :: major = {}", major);
+        Map<String,Object> search = new HashMap<>();
+        search.put("name", "searchMajor");
+        search.put("college",college);
+        if (major.equals("선택")){
+            major = "";
+            search.put("major",major);
+            log.info("-----signupSearchController-searchCollege :: if문안");
+            log.info("-----signupSearchController-searchCollege :: major = {}", major);
+        } else {
+            search.put("major",major);
+            log.info("-----signupSearchController-searchCollege :: else문안");
+            log.info("-----signupSearchController-searchCollege :: major = {}", major);
+        }
+
+        List<SignupDTO> result = repository.totalLectureList(search);
+
+        model.addAttribute("openLectures", result);
+
+        return "pages/signUpSearch::#list";
+    }
+
+    @PostMapping("/signUpSearch/searchCollege")
+    public String searchCollege(Model model, @RequestParam Map<String, Object> paramMap){
+        String college = (String) paramMap.get("college");
+        log.info("-----signupSearchController-searchCollege :: college = {}", college);
+        Map<String,Object> search = new HashMap<>();
+        search.put("name", "searchCollege");
+        search.put("college",college);
+
+        List<SignupDTO> result = repository.totalLectureList(search);
+
+        model.addAttribute("openLectures", result);
+
+        return "pages/signUpSearch::#list";
+    }
+
+    @PostMapping("/signUpSearch/allAutoSearch")
+    public String allAutoSearch(Model model, @RequestParam Map<String, Object> paramMap){
+        log.info("-----signupSearchController-allAutoSearch");
+        String searchYear = (String) paramMap.get("searchYear");
+        log.info("-----signupSearchController-allAutoSearch :: searchYear = {}", searchYear);
+        String getSearchSeme = (String) paramMap.get("searchSeme");
+        log.info("-----signupSearchController-allAutoSearch :: getSearchSeme = {}", getSearchSeme);
+        String[] division = getSearchSeme.split("학기");
+        String searchSeme = division[0];
+        String college = (String) paramMap.get("searchCollege");
+        log.info("-----signupSearchController-allAutoSearch :: college = {}", college);
+        String major =(String)paramMap.get("searchMajor");
+        log.info("-----signupSearchController-allAutoSearch :: major = {}", major);
+        String searchdivision = (String)paramMap.get("searchdivision");
+        log.info("-----signupSearchController-allAutoSearch :: searchdivision = {}", searchdivision);
+
+
+        Map<String,Object> search = new HashMap<>();
+        search.put("name", "allAutoSearch");
+        search.put("searchYear",searchYear);
+        search.put("searchSeme",searchSeme);
+        search.put("college",college);
+        search.put("division",searchdivision);
+        search.put("major",major);
+
+        List<SignupDTO> result = repository.totalLectureList(search);
+
+        model.addAttribute("openLectures", result);
+
+        return "pages/signUpSearch::#list";
+    }
 
 
 

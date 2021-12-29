@@ -13,7 +13,7 @@
                         <div class="col-sm row ">
                             <label class="col-sm-3 align-self-center bookmark">학년도</label>
                             <select class="col form-select" id="course-year">
-                                <option th:each="yearL: ${yearList}" th:value="${yearL}" th:text="${yearL}"</option>
+                                <option th:each="yearL: ${yearList}" th:value="${yearL}" th:text="${yearL}"></option>
                             </select>
                         </div>
                         <div class="col-sm row justify-content-around">
@@ -26,7 +26,7 @@
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">대학구분</label>
                             <select class="col form-select" id="college-division">
-                                <option>(전체)</option>
+                                <option value="total">(전체)</option>
                                 <option value="HUMANITIES">인문대학</option>
                                 <option value="SOCIAL">사회과학대학</option>
                                 <option value="SCIENCE">자연과학대학</option>
@@ -36,10 +36,10 @@
                                 <option value="EDUCATION">사범대학</option>
                             </select>
                         </div>
-                        <div class="col-sm row justify-content-around">
+                        <div class="col-sm row justify-content-around" id="majorList">
                             <label class="col-sm-3 align-self-center bookmark">학부(과)</label>
                             <select class="col form-select" id="department">
-                                <option>선택</option>
+                                <option value="total">(전체)</option>
                             </select>
                         </div>
                     </div>
@@ -51,16 +51,17 @@
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">이수구분</label>
                             <select class="col form-select" id="completion-division">
-                                <option>교양필수</option>
-                                <option>전공필수</option>
-                                <option>전공선택</option>
-                                <option>학부필수</option>
+                                <option value="total">(전체)</option>
+                                <option value="CULTURE_REQUIRED">교양필수</option>
+                                <option value="CULTURE_SELECT">교양선택</option>
+                                <option value="MAJOR_REQUIRED">전공필수</option>
+                                <option value="MAJOR_SELECT">전공선택</option>
                             </select>
                         </div>
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">강의계획</label>
                             <div class="col align-self-center">
-                                <input type="radio" name="syllabus" id="total-lecture" class="col-sm-1">전체
+                                <input type="radio" name="syllabus" id="total-lecture" class="col-sm-1" >전체
                                 <input type="radio" name="syllabus" id="input-lecture" class="col-sm-1">입력
                                 <input type="radio" name="syllabus" id="undefine-lecture" class="col-sm-1">미정
                             </div>
@@ -94,7 +95,7 @@
                                         <th>과목코드</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="list">
                                     <tr th:each="lecture : ${openLectures}" style="height: 1px;">
                                         <td th:text="${lecture.getYearSeme()}"></td>
                                         <td th:text="${lecture.getMajorKr()}"></td>
