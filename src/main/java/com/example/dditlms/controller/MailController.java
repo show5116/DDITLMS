@@ -13,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -79,21 +81,27 @@ public class MailController {
         return "/pages/mailWrite";
     }
 
-    //메일 쓰기(보내기)
+    //메일 쓰기(보내기 + 보낸편지함 저장)
     @PostMapping("/writeMail")
-    public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
+    public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletResponse response) throws IOException {
         log.info("----------------" + String.valueOf(dto));
         EmailDTO emailDTO = dto;
         log.info("----------------" + String.valueOf(emailDTO));
         try {
             emailService.writeMail(emailDTO);
-            emailService.sentMailCopy();
+            emailService.sentMailCopy(emailDTO);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        response.setContentType("text/html; charset=euc-kr");
+        PrintWriter out = response.getWriter();
+        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.flush();
+
         return "redirect:/mail";
     }
-
+    
     @GetMapping("/replyMail/{id}")
     public String replyMailView(Model model,  @PathVariable("id") int id) {
         EmailDTO dto = emailService.replyMailRead(id);
@@ -112,7 +120,7 @@ public class MailController {
 
         return "redirect:/mail";
     }
-
+    //메일함별 조회
     @GetMapping("/mailBox")
     public String mailBox(Model model, @RequestParam Map<String, Object> param) {
 
@@ -121,9 +129,9 @@ public class MailController {
 
         return "/pages/mailbox::#mail";
     }
-
+    //메일 임시 저장
     @PostMapping("/tempMail")
-    public String tempMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
+    public String tempMail(@ModelAttribute("dto") EmailDTO dto, Model model, HttpServletResponse response) throws IOException {
         log.info("----------------" + String.valueOf(dto));
         EmailDTO emailDTO = dto;
         log.info("----------------" + String.valueOf(emailDTO));
@@ -133,6 +141,23 @@ public class MailController {
             e.printStackTrace();
         }
 
-        return "redirect:/mail";
+        response.setContentType("text/html; charset=euc-kr");
+        PrintWriter out = response.getWriter();
+        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.flush();
+
+        return "/mail";
+    }
+
+    
+    //메일 이동
+    @GetMapping("/moveMail")
+    public String moveMail(@RequestParam Map<String, Object> param) {
+        String mailBox = param.get("mailBox").toString();
+        Long id = Long.valueOf(param.get("id").toString());
+        String target = param.get("target").toString();
+        emailService.moveMail(mailBox, id, target);
+
+        return "/pages/mailbox";
     }
 }

@@ -48,7 +48,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepositoryCustom{
                 .join(employee.member, member)
                 .where(employee.deptCode.eq(department)
                 , department.departmentCode.eq(depCode), employee.userNumber.eq(member.userNumber))
-                .groupBy(employee)
+                .groupBy(employee.employeeRole)
+                .groupBy(member.name)
+                .groupBy(department.deptNm)
+                .groupBy(employee.userNumber)
                 .fetch();
 
     }
