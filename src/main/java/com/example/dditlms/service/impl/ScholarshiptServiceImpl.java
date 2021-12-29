@@ -2,10 +2,7 @@ package com.example.dditlms.service.impl;
 
 import com.example.dditlms.domain.common.ScholarshipMethod;
 import com.example.dditlms.domain.common.ScholarshipStatus;
-import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.Scholarship;
-import com.example.dditlms.domain.entity.ScholarshipKind;
-import com.example.dditlms.domain.entity.SemesterByYear;
+import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.ScholarshipKindRepository;
 import com.example.dditlms.domain.repository.ScholarshipRepository;
 import com.example.dditlms.domain.repository.SemesterByYearRepository;
@@ -33,17 +30,17 @@ public class ScholarshiptServiceImpl implements ScholarshipService {
         Optional<ScholarshipKind> scholarshipKindWrapper = scholarshipKindRepository.findById(kindId);
         ScholarshipKind scholarshipKind = scholarshipKindWrapper.orElse(null);
         SemesterByYear semester = semesterByYearService.getNowSemester();
-        Member member = MemberUtil.getLoginMember();
+        Student student = MemberUtil.getLoginMember().getStudent();
         ScholarshipMethod method = null;
 
         long cost = 0;
         List<Scholarship> scholarshipList =
-                scholarshipRepository.findAllByMemberAndSemesterAndStatusNot(member,semester,ScholarshipStatus.COMPANION);
+                scholarshipRepository.findAllByStudentAndSemesterAndStatusNot(student,semester,ScholarshipStatus.COMPANION);
         for(Scholarship scholarship : scholarshipList){
             cost += scholarship.getPrice();
         }
-        System.out.println(member.getStudent().getMajor().getPayment());
-        if(member.getStudent().getMajor().getPayment() < cost){
+        System.out.println(student.getMajor().getPayment());
+        if(student.getMajor().getPayment() < cost){
             method = ScholarshipMethod.PAYMENTS;
         }else{
             method = ScholarshipMethod.REDUCTION;
@@ -54,7 +51,7 @@ public class ScholarshiptServiceImpl implements ScholarshipService {
                 .method(method)
                 .apliDate(new Date())
                 .semester(semester)
-                .member(member)
+                .student(student)
                 .attachment(fileId)
                 .status(ScholarshipStatus.STANDBY).build();
         scholarshipRepository.save(scholarship);

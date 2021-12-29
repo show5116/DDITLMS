@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='등록금 고지서')"></th:block>
+    <div class="col-lg-12">
+        <div style="height:500px;" class="card">
+            <div class="p-20">
+                <div class="tab-content m-t-15">
+                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                        <div class="align-self-center">
+                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">등록정보</h4>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">등록 학기</label>
+                                    <input class="form-control disabled" type="text" th:value="${semester.getYear()}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">등록금</label>
+                                    <input class="form-control disabled" type="text" th:value="${#numbers.formatInteger(payment,3,'COMMA')}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">(장학)감면액</label>
+                                    <input class="form-control disabled" type="text" th:value="${#numbers.formatInteger(sale,3,'COMMA')}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">실 납부액</label>
+                                    <input class="form-control disabled" type="text" th:value="${#numbers.formatInteger(realPay,3,'COMMA')}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">가상계좌</label>
+                                    <input class="form-control disabled" type="text" value="신한">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">계좌번호</label>
+                                    <input class="form-control disabled" type="text" value="110-420-178727">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                        <div class="align-self-center">
+                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">장학정보</h4>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>장학금종류</th>
+                                <th>장학금</th>
+                                <th>처리일자</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="scholarship : ${scholarshipList}">
+                                <td th:text="${scholarship.getKind().getKorean()}"></td>
+                                <td th:text="${#numbers.formatInteger(scholarship.getPrice(),3,'COMMA')}"></td>
+                                <td th:text="${#dates.format(scholarship.getCompleteDate(),'yy-MM-dd')}"></td>
+                            </tr>
+                            <tr>
+                                <td>합계</td>
+                                <td colspan="2" th:text="${#numbers.formatInteger(sale,3,'COMMA')}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

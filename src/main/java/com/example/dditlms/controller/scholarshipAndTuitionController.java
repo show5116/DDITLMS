@@ -1,10 +1,12 @@
 package com.example.dditlms.controller;
 
+import com.example.dditlms.domain.common.ScholarshipMethod;
 import com.example.dditlms.domain.common.ScholarshipStatus;
-import com.example.dditlms.domain.entity.Scholarship;
-import com.example.dditlms.domain.entity.ScholarshipKind;
+import com.example.dditlms.domain.entity.*;
+import com.example.dditlms.domain.repository.RegistrationRepository;
 import com.example.dditlms.domain.repository.ScholarshipKindRepository;
 import com.example.dditlms.domain.repository.ScholarshipRepository;
+import com.example.dditlms.domain.repository.SemesterByYearRepository;
 import com.example.dditlms.service.ScholarshipService;
 import com.example.dditlms.util.FileUtil;
 import com.example.dditlms.util.MemberUtil;
@@ -33,21 +35,47 @@ public class scholarshipAndTuitionController {
 
     private final ScholarshipService scholarshipService;
 
+    private final SemesterByYearRepository semesterByYearRepository;
+
+    private final RegistrationRepository registrationRepository;
+
     private final FileUtil fileUtil;
 
     @GetMapping("/student/tuitionShow")
-    public String tuitionShow(){
-        return "";
+    public ModelAndView tuitionShow(ModelAndView mav){
+        Student student = MemberUtil.getLoginMember().getStudent();
+        List<Registration> registrationList = registrationRepository.findAllByStudentOrderByRegistDateDesc(student);
+        mav.addObject("registrationList",registrationList);
+        mav.setViewName("/pages/tuitionShow");
+        return mav;
     }
 
     @GetMapping("/student/tuitionApplication")
-    public String tuitionApplication(){
-        return "";
+    public ModelAndView tuitionApplication(ModelAndView mav){
+        Member member = MemberUtil.getLoginMember();
+        Optional<SemesterByYear> semesterWrapper = semesterByYearRepository.selectNextSeme();
+        SemesterByYear semester = semesterWrapper.orElse(null);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndSemesterAndStatusAndMethod(member.getStudent(),semester,ScholarshipStatus.APPROVAL, ScholarshipMethod.REDUCTION);
+        long sale = 0;
+        System.out.println(scholarshipList);
+        for(Scholarship scholarship : scholarshipList){
+            System.out.println(scholarship.getPrice());
+            sale += scholarship.getPrice();
+        }
+        long payment = member.getStudent().getMajor().getPayment();
+        long realPay = payment - sale;
+        mav.addObject("payment",payment);
+        mav.addObject("sale",sale);
+        mav.addObject("realPay",realPay);
+        mav.addObject("semester",semester);
+        mav.addObject("scholarshipList",scholarshipList);
+        mav.setViewName("/pages/tuitionApplication");
+        return mav;
     }
 
     @GetMapping("/student/scholarshipShow")
     public ModelAndView scholarshipShow(ModelAndView mav){
-        List<Scholarship> scholarshipList = scholarshipRepository.findAllByMemberAndStatusNot(MemberUtil.getLoginMember(), ScholarshipStatus.STANDBY);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatusNot(MemberUtil.getLoginMember().getStudent(), ScholarshipStatus.STANDBY);
         long sum = 0;
         for(Scholarship scholarship : scholarshipList){
             if(scholarship.getStatus().equals(ScholarshipStatus.APPROVAL)){
@@ -62,7 +90,7 @@ public class scholarshipAndTuitionController {
 
     @GetMapping("/student/scholarshipApplication")
     public ModelAndView scholarshipApplication(ModelAndView mav){
-        List<Scholarship> scholarshipList = scholarshipRepository.findAllByMemberAndStatus(MemberUtil.getLoginMember(), ScholarshipStatus.STANDBY);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatus(MemberUtil.getLoginMember().getStudent(), ScholarshipStatus.STANDBY);
         List<ScholarshipKind> scholarshipKindList = scholarshipKindRepository.findAll();
         mav.addObject("scholarshipList",scholarshipList);
         mav.addObject("scholarshipKindList",scholarshipKindList);
@@ -90,7 +118,7 @@ public class scholarshipAndTuitionController {
         JSONObject jsonObject = new JSONObject();
         long id = fileUtil.uploadFiles(request.getFileMap());
         scholarshipService.addScholarship(id,kindId);
-        List<Scholarship> scholarshipList = scholarshipRepository.findAllByMemberAndStatus(MemberUtil.getLoginMember(), ScholarshipStatus.STANDBY);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatus(MemberUtil.getLoginMember().getStudent(), ScholarshipStatus.STANDBY);
         mav.addObject("scholarshipList",scholarshipList);
         mav.setViewName("/pages/scholarshipApplication :: #scholarshipList");
         return mav;

@@ -50,8 +50,8 @@ public class Scholarship {
     private SemesterByYear semester;
 
     @ManyToOne
-    @JoinColumn
-    private Member member;
+    @JoinColumn(name="MBER_NO")
+    private Student student;
 
     @Column(name="ATCHMNFL_ID")
     private Long attachment;
