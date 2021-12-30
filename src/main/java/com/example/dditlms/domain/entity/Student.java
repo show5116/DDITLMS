@@ -35,6 +35,9 @@ public class Student {
     @Column(name="GRADE")
     private Grade grade;
 
+    @Column(name="STDNT_SEMSTR")
+    private Integer semester;
+
     @Enumerated(EnumType.STRING)
     @Column(name="STDNT_SE")
     private AcademicStatus academicStatus;
