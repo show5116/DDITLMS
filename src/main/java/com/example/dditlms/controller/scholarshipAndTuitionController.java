@@ -1,7 +1,7 @@
 package com.example.dditlms.controller;
 
+import com.example.dditlms.domain.common.ResultStatus;
 import com.example.dditlms.domain.common.ScholarshipMethod;
-import com.example.dditlms.domain.common.ScholarshipStatus;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.RegistrationRepository;
 import com.example.dditlms.domain.repository.ScholarshipKindRepository;
@@ -23,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -55,7 +54,7 @@ public class scholarshipAndTuitionController {
         Member member = MemberUtil.getLoginMember();
         Optional<SemesterByYear> semesterWrapper = semesterByYearRepository.selectNextSeme();
         SemesterByYear semester = semesterWrapper.orElse(null);
-        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndSemesterAndStatusAndMethod(member.getStudent(),semester,ScholarshipStatus.APPROVAL, ScholarshipMethod.REDUCTION);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndSemesterAndStatusAndMethod(member.getStudent(),semester, ResultStatus.APPROVAL, ScholarshipMethod.REDUCTION);
         long sale = 0;
         for(Scholarship scholarship : scholarshipList){
             sale += scholarship.getPrice();
@@ -73,10 +72,10 @@ public class scholarshipAndTuitionController {
 
     @GetMapping("/student/scholarshipShow")
     public ModelAndView scholarshipShow(ModelAndView mav){
-        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatusNot(MemberUtil.getLoginMember().getStudent(), ScholarshipStatus.STANDBY);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatusNot(MemberUtil.getLoginMember().getStudent(), ResultStatus.STANDBY);
         long sum = 0;
         for(Scholarship scholarship : scholarshipList){
-            if(scholarship.getStatus().equals(ScholarshipStatus.APPROVAL)){
+            if(scholarship.getStatus().equals(ResultStatus.APPROVAL)){
                 sum += scholarship.getPrice();
             }
         }
@@ -88,7 +87,7 @@ public class scholarshipAndTuitionController {
 
     @GetMapping("/student/scholarshipApplication")
     public ModelAndView scholarshipApplication(ModelAndView mav){
-        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatus(MemberUtil.getLoginMember().getStudent(), ScholarshipStatus.STANDBY);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatus(MemberUtil.getLoginMember().getStudent(), ResultStatus.STANDBY);
         List<ScholarshipKind> scholarshipKindList = scholarshipKindRepository.findAll();
         mav.addObject("scholarshipList",scholarshipList);
         mav.addObject("scholarshipKindList",scholarshipKindList);
@@ -116,7 +115,7 @@ public class scholarshipAndTuitionController {
         JSONObject jsonObject = new JSONObject();
         long id = fileUtil.uploadFiles(request.getFileMap());
         scholarshipService.addScholarship(id,kindId);
-        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatus(MemberUtil.getLoginMember().getStudent(), ScholarshipStatus.STANDBY);
+        List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndStatus(MemberUtil.getLoginMember().getStudent(), ResultStatus.STANDBY);
         mav.addObject("scholarshipList",scholarshipList);
         mav.setViewName("/pages/scholarshipApplication :: #scholarshipList");
         return mav;

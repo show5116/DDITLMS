@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public enum ScholarshipStatus {
+public enum ResultStatus {
     STANDBY("대기"),
     COMPANION("반려"),
     APPROVAL("승인");

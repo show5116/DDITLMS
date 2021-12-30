@@ -2,7 +2,7 @@ package com.example.dditlms.service.impl;
 
 import com.example.dditlms.domain.common.AcademicStatus;
 import com.example.dditlms.domain.common.ScholarshipMethod;
-import com.example.dditlms.domain.common.ScholarshipStatus;
+import com.example.dditlms.domain.common.ResultStatus;
 import com.example.dditlms.domain.dto.StudentDTO;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.HistoryRepository;
@@ -39,7 +39,7 @@ public class StudentServiceImpl implements StudentService {
         List<StudentDTO> studentDTOList = new ArrayList<>();
         for(Student student : studentList){
             StudentDTO studentDTO = student.EntitytoDTO();
-            List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndSemesterAndStatusAndMethod(student,semester, ScholarshipStatus.APPROVAL, ScholarshipMethod.REDUCTION);
+            List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndSemesterAndStatusAndMethod(student,semester, ResultStatus.APPROVAL, ScholarshipMethod.REDUCTION);
             long realPayment = 0;
             for(Scholarship scholarship : scholarshipList){
                 realPayment += scholarship.getPrice();

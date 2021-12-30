@@ -1,7 +1,7 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.common.ResultStatus;
 import com.example.dditlms.domain.common.ScholarshipMethod;
-import com.example.dditlms.domain.common.ScholarshipStatus;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -58,6 +58,6 @@ public class Scholarship {
 
     @Column(name="EFLN_RM")
     @Enumerated(EnumType.STRING)
-    private ScholarshipStatus status;
+    private ResultStatus status;
 
 }
