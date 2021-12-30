@@ -25,6 +25,16 @@ public class StudentDepController {
         return mav;
     }
 
+    @PostMapping("/studentDep/register/search")
+    public ModelAndView searchStudent(ModelAndView mav,
+                                      @RequestParam String category,
+                                      @RequestParam String search){
+        List<StudentDTO> studentList = studentService.searchNotRegistedStudents(category,search);
+        mav.addObject("studentList",studentList);
+        mav.setViewName("/pages/registerAdmin :: #not-regist-students");
+        return mav;
+    }
+
     @PostMapping("/studentDep/register/completePay")
     public ModelAndView completePay(ModelAndView mav,
                                     @RequestParam Long id){

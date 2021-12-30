@@ -44,6 +44,9 @@ public class Registration {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
+    @Column(name="STDNT_SEMSTR")
+    private Integer semester;
+
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="MBER_NO")
     private Student student;
