@@ -49,11 +49,10 @@
     <link rel="stylesheet" th:href="@{/static/css/dropzone.css}" type="text/css"/>
 </head>
 
-
 <div class="email-top compose-border" id="mailbox">
     <div class="compose-header">
         <h4 class="mb-0" style='display:inline-block'>메일 쓰기</h4>
-        <button class="btn btn-primary" type="button" style="float:right;"><i class="fa fa-file me-2"></i> 임시저장</button>
+        <button class="btn btn-primary" type="button" style="float:right;" th:onclick="btnTempSubmit()"><i class="fa fa-file me-2"></i> 임시저장</button>
     </div>
 </div>
     <div class="email-wrapper">
@@ -93,16 +92,31 @@
 <script th:inline="javascript">
 
 CKEDITOR.replace('text-box');
-
+ /*<![CDATA[*/
+          let url = tempMail? /*[[ ${_csrf.parameterName} = ${_csrf.token} ]]*/
+          /*]]*/
 function btnSubmit() {
 
         document.querySelector("#dto").submit();
-
-
      }
 
 function btnTempSubmit() {
-        document.querySelector("#tempDto").submit();
+          let queryString = $("#dto").serialize();
+          console.log(queryString);
+          console.log(url);
+          $.ajax({
+
+                type: "POST",
+                url: url,
+                data: {
+                      queryString
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+            });
+
+<!--        document.querySelector("#tempDto").submit();-->
      }
 
 

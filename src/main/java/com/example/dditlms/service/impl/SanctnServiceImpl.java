@@ -26,7 +26,7 @@ public class SanctnServiceImpl implements SanctnService {
 
     @Transactional
     @Override
-    public void saveSanctn(String sanctnSj, Docform docform, Long drafter, String sanctnCn, List<Long> userNumber) {
+    public void saveSanctn(String sanctnSj, Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long attFile) {
 
         //트랜잭션 처리를 위해서, 한 서비스에 두 프로세스를 함께 실행함.
 
@@ -37,7 +37,6 @@ public class SanctnServiceImpl implements SanctnService {
 
         sanctn.setSanctnSj(sanctnSj);
         sanctn.setSanctnCn(sanctnCn);
-        sanctn.setDocform(docform);
         sanctn.setDrafter(drafter);
         sanctn.setSanctnWritngde(now);
         sanctn.setSanctnUpdde(endDate);

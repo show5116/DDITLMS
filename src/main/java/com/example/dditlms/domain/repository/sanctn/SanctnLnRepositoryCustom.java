@@ -1,6 +1,8 @@
 package com.example.dditlms.domain.repository.sanctn;
 
 import com.example.dditlms.domain.dto.SanctnDTO;
+import com.example.dditlms.domain.dto.SanctnLnDTO;
+import com.example.dditlms.domain.entity.sanction.Sanctn;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
 import com.querydsl.core.QueryResults;
@@ -16,6 +18,6 @@ public interface SanctnLnRepositoryCustom {
     SanctnLn findSanctnId(Long userNumber, Long id);
     SanctnLn findNextSanctnId(Long userNumber, Long id);
     List<SanctnDTO> findRecentOpinion(Long userNumber);
-    Page<SanctnLn> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress);
+    Page<Sanctn> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress);
     Page<SanctnLn> inquireAll(Long userNumber, Pageable pageable);
 }

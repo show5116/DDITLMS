@@ -83,64 +83,66 @@ public class EmailServiceImpl implements EmailService {
 
             for (int i = 0; i < messages.size(); i++) {
                 EmailDTO emailDTO = new EmailDTO();
-
-                String convertAddress = base64Parser.getFileName(messages.get(i).getFrom()[0].toString());
-                InternetAddress internetAddress = new InternetAddress();
-                internetAddress.setAddress(convertAddress);
-                emailDTO.setFromAddress(internetAddress);
-
-                emailDTO.setContent(messages.get(i).getContent());
-                emailDTO.setSubject(messages.get(i).getSubject());
-                Address[] toList = messages.get(i).getRecipients(MimeMessage.RecipientType.TO);
-                emailDTO.setToList(toList);
-                Address[] ccList = messages.get(i).getRecipients(MimeMessage.RecipientType.CC);
-                emailDTO.setCcList(ccList);
-                //Date 타입을 LocalDate타입으로 변환(타임리프에서 편하게 사용하기 위함)
-                LocalDateTime localDateTime = new Timestamp(messages.get(i).getSentDate().getTime()).toLocalDateTime();
-                emailDTO.setSentDate(localDateTime);
-                emailDTO.setMessageNumber(messages.get(i).getMessageNumber());
-                emailDTO.setMailUID(uf.getUID(messages.get(i)));
+                Flags flags = messages.get(i).getFlags();
 
 
-                String contentType = messages.get(i).getContentType();
-                String messageContent = "";
+                    String convertAddress = base64Parser.getFileName(messages.get(i).getFrom()[0].toString());
+                    InternetAddress internetAddress = new InternetAddress();
+                    internetAddress.setAddress(convertAddress);
+                    emailDTO.setFromAddress(internetAddress);
 
-                // store attachment file name, separated by comma
-                String attachFiles = "";
-                String saveDirectory = "C:/temp/mail/";
-                if (contentType.contains("multipart")) {
-                    // content may contain attachments
-                    Multipart multiPart = (Multipart) messages.get(i).getContent();
-                    int numberOfParts = multiPart.getCount();
-                    for (int partCount = 0; partCount < numberOfParts; partCount++) {
-                        MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
+                    emailDTO.setContent(messages.get(i).getContent());
+                    emailDTO.setSubject(messages.get(i).getSubject());
+                    Address[] toList = messages.get(i).getRecipients(MimeMessage.RecipientType.TO);
+                    emailDTO.setToList(toList);
+                    Address[] ccList = messages.get(i).getRecipients(MimeMessage.RecipientType.CC);
+                    emailDTO.setCcList(ccList);
+                    //Date 타입을 LocalDate타입으로 변환(타임리프에서 편하게 사용하기 위함)
+                    LocalDateTime localDateTime = new Timestamp(messages.get(i).getSentDate().getTime()).toLocalDateTime();
+                    emailDTO.setSentDate(localDateTime);
+                    emailDTO.setMessageNumber(messages.get(i).getMessageNumber());
+                    emailDTO.setMailUID(uf.getUID(messages.get(i)));
 
-                        if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-                            // this part is attachment
-                            String fileName = part.getFileName();
-                            attachFiles += fileName + ", ";
 
-                            part.saveFile(saveDirectory + File.separator + base64Parser.getFileName(fileName));
-                        } else {
-                            // this part may be the message content
-                            messageContent = part.getContent().toString();
+                    String contentType = messages.get(i).getContentType();
+                    String messageContent = "";
+
+                    // store attachment file name, separated by comma
+                    String attachFiles = "";
+                    String saveDirectory = "C:/temp/mail/";
+                    if (contentType.contains("multipart")) {
+                        // content may contain attachments
+                        Multipart multiPart = (Multipart) messages.get(i).getContent();
+                        int numberOfParts = multiPart.getCount();
+                        for (int partCount = 0; partCount < numberOfParts; partCount++) {
+                            MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
+
+                            if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+                                // this part is attachment
+                                String fileName = part.getFileName();
+                                attachFiles += fileName + ", ";
+
+                                part.saveFile(saveDirectory + File.separator + base64Parser.getFileName(fileName));
+                            } else {
+                                // this part may be the message content
+                                messageContent = part.getContent().toString();
+                            }
+                        }
+                        if (attachFiles.length() > 1) {
+                            attachFiles = attachFiles.substring(0, attachFiles.length() - 2);
+                        }
+
+                    } else if (contentType.contains("text/plain")
+                            || contentType.contains("text/html")) {
+                        Object content = messages.get(i).getContent();
+                        if (content != null) {
+                            messageContent = content.toString();
                         }
                     }
-                    if (attachFiles.length() > 1) {
-                        attachFiles = attachFiles.substring(0, attachFiles.length() - 2);
-                    }
-
-                } else if (contentType.contains("text/plain")
-                        || contentType.contains("text/html")) {
-                    Object content = messages.get(i).getContent();
-                    if (content != null) {
-                        messageContent = content.toString();
-                    }
+                    emailDTO.setContent(messageContent);
+                    emailDTO.setMailBox(folderName);
+                    emailDTOList.add(emailDTO);
                 }
-                emailDTO.setContent(messageContent);
-                emailDTO.setMailBox(folderName);
-                emailDTOList.add(emailDTO);
-            }
 
             //5) 사용한 자원을 반환.
             emailFolder.close(false);
@@ -317,17 +319,17 @@ public class EmailServiceImpl implements EmailService {
                     .buildMailer();
 
             inhouseMailer.sendMail(email);
+            emailFolder.close();
+            emailStore.close();
 
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-
-
     }
 
-
+    // 보낸 편지 저장 메소드
     @Override
     public void sentMailCopy(EmailDTO emailDTO) {
 
@@ -374,23 +376,23 @@ public class EmailServiceImpl implements EmailService {
 
             messageBodyPart.setText(emailDTO.getContent().toString());
 
-            // Create a multipar message
+            // 멀티파트 메세지 생성
             Multipart multipart = new MimeMultipart();
 
-            // Set text message part
+            // 텍스트 메시지 파트
             multipart.addBodyPart(messageBodyPart);
 
-//            // Part two is attachment
+//            // 첨부파일(나중에 로직 추가 할 것 -현재 에러..)
 //            messageBodyPart = new MimeBodyPart();
 //
-//            //Add the attachment file path
+//            //첨부파일과 임시 경로추가
 //            String filename = "C:/temp/bb.log";
 //            FileDataSource source = new FileDataSource(filename);
 //            messageBodyPart.setDataHandler(new DataHandler(source));
 //            messageBodyPart.setFileName(filename);
 //            multipart.addBodyPart(messageBodyPart);
 
-            // Send the complete message parts
+            // 완성된 멀티파트를 메시지로 저장함.
             message.setContent(multipart);
 
 
@@ -410,6 +412,8 @@ public class EmailServiceImpl implements EmailService {
             drafts.open(Folder.READ_WRITE);
 
             drafts.appendMessages(new Message[]{message});
+            drafts.close();
+            emailStore.close();
 
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
@@ -418,6 +422,7 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    //임시메일 저장
     @Override
     public void tempMail(EmailDTO emailDTO) throws IOException {
 
@@ -464,23 +469,10 @@ public class EmailServiceImpl implements EmailService {
 
             messageBodyPart.setText(emailDTO.getContent().toString());
 
-            // Create a multipar message
             Multipart multipart = new MimeMultipart();
 
-            // Set text message part
             multipart.addBodyPart(messageBodyPart);
 
-//            // Part two is attachment
-//            messageBodyPart = new MimeBodyPart();
-//
-//            //Add the attachment file path
-//            String filename = "C:/temp/bb.log";
-//            FileDataSource source = new FileDataSource(filename);
-//            messageBodyPart.setDataHandler(new DataHandler(source));
-//            messageBodyPart.setFileName(filename);
-//            multipart.addBodyPart(messageBodyPart);
-
-            // Send the complete message parts
             message.setContent(multipart);
 
 
@@ -500,14 +492,16 @@ public class EmailServiceImpl implements EmailService {
             drafts.open(Folder.READ_WRITE);
 
             drafts.appendMessages(new Message[]{message});
-
+            drafts.close();
+            emailStore.close();
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
-
+    
+    // 메일 이동(다른 메시지함으로)
     @Override
     public void moveMail(String folderName, Long mailUID, String TargetFolderName) {
 
@@ -554,10 +548,74 @@ public class EmailServiceImpl implements EmailService {
             Folder newToFolder = emailStore.getFolder(TargetFolderName);
 
             folder.moveUIDMessages(new Message[]{messageByUID}, newToFolder);
+            folder.close();
+            emailStore.close();
 
 
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
+    //메시지 삭제 (시스템 Flag 값을 Delete로 설정했으나, 검색 로직을 바꿔야해서 우선 별개의 Delete폴더로 이동시키기로 함)
+    @Override
+    public void deleteMail(String folderName, Long mailUID) {
+
+        //현재 로그인한 사용자 정보(userNumber)를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Member member = null;
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException ignored) {
+        }
+        Long userNumber = member.getUserNumber();
+        String domain = "@ddit.site";
+
+        String imapHost = "mail.ddit.site";
+        String storeType = "imap";
+        String user = (member.getMemberId() + domain);
+        String password = "java";
+
+
+        try {
+            //1) 세션값 받아옴
+            Properties properties = new Properties();
+            properties.put("mail.host", imapHost);
+            Session emailSession = Session.getDefaultInstance(properties);
+
+            Message message = new MimeMessage(emailSession);
+
+            //2) imap서버로 연결 함.
+            IMAPStore emailStore = (IMAPStore) emailSession.getStore(storeType);
+            emailStore.connect(user, password);
+
+            emailStore.getFolder(folderName);
+
+            IMAPFolder folder = (IMAPFolder) emailStore.getFolder(folderName);
+            folder.open(Folder.READ_WRITE);
+            Message messageByUID = folder.getMessageByUID(mailUID);
+
+            messageByUID.setFlag(Flags.Flag.DELETED, true);
+            Folder toFolder = emailStore.getFolder("Delete");
+            if (!toFolder.exists()) {
+                toFolder.create(1);
+                toFolder.renameTo(toFolder);
+                toFolder.close();
+            }
+            Folder newToFolder = emailStore.getFolder("Delete");
+
+            folder.moveUIDMessages(new Message[]{messageByUID}, newToFolder);
+
+
+            folder.close();
+            emailStore.close();
+
+
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 }
