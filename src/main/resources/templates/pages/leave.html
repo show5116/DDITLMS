@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <div class="container-fluid">
+        <link rel="stylesheet" href="../../static/css/academic.css"/>
+
+        <div class="row">
+            <div class="card m-b-10">
+                <div class="card-body">
+                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                        <div class="row col-sm-4 align-self-center">
+                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5">휴학 신청</h4>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-8 row bottom-interval">
+                        <h5>신청 현황</h5>
+                        <div class="table-responsive table-container">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">No.</th>
+                                    <th class="text-center">학년도</th>
+                                    <th class="text-center">학기</th>
+                                    <th class="text-center">학부(과)</th>
+                                    <th class="text-center">전공</th>
+                                    <th class="text-center">학적상태</th>
+                                    <th class="text-center">신청상태</th>
+                                    <th class="text-center">신청일자</th>
+                                    <th class="text-center">확정일자</th>
+                                    <th class="text-center">학년</th>
+                                    <th class="text-center">복학예정년도</th>
+                                    <th class="text-center">복학예정학기</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center">
+                                    <th>1</th>
+                                    <td>2020</td>
+                                    <td>2</td>
+                                    <td>전기,전자,통신공학부</td>
+                                    <td>전자공학전공</td>
+                                    <td>재학</td>
+                                    <td>휴학신청</td>
+                                    <td>2021.02.19</td>
+                                    <td></td>
+                                    <td>4</td>
+                                    <td>2021</td>
+                                    <td>1학기</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-sm row">
+                                <button style="margin-top: 12px;" type="button" id="cancel-btn" class="col-sm-2 btn btn-outline-secondary-2x txt-secondary m-l-5" data-bs-original-title="" title="">신청 취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="leave-form" th:action="@{/academic/leave}" method="post">
+                        <div class="col-sm-2 row bottom-interval">
+                            <h5>휴학 기간</h5>
+                            <select class="col form-control" name="leave-term">
+                                <option value="1" selected>1학기</option>
+                                <option value="2">2학기</option>
+                                <option value="3">3학기</option>
+                                <option value="4">4학기</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm row bottom-interval">
+                            <h5>휴학 종류</h5>
+                            <label><input type="radio" name="leave" value="일반휴학" checked >일반휴학</label>
+                            <label><input type="radio" name="leave" value="입대휴학" >입대휴학</label>
+                            <label><input type="radio" name="leave" value="질병휴학" >질병휴학</label>
+                            <label><input type="radio" name="leave" value="기타휴학" >기타휴학</label>
+                        </div>
+
+                        <div class="col-sm row bottom-interval">
+                            <h5>상세 사유</h5>
+                            <textarea id="reason" name="reason" class="col form-control"></textarea>
+                        </div>
+
+                        <div class="col-sm row">
+                            <button type="button" id="leave-btn" class="col-sm-1 btn btn-outline-secondary-2x txt-secondary m-l-5"
+                                    data-bs-original-title="" title="">신청
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <script th:inline="javascript">
+            const leaveForm = document.querySelector("#leave-form");
+            const leaveBtn = document.querySelector("#leave-btn");
+            const reason = document.querySelector("#reason");
+
+            leaveBtn.addEventListener("click", function (){
+                console.log(reason.value.length);
+                if(reason.value.length < 20){
+                    alert("사유를 20자 이상 적어주세요.");
+                    return;
+                }
+                alert("신청이 완료되었습니다!");
+                leaveForm.submit();
+            });
+
+
+        </script>
+</th:block>
+</html>

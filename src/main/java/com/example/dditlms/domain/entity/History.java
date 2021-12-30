@@ -1,6 +1,7 @@
 package com.example.dditlms.domain.entity;
 
 import com.example.dditlms.domain.common.AcademicStatus;
+import com.example.dditlms.domain.common.ResultStatus;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -37,6 +38,13 @@ public class History {
     @Enumerated(EnumType.STRING)
     @Column(name="HIST_STTUS")
     private AcademicStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="HIST_RST")
+    private ResultStatus resultStatus;
+
+    @Column(name="HIST_NT")
+    private String note;
 
     @ManyToOne
     @JoinColumn(name="MBER_NO")
