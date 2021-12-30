@@ -57,9 +57,7 @@ public class scholarshipAndTuitionController {
         SemesterByYear semester = semesterWrapper.orElse(null);
         List<Scholarship> scholarshipList = scholarshipRepository.findAllByStudentAndSemesterAndStatusAndMethod(member.getStudent(),semester,ScholarshipStatus.APPROVAL, ScholarshipMethod.REDUCTION);
         long sale = 0;
-        System.out.println(scholarshipList);
         for(Scholarship scholarship : scholarshipList){
-            System.out.println(scholarship.getPrice());
             sale += scholarship.getPrice();
         }
         long payment = member.getStudent().getMajor().getPayment();
