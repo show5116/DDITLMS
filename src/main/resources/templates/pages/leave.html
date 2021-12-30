@@ -16,7 +16,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-8 row bottom-interval">
+                    <div th:if="${history}!=null" class="col-sm-8 row bottom-interval">
                         <h5>신청 현황</h5>
                         <div class="table-responsive table-container">
                             <table class="table table-bordered table-striped">
@@ -25,45 +25,51 @@
                                     <th class="text-center">No.</th>
                                     <th class="text-center">학년도</th>
                                     <th class="text-center">학기</th>
-                                    <th class="text-center">학부(과)</th>
                                     <th class="text-center">전공</th>
                                     <th class="text-center">학적상태</th>
                                     <th class="text-center">신청상태</th>
                                     <th class="text-center">신청일자</th>
                                     <th class="text-center">확정일자</th>
                                     <th class="text-center">학년</th>
-                                    <th class="text-center">복학예정년도</th>
-                                    <th class="text-center">복학예정학기</th>
+                                    <th class="text-center">복학예정</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr class="text-center">
                                     <th>1</th>
-                                    <td>2020</td>
-                                    <td>2</td>
-                                    <td>전기,전자,통신공학부</td>
-                                    <td>전자공학전공</td>
-                                    <td>재학</td>
-                                    <td>휴학신청</td>
-                                    <td>2021.02.19</td>
+                                    <td th:text="${#calendars.format(#calendars.createNow(),'yyyy')}">년도</td>
+                                    <td th:text="${mon}">2</td>
+                                    <td th:text="${student.major.korean}">전자공학전공</td>
+                                    <td th:text="${student.academicStatus.getKorean()}">재학</td>
+                                    <td th:text="${tempAbsence.status.getKorean()}">휴학신청</td>
+                                    <td th:text="${tempAbsence.beginsemstr.semeStart}">2021.02.19</td>
                                     <td></td>
-                                    <td>4</td>
-                                    <td>2021</td>
-                                    <td>1학기</td>
+                                    <td th:text="${student.grade.getKorean()}">4</td>
+                                    <td th:text="${tempAbsence.endsemstr.getSemeEnd()}">2021-?학기</td>
                                 </tr>
                                 </tbody>
                             </table>
                             <div class="col-sm row">
-                                <button style="margin-top: 12px;" type="button" id="cancel-btn" class="col-sm-2 btn btn-outline-secondary-2x txt-secondary m-l-5" data-bs-original-title="" title="">신청 취소
+                                <button style="margin-top: 12px;" type="button" id="cancel-btn" class="col-sm-2 btn btn-outline-secondary-2x txt-secondary m-l-5">신청 취소
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <form id="leave-form" th:action="@{/academic/leave}" method="post">
+                    <form th:if="${history}==null" id="leave-form" th:action="@{/academic/leavePost}" method="post">
                         <div class="col-sm-2 row bottom-interval">
                             <h5>휴학 기간</h5>
+                            <select id="start-date" name="start-date" class="col form-control">
+                                <option th:if="${mon}=='1학기'"
+                                    th:text="${#calendars.format(#calendars.createNow(),'yyyy')}+'-1'" th:value="${#calendars.format(#calendars.createNow(),'yyyy')}+'-1'"></option>
+                                <option
+                                    th:text="${#calendars.format(#calendars.createNow(),'yyyy')}+'-2'" th:value="${#calendars.format(#calendars.createNow(),'yyyy')}+'-2'"></option>
+                                <option th:if="${mon}=='2학기'"
+                                    th:text="${#calendars.format(#calendars.createNow(),'yyyy')}+1+'-1'" th:value="${#calendars.format(#calendars.createNow(),'yyyy')}+1+'-1'"></option>
+                            </select>
+                            <h6 style="text-align: center; margin-top: 8px;">부터</h6>
                             <select class="col form-control" name="leave-term">
+<!--                                2022년 1학기 ~ -->
                                 <option value="1" selected>1학기</option>
                                 <option value="2">2학기</option>
                                 <option value="3">3학기</option>
@@ -96,12 +102,16 @@
             </div>
 
         </div>
+    </div>
+    <script th:inline="javascript">
 
-        <script th:inline="javascript">
-            const leaveForm = document.querySelector("#leave-form");
-            const leaveBtn = document.querySelector("#leave-btn");
-            const reason = document.querySelector("#reason");
+        const leaveForm = document.querySelector("#leave-form");
+        const leaveBtn = document.querySelector("#leave-btn");
+        const reason = document.querySelector("#reason");
+        const cancelBtn = document.querySelector("#cancel-btn");
 
+
+        if(leaveBtn!=null){
             leaveBtn.addEventListener("click", function (){
                 console.log(reason.value.length);
                 if(reason.value.length < 20){
@@ -111,8 +121,32 @@
                 alert("신청이 완료되었습니다!");
                 leaveForm.submit();
             });
+        }
+
+        if(cancelBtn!=null){
+            cancelBtn.addEventListener("click", function (){
+                console.log("신청 취소");
+                const params = {
+
+                }
+                $.ajax({
+                    url:"/academic/cancel",
+                    type:"POST",
+                    data: params,
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header,token);
+                    }
+
+                }).done(function (){
+                    console.log("됨.")
+                    location.href="/academic/leave";
+                })
+            });
+        }
 
 
-        </script>
+
+    </script>
+
 </th:block>
 </html>
