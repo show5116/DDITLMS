@@ -38,3 +38,4 @@ out/
 .vscode/
 /src/main/java/com/example/dditlms/util/PrivateValue.java
 /src/main/java/com/example/dditlms/controller/TestController.java
+/gradle/

@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.dditlms.domain.entity.QOpenLecture.*;
-import static com.example.dditlms.domain.entity.QSubject.*;
+import static com.example.dditlms.domain.entity.QOpenLecture.openLecture;
+import static com.example.dditlms.domain.entity.QSubject.subject;
+
 
 @Slf4j
 public class SignupSearchRepositoryImpl implements SignupSearchRepositoryCustom{
@@ -39,7 +40,8 @@ public class SignupSearchRepositoryImpl implements SignupSearchRepositoryCustom{
                                                 openLecture.lectureSchedule,
                                                 openLecture.lectureId.id,
                                                 subject.point,
-                                                openLecture.peopleNumber))
+                                                openLecture.peopleNumber,
+                                                openLecture.syllabusFileId))
                                         .from(openLecture,
                                                 QMajor.major,
                                                 subject,
@@ -50,6 +52,9 @@ public class SignupSearchRepositoryImpl implements SignupSearchRepositoryCustom{
                                                 , openLecture.professorNo.eq(QProfessor.professor)
                                                 ,QProfessor.professor.member.eq(QMember.member));
         List<SignupDTO> result = new ArrayList<>();
+
+
+
 
         String methodName = (String)searchSubject.get("name");
         switch (methodName){

@@ -5,6 +5,12 @@
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='수강 검색')"></th:block>
+    <link rel="stylesheet" th:src="@{/static/css/viewer.css}">
+    <script th:src="@{/static/js/pdfjs/debugger.js}"></script>
+    <script th:src="@{/static/js/pdfjs/pdf.js}"></script>
+    <script th:src="@{/static/js/pdfjs/pdf.sandbox.js}"></script>
+    <script th:src="@{/static/js/pdfjs/pdf.worker.js}"></script>
+    <script th:src="@{/static/js/pdfjs/viewer.js}"></script>
     <div class="container-fluid">
         <div class="row">
             <div class="card m-b-10">
@@ -61,7 +67,7 @@
                         <div class="col-sm row justify-content-around">
                             <label class="col-sm-3 align-self-center bookmark">강의계획</label>
                             <div class="col align-self-center">
-                                <input type="radio" name="syllabus" id="total-lecture" class="col-sm-1" >전체
+                                <input type="radio" name="syllabus" id="total-lecture" class="col-sm-1" checked>전체
                                 <input type="radio" name="syllabus" id="input-lecture" class="col-sm-1">입력
                                 <input type="radio" name="syllabus" id="undefine-lecture" class="col-sm-1">미정
                             </div>
@@ -74,10 +80,10 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <div class="tab-content" id="myTabContent">
+                    <div class="tab-content" id="list">
                         <div class="row b-l-warning border-6 m-t-10 m-b-15">
                             <h4 class="col-sm-1 f-w-700 p-l-10 m-b-0 align-self-center ">개설강좌</h4>
-                            <span class="col-sm-2 text-muted p-l-0">90건</span>
+                            <span class="col-sm-2 text-muted p-l-0" th:text="|${totalCount}건|"></span>
                         </div>
                         <div style="height: 640px; overflow-y: auto;">
                             <table class="table table-bordered text-center" id="open-lecture" >
@@ -95,7 +101,7 @@
                                         <th>과목코드</th>
                                     </tr>
                                 </thead>
-                                <tbody id="list">
+                                <tbody>
                                     <tr th:each="lecture : ${openLectures}" style="height: 1px;">
                                         <td th:text="${lecture.getYearSeme()}"></td>
                                         <td th:text="${lecture.getMajorKr()}"></td>
@@ -104,7 +110,8 @@
                                         <td th:if="${lecture.getLectureSection().toString().equals('MAJOR_REQUIRED')}">전필</td>
                                         <td th:if="${lecture.getLectureSection().toString().equals('MAJOR_SELECT')}">전선</td>
                                         <td th:text="${lecture.getPoint()}"></td>
-                                        <td th:text="${lecture.getLectureName()}"></td>
+                                        <td><a th:href="@{|/static/pdf/${lecture.getFileId()}.pdf|}" class="btn btn-link txt-google-plus" th:text="${lecture.getLectureName()}"></a></td>
+
                                         <td th:text="${lecture.getProfessorName()}"></td>
                                         <td th:text="${lecture.getLectureSchedule()}"></td>
                                         <td th:text="${lecture.getLectureRoom()}"></td>

@@ -16,6 +16,7 @@ public class SignupDTO {
     private String lectureRoom;
     private int point;
     private int peopleNumber;
+    private int fileId;
 
 
     public SignupDTO() {
@@ -23,7 +24,7 @@ public class SignupDTO {
 
     @QueryProjection
 
-    public SignupDTO(String yearSeme, String majorKr, String lectureSection, String lectureCode, String lectureName, String professorName, String lectureSchedule, String lectureRoom, int point, int peopleNumber) {
+    public SignupDTO(String yearSeme, String majorKr, String lectureSection, String lectureCode, String lectureName, String professorName, String lectureSchedule, String lectureRoom, int point, int peopleNumber, int fileId) {
         this.yearSeme = yearSeme;
         this.majorKr = majorKr;
         this.lectureSection = lectureSection;
@@ -34,5 +35,6 @@ public class SignupDTO {
         this.lectureRoom = lectureRoom;
         this.point = point;
         this.peopleNumber = peopleNumber;
+        this.fileId = fileId;
     }
 }

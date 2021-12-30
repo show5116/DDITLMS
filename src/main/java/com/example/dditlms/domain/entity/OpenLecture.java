@@ -1,5 +1,6 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.dto.PreCourseDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,7 +20,7 @@ public class OpenLecture {
     private String lectureSection;
 
     @Column(name = "LCTRE_KND")
-    private Boolean lectureKind;;
+    private Character lectureKind;;
 
     @Column(name = "LCTRE_NMPR")
     private int peopleNumber;;
@@ -28,7 +29,7 @@ public class OpenLecture {
     private String state;;
 
     @Column(name = "ATCHMNFL_ID")
-    private Long syllabusFileId;   //첨부파일번호(강의계획서)
+    private int syllabusFileId;   //첨부파일번호(강의계획서)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LCTRUM_CD")
@@ -52,5 +53,24 @@ public class OpenLecture {
 
     @Column(name = "LCTRE_SCHEDULE", length = 30)
     private String lectureSchedule;
+
+    public PreCourseDTO toDto(){
+        String lectureClass = "";
+
+        PreCourseDTO dto = PreCourseDTO.builder()
+                .lectureCode(this.id)
+                .majorKr(this.majorCode.getKorean())
+                .subjectCode(this.subjectCode.getId())
+                .lectureName(this.subjectCode.getName())
+                .lectureSeme(this.lectureSection)
+                .maxPeopleCount(this.peopleNumber)
+                .professor(this.professorNo.getUserNumber()+"")
+                .lectureSchedule(this.lectureSchedule)
+                .lectureRoom(this.lectureId.getId())
+                .lectureClass(lectureClass)
+                .lecturedivision(this.lectureKind +"").build();
+        return dto;
+    }
+
 
 }

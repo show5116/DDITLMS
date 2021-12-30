@@ -2,8 +2,8 @@
 
 // 자주 쓰는 변수들
 var memberNumber;
-var yearList = [];
-var majorList = [];
+const yearList = [];
+const majorList = [];
 
 (function(){
     var topSetting = {
@@ -24,6 +24,10 @@ var majorList = [];
         var selectValue = college.options[college.selectedIndex].value;
         console.log(selectText);
         console.log(selectValue);
+
+        if (selectText=='(전체)'){
+            department.options.length=1;
+        }
 
         $.ajax({
             url : "/signUpSearch/getMajor",
@@ -70,6 +74,7 @@ var majorList = [];
         var searchLecture = topSetting.openSubject.value;
         if (searchLecture != null || searchLecture == ""){
             searchSubject();
+            return;
         }
     });
     function searchSubject(){   //검색어로 검색

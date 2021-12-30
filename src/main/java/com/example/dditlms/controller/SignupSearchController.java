@@ -33,6 +33,7 @@ public class SignupSearchController {
 
     @GetMapping("/signUpSearch")
     public String signUpSearch(Model model) {
+        log.info("===========signUpSearch==========");
 
         List<SemesterByYear> semesterByYearList = byYearRepository.findAll();
         List<String> yearList = new ArrayList<>();
@@ -58,12 +59,14 @@ public class SignupSearchController {
 
         log.info("-----SignUpSearchController[getYear]- yearList ={}", yearList);
         Map<String,Object> search = new HashMap<>();
-        String param = "totalList";
         search.put("name","totalList");
         List<SignupDTO> openLectures = repository.totalLectureList(search);
+        log.info("-----SignUpSearchController[getYear]- openLectures ={}", openLectures);
+        int count = openLectures.size();
 
         model.addAttribute("yearList", yearList);
         model.addAttribute("openLectures", openLectures);
+        model.addAttribute("totalCount",count);
 
         return "pages/signUpSearch";
     }
@@ -205,8 +208,10 @@ public class SignupSearchController {
         search.put("major",major);
 
         List<SignupDTO> result = repository.totalLectureList(search);
+        int count = result.size();
 
         model.addAttribute("openLectures", result);
+        model.addAttribute("totalCount", count);
 
         return "pages/signUpSearch::#list";
     }
