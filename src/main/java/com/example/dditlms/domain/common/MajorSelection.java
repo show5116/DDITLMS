@@ -6,12 +6,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum MajorSelection {
-    HUMANITIES("인문계열"),
-    SOCIAL("사회계열"),
-    EDUCATION("교육계열"),
-    ENGINEERING("공학계열"),
-    NATURE("자연계열"),
-    ARTSANDPHYSICAL("예체능계열");
+    HUMANITIES("인문대학"),
+    SOCIAL("사회과학대학"),
+    EDUCATION("사범대학"),
+    ENGINEERING("공과대학"),
+    SCIENCE("자연과학대학"),
+    ART("미술대학"),
+    BUSINESS("경영대학");
 
     private String name;
 

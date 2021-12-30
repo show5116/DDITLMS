@@ -2,10 +2,8 @@ package com.example.dditlms.domain.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Builder
@@ -29,11 +27,13 @@ public class Subject {
     private String courseOutline;
 
     @Column(name = "SBJECT_PNT")
-    private Long point;               //과목학점
+    private int point;               //과목학점
 
-    @Column(name = "DV_CLSSRM", length = 30)
-    private String divisionClassroom;  //분반
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
+    @JoinColumn(name = "PAR_SBJECT_CODE")
+    private Subject parent;
 
-    @Column(name = "PAR_SBJECT_CODE", length = 200)
-    private String prerequisiteCode;    //선수과목 코드
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PAR_SBJECT_CODE")
+    private List<Subject> children;    //선수과목 코드
 }
