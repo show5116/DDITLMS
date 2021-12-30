@@ -55,7 +55,7 @@ public class FileData {
     private Integer trash;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="USERNUMBER")
+    @JoinColumn(name="MBER_NO")
     private Member member;
 
 

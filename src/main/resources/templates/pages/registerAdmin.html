@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='등록 관리')"></th:block>
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <div style="height:500px;" class="card">
+                <div class="p-20">
+                    <div id="not-regist-students" class="tab-content m-t-15">
+                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                            <div class="col align-self-center">
+                                <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">등록 관리</h4>
+                                <span class="text-muted p-l-10 m-t-10" th:text="${#lists.size(studentList)+'건'}"></span>
+                            </div>
+                            <div class="col search-bg">
+                                <select id="student-search-category">
+                                    <option value="name">이름</option>
+                                    <option value="number">학번</option>
+                                </select>
+                                <i class="fa fa-search"></i>
+                                <input onkeyup="searchStudent()" id="student-serch-box" style="display:inline-block; width:50%;" class="form-control-plaintext" placeholder="학생 검색">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>학번</th>
+                                    <th>이름</th>
+                                    <th>학과</th>
+                                    <th>등록금</th>
+                                    <th>실납부액</th>
+                                    <th>완납</th>
+                                    <th>미납</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="student : ${studentList}">
+                                    <td class="student-number" th:text="${student.getUserNumber()}"></td>
+                                    <td class="student-name" th:text="${student.getName()}"></td>
+                                    <td th:text="${student.getMajor()}"></td>
+                                    <td th:text="${student.getPayment()}"></td>
+                                    <td th:text="${student.getRealPayment()}"></td>
+                                    <td><button class="btn-primary btn-sm" type="button" onclick="completePay()">완납</button></td>
+                                    <td><button class="btn-primary btn-sm" type="button" onclick="notPay()">미납</button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function searchStudent(){
+            const searchBox = document.querySelector("#student-serch-box");
+            const searchCategory = document.querySelector("#student-search-category");
+            if(event.keyCode != 13 || (searchCategory.value == "number" && isNaN(searchBox.value))){
+                return;
+            }
+            const params = {
+                category : searchCategory.value,
+                search : searchBox.value
+            };
+            $.ajax({
+                url: "/studentDep/register/search",
+                data: params,
+                method: "POST",
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done((fragment)=>{
+                $("#not-regist-students").replaceWith(fragment);
+            });
+        }
+
+        function completePay(){
+            const parent = event.target.parentNode.parentNode;
+            const number = parent.querySelector(".student-number");
+            const name = parent.querySelector(".student-name");
+            swal({
+                text : `${number.innerText} ${name.innerText} 학생이 납부하였습니까?`,
+                icon: "warning",
+                buttons : true,
+                dangerMode : true
+            })
+            .then((ok)=>{
+                if(ok){
+                    const params = {
+                        id : number.innerText
+                    };
+                    $.ajax({
+                        url: "/studentDep/register/completePay",
+                        data: params,
+                        method: "POST",
+                        beforeSend: function(xhr){
+                            xhr.setRequestHeader(header,token);
+                        }
+                    })
+                    .done((fragment)=>{
+                        $("#not-regist-students").replaceWith(fragment);
+                        swal("처리되었습니다.",{
+                            icon : "success"
+                        })
+                    });
+                } else{
+                    swal("취소되었습니다.");
+                }
+            });
+        }
+        function notPay(){
+            const parent = event.target.parentNode.parentNode;
+            const number = parent.querySelector(".student-number");
+            const name = parent.querySelector(".student-name");
+            swal({
+                text : `${number.innerText} ${name.innerText} 학생이 미납하였습니까?`,
+                icon: "warning",
+                buttons : true,
+                dangerMode : true
+            })
+            .then((ok)=>{
+                if(ok){
+                    const params = {
+                        id : number.innerText
+                    };
+                    $.ajax({
+                        url: "/studentDep/register/notPay",
+                        data: params,
+                        method: "POST",
+                        beforeSend: function(xhr){
+                            xhr.setRequestHeader(header,token);
+                        }
+                    })
+                    .done((fragment)=>{
+                        $("#not-regist-students").replaceWith(fragment);
+                        swal("처리되었습니다.",{
+                            icon : "success"
+                        })
+                    });
+                } else{
+                    swal("취소되었습니다.");
+                }
+            });
+        }
+    </script>
+</th:block>

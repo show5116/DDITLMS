@@ -47,3 +47,28 @@ strong{
 table{
     width: auto;
 }
+
+/*button{*/
+/*    margin: 20px;*/
+/*}*/
+
+h5{
+    margin-bottom: 10px;
+    color: #483D8B;
+}
+
+.tip{
+    color: #4169E1;
+}
+.icon_1{
+
+}
+
+textarea{
+    height: 150px;
+    margin-bottom: 30px;
+}
+
+.bottom-interval{
+    margin-top: 30px;
+}

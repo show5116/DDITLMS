@@ -264,7 +264,7 @@ public class FileServiceImpl implements FileService {
             int idx = file.getOriginalFilename().lastIndexOf(".");
 
             String saveFileName = "/Users/inhwan/Documents/uploadThrough/" + file.getOriginalFilename();
-
+///Users/inhwan/Documents/uploadThrough
             try (
                     FileOutputStream fos = new FileOutputStream(saveFileName);
                     InputStream is = file.getInputStream();

@@ -126,9 +126,10 @@ public class MemberServiceImpl implements MemberService {
             Student student = Student.builder()
                     .userNumber(member.getUserNumber())
                     .major(major)
-                    .grade(Grade.FRESHMAN)
+                    .grade(Grade.ADMISSION)
                     .member(member)
                     .enterDate(now)
+                    .semester(1)
                     .academicStatus(AcademicStatus.ATTENDING).build();
             member.setStudent(student);
             memberRepository.save(member);

@@ -1,11 +1,10 @@
 package com.example.dditlms.service.impl;
 
+import com.example.dditlms.domain.common.ResultStatus;
 import com.example.dditlms.domain.common.ScholarshipMethod;
-import com.example.dditlms.domain.common.ScholarshipStatus;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.ScholarshipKindRepository;
 import com.example.dditlms.domain.repository.ScholarshipRepository;
-import com.example.dditlms.domain.repository.SemesterByYearRepository;
 import com.example.dditlms.service.ScholarshipService;
 import com.example.dditlms.service.SemesterByYearService;
 import com.example.dditlms.util.MemberUtil;
@@ -35,7 +34,7 @@ public class ScholarshiptServiceImpl implements ScholarshipService {
 
         long cost = 0;
         List<Scholarship> scholarshipList =
-                scholarshipRepository.findAllByStudentAndSemesterAndStatusNot(student,semester,ScholarshipStatus.COMPANION);
+                scholarshipRepository.findAllByStudentAndSemesterAndStatusNot(student,semester, ResultStatus.COMPANION);
         for(Scholarship scholarship : scholarshipList){
             cost += scholarship.getPrice();
         }
@@ -53,7 +52,7 @@ public class ScholarshiptServiceImpl implements ScholarshipService {
                 .semester(semester)
                 .student(student)
                 .attachment(fileId)
-                .status(ScholarshipStatus.STANDBY).build();
+                .status(ResultStatus.STANDBY).build();
         scholarshipRepository.save(scholarship);
         //결제로직 추가
     }
@@ -61,14 +60,14 @@ public class ScholarshiptServiceImpl implements ScholarshipService {
     @Override
     public void completeScholarship(Scholarship scholarship) {
         scholarship.setCompleteDate(new Date());
-        scholarship.setStatus(ScholarshipStatus.APPROVAL);
+        scholarship.setStatus(ResultStatus.APPROVAL);
         scholarshipRepository.save(scholarship);
     }
 
     @Override
     public void companionScholarship(Scholarship scholarship) {
         scholarship.setCompleteDate(new Date());
-        scholarship.setStatus(ScholarshipStatus.COMPANION);
+        scholarship.setStatus(ResultStatus.COMPANION);
         scholarshipRepository.save(scholarship);
     }
 
