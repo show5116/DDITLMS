@@ -1,12 +1,11 @@
 package com.example.dditlms.domain.repository.sanctn;
 
 import com.example.dditlms.domain.dto.QSanctnDTO;
-import com.example.dditlms.domain.dto.QSanctnLnDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
-import com.example.dditlms.domain.dto.SanctnLnDTO;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.QMember;
-import com.example.dditlms.domain.entity.sanction.*;
+import com.example.dditlms.domain.entity.sanction.SanctnLn;
+import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
+import com.example.dditlms.domain.entity.sanction.SanctnProgress;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -153,53 +152,27 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
     // 결재 조회 (페이징 + 상태조건별 조회)
     @Override
-    public Page<Sanctn> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress) {
+    public Page<SanctnDTO> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress) {
 
         Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
 
-//        List<SanctnLnDTO> result = queryFactory
-//                .select(new QSanctnLnDTO(sanctnLn1.sanctnLn
-//                        , sanctnLn1.lastApproval
-//                        , sanctnLn1.sanctnDate
-//                        , sanctnLn1.sanctnLnProgress
-//                        , sanctnLn1.sanctnOpinion
-//                        , sanctnLn1.sanctnStep
-//                        , sanctnLn1.mberNo.userNumber
-//                        , sanctn.sanctnId
-//                        , sanctn.sanctnSj
-//                        , sanctn.sanctnWritngde
-//                        , sanctn.sanctnUpdde
-//                        , sanctn.drafter
-//                        , sanctn.status
-//                        , sanctn.atchmnflId
-//                        , sanctn.docform.docformId
-//                        , member.name)).distinct()
-//                .from(sanctn).distinct()
-//                .from(sanctnLn1).distinct()
-//                .from(member)
-//                .innerJoin(sanctnLn1.sanctnSn, sanctn)
-//                .innerJoin(sanctnLn1.mberNo, member)
-//                .where(sanctnLn1.mberNo.eq(findMember.get())
-//                        , sanctn.status.eq(sanctnProgress)
-//                        )
-//                .fetch();
-//
-//        int total = result.size();
-//        log.info("결재 조회 메소드 결과테스팅!"  + String.valueOf(result));
-//        log.info("결재 전체 크기!!"  + String.valueOf(total));
-//
-//        return new PageImpl<>(result, pageable, total);
-
-        QueryResults<Sanctn> results = queryFactory
-                .select(sanctn).distinct()
+        QueryResults<SanctnDTO> results = queryFactory
+                .select(new QSanctnDTO(sanctn.sanctnId
+                        ,sanctn.sanctnSj
+                        ,sanctn.status
+                        ,sanctn.sanctnUpdde
+                        , member.name))
                 .from(sanctn)
-                .from(sanctnLn1)
-                .leftJoin(sanctnLn1.sanctnSn, sanctn)
-                .on(sanctnLn1.sanctnSn.eq(sanctn))
+                .innerJoin(member)
+                .on(sanctn.drafter.eq(member.userNumber))
+                .where(member.userNumber.eq(findMember.get().getUserNumber())
+                        ,sanctn.status.eq(sanctnProgress))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
-        List<Sanctn> content = results.getResults();
+
+
+        List<SanctnDTO> content = results.getResults();
         long total = results.getTotal();
 
         log.info("결재 조회!!"+String.valueOf(content));
@@ -210,23 +183,33 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
     // 결재 전체 조회
     @Override
-    public Page<SanctnLn> inquireAll(Long userNumber, Pageable pageable) {
+    public Page<SanctnDTO> inquireAll(Long userNumber, Pageable pageable) {
         Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
 
-        List<SanctnLn> content = queryFactory
-                .select(sanctnLn1).distinct()
-                .from(sanctnLn1)
+        List<SanctnDTO> content = queryFactory
+                .select(new QSanctnDTO(sanctn.sanctnId
+                        ,sanctn.sanctnSj
+                        ,sanctn.status
+                        ,sanctn.sanctnUpdde
+                        , member.name))
                 .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
+                .innerJoin(member)
+                .on(sanctn.drafter.eq(member.userNumber))
+                .where(member.userNumber.eq(findMember.get().getUserNumber()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<SanctnLn> countQuery = queryFactory
-                .select(sanctnLn1).distinct()
-                .from(sanctnLn1)
+        JPAQuery<SanctnDTO> countQuery = queryFactory
+                .select(new QSanctnDTO(sanctn.sanctnId
+                        ,sanctn.sanctnSj
+                        ,sanctn.status
+                        ,sanctn.sanctnUpdde
+                        , member.name))
                 .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn);
+                .innerJoin(member)
+                .on(sanctn.drafter.eq(member.userNumber))
+                .where(member.userNumber.eq(findMember.get().getUserNumber()));
 
         countQuery.fetchCount();
 

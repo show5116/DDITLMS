@@ -67,21 +67,21 @@ public class SanctnController {
 
 
         SanctnProgress reject = SanctnProgress.REJECT;
-        Page<Sanctn> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+        Page<SanctnDTO> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
 
         long totalRej = rejectResult.getTotalElements();
 
         model.addAttribute("totalRej", totalRej);
 
         SanctnProgress pub = SanctnProgress.PUBLICIZE;
-        Page<Sanctn> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
+        Page<SanctnDTO> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
         long totalPub = pubResult.getTotalElements();
         model.addAttribute("totalPub", totalPub);
 
         //전체 조회결과와 페이징 정보를 넘겨준다.
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
-        Page<Sanctn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
 
 
         model.addAttribute("results", results);
@@ -122,7 +122,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
-        Page<Sanctn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -398,7 +398,7 @@ public class SanctnController {
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
 
-        Page<Sanctn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -424,7 +424,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress reject = SanctnProgress.REJECT;
-        Page<Sanctn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -475,7 +475,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress publicize = SanctnProgress.PUBLICIZE;
-        Page<Sanctn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, publicize);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, publicize);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -500,7 +500,7 @@ public class SanctnController {
         }
         Long userNumber = member.getUserNumber();
 
-        Page<SanctnLn> results = sanctnLnRepository.inquireAll(userNumber, pageable);
+        Page<SanctnDTO> results = sanctnLnRepository.inquireAll(userNumber, pageable);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -528,7 +528,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress completion = SanctnProgress.COMPLETION;
-        Page<Sanctn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
