@@ -183,22 +183,14 @@ public class AcademicServiceImpl implements AcademicService {
         Optional<TempAbsence> tempAbsenceWrapper = tempAbsenceRepository.findByMberNoAndStatus(student, ResultStatus.STANDBY);
         TempAbsence tempAbsence = tempAbsenceWrapper.orElse(null);
 
-        history.builder()
-                .changeDate(new Date())
-                .resultStatus(ResultStatus.COMPANION)
-                .build();
-
+        history.setChangeDate(new Date());
+        history.setResultStatus(ResultStatus.COMPANION);
         histRepository.save(history);
 
-        tempAbsence.builder()
-                .status(ResultStatus.COMPANION)
-                .build();
+        tempAbsence.setStatus(ResultStatus.COMPANION);
 
         tempAbsenceRepository.save(tempAbsence);
 
     }
 
-
-
-
-    }
+}

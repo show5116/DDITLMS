@@ -96,7 +96,7 @@ public class AcademicController {
     public String test(){
         Map<String, Object> map = new HashMap<>();
         academicService.tempAbsenceUpdate(map);
-        return "";
+        return "pages/leave";
     }
 
 
