@@ -3,6 +3,7 @@ package com.example.dditlms.domain.repository.sanctn;
 import com.example.dditlms.domain.dto.QSanctnDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.entity.sanction.QSanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
@@ -152,64 +153,72 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
     // 결재 조회 (페이징 + 상태조건별 조회)
     @Override
-    public Page<SanctnLn> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress) {
+    public Page<SanctnDTO> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress) {
 
         Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
 
-
-        QueryResults<SanctnLn> results = queryFactory
-                .select(sanctnLn1)
-                .from(sanctnLn1)
+        QueryResults<SanctnDTO> results = queryFactory
+                .selectDistinct(new QSanctnDTO(sanctn.sanctnId
+                        ,sanctn.sanctnSj
+                        ,sanctn.status
+                        ,sanctn.sanctnUpdde
+                        , member.name))
                 .from(sanctn)
-                .join(sanctnLn1.sanctnSn, sanctn)
-                .where(sanctnLn1.sanctnSn.eq(sanctn)
-                        , sanctnLn1.mberNo.eq(findMember.get())
-                        , sanctn.status.eq(sanctnProgress))
-                .groupBy(sanctnLn1.sanctnSn)
+                .from(sanctnLn1)
+                .innerJoin(member)
+                .on(sanctn.drafter.eq(member.userNumber))
+                .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
+                        ,sanctn.status.eq(sanctnProgress))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
-        List<SanctnLn> content = results.getResults();
+
+
+        List<SanctnDTO> content = results.getResults();
         long total = results.getTotal();
+
+        log.info("결재 조회!!"+String.valueOf(content));
+        log.info("결재 조회!!" +String.valueOf(total));
 
         return new PageImpl<>(content, pageable, total);
     }
 
     // 결재 전체 조회
-   @Override
-    public Page<SanctnLn> inquireAll(Long userNumber, Pageable pageable) {
-       Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
+    @Override
+    public Page<SanctnDTO> inquireAll(Long userNumber, Pageable pageable) {
+        Optional<Member> findMember = memberRepository.findByUserNumber(userNumber);
 
-       List<SanctnLn> content = queryFactory
-               .select(sanctnLn1)
-               .from(sanctnLn1)
-               .from(sanctn)
-               .join(sanctnLn1.sanctnSn, sanctn)
-               .where(sanctnLn1.sanctnSn.eq(sanctn)
-                       , sanctnLn1.mberNo.eq(findMember.get()))
-               .groupBy(sanctnLn1.sanctnSn)
-               .offset(pageable.getOffset())
-               .limit(pageable.getPageSize())
-               .fetch();
+        List<SanctnDTO> content = queryFactory
+                .selectDistinct(new QSanctnDTO(sanctn.sanctnId
+                        ,sanctn.sanctnSj
+                        ,sanctn.status
+                        ,sanctn.sanctnUpdde
+                        , member.name))
+                .from(sanctn)
+                .from(sanctnLn1)
+                .innerJoin(member)
+                .on(sanctn.drafter.eq(member.userNumber))
+                .where(sanctnLn1.mberNo.userNumber.eq(userNumber))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-       JPAQuery<SanctnLn> countQuery = queryFactory
-               .select(sanctnLn1)
-               .from(sanctnLn1)
-               .from(sanctn)
-               .join(sanctnLn1.sanctnSn, sanctn)
-               .where(sanctnLn1.sanctnSn.eq(sanctn), sanctnLn1.mberNo.eq(findMember.get()))
-               .groupBy(sanctnLn1.sanctnSn);
+        JPAQuery<SanctnDTO> countQuery = queryFactory
+                .selectDistinct(new QSanctnDTO(sanctn.sanctnId
+                        ,sanctn.sanctnSj
+                        ,sanctn.status
+                        ,sanctn.sanctnUpdde
+                        , member.name))
+                .from(sanctn)
+                .from(sanctnLn1)
+                .innerJoin(member)
+                .on(sanctn.drafter.eq(member.userNumber))
+                .where(sanctnLn1.mberNo.userNumber.eq(userNumber));
 
-       countQuery.fetchCount();
+        countQuery.fetchCount();
 
-       return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
-   }
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+    }
+
 
 }
-
-
-
-
-
-
-

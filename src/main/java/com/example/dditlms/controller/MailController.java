@@ -84,9 +84,7 @@ public class MailController {
     //메일 쓰기(보내기 + 보낸편지함 저장)
     @PostMapping("/writeMail")
     public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletResponse response) throws IOException {
-        log.info("----------------" + String.valueOf(dto));
         EmailDTO emailDTO = dto;
-        log.info("----------------" + String.valueOf(emailDTO));
         try {
             emailService.writeMail(emailDTO);
             emailService.sentMailCopy(emailDTO);
@@ -132,9 +130,7 @@ public class MailController {
     //메일 임시 저장
     @PostMapping("/tempMail")
     public String tempMail(@ModelAttribute("dto") EmailDTO dto, Model model, HttpServletResponse response) throws IOException {
-        log.info("----------------" + String.valueOf(dto));
         EmailDTO emailDTO = dto;
-        log.info("----------------" + String.valueOf(emailDTO));
         try {
             emailService.tempMail(emailDTO);
         } catch (IOException e) {
@@ -157,6 +153,15 @@ public class MailController {
         Long id = Long.valueOf(param.get("id").toString());
         String target = param.get("target").toString();
         emailService.moveMail(mailBox, id, target);
+
+        return "/pages/mailbox";
+    }
+
+    @GetMapping("/deleteMail")
+    public String deleteMail(@RequestParam Map<String, Object> param) {
+        String mailBox = param.get("mailBox").toString();
+        Long id = Long.valueOf(param.get("id").toString());
+        emailService.deleteMail(mailBox, id);
 
         return "/pages/mailbox";
     }
