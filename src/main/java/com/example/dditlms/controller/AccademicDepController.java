@@ -2,7 +2,9 @@ package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.common.WheatherToDelete;
 import com.example.dditlms.domain.dto.SubjectDTO;
+import com.example.dditlms.domain.entity.Major;
 import com.example.dditlms.domain.entity.Subject;
+import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.SubjectRepository;
 import com.example.dditlms.service.SubjectService;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,13 @@ public class AccademicDepController {
 
     private final SubjectService subjectService;
 
+    private final MajorRepository majorRepository;
+
     @GetMapping("/accademic/curriculum")
     public ModelAndView addCurriculum(ModelAndView mav){
-
-
+        List<Major> majorList = majorRepository.findAll();
+        mav.addObject("majorList",majorList);
+        mav.setViewName("/pages/curriculum");
         return mav;
     }
 
