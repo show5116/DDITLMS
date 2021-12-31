@@ -16,4 +16,5 @@ public interface SanctnLnRepositoryCustom {
     List<SanctnDTO> findRecentOpinion(Long userNumber);
     Page<SanctnDTO> inquirePageWithProgress(Long userNumber, Pageable pageable, SanctnProgress sanctnProgress);
     Page<SanctnDTO> inquireAll(Long userNumber, Pageable pageable);
+    List<SanctnDTO> countSanctn(Long sanctnId);
 }

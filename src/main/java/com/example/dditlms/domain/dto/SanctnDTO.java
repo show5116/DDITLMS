@@ -82,4 +82,12 @@ public class SanctnDTO {
         this.userNumber = userNumber;
         this.major_nm_kr = major_nm_kr;
     }
+
+    @QueryProjection
+
+    public SanctnDTO(Long sanctnId, SanctnLnProgress sanctnLnProgress, Integer sanctnStep) {
+        this.sanctnId = sanctnId;
+        this.sanctnLnProgress = sanctnLnProgress;
+        this.sanctnStep = sanctnStep;
+    }
 }

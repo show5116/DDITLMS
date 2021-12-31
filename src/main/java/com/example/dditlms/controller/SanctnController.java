@@ -111,6 +111,13 @@ public class SanctnController {
         List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
         model.addAttribute("recentOpinions" , recentOpinion);
 
+        for (SanctnDTO sanctnDTO : recentOpinion) {
+            Long sanctnId = sanctnDTO.getSanctnId();
+            List<SanctnDTO> sanctnDTOS = sanctnLnRepository.countSanctn(sanctnId);
+            int size = sanctnDTOS.size();
+            sanctnDTO.getStatus();
+        }
+
 
         return "/pages/sanction";
     }

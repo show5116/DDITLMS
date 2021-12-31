@@ -3,9 +3,7 @@ package com.example.dditlms.domain.repository.sanctn;
 import com.example.dditlms.domain.dto.QSanctnDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.sanction.SanctnLn;
-import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
-import com.example.dditlms.domain.entity.sanction.SanctnProgress;
+import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -163,9 +161,9 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
         QueryResults<SanctnDTO> results = queryFactory
                 .selectDistinct(new QSanctnDTO(sanctn.sanctnId
-                        ,sanctn.sanctnSj
-                        ,sanctn.status
-                        ,sanctn.sanctnUpdde
+                        , sanctn.sanctnSj
+                        , sanctn.status
+                        , sanctn.sanctnUpdde
                         , member.name))
                 .from(sanctn)
                 .from(sanctnLn1)
@@ -190,9 +188,9 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
         List<SanctnDTO> content = queryFactory
                 .selectDistinct(new QSanctnDTO(sanctn.sanctnId
-                        ,sanctn.sanctnSj
-                        ,sanctn.status
-                        ,sanctn.sanctnUpdde
+                        , sanctn.sanctnSj
+                        , sanctn.status
+                        , sanctn.sanctnUpdde
                         , member.name))
                 .from(sanctn)
                 .from(sanctnLn1)
@@ -205,9 +203,9 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
         JPAQuery<SanctnDTO> countQuery = queryFactory
                 .selectDistinct(new QSanctnDTO(sanctn.sanctnId
-                        ,sanctn.sanctnSj
-                        ,sanctn.status
-                        ,sanctn.sanctnUpdde
+                        , sanctn.sanctnSj
+                        , sanctn.status
+                        , sanctn.sanctnUpdde
                         , member.name))
                 .from(sanctn)
                 .from(sanctnLn1)
@@ -218,6 +216,21 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
         countQuery.fetchCount();
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+    }
+
+
+    // 결재 카운팅, 진행률 조회
+    @Override
+    public List<SanctnDTO> countSanctn(Long sanctnId) {
+
+        return queryFactory
+                .select(new QSanctnDTO(sanctn.sanctnId, sanctnLn1.sanctnLnProgress, sanctnLn1.sanctnStep))
+                .from(sanctn)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
+                .where(sanctn.sanctnId.eq(sanctnId))
+                .fetch();
+
     }
 
 
