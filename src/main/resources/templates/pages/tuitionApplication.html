@@ -85,5 +85,13 @@
             </div>
         </div>
     </div>
+    <script th:inline="javascript">
+        /* <![CDATA[ */
+            const already = /*[[${already}]]*/;
+        /* ]]> */
+        if(already == "true"){
+            swal("이번학기는 등록 완료되었습니다.");
+        }
+    </script>
 </th:block>
 </html>

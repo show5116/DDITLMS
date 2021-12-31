@@ -80,42 +80,14 @@
                 },
             }
 
-            // var formData = new FormData();
-            // formData.append('title', title.value);
-            // formData.append()
-            // // formData.append('meta[name="_csrf"]').attr('content');
         boardSubmit.addEventListener("click", function (){
             const inputFiles = document.querySelector(".dz-hidden-input");
             console.log(inputFiles.files);
-            // const form = new FormData(boardSubmit);
+
             const form = new FormData(document.getElementById('board-write'));
             console.log(form);
             var keys = form.keys();
             console.log(keys);
-            // boardWrite.append('<input type="hidden" name="_csrf" value="'+token+'">');
-            // const param = {
-            //     title : title.value,
-            //     editor4 : editor4.value
-            // }
-            // console.log(editor4.value);
-            // $.ajax({
-            //     url: "/community/boardWritePost.do",
-            //     type: "POST",
-            //     enctype: "multipart/form-data",
-            //     data: param,
-            //     beforeSend: function(xhr){
-            //         xhr.setRequestHeader(header,token);
-            //     }
-            // }).done(function (){
-            //     console.log("일단 ㅇㅋ");
-            // }).fail(function (){
-            //    console.log("에바야")
-            // });
-
-            // myGreatDropzone.submit();
-            // console.log(title.value);
-            // console.log(editor4.value);
-            // console.log(myGreatDropzone.value);
         });
 
 

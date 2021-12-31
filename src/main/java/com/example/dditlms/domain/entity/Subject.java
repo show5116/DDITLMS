@@ -1,11 +1,13 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.common.WheatherToDelete;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Getter
+@Getter @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +30,11 @@ public class Subject {
 
     @Column(name = "SBJECT_PNT")
     private int point;               //과목학점
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "SBJECT_ST",nullable = false)
+    @ColumnDefault(value = "'EXISTED'")
+    private WheatherToDelete status;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
     @JoinColumn(name = "PAR_SBJECT_CODE")

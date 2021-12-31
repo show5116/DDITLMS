@@ -49,4 +49,8 @@ public class History {
     @ManyToOne
     @JoinColumn(name="MBER_NO")
     private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "TMPABSSKL_SN")
+    private TempAbsence tempAbsence;
 }

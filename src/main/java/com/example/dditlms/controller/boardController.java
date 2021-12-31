@@ -2,7 +2,6 @@ package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.common.BoardCategory;
 import com.example.dditlms.domain.entity.Bbs;
-import com.example.dditlms.domain.entity.FileData;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.BbsRepository;
 import com.example.dditlms.security.AccountContext;
@@ -18,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,14 +32,25 @@ public class boardController {
     private final BbsRepository bbsRepository;
 
 
-    @GetMapping("/community/boardA")
-    public ModelAndView boardA(ModelAndView mav){
+    @GetMapping("/community/freeboard")
+    public ModelAndView freeboard(ModelAndView mav){
 
         Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategory(BoardCategory.FREEBOARD);
         List<Bbs> bbsList = bbsWrapper.orElse(null);
+        for (Bbs bbs : bbsList){
+            String content = bbs.getContent();
+            logger.info("<img>여부 : " + content);
+            if(content.indexOf("<img") == -1){
+                logger.info("이미지를 안넣은거야");
+            } else {
+                logger.info("이미지를 넣은거야 : " + content.indexOf("<img"));
+                logger.info("\n이미지만 출력 : \n : "
+                        + content.substring(content.indexOf("<img"), content.indexOf("/>")+2));
+            }
+        }
 
         mav.addObject("bbsList", bbsList);
-        mav.setViewName("pages/boardA");
+        mav.setViewName("/pages/freeboard");
         return mav;
     }
 
@@ -100,6 +109,8 @@ public class boardController {
         Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(Long.parseLong(idx));
         Bbs bbs = bbsWrapper.orElse(null);
         logger.info(String.valueOf(bbs.getCategory()));
+
+
         mav.addObject("bbs", bbs);
         mav.setViewName("pages/detailBoard");
         return mav;

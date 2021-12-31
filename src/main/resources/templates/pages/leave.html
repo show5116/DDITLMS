@@ -113,7 +113,6 @@
 
         if(leaveBtn!=null){
             leaveBtn.addEventListener("click", function (){
-                console.log(reason.value.length);
                 if(reason.value.length < 20){
                     alert("사유를 20자 이상 적어주세요.");
                     return;
@@ -125,7 +124,6 @@
 
         if(cancelBtn!=null){
             cancelBtn.addEventListener("click", function (){
-                console.log("신청 취소");
                 const params = {
 
                 }
@@ -138,7 +136,6 @@
                     }
 
                 }).done(function (){
-                    console.log("됨.")
                     location.href="/academic/leave";
                 })
             });
