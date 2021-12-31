@@ -9,8 +9,10 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
 import com.example.dditlms.domain.dto.FileDataDTO;
 import com.example.dditlms.domain.entity.FileData;
+import com.example.dditlms.domain.entity.History;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.repository.FileDataRepository;
+import com.example.dditlms.domain.repository.HistoryRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.FileService;
 import com.example.dditlms.util.AmazonS3Util;
@@ -50,6 +52,8 @@ public class FileDataController {
 
     private final FileService fileService;
     private final FileDataRepository fileDataRepository;
+    private final HistoryRepository historyRepository;
+
 
     final String endPoint = "https://kr.object.ncloudstorage.com";
     final String regionName = "kr-standard";
@@ -65,6 +69,10 @@ public class FileDataController {
 
     @GetMapping("/cloud")
     public ModelAndView storageList(ModelAndView mav) {
+
+
+        List<History> list = historyRepository.getAll();
+        logger.info(String.valueOf("history" + list));
 
         Map<String, Object> map = new HashMap<>();
         fileService.parentChk(map);     // 부모 체크 후 없으면 루트 폴더 생성
@@ -348,88 +356,6 @@ public class FileDataController {
         return mav;
     }
 
-
-    // 여기서 토큰 받아서 풀어서 zip 다운하는데
-    // 갯수는 list로 받아서 푸는게 나을거같고
-//    @PostMapping("/cloud/zipDownload/{chkArr}")
-//    public void CompressZip(HttpServletRequest request, HttpServletResponse response, Object handler,
-//                @RequestBody Map<String, Object> paramMap){
-//        List<String> chkArr = (List<String>) paramMap.get("chkArr");
-//        logger.info("chkArr : " + chkArr);
-//        String[] files = new String[2];
-//
-//        for(int i = 0; i<chkArr.size(); i++){
-//            Optional<FileData> fileDataWrapper = fileDataRepository.findByFileIdx(Integer.parseInt(chkArr.get(i)));
-//            FileData fileData = fileDataWrapper.orElse(null);
-//            String fileName = fileData.getFileName()+fileData.getExtension();
-//            files[i] = fileName;
-//            logger.info("fileName : " + fileName);
-//        }
-//
-////        String[] files = {"3-3M2블록(국임)추가입주자모집공고문최종(21.11.26).pdf",
-////                "01.수행계획서.hwp"};
-//
-//
-//        ZipOutputStream zout = null;
-//        String zipName = "아카이브.zip";
-//        String tempPath = "";
-//
-//        if(files.length > 0){
-//            try{
-//                tempPath = "/Users/inhwan/Documents/uploadThrough";
-//
-//                zout = new ZipOutputStream(new FileOutputStream(tempPath + "/" + zipName));
-//                byte[] buffer = new byte[1024];
-//                FileInputStream in = null;
-//
-//                for(int k=0; k<files.length; k++){
-//                    in = new FileInputStream("/Users/inhwan/Documents/uploadThrough/" + files[k]);
-//                    zout.putNextEntry(new ZipEntry(files[k]));
-//
-//                    int len;
-//                    while ((len = in.read(buffer)) > 0) {
-//                        zout.write(buffer, 0, len);
-//                    }
-//
-//                    zout.closeEntry();
-//                    in.close();
-//                }
-//
-//                zout.close();
-//
-//                response.setContentType("application/zip");
-//                response.addHeader("Content-Disposition", "attachment;filename=" + new String(
-//                        zipName.getBytes("UTF-8"), "ISO-8859-1"));
-//
-//                FileInputStream fis = new FileInputStream(tempPath + "/" + zipName);
-//                BufferedInputStream bis = new BufferedInputStream(fis);
-//                ServletOutputStream so = response.getOutputStream();
-//                BufferedOutputStream bos = new BufferedOutputStream(so);
-//
-//                int n = 0;
-//                while ((n = bis.read(buffer)) > 0) {
-//                    bos.write(buffer, 0, n);
-//                    bos.flush();
-//                }
-//
-//                if(bos != null) bos.close();
-//                if(bis != null) bis.close();
-//                if(so != null) so.close();
-//                if(fis != null) fis.close();
-//
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                if(zout != null) {
-//                    zout = null;
-//                }
-//            }
-//        }
-//
-//    }
-
     @GetMapping("/cloud/zipDownload/{chkArr}")
     public void CompressZip(HttpServletRequest request, HttpServletResponse response, Object handler,
                             @PathVariable(value = "chkArr") String token){
@@ -450,7 +376,6 @@ public class FileDataController {
             logger.info("fileName : " + fileName);
             i++;
         }
-
 
 
 //        String[] files = {"3-3M2블록(국임)추가입주자모집공고문최종(21.11.26).pdf",

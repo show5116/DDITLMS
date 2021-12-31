@@ -50,13 +50,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-12 justify-content-end text-end">
+                        <button style="margin: 10px;" type="button" id="list-btn" class="btn btn-secondary"> 목록</button>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
 
     <script th:inline="javascript">
+        const listBtn = document.querySelector("#list-btn");
 
+        listBtn.addEventListener("click", function (){
+            location.href="/community/freeboard";
+        });
     </script>
 </th:block>
 </html>
