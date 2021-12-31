@@ -6,6 +6,7 @@ import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnRepository;
 import com.example.dditlms.service.SanctnService;
+import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,10 +112,51 @@ public class SanctnServiceImpl implements SanctnService {
             sanctnLn3.setSanctnStep(3);
             sanctnLnRepository.save(sanctnLn3);
         }
+    }
 
-        // 결재 승인
-                
 
+    //민원 신청, 우선은 휴학신청만 구현, 나중에는 파라미터 값을 이용해서 해당하는 민원 서식 신청 하도록 구현 할 것!
+    @Override
+    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, Long userNumber) {
+
+        String complainant = MemberUtil.getLoginMember().getName();
+
+        //민원 저장
+        Sanctn sanctn = new Sanctn();
+        LocalDate now = LocalDate.now();
+        LocalDate endDate = now.plusDays(7);
+
+        sanctn.setSanctnSj("휴학신청 : " + complainant);
+        sanctn.setSanctnCn(sanctnCn);
+        sanctn.setDrafter(drafter);
+        sanctn.setSanctnWritngde(now);
+        sanctn.setSanctnUpdde(endDate);
+        sanctn.setStatus(SanctnProgress.PROGRESS);
+        Sanctn savedSanctn = sanctnRepository.save(sanctn);
+        
+        // 민원 결재선 저장(신청자 본인)
+
+        SanctnLn sanctnLn = new SanctnLn();
+        sanctnLn.setSanctnSn(savedSanctn);
+        Optional<Member> byUserNumber = memberRepository.findByUserNumber(drafter);
+        sanctnLn.setMberNo(byUserNumber.get());
+        sanctnLn.setSanctnLnProgress(SanctnLnProgress.PROCESS);
+        sanctnLn.setLastApproval("N");
+        sanctnLn.setSanctnDate(LocalDateTime.now());
+        sanctnLn.setSanctnStep(0);
+        sanctnLnRepository.save(sanctnLn);
+
+        // 민원 결재선 저장(담당직원)
+        SanctnLn sanctnLn1 = new SanctnLn();
+        sanctnLn1.setSanctnSn(savedSanctn);
+        Optional<Member> byUserNumber1 = memberRepository.findByUserNumber(userNumber);
+        sanctnLn1.setMberNo(byUserNumber1.get());
+        sanctnLn1.setSanctnLnProgress(SanctnLnProgress.REQUEST);
+        sanctnLn1.setLastApproval("N");
+        sanctnLn1.setSanctnStep(1);
+        sanctnLnRepository.save(sanctnLn1);
 
     }
+
+
 }

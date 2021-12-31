@@ -7,6 +7,7 @@ import com.example.dditlms.domain.entity.sanction.SanctnProgress;
 import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnRepository;
 import com.example.dditlms.service.SanctnLnService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class SanctnLnServiceImpl implements SanctnLnService {
 
     private final SanctnLnRepository sanctnLnRepository;
     private final SanctnRepository sanctnRepository;
+
     //결재 승인
     @Override
     @Transactional
@@ -72,6 +74,7 @@ public class SanctnLnServiceImpl implements SanctnLnService {
 
         Optional<Sanctn> findSanctn = sanctnRepository.findById(id);
         findSanctn.get().setStatus(SanctnProgress.COMPLETION);
+
 
     }
 }
