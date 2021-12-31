@@ -7,10 +7,13 @@ import com.example.dditlms.domain.entity.History;
 import com.example.dditlms.domain.entity.SemesterByYear;
 import com.example.dditlms.domain.entity.Student;
 import com.example.dditlms.domain.entity.TempAbsence;
+import com.example.dditlms.domain.entity.sanction.Docform;
 import com.example.dditlms.domain.repository.HistoryRepository;
 import com.example.dditlms.domain.repository.SemesterByYearRepository;
 import com.example.dditlms.domain.repository.TempAbsenceRepository;
+import com.example.dditlms.domain.repository.sanctn.DocformRepository;
 import com.example.dditlms.service.AcademicService;
+import com.example.dditlms.service.SanctnService;
 import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -33,6 +36,8 @@ public class AcademicServiceImpl implements AcademicService {
     private final HistoryRepository histRepository;
     private final TempAbsenceRepository tempAbsenceRepository;
     private final SemesterByYearRepository semesterByYearRepository;
+    private final DocformRepository docformRepository;
+    private final SanctnService sanctnService;
 
 
 
@@ -78,6 +83,13 @@ public class AcademicServiceImpl implements AcademicService {
                 .tempAbsence(tempAbsence)
                 .build();
         histRepository.save(history);
+
+        // 전자결재에 민원 추가 로직
+        Long drafter = MemberUtil.getLoginMember().getUserNumber();
+        Docform docform = docformRepository.findById(6L).get();
+        // 담당직원 강제로 삽입함, 실제로는 담당 직원 검색 메소드가 필요함
+        sanctnService.saveComplaint(docform, drafter, reason, 11111L);
+
 
     }
 

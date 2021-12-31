@@ -3,7 +3,6 @@ package com.example.dditlms.domain.repository.sanctn;
 import com.example.dditlms.domain.dto.QSanctnDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.sanction.QSanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
@@ -33,7 +32,6 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final MemberRepository memberRepository;
 
-
     public SanctnLnRepositoryImpl(EntityManager entityManager, MemberRepository memberRepository) {
         this.queryFactory = new JPAQueryFactory(entityManager);
         this.memberRepository = memberRepository;
@@ -45,7 +43,8 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
     @Override
     public List<SanctnDTO> showSanctnLine2(Long id) {
 
-        return queryFactory
+
+        List<SanctnDTO> result = queryFactory
                 .select(new QSanctnDTO(sanctnLn1.sanctnDate
                         , sanctnLn1.sanctnOpinion
                         , sanctnLn1.lastApproval
@@ -81,7 +80,12 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .orderBy(sanctnLn1.sanctnStep.asc())
                 .fetch();
 
+
+        return result;
+
+
     }
+
 
     @Override
     public SanctnLn findSanctnId(Long userNumber, Long id) {
@@ -173,12 +177,8 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-
         List<SanctnDTO> content = results.getResults();
         long total = results.getTotal();
-
-        log.info("결재 조회!!"+String.valueOf(content));
-        log.info("결재 조회!!" +String.valueOf(total));
 
         return new PageImpl<>(content, pageable, total);
     }

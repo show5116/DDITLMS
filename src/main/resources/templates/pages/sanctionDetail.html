@@ -55,7 +55,8 @@
                 <h6 th:text="${detail.sanctnSj}">기안서 제목</h6>
                 <div class="media">
                     <div class="media-body-right">
-                        <p id="name" class="text-right">최초기안자</p>
+                        <p class="text-right" th:if="${drafterType}" th:text="${drafterType}">최초기안자</p>
+                        <p class="text-right" th:if="!${drafterType}">최초기안자</p>
                     </div>
                 </div>
                 <text id="contents" th:utext="${details.sanctnCn}">본문 내용 쭉쭉~~~~~~~</text>
@@ -74,7 +75,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <div th:each="sanctnLn : ${sanctnLnList}">
+                <div th:each="sanctnLn : ${sanctnLnList}" >
+                    <div th:each="com : ${compliment}">
+                    <tr style="background-color:LightCyan;">
+                        <th th:text="${com.name}" th:id="names"></th>
+                        <th scope="col">학생</th>
+                        <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
+                        <th scope="col" th:text="${com.status.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                    </div>
                     <tr th:if="${sanctnLn.sanctnLnProgress.toString().equals('PROCESS')}"
                         style="background-color:LightCyan;">
                         <div th:if="${sanctnLn.userNumber == userNumber}">
