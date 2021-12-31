@@ -22,9 +22,9 @@ var deleteLectureList = [];
         trEvents.forEach(trEvent => {
             trEvent.addEventListener('click',function () {
                 test();
+                addPreRegistration();
             });
         });
-
     }
     function test(){
         const target = event.currentTarget;
@@ -100,32 +100,49 @@ var deleteLectureList = [];
             })
     }
 
-    function preRegistrationList(){
+    function addPreRegistration(){
+        const select = event.currentTarget;
+        alert("add");
+        console.log("select");
+        console.log(select);
+        var id = select.id;
+        console.log("id");
+        console.log(id);
         $.ajax({
-            url : "/preCourseRegistration/preRegistrationList",
-            method : "get",
+            url : "/preCourseRegistration/searchLectureId",
+            method : "Post",
             data : {
-                "memberNo" : memberNo
+                "id": id
+            },
+            dataType : "json",
+            beforeSend : function(xhr){
+                xhr.setRequestHeader(header, token);
             }
         })
-            .done(function(fragment){
-                console.log(fragment);
-                $("#preRegistrationList").replaceWith(fragment);
-                trEvent();
-            })
+        .done((fragment)=>{
+            console.log(fragment);
+            const count = document.querySelector("#pre-count")
+            const precourseTable = document.querySelector("#table-precourse");
+            const newTr = document.createElement("tr");
+            newTr.innerHTML = `
+                <td>${fragment.lectureSeme}</td>
+                <td>${fragment.lectureName}</td>
+                <td>${fragment.professor}</td>
+                <td>${fragment.lectureSchedule}</td>
+                <td>${fragment.lectureRoom}</td>
+            `;
+            precourseTable.prepend(newTr);
+            var text = count.innerText;
+            text = text.replace("건","");
+            count.innerText = `${text*1 +1}건`;
+
+        });
+
+
+
+
 
     }
-
-    function testPDF(){
-        swal("hi");
-
-        var url = "/static/pdf/lny.pdf";
-        var name = "testPDF";
-        var option = "width = 500, height = 500, top = 100, left = 200, scrollbars = yes,location = no";
-        window.open("/static/pdf/lny.pdf", "target", "width = 500, height = 500, top = 100, left = 200, scrollbars = yes,location = no", false);
-    }
-
-
 
 
     /*

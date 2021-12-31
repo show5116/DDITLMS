@@ -16,19 +16,15 @@ const majorList = [];
         lectureTable : document.querySelector("#open-lecture"),
         searchBtn : document.querySelector("#btn-search")
     }
-
     var  college = topSetting.college;
     college.onchange = function(){
         var department = topSetting.department;
         var selectText = college.options[college.selectedIndex].innerText;
         var selectValue = college.options[college.selectedIndex].value;
-        console.log(selectText);
-        console.log(selectValue);
 
         if (selectText=='(전체)'){
             department.options.length=1;
         }
-
         $.ajax({
             url : "/signUpSearch/getMajor",
             method:"Post",
@@ -41,7 +37,6 @@ const majorList = [];
             }
         })
             .done(function(fragment){
-                console.log(fragment);
                 var text = fragment.majorList;
                 var value = fragment.majorCode;
 
@@ -59,7 +54,6 @@ const majorList = [];
                 allAutoSearch();
             })
     }
-
 
     var year = topSetting.year;
     var seme = topSetting.semester;
@@ -97,8 +91,6 @@ const majorList = [];
     function searchYear(){  // 학년도로 검색
         var selectYear = topSetting.year.options[topSetting.year.selectedIndex].value;
         var selectSeme = topSetting.semester.options[topSetting.semester.selectedIndex].innerText;
-        console.log(selectYear);
-        console.log(selectSeme);
         $.ajax({
             url : "/signUpSearch/searchYear",
             method : "Post",
@@ -118,9 +110,6 @@ const majorList = [];
     function searchMajor(){
         var college = topSetting.college.options[topSetting.college.selectedIndex].value;
         var major = topSetting.department.options[topSetting.department.selectedIndex].innerText;
-        console.log("=============searchCoellge=============");
-        console.log(college);
-        console.log(major);
         $.ajax({
             url : "/signUpSearch/searchMajor",
             method : "Post",
@@ -133,7 +122,6 @@ const majorList = [];
             }
         })
             .done(function(fragment){
-                console.log(fragment);
                 $("#list").replaceWith(fragment);
             })
     }
@@ -152,7 +140,6 @@ const majorList = [];
             }
         })
             .done(function(fragment){
-                console.log(fragment);
                 $("#list").replaceWith(fragment);
             })
     }
@@ -167,13 +154,6 @@ const majorList = [];
             searchMajor = "total";
         }
 
-        console.log("=============allAutoSearch=============");
-        console.log(searchYear);
-        console.log(searchSeme);
-        console.log(searchCollege);
-        console.log(searchMajor);
-        console.log(searchdivision);
-        console.log("========================================");
         $.ajax({
             url : "/signUpSearch/allAutoSearch",
             method : "Post",
@@ -189,16 +169,7 @@ const majorList = [];
             }
         })
             .done(function(fragment){
-                console.log("=============done=============");
-                console.log(fragment);
                 $("#list").replaceWith(fragment);
-
             })
-
-
-
     }
-
-
-
 })();

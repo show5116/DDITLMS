@@ -85,10 +85,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="tr-event" th:each="lecture : ${openLectureList}" th:id="${lecture.getLectureCode()}">
+                                                <tr class="tr-event" th:each="lecture : ${openLectureList}"  th:id="${lecture.getLectureCode()}">
+                                                    <td class="hidden-lecture" style="display: none" th:text="${lecture}"></td>
                                                     <td th:text="${lecture.getMajorKr()}"></td>
                                                     <td th:text="${lecture.getSubjectCode()}"></td>
-                                                    <td><a onclick="javascriptestPDF();" class="btn btn-link txt-google-plus" th:text="${lecture.getLectureName()}"></a></td>
+                                                    <td><a onclick="testPDF();" class="btn btn-link txt-google-plus" th:text="${lecture.getLectureName()}"></a></td>
                                                     <td th:text="${lecture.getLectureClass()}"></td>
                                                     <td th:text="${lecture.getLectureSeme()}"></td>
                                                     <td th:text="${lecture.getLecturedivision()}"></td>
@@ -109,7 +110,7 @@
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="row col-sm-7 align-self-center">
                                             <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">예비수강과목</h4>
-                                            <span class="col text-muted p-l-10 m-t-10" th:text="|${preTotalCount}건|"></span>
+                                            <span class="col text-muted p-l-10 m-t-10" th:text="|${preTotalCount}건|" id="pre-count"></span>
                                         </div>
                                         <div class="col-sm-3 justify-content-end text-end">
                                             <button type="button" class="btn btn-secondary" data-bs-original-title="" title="">저장</button>
@@ -126,7 +127,7 @@
                                                     <th>강의실</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="table-precourse">
                                                 <tr class="tr-event" th:each="preList : ${preRegistrationList}" th:id="${preList.getLectureCode()}">
                                                     <td th:text="${preList.getLectureSeme()}"></td>
                                                     <td th:text="${preList.getLectureName()}"></td>
@@ -146,7 +147,17 @@
         </div>
     </div>
 
+    <script>
+        function testPDF(){
+            event.stopImmediatePropagation();
+            window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
+
+        }
+
+    </script>
+
     <script th:src="@{/static/js/courseReg/preCourseRegistration.js}"></script>
+
 
 </th:block>
 </html>

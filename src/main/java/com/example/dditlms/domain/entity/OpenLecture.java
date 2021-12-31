@@ -1,5 +1,6 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.common.LectureSection;
 import com.example.dditlms.domain.dto.PreCourseDTO;
 import lombok.*;
 
@@ -17,16 +18,17 @@ public class OpenLecture {
     private String id;
 
     @Column(name = "LCTRE_SE", length = 50)
-    private String lectureSection;
+    @Enumerated(EnumType.STRING)
+    private LectureSection lectureSection;
 
     @Column(name = "LCTRE_KND")
-    private Character lectureKind;;
+    private Character lectureKind;
 
     @Column(name = "LCTRE_NMPR")
-    private int peopleNumber;;
+    private int peopleNumber;
 
     @Column(name = "LCTRE_STUT", length = 200)
-    private String state;;
+    private String state;
 
     @Column(name = "ATCHMNFL_ID")
     private int syllabusFileId;   //첨부파일번호(강의계획서)
@@ -45,11 +47,11 @@ public class OpenLecture {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MBER_NO")
-    private Professor professorNo;;
+    private Professor professorNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SBJECT_CD")
-    private Subject subjectCode;;
+    private Subject subjectCode;
 
     @Column(name = "LCTRE_SCHEDULE", length = 30)
     private String lectureSchedule;
@@ -62,9 +64,9 @@ public class OpenLecture {
                 .majorKr(this.majorCode.getKorean())
                 .subjectCode(this.subjectCode.getId())
                 .lectureName(this.subjectCode.getName())
-                .lectureSeme(this.lectureSection)
+                .lectureSeme(this.lectureSection.getKorean())
                 .maxPeopleCount(this.peopleNumber)
-                .professor(this.professorNo.getUserNumber()+"")
+                .professor(this.professorNo.getMember().getName())
                 .lectureSchedule(this.lectureSchedule)
                 .lectureRoom(this.lectureId.getId())
                 .lectureClass(lectureClass)

@@ -1,7 +1,6 @@
 package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.dto.PreCourseDTO;
-import com.example.dditlms.domain.dto.SignupDTO;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.PreCourseRegistrationRepository;
@@ -10,6 +9,7 @@ import com.example.dditlms.domain.repository.SignupSearchRepository;
 import com.example.dditlms.security.AccountContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
@@ -46,7 +47,7 @@ public class PreCourseRegistrationController {
         memRole = member.getRole().getValue();
     }
 
-    @GetMapping("/preCourseRegistration")
+    @GetMapping("/student/preCourseRegistration")
     public String preCourseRegistration(Model model){
         getUserInfo();
         log.info("==========preCourseRegistration=========");
@@ -62,26 +63,7 @@ public class PreCourseRegistrationController {
             String kind = openLecture.getLectureKind() +"";
             PreCourseDTO dto = openLecture.toDto();
             dto.setLectureClass(lectureClass);
-            String complete = openLecture.getLectureSection();
-
-            switch (complete){
-                case "CULTURE_SELECT" :
-                    complete = "교선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "CULTURE_REQUIRED" :
-                    complete = "교필";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_SELECT" :
-                    complete = "전선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_REQUIRED" :
-                    complete = "전필";
-                    dto.setLectureSeme(complete);
-                    break;
-            }
+            dto.setLectureSeme(openLecture.getLectureSection().getKorean());
             if (kind.equals("F")){
                 kind = "오프라인";
                 dto.setLecturedivision(kind);
@@ -110,29 +92,7 @@ public class PreCourseRegistrationController {
             PreCourseDTO dto = preCourseRegistration.toPreDto();
             log.info("-----PreCourseRegistrationController[preCourseRegistration] :: dto={}",dto);
             dto.setLectureClass(lectureClass);
-            String complete = preCourseRegistration.getLectureCode().getLectureSection();
-            switch (complete){
-                case "CULTURE_SELECT" :
-                    complete = "교선";
-                    log.info("-----PreCourseRegistrationController[preCourseRegistration] :: switch(complete)={}",complete);
-                    dto.setLectureSeme(complete);
-                    break;
-                case "CULTURE_REQUIRED" :
-                    complete = "교필";
-                    log.info("-----PreCourseRegistrationController[preCourseRegistration] :: switch(complete)={}",complete);
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_SELECT" :
-                    complete = "전선";
-                    log.info("-----PreCourseRegistrationController[preCourseRegistration] :: switch(complete)={}",complete);
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_REQUIRED" :
-                    complete = "전필";
-                    log.info("-----PreCourseRegistrationController[preCourseRegistration] :: switch(complete)={}",complete);
-                    dto.setLectureSeme(complete);
-                    break;
-            }
+            dto.setLectureSeme(preCourseRegistration.getLectureCode().getLectureSection().getKorean());
             if (kind.equals("F")){
                 kind = "오프라인 ";
                 log.info("-----PreCourseRegistrationController[preCourseRegistration] :: if(kind)={}",kind);
@@ -190,26 +150,7 @@ public class PreCourseRegistrationController {
             String kind = openLecture.getLectureKind() +"";
             PreCourseDTO dto = openLecture.toDto();
             dto.setLectureClass(lectureClass);
-            String complete = openLecture.getLectureSection();
-
-            switch (complete){
-                case "CULTURE_SELECT" :
-                    complete = "교선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "CULTURE_REQUIRED" :
-                    complete = "교필";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_SELECT" :
-                    complete = "전선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_REQUIRED" :
-                    complete = "전필";
-                    dto.setLectureSeme(complete);
-                    break;
-            }
+            dto.setLectureSeme(openLecture.getLectureSection().getKorean());
             if (kind.equals("F")){
                 kind = "오프라인 ";
                 dto.setLecturedivision(kind);
@@ -239,26 +180,7 @@ public class PreCourseRegistrationController {
             String kind = openLecture.getLectureKind() +"";
             PreCourseDTO dto = openLecture.toDto();
             dto.setLectureClass(lectureClass);
-            String complete = openLecture.getLectureSection();
-
-            switch (complete){
-                case "CULTURE_SELECT" :
-                    complete = "교선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "CULTURE_REQUIRED" :
-                    complete = "교필";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_SELECT" :
-                    complete = "전선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_REQUIRED" :
-                    complete = "전필";
-                    dto.setLectureSeme(complete);
-                    break;
-            }
+            dto.setLectureSeme(openLecture.getLectureSection().getKorean());
             if (kind.equals("F")){
                 kind = "오프라인 ";
                 dto.setLecturedivision(kind);
@@ -291,25 +213,7 @@ public class PreCourseRegistrationController {
             String kind = preCourseRegistration.getLectureCode().getLectureKind() +"";
             PreCourseDTO dto = preCourseRegistration.toPreDto();
             dto.setLectureClass(lectureClass);
-            String complete = preCourseRegistration.getLectureCode().getLectureSection();
-            switch (complete){
-                case "CULTURE_SELECT" :
-                    complete = "교선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "CULTURE_REQUIRED" :
-                    complete = "교필";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_SELECT" :
-                    complete = "전선";
-                    dto.setLectureSeme(complete);
-                    break;
-                case "MAJOR_REQUIRED" :
-                    complete = "전필";
-                    dto.setLectureSeme(complete);
-                    break;
-            }
+            dto.setLectureSeme(preCourseRegistration.getLectureCode().getLectureSection().getKorean());
             if (kind.equals("F")){
                 kind = "오프라인 ";
                 dto.setLecturedivision(kind);
@@ -325,7 +229,14 @@ public class PreCourseRegistrationController {
         return "pages/preCourseRegistration::#preRegistrationList";
     }
 
-
+    @ResponseBody
+    @PostMapping("/preCourseRegistration/searchLectureId")
+    public PreCourseDTO searchLectureId(@RequestParam String id){
+        JSONObject jsonObject = new JSONObject();
+        OpenLecture openLecture = searchRepository.findById(id).get();
+        PreCourseDTO dto = openLecture.toDto();
+        return dto;
+    }
 
 
 

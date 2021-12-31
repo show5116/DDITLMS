@@ -34,7 +34,7 @@ public class PreCourseRegistration {
     public PreCourseDTO toPreDto(){
         PreCourseDTO dto = PreCourseDTO.builder()
                 .lectureCode(this.lectureCode.getId())
-                .lectureSeme(this.lectureCode.getLectureSection())
+                .lectureSeme(this.lectureCode.getLectureSection().getKorean())
                 .lectureName(this.lectureCode.getSubjectCode().getName())
                 .professor(this.lectureCode.getProfessorNo()+"")
                 .lectureSchedule(this.lectureCode.getLectureSchedule())
