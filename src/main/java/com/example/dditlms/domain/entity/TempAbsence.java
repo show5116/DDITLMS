@@ -27,10 +27,6 @@ public class TempAbsence {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MBER_NO")
-    private Student mberNo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BEGINSEMSTR")
     private SemesterByYear beginsemstr;
 

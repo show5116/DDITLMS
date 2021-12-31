@@ -7,6 +7,8 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 import lombok.ToString;
 
+import java.math.BigInteger;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -32,6 +34,8 @@ public class SanctnDTO {
 
     private Long sanctnId;
     private LocalDate sanctnUpdde;
+    private String major_code;
+    private String major_nm_kr;
 
 
 
@@ -66,5 +70,16 @@ public class SanctnDTO {
         this.status = status;
         this.sanctnUpdde = sanctnUpdde;
         this.name = name;
+    }
+
+    public SanctnDTO(LocalDateTime sanctnDate, String sanctnOpinion, Integer sanctnStep, String lastApproval, SanctnProgress status, String name, Long userNumber, String major_nm_kr) {
+        this.sanctnDate = sanctnDate;
+        this.sanctnOpinion = sanctnOpinion;
+        this.sanctnStep = sanctnStep;
+        this.lastApproval = lastApproval;
+        this.status = status;
+        this.name = name;
+        this.userNumber = userNumber;
+        this.major_nm_kr = major_nm_kr;
     }
 }

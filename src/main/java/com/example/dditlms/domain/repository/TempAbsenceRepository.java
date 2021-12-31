@@ -11,5 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface TempAbsenceRepository extends JpaRepository<TempAbsence, Long> {
-    Optional<TempAbsence> findByMberNoAndStatus(Student student, ResultStatus resultStatus);
+//    Optional<TempAbsence> findByMberNoAndStatus(Student student, ResultStatus resultStatus);
+//    List<TempAbsence> findAllByMberNo(Student student);
 }

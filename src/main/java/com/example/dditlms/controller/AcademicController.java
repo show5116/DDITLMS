@@ -1,11 +1,8 @@
 package com.example.dditlms.controller;
 
-import com.example.dditlms.domain.common.AcademicStatus;
-import com.example.dditlms.domain.common.ResultStatus;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.HistoryRepository;
-import com.example.dditlms.domain.repository.SemesterByYearRepository;
-import com.example.dditlms.domain.repository.TempAbsenceRepository;
+import com.example.dditlms.domain.repository.student.StudentRepository;
 import com.example.dditlms.service.AcademicService;
 import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Controller
@@ -25,17 +21,17 @@ public class AcademicController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileDataController.class);
     private final HistoryRepository histRepository;
-    private final TempAbsenceRepository tempAbsenceRepository;
-    private final SemesterByYearRepository semesterByYearRepository;
     private final AcademicService academicService;
-
+    private final StudentRepository studentRepository;
 
     @GetMapping("/academic")
     public ModelAndView academic(ModelAndView mav){
-        Student student = MemberUtil.getLoginMember().getStudent();
+        Optional<Student> studentWrapper = studentRepository.findById(MemberUtil.getLoginMember().getUserNumber());
+        Student student = studentWrapper.orElse(null);
 
-        List<History> historyList = histRepository.findAllByStudent(student);
+        List<History> historyList = histRepository.getfindAllByStudent(student);
 
+        mav.addObject("student", student);
         mav.addObject("historyList", historyList);
         mav.setViewName("pages/academic");
         return mav;
@@ -60,11 +56,9 @@ public class AcademicController {
 
         if(history != null){
             TempAbsence tempAbsence = (TempAbsence) map.get("tempAbsence");
-
-            mav.addObject("tempAbsence", tempAbsence);
             mav.addObject("student", student);
+            mav.addObject("tempAbsence", tempAbsence);
             mav.addObject("parent", student.getMajor().getParent());
-
         }
 
         mav.addObject("history", history);
@@ -73,10 +67,9 @@ public class AcademicController {
     }
 
     @PostMapping("/academic/leavePost")
-    public ModelAndView leavePost(ModelAndView mav, HttpServletRequest request){
+    public ModelAndView leavePost(ModelAndView mav){
         Map<String, Object> map = new HashMap<>();
         academicService.historyInsert(map);
-        academicService.semesterInsert(map);
 
         mav.setViewName("redirect:/academic/leave");
         return mav;
@@ -99,8 +92,5 @@ public class AcademicController {
         academicService.tempAbsenceUpdate(map);
         return "pages/leave";
     }
-
-
-
 
 }

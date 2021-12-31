@@ -40,8 +40,6 @@
                                         <thead>
                                         <tr>
                                             <th class="text-center">No.</th>
-                                            <th class="text-center">학년도</th>
-                                            <th class="text-center">학기</th>
                                             <th class="text-center">학부(과)</th>
                                             <th class="text-center">전공</th>
                                             <th class="text-center">학적상태</th>
@@ -49,30 +47,24 @@
                                             <th class="text-center">확정일자</th>
                                             <th class="text-center">학년</th>
                                             <th class="text-center">학적변동</th>
-                                            <th class="text-center">변동사유</th>
-                                            <th class="text-center">복학예정년도</th>
-                                            <th class="text-center">복학예정학기</th>
-                                            <th class="text-center">등록</th>
-                                            <th class="text-center">성적</th>
+                                            <th class="text-center">변동결과</th>
+                                            <th class="text-center">사유</th>
+                                            <th class="text-center">복학예정</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr class="text-center">
-                                            <th>1</th>
-                                            <td>2020</td>
-                                            <td>2</td>
-                                            <td>전기,전자,통신공학부</td>
-                                            <td>전자공학전공</td>
-                                            <td>수료</td>
-                                            <td>2021.02.19</td>
-                                            <td>2021.02.19</td>
-                                            <td>4</td>
-                                            <td>전기수료</td>
-                                            <td>기타</td>
-                                            <td>2021</td>
-                                            <td>1학기</td>
-                                            <td>등록</td>
-                                            <td>Y</td>
+                                        <tr th:each="history,index : ${historyList}" class="text-center">
+                                            <th th:text="${index.index+1}"></th>
+                                            <td th:text="${student.major.parent.korean}">전기,전자,통신공학부</td>
+                                            <td th:text="${student.major.korean}">전자공학전공</td>
+                                            <td th:text="${student.academicStatus.korean}">수료</td>
+                                            <td th:text="${history.aplicationDate}">2021.02.19</td>
+                                            <td th:text="${history.changeDate}">2021.02.19</td>
+                                            <td th:text="${student.grade.korean}">4</td>
+                                            <td th:text="${history.status.korean}">휴,복학,전과</td>
+                                            <td th:text="${history.resultStatus.korean}">승인,대기,반려</td>
+                                            <td th:text="${history.note}">기타</td>
+                                            <td th:text="${history.tempAbsence.endsemstr.year}">2021</td>
                                         </tr>
                                         </tbody>
                                     </table>
