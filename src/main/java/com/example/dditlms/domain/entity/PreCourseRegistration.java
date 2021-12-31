@@ -1,5 +1,6 @@
 package com.example.dditlms.domain.entity;
 
+import com.example.dditlms.domain.dto.PreCourseDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,5 +30,16 @@ public class PreCourseRegistration {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ESTBL_COURS_CD")
     private OpenLecture lectureCode;
+
+    public PreCourseDTO toPreDto(){
+        PreCourseDTO dto = PreCourseDTO.builder()
+                .lectureCode(this.lectureCode.getId())
+                .lectureSeme(this.lectureCode.getLectureSection())
+                .lectureName(this.lectureCode.getSubjectCode().getName())
+                .professor(this.lectureCode.getProfessorNo()+"")
+                .lectureSchedule(this.lectureCode.getLectureSchedule())
+                .lectureRoom(this.lectureCode.getLectureId().getId()).build();
+        return dto;
+    }
 
 }

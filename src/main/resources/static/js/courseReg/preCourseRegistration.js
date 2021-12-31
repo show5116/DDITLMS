@@ -1,30 +1,31 @@
 'use strict';
-
-var memberNumber;
-var openLectureList = [];
+var memberNo = document.querySelector("#studentNo");
 var preLectureList = [];
 var deleteLectureList = [];
-var majorList = [];
-
 (function(){
+    let testId;
+    trEvent();
 
-    document.querySelector("#221CS033_10003B");
     var topSetting = {
         studentNo : document.querySelector("#studentNo"),
         division : document.querySelector("#pre-division"),
         major : document.querySelector("#pre-major"),
+        searchSubject : document.querySelector("#pre-searchSubject"),
         searchBtn : document.querySelector("#pre-search-btn"),
         openLecture_table_tr_Class : document.querySelectorAll(".tr-event")
     }
-
-    var trEvents = document.querySelectorAll(".tr-event");
-    console.log(trEvents);
-    trEvents.forEach(trEvent => {
-        trEvent.addEventListener('click',function () {
-            test();
+    //강의리스트의 tr클릭시 backgroundColor 넣기
+    function trEvent(){
+        testId = null;
+        var trEvents = document.querySelectorAll(".tr-event");
+        console.log(trEvents);
+        trEvents.forEach(trEvent => {
+            trEvent.addEventListener('click',function () {
+                test();
+            });
         });
-    });
-    let testId;
+
+    }
     function test(){
         const target = event.currentTarget;
         console.log(target);
@@ -35,6 +36,98 @@ var majorList = [];
         target.classList.add("bg-light");
         testId = target.id;
     }
+
+    var clickDivision = topSetting.division;
+    var clickMajor = topSetting.major;
+    var searchBtn = topSetting.searchBtn;
+
+    clickDivision.onchange = function(){searchLecture(); }
+    clickMajor.onchange = function(){searchLecture();}
+    searchBtn.addEventListener('click',function(){
+        searchSubject();
+        trEvent();
+    })
+
+    function searchLecture(){
+        var division = clickDivision.options[clickDivision.selectedIndex].value;
+        var major = clickMajor.options[clickMajor.selectedIndex].innerText;
+
+        if (major==="(전체)"){
+            major = "total";
+        }
+
+        $.ajax({
+            url : "/preCourseRegistration/searchLecture",
+            method : "Post",
+            data : {
+                "division" : division,
+                "major" : major
+            },
+            beforeSend: function (xhr){
+                xhr.setRequestHeader(header, token);
+            }
+        })
+            .done(function(fragment){
+                console.log("=============done=============");
+                console.log(fragment);
+                $("#searchLectureList").replaceWith(fragment);
+                trEvent();
+            })
+
+    }
+    function searchSubject(){
+        var getSearchSubject = topSetting.searchSubject.value;
+
+        if (getSearchSubject === null || getSearchSubject === ""){
+            swal("검색어를 입력하세요.");
+            return;
+        }
+
+        $.ajax({
+            url : "/preCourseRegistration/searchSubject",
+            method : "Post",
+            data : {
+                "searchSubject" : getSearchSubject
+            },
+            beforeSend: function (xhr){
+                xhr.setRequestHeader(header, token);
+            }
+        })
+            .done(function(fragment){
+                console.log(fragment);
+                $("#searchLectureList").replaceWith(fragment);
+                trEvent();
+            })
+    }
+
+    function preRegistrationList(){
+        $.ajax({
+            url : "/preCourseRegistration/preRegistrationList",
+            method : "get",
+            data : {
+                "memberNo" : memberNo
+            }
+        })
+            .done(function(fragment){
+                console.log(fragment);
+                $("#preRegistrationList").replaceWith(fragment);
+                trEvent();
+            })
+
+    }
+
+    function testPDF(){
+        swal("hi");
+
+        var url = "/static/pdf/lny.pdf";
+        var name = "testPDF";
+        var option = "width = 500, height = 500, top = 100, left = 200, scrollbars = yes,location = no";
+        window.open("/static/pdf/lny.pdf", "target", "width = 500, height = 500, top = 100, left = 200, scrollbars = yes,location = no", false);
+    }
+
+
+
+
     /*
     const 예비리스트 = [];
     const 삭제리시트 = [];

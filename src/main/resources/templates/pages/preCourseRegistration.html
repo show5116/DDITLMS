@@ -60,7 +60,7 @@
                     <div class="tab-content p-t-15">
                         <div class="row">
                             <div class="col-lg-7">
-                                <div class="card-body-left">
+                                <div class="card-body-left" id="searchLectureList">
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="row col-sm-4 align-self-center">
                                             <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">개설강좌</h4>
@@ -85,10 +85,10 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="tr-event" th:each="lecture : ${opendLectureList}" th:id="${lecture.getLectureCode()}">
+                                                <tr class="tr-event" th:each="lecture : ${openLectureList}" th:id="${lecture.getLectureCode()}">
                                                     <td th:text="${lecture.getMajorKr()}"></td>
                                                     <td th:text="${lecture.getSubjectCode()}"></td>
-                                                    <td th:text="${lecture.getLectureName()}"></td>
+                                                    <td><a onclick="javascriptestPDF();" class="btn btn-link txt-google-plus" th:text="${lecture.getLectureName()}"></a></td>
                                                     <td th:text="${lecture.getLectureClass()}"></td>
                                                     <td th:text="${lecture.getLectureSeme()}"></td>
                                                     <td th:text="${lecture.getLecturedivision()}"></td>
@@ -105,11 +105,11 @@
                                 </div>
                             </div>
                             <div class="col-lg-5 p-l-0">
-                                <div class="card-body-right">
+                                <div class="card-body-right" id="preRegistrationList">
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="row col-sm-7 align-self-center">
                                             <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">예비수강과목</h4>
-                                            <span class="col text-muted p-l-10 m-t-10">0건</span>
+                                            <span class="col text-muted p-l-10 m-t-10" th:text="|${preTotalCount}건|"></span>
                                         </div>
                                         <div class="col-sm-3 justify-content-end text-end">
                                             <button type="button" class="btn btn-secondary" data-bs-original-title="" title="">저장</button>
@@ -127,35 +127,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>전필</td>
-                                                    <td>기초전기전자실습 (1)</td>
-                                                    <td>안치형</td>
-                                                    <td>금03A~04B,06A~09B</td>
-                                                    <td>공학1관(B404)</td>
+                                                <tr class="tr-event" th:each="preList : ${preRegistrationList}" th:id="${preList.getLectureCode()}">
+                                                    <td th:text="${preList.getLectureSeme()}"></td>
+                                                    <td th:text="${preList.getLectureName()}"></td>
+                                                    <td th:text="${preList.getProfessor()}"></td>
+                                                    <td th:text="${preList.getLectureSchedule()}"></td>
+                                                    <td th:text="${preList.getLectureRoom()}"></td>
                                                 </tr>
-                                                <tr>
-                                                    <td>전필</td>
-                                                    <td>기초전기전자실습 (2)</td>
-                                                    <td>안치형</td>
-                                                    <td>금03A~04B,06A~09B</td>
-                                                    <td>공학1관(B404)</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>전필</td>
-                                                    <td>기초전기전자실습 (3)</td>
-                                                    <td>안치형</td>
-                                                    <td>금03A~04B,06A~09B</td>
-                                                    <td>공학1관(B404)</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>전필</td>
-                                                    <td>기초전기전자실습 (4)</td>
-                                                    <td>안치형</td>
-                                                    <td>금03A~04B,06A~09B</td>
-                                                    <td>공학1관(B404)</td>
-                                                </tr>
-
                                             </tbody>
                                         </table>
                                     </div>

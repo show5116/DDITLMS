@@ -29,6 +29,16 @@ public class SignupSearchRepositoryImpl implements SignupSearchRepositoryCustom{
     }
 
     @Override
+    public List<OpenLecture> searchSubject(String searchSubject){
+        return queryFactory
+                .select(openLecture)
+                .from(openLecture, subject)
+                .where(openLecture.subjectCode.eq(subject)
+                        ,QSubject.subject.name.contains(searchSubject))
+                .fetch();
+    }
+
+    @Override
     public List<SignupDTO> totalLectureList(Map<String,Object> searchSubject) {
         JPAQuery<SignupDTO> query = queryFactory
                                         .select(new QSignupDTO(openLecture.yearSeme.year,

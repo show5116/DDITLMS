@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface MajorRepository extends JpaRepository<Major, String>, MajorRepositoryCustom {
     Optional<Major> findById(String id);
+    Optional<Major> findByKorean(String name);
 }
