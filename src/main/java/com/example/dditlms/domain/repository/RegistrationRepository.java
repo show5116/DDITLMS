@@ -12,4 +12,6 @@ import java.util.Optional;
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration,Long> {
     List<Registration> findAllByStudentOrderByRegistDateDesc(Student student);
+
+    Optional<Registration> findByStudentAndAplicationSemester(Student student,SemesterByYear semester);
 }
