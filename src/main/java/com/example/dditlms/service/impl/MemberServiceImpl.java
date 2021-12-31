@@ -40,7 +40,6 @@ public class MemberServiceImpl implements MemberService {
     public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
         long userNumber;
         Optional<Member> memberEntityWrapper;
-        System.out.println("안되나..?");
         try{
             userNumber = Long.parseLong(account);
             memberEntityWrapper = memberRepository.findByUserNumber(userNumber);

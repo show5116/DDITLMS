@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Table(name = "DEPT")
 @Entity
@@ -24,8 +25,12 @@ public class Department {
     @Column(name = "DEPT_NM", length = 200)
     private String deptNm;
 
-    @Column(name = "PAR_DEPT_CODE", length = 200)
-    private String parDeptCode;
+    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @JoinColumn(name = "PAR_DEPT_CODE")
+    private Department parent;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="PAR_DEPT_CODE")
+    private List<Department> children;
 
 }

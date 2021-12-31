@@ -61,6 +61,13 @@ public class scholarshipAndTuitionController {
         }
         long payment = member.getStudent().getMajor().getPayment();
         long realPay = payment - sale;
+        Optional<Registration> registrationWrapper = registrationRepository.findByStudentAndAplicationSemester(member.getStudent(),semester);
+        Registration registration = registrationWrapper.orElse(null);
+        if(registration == null){
+            mav.addObject("already","false");
+        }else{
+            mav.addObject("already","true");
+        }
         mav.addObject("payment",payment);
         mav.addObject("sale",sale);
         mav.addObject("realPay",realPay);
