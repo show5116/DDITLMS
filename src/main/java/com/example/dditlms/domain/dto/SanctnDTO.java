@@ -30,6 +30,10 @@ public class SanctnDTO {
 
     private Long countPro;
 
+    private Long sanctnId;
+    private LocalDate sanctnUpdde;
+
+
 
     public SanctnDTO() { }
 
@@ -52,5 +56,15 @@ public class SanctnDTO {
     public SanctnDTO(Integer sanctnStep, SanctnLnProgress sanctnLnProgress) {
         this.sanctnStep = sanctnStep;
         this.sanctnLnProgress = sanctnLnProgress;
+    }
+
+    @QueryProjection
+
+    public SanctnDTO(Long sanctnId, String sanctnSj, SanctnProgress status, LocalDate sanctnUpdde, String name) {
+        this.sanctnId = sanctnId;
+        this.sanctnSj = sanctnSj;
+        this.status = status;
+        this.sanctnUpdde = sanctnUpdde;
+        this.name = name;
     }
 }

@@ -1,9 +1,6 @@
 package com.example.dditlms.controller;
 
-import com.example.dditlms.domain.dto.DocFormDTO;
-import com.example.dditlms.domain.dto.EmployeeDTO;
-import com.example.dditlms.domain.dto.PageDTO;
-import com.example.dditlms.domain.dto.SanctnDTO;
+import com.example.dditlms.domain.dto.*;
 import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.*;
@@ -12,6 +9,7 @@ import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
+import com.example.dditlms.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
@@ -49,6 +50,8 @@ public class SanctnController {
 
     private final SanctnLnService sanctnLnService;
 
+    private final FileUtil fileUtil;
+
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
     public String santn(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
@@ -64,20 +67,21 @@ public class SanctnController {
 
 
         SanctnProgress reject = SanctnProgress.REJECT;
-        Page<SanctnLn> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+        Page<SanctnDTO> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+
         long totalRej = rejectResult.getTotalElements();
 
         model.addAttribute("totalRej", totalRej);
 
         SanctnProgress pub = SanctnProgress.PUBLICIZE;
-        Page<SanctnLn> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
+        Page<SanctnDTO> pubResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, pub);
         long totalPub = pubResult.getTotalElements();
         model.addAttribute("totalPub", totalPub);
 
         //전체 조회결과와 페이징 정보를 넘겨준다.
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
-        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
 
 
         model.addAttribute("results", results);
@@ -118,7 +122,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
-        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -209,14 +213,17 @@ public class SanctnController {
 
     //기안하기
     @PostMapping("/sanctnSubmit")
-    public RedirectView submitSanctn(SanctnForm sanctnForm) {
+    public RedirectView submitSanctn(SanctnForm sanctnForm, @RequestParam(value = "file", required = false) MultipartFile file, MultipartHttpServletRequest request) {
+        log.info("멀티파트 체킹!" + String.valueOf(request));
 
+        long id = fileUtil.uploadFiles(request.getFileMap());
 
         sanctnService.saveSanctn(sanctnForm.getSanctnSj()
                 , sanctnForm.getDocformSn()
                 , sanctnForm.getDrafter()
                 , sanctnForm.getSanctnCn()
-                , sanctnForm.getUserNumber());
+                , sanctnForm.getUserNumber()
+                , id);
 
 
         return new RedirectView("/sanctn");
@@ -391,7 +398,7 @@ public class SanctnController {
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
 
-        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -417,7 +424,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress reject = SanctnProgress.REJECT;
-        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -468,7 +475,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress publicize = SanctnProgress.PUBLICIZE;
-        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, publicize);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, publicize);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -493,7 +500,7 @@ public class SanctnController {
         }
         Long userNumber = member.getUserNumber();
 
-        Page<SanctnLn> results = sanctnLnRepository.inquireAll(userNumber, pageable);
+        Page<SanctnDTO> results = sanctnLnRepository.inquireAll(userNumber, pageable);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -521,7 +528,7 @@ public class SanctnController {
         Long userNumber = member.getUserNumber();
 
         SanctnProgress completion = SanctnProgress.COMPLETION;
-        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
+        Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));

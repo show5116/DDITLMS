@@ -14,4 +14,5 @@ public interface EmailService {
     void sentMailCopy(EmailDTO emailDTO);
     void tempMail(EmailDTO emailDTO) throws IOException;
     void moveMail(String folderName, Long mailUID, String TargetFolderName);
+    void deleteMail(String folderName, Long mailUID);
 }

@@ -141,23 +141,38 @@
         let mailBox = url[1]
         let target = "Trash";
 
-        $.ajax({
+        if(mailBox === "Trash" || mailBox === "Sent"){
 
-              type: "GET",
-              url: "/moveMail",
-              data: {
-                  "id": id,
-                  "mailBox": mailBox,
-                  "target": target
-              },
-              success: function (fragment) {
-                  opener.location.reload();
-                  window.close();
-              },
-        });
+             $.ajax({
+                  type: "GET",
+                  url: "/deleteMail",
+                  data: {
+                      "id": id,
+                      "mailBox": mailBox
+                  },
+                  success: function (fragment) {
+                      opener.location.reload();
+                      window.close();
+                  },
+            });
+
+        }else {
+
+            $.ajax({
+
+                  type: "GET",
+                  url: "/moveMail",
+                  data: {
+                      "id": id,
+                      "mailBox": mailBox,
+                      "target": target
+                  },
+                  success: function (fragment) {
+                      opener.location.reload();
+                      window.close();
+                  },
+            });
+        }
     }
-
-
-
 
 </script>
