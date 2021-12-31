@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,7 +32,11 @@ public class AcademicController {
 
     @GetMapping("/academic")
     public ModelAndView academic(ModelAndView mav){
+        Student student = MemberUtil.getLoginMember().getStudent();
 
+        List<History> historyList = histRepository.findAllByStudent(student);
+
+        mav.addObject("historyList", historyList);
         mav.setViewName("pages/academic");
         return mav;
     }
