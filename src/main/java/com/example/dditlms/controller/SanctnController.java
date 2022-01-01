@@ -1,6 +1,11 @@
 package com.example.dditlms.controller;
 
-import com.example.dditlms.domain.dto.*;
+import com.example.dditlms.domain.common.Role;
+import com.example.dditlms.domain.dto.DocFormDTO;
+import com.example.dditlms.domain.dto.EmployeeDTO;
+import com.example.dditlms.domain.dto.PageDTO;
+import com.example.dditlms.domain.dto.SanctnDTO;
+import com.example.dditlms.domain.entity.Bookmark;
 import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.*;
@@ -19,15 +24,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -101,8 +107,7 @@ public class SanctnController {
 
         //최근결재의견 조회
         List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
-        model.addAttribute("recentOpinions" , recentOpinion);
-        log.info("-----------------------" + String.valueOf(recentOpinion));
+        model.addAttribute("recentOpinions", recentOpinion);
 
 
         return "/pages/sanction";
@@ -197,7 +202,6 @@ public class SanctnController {
 
         Optional<Docform> form = docformRepository.findById(Long.valueOf((String) param.get("form")));
 
-
         return form;
     }
 
@@ -247,21 +251,51 @@ public class SanctnController {
         model.addAttribute("userNumber", userNumber);
 
         Optional<Sanctn> details = sanctnRepository.findById(id);
-        Sanctn sanctn = details.get();
-        model.addAttribute("details", sanctn);
 
+        if (details.isPresent()) {
+            Sanctn sanctn = details.get();
+            model.addAttribute("details", sanctn);
+            Long drafter = details.get().getDrafter();
+            Member findDrafter = memberRepository.findByUserNumber(drafter).get();
+            Role role = findDrafter.getRole();
+            if (role == Role.ROLE_STUDENT) {
+                String compliment = "민원신청";
+                model.addAttribute("drafterType", compliment);
+            }
+        }
+
+        //민원 신청 내역
+        Optional<SanctnDTO> result = sanctnService.viewComplaint(id);
+
+        if (result.isPresent()) {
+            System.out.println("나옴?");
+        SanctnDTO sanctnDTO = null;
+        sanctnDTO = result.get();
+        model.addAttribute("compliment", sanctnDTO);
+        log.info(String.valueOf(sanctnDTO));
+        }
+
+
+        //일반 결재 내역
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
-
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
+
+//        //민원 결재자 내역
+//        Optional<SanctnDTO> viewComplaintPro = sanctnService.viewComplaintPro(id);
+//        if(ObjectUtils.isEmpty(viewComplaintPro)) {
+//            System.out.println("나옴?");
+//            SanctnDTO sanctnDTO2 = null;
+//            sanctnDTO2 = viewComplaintPro.get();
+//            model.addAttribute("complimentPro", sanctnDTO2);
+//            log.info(String.valueOf(sanctnDTO2));
+//        }
 
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
 
-
         return "/pages/sanctionDetail";
     }
-
 
     // 결재 승인하기
     @PostMapping("/approval")
@@ -273,7 +307,6 @@ public class SanctnController {
         Long id = Long.valueOf((String) param.get("id"));
 
         sanctnLnService.updateSanctnLn(opinion.toString(), userNumber, id);
-
 
         //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
 
@@ -303,7 +336,6 @@ public class SanctnController {
         return "/pages/sanctionDetail";
 
     }
-
 
     //결재 반려처리
     @PostMapping("/reject")
@@ -436,30 +468,6 @@ public class SanctnController {
         return "/pages/sanction::#test";
     }
 
-    //승인 완료
-
-//    @GetMapping("/sanctnCom")
-//    public String sanctnCom(Model model, @PageableDefault(size = 3) Pageable pageable) {
-//
-//        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Member member = null;
-//        try {
-//            member = ((AccountContext) authentication.getPrincipal()).getMember();
-//        } catch (ClassCastException e) {
-//        }
-//        Long userNumber = member.getUserNumber();
-//
-//        SanctnProgress completion = SanctnProgress.COMPLETION;
-//        Page<SanctnLn> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
-//
-//        model.addAttribute("results", results);
-//        model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
-//
-//        return "/pages/sanction::#test";
-//
-//    }
-
     //공람 조회
 
     @GetMapping("/sanctnPublic")
@@ -512,8 +520,7 @@ public class SanctnController {
         return "pages/sanction::#test";
 
     }
-    
-    
+
     // 완료 조회
     @GetMapping("/sanctnCom")
     public String sanctnCom(Model model, @PageableDefault(size = 8) Pageable pageable) {

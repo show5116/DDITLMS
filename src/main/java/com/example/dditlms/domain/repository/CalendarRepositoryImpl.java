@@ -65,7 +65,6 @@ public class CalendarRepositoryImpl implements CalendarRepositoryCustom{
                             .where(QCalendar.calendar.id.eq(calendar.getId()),
                                     QCalendar.calendar.member.eq(calendar.getMember()))
                             .fetchCount();
-        log.info("---------------" + count+"");
         return count;
     }
 

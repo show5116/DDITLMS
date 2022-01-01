@@ -42,12 +42,16 @@
     <link id="color" rel="stylesheet" th:href="@{/static/css/color-1.css}" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/responsive.css}">
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css"/>
     <script th:src="@{/static/js/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/static/js/jquery.ui.min.js}"></script>
     <script th:src="@{/static/js/sweetalert.min.js}"></script>
     <script th:src="@{/static/js/dropzone/dropzone.js}"></script>
+    <script th:src="@{/static/js/sortable.js}"></script>
 </head>
 
 <th:block layout:fragment="content">
+
     <div class="container-fluid col-xxl-5 col-lg-6" th:each="detail : ${details}">
         <div>
             <div class="project-box">
@@ -55,13 +59,13 @@
                 <h6 th:text="${detail.sanctnSj}">기안서 제목</h6>
                 <div class="media">
                     <div class="media-body-right">
-                        <p id="name" class="text-right">최초기안자</p>
+                        <p class="text-right" th:if="${drafterType}" th:text="${drafterType}">최초기안자</p>
+                        <p class="text-right" th:if="!${drafterType}">최초기안자</p>
                     </div>
                 </div>
                 <text id="contents" th:utext="${details.sanctnCn}">본문 내용 쭉쭉~~~~~~~</text>
             </div>
         </div>
-
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead class="bg-success">
@@ -70,10 +74,30 @@
                     <th class="text-white" scope="col">직급</th>
                     <th class="text-white" scope="col">부서</th>
                     <th class="text-white" scope="col">상태</th>
-                    <th class="text-white"scope="col">처리날짜</th>
+                    <th class="text-white" scope="col">처리날짜</th>
                 </tr>
                 </thead>
                 <tbody>
+                <tr th:each="com : ${compliment}" style="background-color:LightCyan;">
+                    <th th:text="${com.name}" th:id="names"></th>
+                    <th scope="col">학생</th>
+                    <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
+                    <div th:if="${com.sanctnLnProgress.toString().equals('PROCESS')}">
+                        <th scope="col">민원신청</th>
+                    </div>
+                    <th scope="col"
+                        th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                </tr>
+                <tr th:each="com : ${complimentPro}" style="background-color:LightCyan;">
+                    <th th:text="${com.name}" th:id="names"></th>
+                    <th scope="col">교수</th>
+                    <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
+                    <div th:if="${com.sanctnLnProgress.toString().equals('WAITING')}">
+                        <th scope="col" th:text="${com.sanctnLnProgress.krName}"></th>
+                    </div>
+                    <th scope="col"
+                        th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                </tr>
                 <div th:each="sanctnLn : ${sanctnLnList}">
                     <tr th:if="${sanctnLn.sanctnLnProgress.toString().equals('PROCESS')}"
                         style="background-color:LightCyan;">
@@ -129,7 +153,6 @@
                         <th scope="col"
                             th:text="${#temporals.format(sanctnLn.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
                     </tr>
-
                 </div>
                 </tbody>
             </table>
@@ -162,8 +185,10 @@
                     <div class="media">
                         <div class="media-body">
                             <span th:text="${sanctnLn.sanctnOpinion}">의견 내용</span>
-                            <img th:if="${sanctnLn.sanctnLnProgress.toString().equals('PROCESS')}" th:src="@{/static/images/goodJob.png}" alt="확인도장" height="100" width="100">
-                            <img th:if="${sanctnLn.sanctnLnProgress.toString().equals('REJECT')}" th:src="@{/static/images/Bad.png}" alt="반려도장" height="100" width="100">
+                            <img th:if="${sanctnLn.sanctnLnProgress.toString().equals('PROCESS')}"
+                                 th:src="@{/static/images/goodJob.png}" alt="확인도장" height="100" width="100">
+                            <img th:if="${sanctnLn.sanctnLnProgress.toString().equals('REJECT')}"
+                                 th:src="@{/static/images/Bad.png}" alt="반려도장" height="100" width="100">
                         </div>
                     </div>
                 </div>
@@ -302,6 +327,13 @@
 
         })
 }
+
+
+
+
+
+
+
 
     </script>
 </th:block>

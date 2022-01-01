@@ -14,7 +14,6 @@ import java.util.Optional;
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
 
-
     @Override
     public void insertSubject(SubjectDTO subjectDTO) {
         Subject parent = null;

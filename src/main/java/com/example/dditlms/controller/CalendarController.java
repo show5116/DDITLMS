@@ -29,7 +29,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class CalendarController {
-
     private final CalendarService service;
     private final CalendarRepository calendarRepository;
 
@@ -41,12 +40,9 @@ public class CalendarController {
             member = ((AccountContext)authentication.getPrincipal()).getMember();
         }catch(ClassCastException e){
         }
-
         List<Calendar> scheduleList = calendarRepository.getAllScheduleList (member);
-
         mav.addObject("scheduleList",scheduleList);
         mav.setViewName("pages/calendar-basic");
-
         return mav;
     }
 
@@ -54,7 +50,6 @@ public class CalendarController {
     public void addSchedule(HttpServletResponse response, @RequestParam Map<String, Object> paramMap){
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member = null;
         try{member = ((AccountContext)authentication.getPrincipal()).getMember();}  //로그인한 member 정보 저장
@@ -72,7 +67,7 @@ public class CalendarController {
         String scheduleStr = (String)paramMap.get("startDate");
         String scheduleEnd = (String)paramMap.get("endDate");
 
-        /** 파라미서 생생*/
+        /** 파라미터 생생*/
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         Map<String, Object> map = new HashMap<>();
@@ -80,7 +75,6 @@ public class CalendarController {
         /** 서비스 호출 파라미터 구성 */
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("member",member);
-        log.info(member.toString());
         paramsMap.put("alarmTime",alarmTime);
         paramsMap.put("sms",sms);
         paramsMap.put("kakao",kakao);
@@ -92,28 +86,11 @@ public class CalendarController {
         paramsMap.put("scheduleStr",scheduleStr);
         paramsMap.put("scheduleEnd",scheduleEnd);
         paramsMap.put("jsonArray", map);
-        log.info("---------Controller-addschedule params --------------- ");
-//        log.info(member.getName());
-        log.info(alarmTime);
-        log.info(sms);
-        log.info(kakao);
-        log.info(scheduleType);
-        log.info(scheduleTypeDetail);
-        log.info(title);
-        log.info(content);
-        log.info(scheduleLocation);
-        log.info(scheduleStr);
-        log.info(scheduleEnd);
-        log.info("---------------------------------------------------- ");
 
         /** 서비스 호출*/
         service.addSchedule(paramsMap);
-
         Calendar calendar =(Calendar)paramsMap.get("calendar");
         jsonArray = (JSONArray)paramsMap.get("jsonArray");
-
-        log.info("------controller-jsonArray : " + jsonArray.get(0));
-
         jsonObject.put("state","true");
         jsonObject.put("id",calendar.getId());
         jsonObject.put("list",jsonArray);
@@ -124,9 +101,7 @@ public class CalendarController {
     }
 
     @PostMapping("/calendar/delete")
-    public void deleteSchedule(HttpServletResponse response,
-                               @RequestParam Map<String, Object> paramMap){
-
+    public void deleteSchedule(HttpServletResponse response, @RequestParam Map<String, Object> paramMap){
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
@@ -145,26 +120,17 @@ public class CalendarController {
             calendar = Calendar.builder()
                     .id(scheduleId)
                     .member(member).build();
-
         }catch (Exception e){
         }
-
         boolean result = service.deleteSchedule(calendar);
-
         if(result ==true){
-            log.info("---------------------deleteSchedule SUCCESS");
             jsonObject.put("state","true");
         } else if (result == false){
-            log.info("---------------------deleteSchedule FAILED");
             jsonObject.put("state","false");
         }
-
         List<Calendar> scheduleList = calendarRepository.getAllScheduleList(member);
-
         for (Calendar calendar1 : scheduleList){
-            log.info("-------------"+calendar1.getTitle());
         }
-
         for(Calendar calendarToJson  : scheduleList ){
             Map<String, Object> map = new HashMap<>();
             map.put("id",calendarToJson.getId());
@@ -177,23 +143,19 @@ public class CalendarController {
             map.put("alarmTime",calendarToJson.getSetAlarmTime());
             map.put("scheduleTypeDetail",calendarToJson.getScheduleTypeDetail());
             map.put("scheduleType",calendarToJson.getScheduleType());
-
             jsonArray.add(map);
-        };
-
+        }
         jsonObject.put("list",jsonArray);
         try {
             response.getWriter().print(jsonObject.toJSONString());
         } catch (IOException e) {
         }
-
     }
 
     @GetMapping("/calendar/memberInfo")
     public void getMyInfo(HttpServletResponse response){
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member member =null;
         JSONObject jsonObject = new JSONObject();
@@ -201,13 +163,9 @@ public class CalendarController {
             member = ((AccountContext)authentication.getPrincipal()).getMember();
         }catch(ClassCastException e){
         }
-
         Role role = member.getRole();
-        log.info("--------Role:" + role);
         String myRole = role +"";
-
         jsonObject.put("myRole", myRole);
-
         try {
             response.getWriter().print(jsonObject.toJSONString());
         } catch (IOException e) {
@@ -220,9 +178,7 @@ public class CalendarController {
         response.setContentType("text/html; charset=utf-8");
 
         JSONObject jsonObject = new JSONObject();
-
         List<String> majorList = calendarRepository.getAllMajorList();
-
         jsonObject.put("getMajorList",majorList);
         try {
             response.getWriter().print(jsonObject.toJSONString());
@@ -241,12 +197,8 @@ public class CalendarController {
             member = ((AccountContext)authentication.getPrincipal()).getMember();
         }catch(ClassCastException e){
         }
-
         String id = (String)paramMap.get("scheduleId");
         String mem = member.getMemberId();
-
-        log.info("-----controller-findAlarmType :: id = " + id);
-        log.info("-----controller-findAlarmType :: memId = " + mem);
 
         JSONObject jsonObject = new JSONObject();
         List<String> typeList = new ArrayList<>();
@@ -260,11 +212,7 @@ public class CalendarController {
         map.put("types",typeList);
         map.put("typeDetail", typeDetail);
         map.put("majorList", majorList);
-
         service.updateSetting(map);
-
-        log.info("-----controller-findAlarmType :: result = {}" ,map);
-
         jsonObject.put("param",map);
         try {
             response.getWriter().print(jsonObject.toJSONString());
@@ -283,7 +231,6 @@ public class CalendarController {
         catch(ClassCastException e){}
 
         /** 파라미터 조회 */
-        log.info("-----updateController-파라미터조회");
         String scheduleNo = (String)paramMap.get("scheduleNo");
         String type = (String)paramMap.get("type");
         String typeDetaile = (String)paramMap.get("typeDetail");
@@ -296,12 +243,10 @@ public class CalendarController {
         String alarmSMS = (String)paramMap.get("alarmSms");
         String alarmKAKAO = (String)paramMap.get("alarmKakao");
 
-        /** 파라미서 생생*/
-        log.info("-----updateController-파라미터 생성");
+        /** 파라미터 생생*/
         JSONObject jsonObject = new JSONObject();
 
         /** 서비스 호출 파라미터 구성 */
-        log.info("-----updateController-서비스 호출 파라미터 구성");
         Map<String, Object> map = new HashMap<>();
         map.put("member",member);
         map.put("scheduleNo",scheduleNo);
@@ -317,15 +262,9 @@ public class CalendarController {
         map.put("alarmKAKAO",alarmKAKAO);
 
         /** 서비스 호출*/
-        log.info("-----updateController-서비스 호출");
         service.updateSchedule(map);
-        log.info("-----updateController-서비스 끝");
-        log.info(map+"");
-        log.info("-----map get1");
         JSONArray jsonArray = (JSONArray) map.get("jsonArray");
-        log.info("-----map get2");
         Long id = (Long) map.get("scheduleId");
-        log.info("-----map get3");
 
         jsonObject.put("state","true");
         jsonObject.put("id", id);
@@ -336,63 +275,4 @@ public class CalendarController {
 
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

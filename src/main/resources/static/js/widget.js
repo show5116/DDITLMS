@@ -5,7 +5,6 @@ $( function() {
         ghostClass: 'blue-background-class',
         animation:150,
         stop: function(event,ui){
-            console.log("onEnd");
             setOrder();
         }
     });

@@ -3,11 +3,9 @@ package com.example.dditlms.domain.repository.sanctn;
 import com.example.dditlms.domain.dto.QSanctnDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.domain.entity.sanction.QSanctnLn;
-import com.example.dditlms.domain.entity.sanction.SanctnLn;
-import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
-import com.example.dditlms.domain.entity.sanction.SanctnProgress;
+import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
+import com.example.dditlms.util.MemberUtil;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,7 +31,6 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final MemberRepository memberRepository;
 
-
     public SanctnLnRepositoryImpl(EntityManager entityManager, MemberRepository memberRepository) {
         this.queryFactory = new JPAQueryFactory(entityManager);
         this.memberRepository = memberRepository;
@@ -45,7 +42,8 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
     @Override
     public List<SanctnDTO> showSanctnLine2(Long id) {
 
-        return queryFactory
+
+        List<SanctnDTO> result = queryFactory
                 .select(new QSanctnDTO(sanctnLn1.sanctnDate
                         , sanctnLn1.sanctnOpinion
                         , sanctnLn1.lastApproval
@@ -81,7 +79,12 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .orderBy(sanctnLn1.sanctnStep.asc())
                 .fetch();
 
+
+        return result;
+
+
     }
+
 
     @Override
     public SanctnLn findSanctnId(Long userNumber, Long id) {
@@ -159,26 +162,29 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
         QueryResults<SanctnDTO> results = queryFactory
                 .selectDistinct(new QSanctnDTO(sanctn.sanctnId
-                        ,sanctn.sanctnSj
-                        ,sanctn.status
-                        ,sanctn.sanctnUpdde
-                        , member.name))
+                        , sanctn.sanctnSj
+                        , sanctn.status
+                        , sanctn.sanctnUpdde
+                        , member.name
+                        , sanctn.drafter))
                 .from(sanctn)
-                .from(sanctnLn1)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
                 .innerJoin(member)
-                .on(sanctn.drafter.eq(member.userNumber))
+                .on(sanctnLn1.mberNo.eq(member))
                 .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
                         ,sanctn.status.eq(sanctnProgress))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-
         List<SanctnDTO> content = results.getResults();
+        for (SanctnDTO sanctnDTO : content) {
+            sanctnDTO.setName(memberRepository.findByUserNumber(sanctnDTO.getDrafter()).get().getName());
+        }
+
         long total = results.getTotal();
 
-        log.info("결재 조회!!"+String.valueOf(content));
-        log.info("결재 조회!!" +String.valueOf(total));
 
         return new PageImpl<>(content, pageable, total);
     }
@@ -190,34 +196,57 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
 
         List<SanctnDTO> content = queryFactory
                 .selectDistinct(new QSanctnDTO(sanctn.sanctnId
-                        ,sanctn.sanctnSj
-                        ,sanctn.status
-                        ,sanctn.sanctnUpdde
-                        , member.name))
+                        , sanctn.sanctnSj
+                        , sanctn.status
+                        , sanctn.sanctnUpdde
+                        , member.name
+                        , sanctn.drafter))
                 .from(sanctn)
-                .from(sanctnLn1)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
                 .innerJoin(member)
-                .on(sanctn.drafter.eq(member.userNumber))
+                .on(sanctnLn1.mberNo.eq(member))
                 .where(sanctnLn1.mberNo.userNumber.eq(userNumber))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        for (SanctnDTO sanctnDTO : content) {
+            sanctnDTO.setName(memberRepository.findByUserNumber(sanctnDTO.getDrafter()).get().getName());
+        }
+
         JPAQuery<SanctnDTO> countQuery = queryFactory
                 .selectDistinct(new QSanctnDTO(sanctn.sanctnId
-                        ,sanctn.sanctnSj
-                        ,sanctn.status
-                        ,sanctn.sanctnUpdde
-                        , member.name))
+                        , sanctn.sanctnSj
+                        , sanctn.status
+                        , sanctn.sanctnUpdde
+                        , member.name
+                        , sanctn.drafter))
                 .from(sanctn)
-                .from(sanctnLn1)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
                 .innerJoin(member)
-                .on(sanctn.drafter.eq(member.userNumber))
+                .on(sanctnLn1.mberNo.eq(member))
                 .where(sanctnLn1.mberNo.userNumber.eq(userNumber));
 
         countQuery.fetchCount();
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+    }
+
+
+    // 결재 카운팅, 진행률 조회
+    @Override
+    public List<SanctnDTO> countSanctn(Long sanctnId) {
+
+        return queryFactory
+                .select(new QSanctnDTO(sanctn.sanctnId, sanctnLn1.sanctnLnProgress, sanctnLn1.sanctnStep))
+                .from(sanctn)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
+                .where(sanctn.sanctnId.eq(sanctnId))
+                .fetch();
+
     }
 
 

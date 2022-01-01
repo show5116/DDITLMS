@@ -1,30 +1,31 @@
 'use strict';
-
-var memberNumber;
-var openLectureList = [];
+var memberNo = document.querySelector("#studentNo");
 var preLectureList = [];
 var deleteLectureList = [];
-var majorList = [];
-
 (function(){
+    let testId;
+    trEvent();
 
-    document.querySelector("#221CS033_10003B");
     var topSetting = {
         studentNo : document.querySelector("#studentNo"),
         division : document.querySelector("#pre-division"),
         major : document.querySelector("#pre-major"),
+        searchSubject : document.querySelector("#pre-searchSubject"),
         searchBtn : document.querySelector("#pre-search-btn"),
         openLecture_table_tr_Class : document.querySelectorAll(".tr-event")
     }
-
-    var trEvents = document.querySelectorAll(".tr-event");
-    console.log(trEvents);
-    trEvents.forEach(trEvent => {
-        trEvent.addEventListener('click',function () {
-            test();
+    //강의리스트의 tr클릭시 backgroundColor 넣기
+    function trEvent(){
+        testId = null;
+        var trEvents = document.querySelectorAll(".tr-event");
+        console.log(trEvents);
+        trEvents.forEach(trEvent => {
+            trEvent.addEventListener('click',function () {
+                test();
+                addPreRegistration();
+            });
         });
-    });
-    let testId;
+    }
     function test(){
         const target = event.currentTarget;
         console.log(target);
@@ -35,6 +36,115 @@ var majorList = [];
         target.classList.add("bg-light");
         testId = target.id;
     }
+
+    var clickDivision = topSetting.division;
+    var clickMajor = topSetting.major;
+    var searchBtn = topSetting.searchBtn;
+
+    clickDivision.onchange = function(){searchLecture(); }
+    clickMajor.onchange = function(){searchLecture();}
+    searchBtn.addEventListener('click',function(){
+        searchSubject();
+        trEvent();
+    })
+
+    function searchLecture(){
+        var division = clickDivision.options[clickDivision.selectedIndex].value;
+        var major = clickMajor.options[clickMajor.selectedIndex].innerText;
+
+        if (major==="(전체)"){
+            major = "total";
+        }
+
+        $.ajax({
+            url : "/preCourseRegistration/searchLecture",
+            method : "Post",
+            data : {
+                "division" : division,
+                "major" : major
+            },
+            beforeSend: function (xhr){
+                xhr.setRequestHeader(header, token);
+            }
+        })
+            .done(function(fragment){
+                console.log("=============done=============");
+                console.log(fragment);
+                $("#searchLectureList").replaceWith(fragment);
+                trEvent();
+            })
+
+    }
+    function searchSubject(){
+        var getSearchSubject = topSetting.searchSubject.value;
+
+        if (getSearchSubject === null || getSearchSubject === ""){
+            swal("검색어를 입력하세요.");
+            return;
+        }
+
+        $.ajax({
+            url : "/preCourseRegistration/searchSubject",
+            method : "Post",
+            data : {
+                "searchSubject" : getSearchSubject
+            },
+            beforeSend: function (xhr){
+                xhr.setRequestHeader(header, token);
+            }
+        })
+            .done(function(fragment){
+                console.log(fragment);
+                $("#searchLectureList").replaceWith(fragment);
+                trEvent();
+            })
+    }
+
+    function addPreRegistration(){
+        const select = event.currentTarget;
+        alert("add");
+        console.log("select");
+        console.log(select);
+        var id = select.id;
+        console.log("id");
+        console.log(id);
+        $.ajax({
+            url : "/preCourseRegistration/searchLectureId",
+            method : "Post",
+            data : {
+                "id": id
+            },
+            dataType : "json",
+            beforeSend : function(xhr){
+                xhr.setRequestHeader(header, token);
+            }
+        })
+        .done((fragment)=>{
+            console.log(fragment);
+            const count = document.querySelector("#pre-count")
+            const precourseTable = document.querySelector("#table-precourse");
+            const newTr = document.createElement("tr");
+            newTr.innerHTML = `
+                <td>${fragment.lectureSeme}</td>
+                <td>${fragment.lectureName}</td>
+                <td>${fragment.professor}</td>
+                <td>${fragment.lectureSchedule}</td>
+                <td>${fragment.lectureRoom}</td>
+            `;
+            precourseTable.prepend(newTr);
+            var text = count.innerText;
+            text = text.replace("건","");
+            count.innerText = `${text*1 +1}건`;
+
+        });
+
+
+
+
+
+    }
+
+
     /*
     const 예비리스트 = [];
     const 삭제리시트 = [];
