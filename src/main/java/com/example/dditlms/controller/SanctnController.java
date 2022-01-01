@@ -109,7 +109,7 @@ public class SanctnController {
 
         //최근결재의견 조회
         List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
-        model.addAttribute("recentOpinions" , recentOpinion);
+        model.addAttribute("recentOpinions", recentOpinion);
 
         for (SanctnDTO sanctnDTO : recentOpinion) {
             Long sanctnId = sanctnDTO.getSanctnId();
@@ -260,23 +260,24 @@ public class SanctnController {
         model.addAttribute("userNumber", userNumber);
 
         Optional<Sanctn> details = sanctnRepository.findById(id);
-        Sanctn sanctn = details.get();
-        model.addAttribute("details", sanctn);
 
-        Long drafter = details.get().getDrafter();
-        Member findDrafter = memberRepository.findByUserNumber(drafter).get();
-        Role role = findDrafter.getRole();
-
-        if(role == Role.ROLE_STUDENT) {
-            String compliment = "민원신청";
-            model.addAttribute("drafterType" , compliment);
+        if (details.isPresent()) {
+            Sanctn sanctn = details.get();
+            model.addAttribute("details", sanctn);
+            Long drafter = details.get().getDrafter();
+            Member findDrafter = memberRepository.findByUserNumber(drafter).get();
+            Role role = findDrafter.getRole();
+            if (role == Role.ROLE_STUDENT) {
+                String compliment = "민원신청";
+                model.addAttribute("drafterType", compliment);
+            }
         }
 
-        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
         Map<String, Object> resultList = null;
         Optional<Map<String, Object>> result = Optional.ofNullable(sanctnLnRepository.viewCompliment(id));
 
-        if (resultList != null) {
+        if (!result.get().isEmpty()) {
+
             resultList = result.get();
             Timestamp beforeConvertDate = (Timestamp) resultList.get("SANCTN_DATE");
             LocalDateTime localDateTime = beforeConvertDate.toLocalDateTime();
@@ -293,13 +294,15 @@ public class SanctnController {
             sanctnDTO.setName(mber_nm);
             sanctnDTO.setUserNumber(mber_no);
             sanctnDTO.setMajor_nm_kr(major_nm_kr);
-             //민원 신청 내역
+            //민원 신청 내역
             model.addAttribute("compliment", sanctnDTO);
             log.info(String.valueOf(sanctnDTO));
+
         }
 
 
         //일반 결재 내역
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
         //문서 ID 넘겨줌
@@ -531,7 +534,7 @@ public class SanctnController {
         return "pages/sanction::#test";
 
     }
-    
+
     // 완료 조회
     @GetMapping("/sanctnCom")
     public String sanctnCom(Model model, @PageableDefault(size = 8) Pageable pageable) {
