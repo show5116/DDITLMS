@@ -32,10 +32,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -110,13 +107,6 @@ public class SanctnController {
         //최근결재의견 조회
         List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
         model.addAttribute("recentOpinions", recentOpinion);
-
-        for (SanctnDTO sanctnDTO : recentOpinion) {
-            Long sanctnId = sanctnDTO.getSanctnId();
-            List<SanctnDTO> sanctnDTOS = sanctnLnRepository.countSanctn(sanctnId);
-            int size = sanctnDTOS.size();
-            sanctnDTO.getStatus();
-        }
 
 
         return "/pages/sanction";
@@ -273,37 +263,25 @@ public class SanctnController {
             }
         }
 
-        Map<String, Object> resultList = null;
-        Optional<Map<String, Object>> result = Optional.ofNullable(sanctnLnRepository.viewCompliment(id));
-
-        if (!result.get().isEmpty()) {
-
-            resultList = result.get();
-            Timestamp beforeConvertDate = (Timestamp) resultList.get("SANCTN_DATE");
-            LocalDateTime localDateTime = beforeConvertDate.toLocalDateTime();
-            Integer sanctn_step = Integer.valueOf(resultList.get("SANCTN_STEP").toString());
-            String sanctn_ls_apv = resultList.get("SANCTN_LS_APV").toString();
-            String mber_nm = resultList.get("MBER_NM").toString();
-            Long mber_no = Long.valueOf(resultList.get("MBER_NO").toString());
-            String major_nm_kr = resultList.get("MAJOR_NM_KR").toString();
-            SanctnDTO sanctnDTO = new SanctnDTO();
-            sanctnDTO.setSanctnDate(localDateTime);
-            sanctnDTO.setSanctnStep(sanctn_step);
-            sanctnDTO.setLastApproval(sanctn_ls_apv);
-            sanctnDTO.setStatus(SanctnProgress.PROGRESS);
-            sanctnDTO.setName(mber_nm);
-            sanctnDTO.setUserNumber(mber_no);
-            sanctnDTO.setMajor_nm_kr(major_nm_kr);
-            //민원 신청 내역
-            model.addAttribute("compliment", sanctnDTO);
-            log.info(String.valueOf(sanctnDTO));
-
-        }
+        //민원 신청 내역
+        Optional<SanctnDTO> result = sanctnService.viewComplaint(id);
+        SanctnDTO sanctnDTO = null;
+        sanctnDTO = result.get();
+        model.addAttribute("compliment", sanctnDTO);
+        log.info(String.valueOf(sanctnDTO));
 
 
         //일반 결재 내역
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
         model.addAttribute("sanctnLnList", sanctnDTOS);
+
+//        //민원 결재자 내역
+//        Optional<SanctnDTO> viewComplaintPro = sanctnService.viewComplaintPro(id);
+//        SanctnDTO sanctnDTO2 = null;
+//        sanctnDTO2 = viewComplaintPro.get();
+//        model.addAttribute("complimentPro", sanctnDTO2);
+//        log.info(String.valueOf(sanctnDTO2));
+
 
         //문서 ID 넘겨줌
         model.addAttribute("id", id);

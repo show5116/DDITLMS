@@ -5,6 +5,7 @@ import com.example.dditlms.domain.dto.SanctnDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
+import com.example.dditlms.util.MemberUtil;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -164,11 +165,13 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                         , sanctn.sanctnSj
                         , sanctn.status
                         , sanctn.sanctnUpdde
-                        , member.name))
+                        , member.name
+                        , sanctn.drafter))
                 .from(sanctn)
-                .from(sanctnLn1)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
                 .innerJoin(member)
-                .on(sanctn.drafter.eq(member.userNumber))
+                .on(sanctnLn1.mberNo.eq(member))
                 .where(sanctnLn1.mberNo.userNumber.eq(userNumber)
                         ,sanctn.status.eq(sanctnProgress))
                 .offset(pageable.getOffset())
@@ -176,7 +179,12 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .fetchResults();
 
         List<SanctnDTO> content = results.getResults();
+        for (SanctnDTO sanctnDTO : content) {
+            sanctnDTO.setName(memberRepository.findByUserNumber(sanctnDTO.getDrafter()).get().getName());
+        }
+
         long total = results.getTotal();
+
 
         return new PageImpl<>(content, pageable, total);
     }
@@ -191,26 +199,34 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                         , sanctn.sanctnSj
                         , sanctn.status
                         , sanctn.sanctnUpdde
-                        , member.name))
+                        , member.name
+                        , sanctn.drafter))
                 .from(sanctn)
-                .from(sanctnLn1)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
                 .innerJoin(member)
-                .on(sanctn.drafter.eq(member.userNumber))
+                .on(sanctnLn1.mberNo.eq(member))
                 .where(sanctnLn1.mberNo.userNumber.eq(userNumber))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        for (SanctnDTO sanctnDTO : content) {
+            sanctnDTO.setName(memberRepository.findByUserNumber(sanctnDTO.getDrafter()).get().getName());
+        }
 
         JPAQuery<SanctnDTO> countQuery = queryFactory
                 .selectDistinct(new QSanctnDTO(sanctn.sanctnId
                         , sanctn.sanctnSj
                         , sanctn.status
                         , sanctn.sanctnUpdde
-                        , member.name))
+                        , member.name
+                        , sanctn.drafter))
                 .from(sanctn)
-                .from(sanctnLn1)
+                .innerJoin(sanctnLn1)
+                .on(sanctn.eq(sanctnLn1.sanctnSn))
                 .innerJoin(member)
-                .on(sanctn.drafter.eq(member.userNumber))
+                .on(sanctnLn1.mberNo.eq(member))
                 .where(sanctnLn1.mberNo.userNumber.eq(userNumber));
 
         countQuery.fetchCount();

@@ -173,7 +173,7 @@
                             </button>
                         </div>
 
-                        <form th:action="@{|/sanctnSubmit?${_csrf.parameterName}=${_csrf.token}|}" th:method="post" id="sanctnForm" enctype=multipart/form-data style="display">
+                        <form th:action="@{|/sanctnSubmit?${_csrf.parameterName}=${_csrf.token}|}" th:method="post" id="sanctnForm" enctype=multipart/form-data style="display:none">
                             <input type="text" id="sanctnSj" th:name= "sanctnSj" th:value="${sanctnSj}"/>
                             <textarea id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}"></textarea>
                             <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}"/>
