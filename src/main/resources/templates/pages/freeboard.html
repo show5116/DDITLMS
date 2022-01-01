@@ -13,7 +13,7 @@
                         <!--                            <div class="tab-pane fade active show" id="pills-created" role="tabpanel" aria-labelledby="pills-created-tab">-->
                         <div class="card mb-0">
                             <div class="card-header">
-                                <h5 class="mb-0">자유게시판</h5><a class="f-w-600" href="javascript:void(0)">글쓰기</a>
+                                <h5 class="mb-0">자유게시판</h5><a class="f-w-600" href="/community/boardWrite">글쓰기</a>
                                 <div>
                                     <figure class="easyimage easyimage-full"><img alt="" src="clob:http://localhost:8094/38dad173-f54b-42be-9b65-6f9ad48d70e2" width="489" />
                                         <figcaption></figcaption>
@@ -31,7 +31,7 @@
                                                 </td>
                                                 <td>
                                                     <p class="task_desc_0">이거 제목은 준석이 바보입니다, 준석아 힘내라
-                                                        <i class="fa fa-image"></i>
+<!--                                                        <i class="fa fa-image"></i>-->
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                              viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                              stroke-width="2" stroke-linecap="round"
@@ -53,7 +53,7 @@
                                                     <!--                                                            <p style="display: inline-block" th:text="${#strings.substringBefore(#strings.substringAfter(bbs.content,'<p>'),'</p>')}" class="task_desc_0"></p>-->
                                                     <p style="display: inline-block" th:text="${bbs.title}"
                                                        class="task_desc_0"></p>
-                                                    <i class="fa fa-image hover-img"></i>
+<!--                                                    <i class="fa fa-image hover-img"></i>-->
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -91,7 +91,7 @@
                     targetId: targetId
                 };
                 $.ajax({
-                    url: "/community/detailBoard",
+                    url: "/community/detailBoard/"+targetId,
                     data: params,
                     type: "post",
                     // json 데이터타입 해줘야 됨.
@@ -104,7 +104,7 @@
                     console.log("아이디 : " + targetId);
                     console.log("몰라" + response.idx);
                     console.log(response);
-                    location.href = "/community/detailBoard?idx=" + response.idx;
+                    location.href = "/community/detailBoard/" + targetId;
 
 
                 }).fail(function () {

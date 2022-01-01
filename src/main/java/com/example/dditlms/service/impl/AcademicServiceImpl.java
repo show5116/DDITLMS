@@ -75,8 +75,11 @@ public class AcademicServiceImpl implements AcademicService {
                 .resultStatus(ResultStatus.STANDBY)
                 .note(reason)
                 .student(student)
+                .grade(student.getGrade())
+                .major(student.getMajor())
                 .tempAbsence(tempAbsence)
                 .build();
+        logger.info("학년 보기 : " + student.getGrade());
         histRepository.save(history);
 
     }

@@ -1,6 +1,7 @@
 package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.entity.*;
+import com.example.dditlms.domain.repository.EnrolmentRepository;
 import com.example.dditlms.domain.repository.HistoryRepository;
 import com.example.dditlms.domain.repository.student.StudentRepository;
 import com.example.dditlms.service.AcademicService;
@@ -23,6 +24,7 @@ public class AcademicController {
     private final HistoryRepository histRepository;
     private final AcademicService academicService;
     private final StudentRepository studentRepository;
+    private final EnrolmentRepository enrolmentRepository;
 
     @GetMapping("/academic")
     public ModelAndView academic(ModelAndView mav){
@@ -30,9 +32,11 @@ public class AcademicController {
         Student student = studentWrapper.orElse(null);
 
         List<History> historyList = histRepository.getfindAllByStudent(student);
+        List<Enrolment> enrolments = enrolmentRepository.findAllByStudent(student);
 
         mav.addObject("student", student);
         mav.addObject("historyList", historyList);
+        mav.addObject("enrolments", enrolments);
         mav.setViewName("pages/academic");
         return mav;
     }
@@ -92,5 +96,14 @@ public class AcademicController {
         academicService.tempAbsenceUpdate(map);
         return "pages/leave";
     }
+
+//    public ModelAndView attendHistory(ModelAndView mav){
+//        Student student = MemberUtil.getLoginMember().getStudent();
+//
+//        Map<String, Object> map = new HashMap<>();
+//        List<Enrolment> enrolments = enrolmentRepository.findAllByStudent(student);
+//
+//        return mav;
+//    }
 
 }

@@ -14,7 +14,7 @@
                     <div class="card-body-right">
                         <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                             <div class="row col-sm-7 align-self-center">
-                                <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">?? 게시판</h4>
+                                <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">자유 게시판</h4>
                             </div>
                             <div class="col-sm-3 justify-content-end text-end">
                                 <button type="button" class="btn btn-secondary" data-bs-original-title="" title="">수정</button>
@@ -38,7 +38,7 @@
                                             <td><strong style="margin-right: 20px;">조회수</strong> <p th:text="${bbs.bbsCnt}"></p></td>
                                         </tr>
                                         <tr>
-                                            <td style="height: 500px;" colspan="3"><p th:text="${bbs.content}"></p></td>
+                                            <td style="height: 500px;" colspan="3"><p th:utext="${bbs.content}"></p></td>
                                         </tr>
                                         <tr>
                                             <td colspan="3">첨부파일 : <a href="#">파일</a></td>
@@ -62,9 +62,13 @@
     <script th:inline="javascript">
         const listBtn = document.querySelector("#list-btn");
 
+
+
         listBtn.addEventListener("click", function (){
             location.href="/community/freeboard";
         });
+
+
     </script>
 </th:block>
 </html>

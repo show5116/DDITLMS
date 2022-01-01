@@ -19,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Controller
@@ -92,6 +94,7 @@ public class boardController {
                 .title(title)
                 .content(content)
                 .category(BoardCategory.FREEBOARD)
+                .bbsCnt(0L)
                 .bbsDate(new Date())
                 .atchmnflId(id)
                 .build();
@@ -102,12 +105,61 @@ public class boardController {
     }
 
 
-    @GetMapping("/community/detailBoard")
+    @GetMapping("/community/detailBoard/{targetId}")
     public ModelAndView detailBoard(ModelAndView mav,
-                                    @RequestParam String idx){
+//                                    @RequestParam String idx,
+                                    @PathVariable(value = "targetId") String idx,
+                                    HttpServletRequest request, HttpServletResponse response){
+
+        logger.info(idx);
+        Member member = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            member = ((AccountContext) authentication.getPrincipal()).getMember();
+        } catch (ClassCastException e) {
+        }
+
         logger.info("idx : " + idx);
         Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(Long.parseLong(idx));
         Bbs bbs = bbsWrapper.orElse(null);
+
+        Long cnt = bbs.getBbsCnt();
+
+        String code = member + idx;
+
+    //////////////////////////
+        Cookie oldCookie = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("postView")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        if (oldCookie != null) {
+            if (!oldCookie.getValue().contains("[" + code.toString() + "]")) {
+                cnt++;
+                bbs.setBbsCnt(cnt);
+                bbsRepository.save(bbs);
+                oldCookie.setValue(oldCookie.getValue() + "_[" + code + "]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(60 * 60 * 24);
+                response.addCookie(oldCookie);
+            }
+        } else {
+            cnt++;
+            bbs.setBbsCnt(cnt);
+            bbsRepository.save(bbs);
+            Cookie newCookie = new Cookie("postView","[" + code + "]");
+            newCookie.setPath("/");
+            newCookie.setMaxAge(60 * 60 * 24);
+            response.addCookie(newCookie);
+        }
+
+    ////////////////////////////////
+
         logger.info(String.valueOf(bbs.getCategory()));
 
 
@@ -117,13 +169,15 @@ public class boardController {
     }
 
     @ResponseBody
-    @PostMapping("/community/detailBoard")
-    public String detailBoardPost(@RequestParam Map<String, Object> paramMap){
-        logger.info("idx : " + paramMap.get("targetId"));
+    @PostMapping("/community/detailBoard/{targetId}")
+    public String detailBoardPost(@RequestParam Map<String, Object> paramMap
+                            ,@PathVariable(value = "targetId") String idx){
+//        logger.info("idx : " + paramMap.get("targetId"));
+        logger.info("idx : " + idx);
 
         //replace할거 아니면 redirect해야지
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("idx", paramMap.get("targetId"));
+        jsonObject.put("idx", idx);
         return jsonObject.toJSONString();
     }
 }
