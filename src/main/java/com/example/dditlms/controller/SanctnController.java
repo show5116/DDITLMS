@@ -264,11 +264,11 @@ public class SanctnController {
         }
 
         //민원 신청 내역
-        Optional<SanctnDTO> result = sanctnService.viewComplaint(id);
-        SanctnDTO sanctnDTO = null;
-        sanctnDTO = result.get();
-        model.addAttribute("compliment", sanctnDTO);
-        log.info(String.valueOf(sanctnDTO));
+//        Optional<SanctnDTO> result = sanctnService.viewComplaint(id);
+//        SanctnDTO sanctnDTO = null;
+//        sanctnDTO = result.get();
+//        model.addAttribute("compliment", sanctnDTO);
+//        log.info(String.valueOf(sanctnDTO));
 
 
         //일반 결재 내역
