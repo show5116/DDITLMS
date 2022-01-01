@@ -24,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -264,24 +265,31 @@ public class SanctnController {
         }
 
         //민원 신청 내역
-//        Optional<SanctnDTO> result = sanctnService.viewComplaint(id);
-//        SanctnDTO sanctnDTO = null;
-//        sanctnDTO = result.get();
-//        model.addAttribute("compliment", sanctnDTO);
-//        log.info(String.valueOf(sanctnDTO));
+        Optional<SanctnDTO> result = sanctnService.viewComplaint(id);
+
+        if (result.isPresent()) {
+            System.out.println("나옴?");
+        SanctnDTO sanctnDTO = null;
+        sanctnDTO = result.get();
+        model.addAttribute("compliment", sanctnDTO);
+        log.info(String.valueOf(sanctnDTO));
+        }
 
 
         //일반 결재 내역
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
+
 //        //민원 결재자 내역
 //        Optional<SanctnDTO> viewComplaintPro = sanctnService.viewComplaintPro(id);
-//        SanctnDTO sanctnDTO2 = null;
-//        sanctnDTO2 = viewComplaintPro.get();
-//        model.addAttribute("complimentPro", sanctnDTO2);
-//        log.info(String.valueOf(sanctnDTO2));
-
+//        if(ObjectUtils.isEmpty(viewComplaintPro)) {
+//            System.out.println("나옴?");
+//            SanctnDTO sanctnDTO2 = null;
+//            sanctnDTO2 = viewComplaintPro.get();
+//            model.addAttribute("complimentPro", sanctnDTO2);
+//            log.info(String.valueOf(sanctnDTO2));
+//        }
 
         //문서 ID 넘겨줌
         model.addAttribute("id", id);

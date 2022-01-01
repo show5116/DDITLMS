@@ -9,6 +9,7 @@ import com.example.dditlms.domain.repository.sanctn.SanctnRepository;
 import com.example.dditlms.service.SanctnService;
 import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -189,7 +190,10 @@ public class SanctnServiceImpl implements SanctnService {
         Map<String, Object> resultList = null;
         Optional<Map<String, Object>> result = Optional.ofNullable(sanctnLnRepository.viewCompliment(id));
         SanctnDTO sanctnDTO = new SanctnDTO();
+        
         if (!result.get().isEmpty()) {
+
+
 
             resultList = result.get();
             Timestamp beforeConvertDate = (Timestamp) resultList.get("SANCTN_DATE");
@@ -228,6 +232,7 @@ public class SanctnServiceImpl implements SanctnService {
             sanctnDTO.setMajor_nm_kr(major_nm_kr);
 
         }
+        log.info("옵셔널 반환 값 확인" + String.valueOf(sanctnDTO));
         return Optional.of(sanctnDTO);
     }
 
@@ -236,7 +241,9 @@ public class SanctnServiceImpl implements SanctnService {
 
         Map<String, Object> resultList = null;
         Optional<Map<String, Object>> result = Optional.ofNullable(sanctnLnRepository.viewComplimentPro(id));
-        SanctnDTO sanctnDTO = new SanctnDTO();
+        Optional<SanctnDTO> sanctnDTO = Optional.empty();
+
+
         if (!result.get().isEmpty()) {
 
             resultList = result.get();
@@ -244,7 +251,7 @@ public class SanctnServiceImpl implements SanctnService {
             Timestamp beforeConvertDate = (Timestamp) resultList.get("SANCTN_DATE");
             if (beforeConvertDate !=null) {
                 LocalDateTime localDateTime = beforeConvertDate.toLocalDateTime();
-                sanctnDTO.setSanctnDate(localDateTime);
+                sanctnDTO.get().setSanctnDate(localDateTime);
             }
             Integer sanctn_step = Integer.valueOf(resultList.get("SANCTN_STEP").toString());
             String sanctn_ls_apv = resultList.get("SANCTN_LS_APV").toString();
@@ -255,31 +262,32 @@ public class SanctnServiceImpl implements SanctnService {
 
             switch (nowPro) {
                 case "DRAFTER":
-                    sanctnDTO.setSanctnLnProgress(SanctnLnProgress.DRAFTER);
+                    sanctnDTO.get().setSanctnLnProgress(SanctnLnProgress.DRAFTER);
                     break;
 
                 case "PROCESS":
-                    sanctnDTO.setSanctnLnProgress(SanctnLnProgress.PROCESS);
+                    sanctnDTO.get().setSanctnLnProgress(SanctnLnProgress.PROCESS);
                     break;
                 case "WAITING":
-                    sanctnDTO.setSanctnLnProgress(SanctnLnProgress.WAITING);
+                    sanctnDTO.get().setSanctnLnProgress(SanctnLnProgress.WAITING);
                     break;
                 case "REJECT":
-                    sanctnDTO.setSanctnLnProgress(SanctnLnProgress.REJECT);
+                    sanctnDTO.get().setSanctnLnProgress(SanctnLnProgress.REJECT);
                     break;
                 case "REQUEST":
-                    sanctnDTO.setSanctnLnProgress(SanctnLnProgress.REQUEST);
+                    sanctnDTO.get().setSanctnLnProgress(SanctnLnProgress.REQUEST);
                     break;
 
             }
-            sanctnDTO.setSanctnStep(sanctn_step);
-            sanctnDTO.setLastApproval(sanctn_ls_apv);
-            sanctnDTO.setName(mber_nm);
-            sanctnDTO.setUserNumber(mber_no);
-            sanctnDTO.setMajor_nm_kr(major_nm_kr);
+            sanctnDTO.get().setSanctnStep(sanctn_step);
+            sanctnDTO.get().setLastApproval(sanctn_ls_apv);
+            sanctnDTO.get().setName(mber_nm);
+            sanctnDTO.get().setUserNumber(mber_no);
+            sanctnDTO.get().setMajor_nm_kr(major_nm_kr);
 
         }
-        return Optional.of(sanctnDTO);
+
+        return sanctnDTO;
     }
 
 
