@@ -268,11 +268,9 @@ public class SanctnController {
         Optional<SanctnDTO> result = sanctnService.viewComplaint(id);
 
         if (result.isPresent()) {
-            System.out.println("나옴?");
             SanctnDTO sanctnDTO = null;
             sanctnDTO = result.get();
             model.addAttribute("compliment", sanctnDTO);
-            log.info(String.valueOf(sanctnDTO));
         }
 
 
@@ -285,10 +283,8 @@ public class SanctnController {
 
         Optional<SanctnDTO> viewComplaintPro = sanctnService.viewComplaintPro(id);
         if (viewComplaintPro.isPresent()) {
-            System.out.println("나옴?");
             SanctnDTO sanctnDTO = viewComplaintPro.get();
             model.addAttribute("complimentPro", sanctnDTO);
-            log.info(String.valueOf(sanctnDTO));
         }
 
         //문서 ID 넘겨줌
