@@ -120,8 +120,9 @@ public class SanctnServiceImpl implements SanctnService {
 
 
     //민원 신청, 우선은 휴학신청만 구현, 나중에는 파라미터 값을 이용해서 해당하는 민원 서식 신청 하도록 구현 할 것!
+    @Transactional
     @Override
-    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long complimentId) {
+    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long complimentId, String complimentType) {
 
         String complainant = MemberUtil.getLoginMember().getName();
         String compId = String.valueOf(complimentId);
@@ -130,7 +131,8 @@ public class SanctnServiceImpl implements SanctnService {
         LocalDate now = LocalDate.now();
         LocalDate endDate = now.plusDays(7);
 
-        sanctn.setSanctnSj("휴학신청 : " + complainant + "$" + compId);
+
+        sanctn.setSanctnSj(complimentType + complainant + "$" + compId);
         sanctn.setSanctnCn(sanctnCn);
         sanctn.setDrafter(drafter);
         sanctn.setSanctnWritngde(now);
