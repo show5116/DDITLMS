@@ -5,6 +5,8 @@
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='예비 수강 신청')"></th:block>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <div class="container-fluid">
         <div class="row">
             <div class="card m-b-10">
@@ -30,20 +32,24 @@
                     <div class="mb-2 row justify-content-around">
                         <div class="col-sm row">
                             <label class="col-sm-3 align-self-center bookmark">이수구분</label>
-                            <select class="col form-select" id="pre-division">
-                                <option value="total">(전체)</option>
-                                <option value="CULTURE_REQUIRED">교양필수</option>
-                                <option value="CULTURE_SELECT">교양선택</option>
-                                <option value="MAJOR_REQUIRED">전공필수</option>
-                                <option value="MAJOR_SELECT">전공선택</option>
-                            </select>
+                            <div class="col">
+                                <select class="form-select" id="pre-division">
+                                    <option value="total">(전체)</option>
+                                    <option value="CULTURE_REQUIRED">교양필수</option>
+                                    <option value="CULTURE_SELECT">교양선택</option>
+                                    <option value="MAJOR_REQUIRED">전공필수</option>
+                                    <option value="MAJOR_SELECT">전공선택</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-sm row">
                             <label class="col-sm-4 align-self-center bookmark">개설학부(과)</label>
-                            <select class="col form-select" id="pre-major">
-                                <option value="total">(전체)</option>
-                                <option th:each="majorL : ${majorList}" th:text="${majorL.getKorean()}" th:value="${majorL.getId()}"></option>
-                            </select>
+                            <div class="col-sm-8 p-0">
+                                <select class="col form-select" id="pre-major">
+                                    <option value="total">(전체)</option>
+                                    <option th:each="majorL : ${majorList}" th:text="${majorL.getKorean()}" th:value="${majorL.getId()}"></option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-sm row ">
                             <label class="col-sm-3 align-self-center bookmark">개설과목</label>
@@ -88,7 +94,7 @@
                                                 <tr class="tr-event" th:each="lecture : ${openLectureList}"  th:id="${lecture.getLectureCode()}">
                                                     <td class="hidden-lecture" style="display: none" th:text="${lecture}"></td>
                                                     <td th:text="${lecture.getMajorKr()}"></td>
-                                                    <td th:text="${lecture.getSubjectCode()}"></td>
+                                                    <td th:text="${lecture.getSubjectCode()}" th:class="subjectCode"></td>
                                                     <td><a onclick="testPDF();" class="btn btn-link txt-google-plus" th:text="${lecture.getLectureName()}"></a></td>
                                                     <td th:text="${lecture.getLectureClass()}"></td>
                                                     <td th:text="${lecture.getLectureSeme()}"></td>
@@ -113,7 +119,7 @@
                                             <span class="col text-muted p-l-10 m-t-10" th:text="|${preTotalCount}건|" id="pre-count"></span>
                                         </div>
                                         <div class="col-sm-3 justify-content-end text-end">
-                                            <button type="button" class="btn btn-secondary" data-bs-original-title="" title="">저장</button>
+                                            <button type="button" class="btn btn-secondary" id="save-btn">저장</button>
                                         </div>
                                     </div>
                                     <div>
@@ -128,9 +134,10 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="table-precourse">
-                                                <tr class="tr-event" th:each="preList : ${preRegistrationList}" th:id="${preList.getLectureCode()}">
+                                                <tr class="pre-tr-event" th:each="preList : ${preRegistrationList}" th:id="${preList.getLectureCode()}">
+                                                    <td class="hidden-pre-lecture" style="display: none" th:text="${preList.getSubjectCode()}"></td>
                                                     <td th:text="${preList.getLectureSeme()}"></td>
-                                                    <td th:text="${preList.getLectureName()}"></td>
+                                                    <td th:text="${preList.getLectureName()}" th:class="pre-lecture-name"></td>
                                                     <td th:text="${preList.getProfessor()}"></td>
                                                     <td th:text="${preList.getLectureSchedule()}"></td>
                                                     <td th:text="${preList.getLectureRoom()}"></td>

@@ -10,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "PRE_LEC")
 @SequenceGenerator(
         name="PRE_LEC_SEQ_GEN",
@@ -38,7 +39,8 @@ public class PreCourseRegistration {
                 .lectureName(this.lectureCode.getSubjectCode().getName())
                 .professor(this.lectureCode.getProfessorNo()+"")
                 .lectureSchedule(this.lectureCode.getLectureSchedule())
-                .lectureRoom(this.lectureCode.getLectureId().getId()).build();
+                .lectureRoom(this.lectureCode.getLectureId().getId())
+                .subjectCode(this.lectureCode.getSubjectCode().getId()).build();
         return dto;
     }
 
