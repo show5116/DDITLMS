@@ -121,16 +121,16 @@ public class SanctnServiceImpl implements SanctnService {
 
     //민원 신청, 우선은 휴학신청만 구현, 나중에는 파라미터 값을 이용해서 해당하는 민원 서식 신청 하도록 구현 할 것!
     @Override
-    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber) {
+    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long complimentId) {
 
         String complainant = MemberUtil.getLoginMember().getName();
-
+        String compId = String.valueOf(complimentId);
         //민원 저장
         Sanctn sanctn = new Sanctn();
         LocalDate now = LocalDate.now();
         LocalDate endDate = now.plusDays(7);
 
-        sanctn.setSanctnSj("휴학신청 : " + complainant);
+        sanctn.setSanctnSj("휴학신청 : " + complainant + "$" + compId);
         sanctn.setSanctnCn(sanctnCn);
         sanctn.setDrafter(drafter);
         sanctn.setSanctnWritngde(now);
@@ -252,7 +252,12 @@ public class SanctnServiceImpl implements SanctnService {
                 LocalDateTime localDateTime = beforeConvertDate.toLocalDateTime();
                 sanctnDTO.setSanctnDate(localDateTime);
             }
-            String sanctnOpinion = resultList.get("SANCTN_OPINION").toString();
+            Object sanctn_opinion = resultList.get("SANCTN_OPINION");
+            if (sanctn_opinion !=null){
+                String sanctnOpinion = sanctn_opinion.toString();
+                sanctnDTO.setSanctnOpinion(sanctnOpinion);
+            }
+
             Integer sanctn_step = Integer.valueOf(resultList.get("SANCTN_STEP").toString());
             String sanctn_ls_apv = resultList.get("SANCTN_LS_APV").toString();
             String mber_nm = resultList.get("MBER_NM").toString();
@@ -279,7 +284,6 @@ public class SanctnServiceImpl implements SanctnService {
                     break;
 
             }
-            sanctnDTO.setSanctnOpinion(sanctnOpinion);
             sanctnDTO.setSanctnStep(sanctn_step);
             sanctnDTO.setLastApproval(sanctn_ls_apv);
             sanctnDTO.setName(mber_nm);

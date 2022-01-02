@@ -85,6 +85,7 @@ public class AcademicServiceImpl implements AcademicService {
         logger.info("학년 보기 : " + student.getGrade());
         histRepository.save(history);
 
+
         // 전자결재에 민원 추가 로직
         Long drafter = MemberUtil.getLoginMember().getUserNumber();
         Docform docform = docformRepository.findById(6L).get();
@@ -98,7 +99,8 @@ public class AcademicServiceImpl implements AcademicService {
         userNumber.add(staff);
         userNumber.add(professor);
         userNumber.add(approver);
-        sanctnService.saveComplaint(docform, drafter, reason, userNumber);
+        Long complimentId = history.getId();
+        sanctnService.saveComplaint(docform, drafter, reason, userNumber,complimentId);
     }
 
     @Transactional

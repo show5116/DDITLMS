@@ -1,11 +1,17 @@
 package com.example.dditlms.service.impl;
 
+import com.example.dditlms.domain.common.ResultStatus;
+import com.example.dditlms.domain.entity.History;
+import com.example.dditlms.domain.entity.TempAbsence;
 import com.example.dditlms.domain.entity.sanction.Sanctn;
 import com.example.dditlms.domain.entity.sanction.SanctnLn;
 import com.example.dditlms.domain.entity.sanction.SanctnLnProgress;
 import com.example.dditlms.domain.entity.sanction.SanctnProgress;
+import com.example.dditlms.domain.repository.HistoryRepository;
+import com.example.dditlms.domain.repository.TempAbsenceRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnRepository;
+import com.example.dditlms.service.AcademicService;
 import com.example.dditlms.service.SanctnLnService;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -24,6 +31,8 @@ public class SanctnLnServiceImpl implements SanctnLnService {
 
     private final SanctnLnRepository sanctnLnRepository;
     private final SanctnRepository sanctnRepository;
+    private final HistoryRepository histRepository;
+    private final TempAbsenceRepository tempAbsenceRepository;
 
     //결재 승인
     @Override
@@ -65,7 +74,7 @@ public class SanctnLnServiceImpl implements SanctnLnService {
     //최종 승인
     @Override
     @Transactional
-    public void lastUpadteSanctnLn(String opinion, Long userNumber, Long id) {
+    public void lastUpdateSanctnLn(String opinion, Long userNumber, Long id) {
 
         SanctnLn sanctnId = sanctnLnRepository.findSanctnId(userNumber, id);
         sanctnId.setSanctnOpinion(opinion);
@@ -74,7 +83,28 @@ public class SanctnLnServiceImpl implements SanctnLnService {
 
         Optional<Sanctn> findSanctn = sanctnRepository.findById(id);
         findSanctn.get().setStatus(SanctnProgress.COMPLETION);
+    }
+    
+    //민원 최종승인
+    @Override
+    @Transactional
+    public void lastUpdateComplement(String opinion, Long userNumber, Long id, Long comId) {
+        SanctnLn sanctnId = sanctnLnRepository.findSanctnId(userNumber, id);
+        sanctnId.setSanctnOpinion(opinion);
+        sanctnId.setSanctnDate(LocalDateTime.now());
+        sanctnId.setSanctnLnProgress(SanctnLnProgress.PROCESS);
 
+        Optional<Sanctn> findSanctn = sanctnRepository.findById(id);
+        findSanctn.get().setStatus(SanctnProgress.COMPLETION);
+
+        History history = histRepository.findById(comId).get();
+        history.setChangeDate(new Date());
+        history.setResultStatus(ResultStatus.APPROVAL);
+
+        TempAbsence tempAbsence = tempAbsenceRepository.findById(comId).get();
+        tempAbsence.setStatus(ResultStatus.APPROVAL);
 
     }
+
+
 }

@@ -56,7 +56,7 @@
         <div>
             <div class="project-box">
                 <h2><span class="badge badge-primary" th:text="${detail.status.krName}">Doing</span></h2>
-                <h6 th:text="${detail.sanctnSj}">기안서 제목</h6>
+                <h6 th:text="${#strings.arraySplit(detail.sanctnSj,'$')[0]}">기안서 제목</h6>
                 <div class="media">
                     <div class="media-body-right">
                         <p class="text-right" th:if="${drafterType}" th:text="${drafterType}">최초기안자</p>
@@ -226,7 +226,7 @@
             </div>
         </div>
         <div class="col-xxl-12 col-lg-6" th:each="com : ${complimentPro}">
-            <div class="kanban-item" th:if="${compliment.major_nm_kr != null}">
+            <div class="kanban-item" th:if="${com.sanctnOpinion != null}">
                 <div class="kanban-box" href="#"><span class="h5"
                                                        th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}">의견날짜 2021-12-14</span>&nbsp;&nbsp;&nbsp;&nbsp;
                     <span><h6 th:text="교수" class="badge badge-dark right">부서</h6></span>&nbsp;
@@ -273,13 +273,16 @@
                 <input type="number" th:value="${userNumber}" id="userNumber">
                 <input type="number" th:value="${id}" id="id">
             </div>
+            <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
+                <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
+            </div>
             <br><br>
         </div>
         <div th:if="${complimentPro.major_nm_kr != null}" th:each="com : ${complimentPro}">
             <div th:if="${com.sanctnLnProgress.toString().equals('REQUEST')} and ${com.userNumber == userNumber}"
                  class="col-xxl-12 col-lg-6"
                  style="text-align: center; margin: 0 auto;">
-                <label for="opinion">결재의견-교수</label>
+                <label for="opinion">결재의견</label>
                 <input class="form-control btn-square" id="opinion" type="text" placeholder="해당 결재의견을 입력하세요"
                        data-bs-original-title="" style="text-align: center; margin: 0 auto;">
                 <hr>
@@ -343,6 +346,8 @@
 
         let btnReject = document.querySelector("#btnReject");
 
+        if(btnReject != null) {
+
         btnReject.addEventListener("click", function () {
 
            let token = $("meta[name='_csrf']").attr("content");
@@ -373,6 +378,7 @@
             });
 
         })
+}
 
         let btnLastApproval = document.querySelector("#btnLastApproval");
 
@@ -409,11 +415,12 @@
 
         })
 }
-         let btnLastCompliment = document.querySelector("#btnLastCompliment");
+
+        let btnLastCompliment = document.querySelector("#btnLastCompliment");
 
         if(btnLastCompliment != null) {
 
-        btnLastApproval.addEventListener("click", function () {
+        btnLastCompliment.addEventListener("click", function () {
 
             let token = $("meta[name='_csrf']").attr("content");
             let header = $("meta[name='_csrf_header']").attr("content");
@@ -421,6 +428,7 @@
             let opinion = document.querySelector('#opinion').value;
             let userNumber = document.querySelector('#userNumber').value;
             let id = document.querySelector('#id').value;
+            let comId = document.querySelector('#comId').value;
 
           $.ajax({
 
@@ -429,7 +437,8 @@
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
-                    "id": id
+                    "id": id,
+                    "comId": comId
                 },
                 beforeSend: function(xhr){
                     xhr.setRequestHeader(header,token);

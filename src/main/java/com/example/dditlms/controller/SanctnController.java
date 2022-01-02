@@ -5,13 +5,11 @@ import com.example.dditlms.domain.dto.DocFormDTO;
 import com.example.dditlms.domain.dto.EmployeeDTO;
 import com.example.dditlms.domain.dto.PageDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
-import com.example.dditlms.domain.entity.Bookmark;
 import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.*;
-import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
 import com.example.dditlms.util.FileUtil;
@@ -21,19 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -343,7 +335,7 @@ public class SanctnController {
         Long userNumber = Long.valueOf((String) param.get("userNumber"));
         Long id = Long.valueOf((String) param.get("id"));
 
-        sanctnLnService.lastUpadteSanctnLn(opinion.toString(), userNumber, id);
+        sanctnLnService.lastUpdateSanctnLn(opinion.toString(), userNumber, id);
 
         Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
 
@@ -373,28 +365,29 @@ public class SanctnController {
         Object opinion = param.get("opinion");
         Long userNumber = Long.valueOf((String) param.get("userNumber"));
         Long id = Long.valueOf((String) param.get("id"));
-
-//        sanctnLnService.lastUpadteSanctnLn(opinion.toString(), userNumber, id);
-
+        Long comId = Long.valueOf((String) param.get("comId"));
+        
+        //전자결재 & 민원 신청내용 변경
+        sanctnLnService.lastUpdateComplement(opinion.toString(), userNumber, id, comId);
 
         //로그인한 사람의 정보를 넘겨 줌
         Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
         model.addAttribute("userNumber", userNumber2);
 
-//        Optional<Sanctn> details = sanctnRepository.findById(id);
-//        Sanctn sanctn = details.get();
-//        model.addAttribute("details", sanctn);
+        Optional<Sanctn> details = sanctnRepository.findById(id);
+        Sanctn sanctn = details.get();
+        model.addAttribute("details", sanctn);
 
-//        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+        model.addAttribute("sanctnLnList", sanctnDTOS);
 
-//        model.addAttribute("sanctnLnList", sanctnDTOS);
 
         //문서 ID 넘겨줌
-//        model.addAttribute("id", id);
+        model.addAttribute("id", id);
 
         return "/pages/sanctionDetail";
     }
-    
+
 
     //진행 조회
     @GetMapping("/sanctnProgress")
