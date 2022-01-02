@@ -232,7 +232,6 @@ public class SanctnServiceImpl implements SanctnService {
             sanctnDTO.setMajor_nm_kr(major_nm_kr);
 
         }
-        log.info("옵셔널 반환 값 확인" + String.valueOf(sanctnDTO));
         return Optional.of(sanctnDTO);
     }
 

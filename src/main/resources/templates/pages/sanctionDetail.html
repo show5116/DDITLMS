@@ -254,9 +254,13 @@
             <input class="form-control btn-square" id="opinion" type="text" placeholder="해당 결재의견을 입력하세요"
                    data-bs-original-title="" style="text-align: center; margin: 0 auto;">
             <hr>
-            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')}"
+            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')} and ${compliment.major_nm_kr == null}"
                     class="btn btn-pill btn-air-success btn-success-gradien" type="button"
                     title="btn btn-pill btn-air-success btn-success-gradien" id="btnLastApproval">최종승인
+            </button>
+            <button th:if="${sanctnLn.lastApproval.toString().equals('Y')} and ${compliment.major_nm_kr != null}"
+                    class="btn btn-pill btn-air-success btn-success-gradien" type="button"
+                    title="btn btn-pill btn-air-success btn-success-gradien" id="btnLastCompliment">최종승인
             </button>
             <button th:if="${sanctnLn.lastApproval.toString().equals('N')}"
                     class="btn btn-pill btn-air-primary btn-primary-gradien" type="button"
@@ -405,18 +409,41 @@
 
         })
 }
+         let btnLastCompliment = document.querySelector("#btnLastCompliment");
 
+        if(btnLastCompliment != null) {
 
+        btnLastApproval.addEventListener("click", function () {
 
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
 
+            let opinion = document.querySelector('#opinion').value;
+            let userNumber = document.querySelector('#userNumber').value;
+            let id = document.querySelector('#id').value;
 
+          $.ajax({
 
+                type: "POST",
+                url: "/finalCompliment",
+                data: {
+                    "opinion": opinion,
+                    "userNumber": userNumber,
+                    "id": id
+                },
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                },
+                success: function (data) {
 
+                    document.write(data);
+                    opener.location.reload();
 
+                },
+            });
 
-
-
-
+        })
+}
 
 
     </script>

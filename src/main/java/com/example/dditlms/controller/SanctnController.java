@@ -15,6 +15,7 @@ import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
 import com.example.dditlms.util.FileUtil;
+import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -62,15 +63,8 @@ public class SanctnController {
     @GetMapping("/sanctn")
     public String santn(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
 
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress reject = SanctnProgress.REJECT;
         Page<SanctnDTO> rejectResult = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
@@ -117,14 +111,7 @@ public class SanctnController {
     @GetMapping("/sanctnRe")
     public String sanctnRe(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
@@ -143,14 +130,9 @@ public class SanctnController {
 
     @GetMapping("/drafting")
     public String drafting(Model model, SanctnForm sanctnForm) {
-        //로그인한 사람 정보 조회 및 데이터 넘김
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
+
         model.addAttribute("drafter", userNumber);
 
         // 로그인한 사람 이름 얻기
@@ -238,13 +220,7 @@ public class SanctnController {
     @GetMapping("/showSanctn/{id}")
     public String sanctnDetail(@PathVariable("id") Long id, Model model) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
 
         //로그인한 사람의 정보를 넘겨 줌
@@ -305,15 +281,7 @@ public class SanctnController {
 
         sanctnLnService.updateSanctnLn(opinion.toString(), userNumber, id);
 
-        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber2 = member.getUserNumber();
+        Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
 
 
         //로그인한 사람의 정보를 넘겨 줌
@@ -345,15 +313,7 @@ public class SanctnController {
 
         sanctnLnService.rejectSanctnLn(opinion.toString(), userNumber, id);
 
-        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber2 = member.getUserNumber();
+        Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
 
 
         //로그인한 사람의 정보를 넘겨 줌
@@ -385,15 +345,7 @@ public class SanctnController {
 
         sanctnLnService.lastUpadteSanctnLn(opinion.toString(), userNumber, id);
 
-        //결재별 상세조회 페이지와 동일한 메소드, 리팩토링 필요
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber2 = member.getUserNumber();
+        Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
 
 
         //로그인한 사람의 정보를 넘겨 줌
@@ -413,17 +365,42 @@ public class SanctnController {
         return "/pages/sanctionDetail";
     }
 
+    //민원 최종승인
+    @PostMapping("/finalCompliment")
+    public String finalCompliment(@RequestParam Map<String, Object> param, Model model) {
+
+
+        Object opinion = param.get("opinion");
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        Long id = Long.valueOf((String) param.get("id"));
+
+//        sanctnLnService.lastUpadteSanctnLn(opinion.toString(), userNumber, id);
+
+
+        //로그인한 사람의 정보를 넘겨 줌
+        Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
+        model.addAttribute("userNumber", userNumber2);
+
+//        Optional<Sanctn> details = sanctnRepository.findById(id);
+//        Sanctn sanctn = details.get();
+//        model.addAttribute("details", sanctn);
+
+//        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+
+//        model.addAttribute("sanctnLnList", sanctnDTOS);
+
+        //문서 ID 넘겨줌
+//        model.addAttribute("id", id);
+
+        return "/pages/sanctionDetail";
+    }
+    
+
     //진행 조회
     @GetMapping("/sanctnProgress")
     public String sanctnProgress(Model model, @PageableDefault(size = 8) Pageable pageable) {
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
 
@@ -443,14 +420,7 @@ public class SanctnController {
     @GetMapping("/sanctnReject")
     public String sanctnReject(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress reject = SanctnProgress.REJECT;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
@@ -470,14 +440,7 @@ public class SanctnController {
     @GetMapping("/sanctnPublic")
     public String sanctnPublic(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress publicize = SanctnProgress.PUBLICIZE;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, publicize);
@@ -496,14 +459,8 @@ public class SanctnController {
 
     @GetMapping("/sanctnAll")
     public String sanctnAll(Model model, @PageableDefault(size = 8) Pageable pageable) {
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         Page<SanctnDTO> results = sanctnLnRepository.inquireAll(userNumber, pageable);
 
@@ -522,14 +479,7 @@ public class SanctnController {
     @GetMapping("/sanctnCom")
     public String sanctnCom(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress completion = SanctnProgress.COMPLETION;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
