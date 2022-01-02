@@ -266,8 +266,13 @@
                     class="btn btn-pill btn-air-primary btn-primary-gradien" type="button"
                     title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인
             </button>
-            <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
+            <button th:if="${compliment.major_nm_kr == null}"
+                    class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
                     title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려
+            </button>
+            <button th:if="${compliment.major_nm_kr != null}"
+                    class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
+                    title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnRejectCompliment">반려
             </button>
             <div style="display:none">
                 <input type="number" th:value="${userNumber}" id="userNumber">
@@ -294,12 +299,20 @@
                         class="btn btn-pill btn-air-primary btn-primary-gradien" type="button"
                         title="btn btn-pill btn-air-primary btn-primary-gradien" id="btnApproval">승인
                 </button>
-                <button class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
+                <button th:if="${compliment.major_nm_kr == null}"
+                        class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
                         title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnReject">반려
+                </button>
+                <button th:if="${compliment.major_nm_kr != null}"
+                        class="btn btn-pill btn-air-warning btn-warning-gradien" type="button"
+                        title="btn btn-pill btn-air-warning btn-warning-gradien" id="btnRejectCompliment">반려
                 </button>
                 <div style="display:none">
                     <input type="number" th:value="${com.userNumber}" id="userNumber">
                     <input type="number" th:value="${id}" id="id">
+                </div>
+                <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
+                    <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
                 </div>
                 <br><br>
             </div>
@@ -434,6 +447,44 @@
 
                 type: "POST",
                 url: "/finalCompliment",
+                data: {
+                    "opinion": opinion,
+                    "userNumber": userNumber,
+                    "id": id,
+                    "comId": comId
+                },
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                },
+                success: function (data) {
+
+                    document.write(data);
+                    opener.location.reload();
+
+                },
+            });
+
+        })
+}
+
+ let btnRejectCompliment = document.querySelector("#btnRejectCompliment");
+
+        if(btnRejectCompliment != null) {
+
+        btnRejectCompliment.addEventListener("click", function () {
+
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+
+            let opinion = document.querySelector('#opinion').value;
+            let userNumber = document.querySelector('#userNumber').value;
+            let id = document.querySelector('#id').value;
+            let comId = document.querySelector('#comId').value;
+
+          $.ajax({
+
+                type: "POST",
+                url: "/rejectCompliment",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,

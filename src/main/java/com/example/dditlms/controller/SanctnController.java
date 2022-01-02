@@ -325,6 +325,38 @@ public class SanctnController {
         return "/pages/sanctionDetail";
     }
 
+    //민원 반려처리
+    @PostMapping("/rejectCompliment")
+    public String rejectCompliment(@RequestParam Map<String, Object> param, Model model) {
+
+
+        Object opinion = param.get("opinion");
+        Long userNumber = Long.valueOf((String) param.get("userNumber"));
+        Long id = Long.valueOf((String) param.get("id"));
+        Long comId = Long.valueOf((String) param.get("comId"));
+
+        sanctnLnService.rejectComplement(opinion.toString(), userNumber, id, comId);
+
+        Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
+
+
+        //로그인한 사람의 정보를 넘겨 줌
+        model.addAttribute("userNumber", userNumber2);
+
+        Optional<Sanctn> details = sanctnRepository.findById(id);
+        Sanctn sanctn = details.get();
+        model.addAttribute("details", sanctn);
+
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
+
+        model.addAttribute("sanctnLnList", sanctnDTOS);
+
+        //문서 ID 넘겨줌
+        model.addAttribute("id", id);
+
+        return "/pages/sanctionDetail";
+    }
+
 
     //최종승인
     @PostMapping("/finalApproval")

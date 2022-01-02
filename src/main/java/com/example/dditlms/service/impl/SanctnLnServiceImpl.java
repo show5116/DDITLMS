@@ -70,7 +70,29 @@ public class SanctnLnServiceImpl implements SanctnLnService {
         findSanctn.get().setStatus(SanctnProgress.REJECT);
 
     }
-    
+    //민원 반려
+    @Override
+    @Transactional
+    public void rejectComplement(String opinion, Long userNumber, Long id, Long comId) {
+
+        SanctnLn sanctnId = sanctnLnRepository.findSanctnId(userNumber, id);
+
+        sanctnId.setSanctnOpinion(opinion);
+        sanctnId.setSanctnDate(LocalDateTime.now());
+        sanctnId.setSanctnLnProgress(SanctnLnProgress.REJECT);
+
+        Optional<Sanctn> findSanctn = sanctnRepository.findById(id);
+        findSanctn.get().setStatus(SanctnProgress.REJECT);
+
+        History history = histRepository.findById(comId).get();
+        history.setChangeDate(new Date());
+        history.setResultStatus(ResultStatus.COMPANION);
+
+        TempAbsence tempAbsence = tempAbsenceRepository.findById(comId).get();
+        tempAbsence.setStatus(ResultStatus.COMPANION);
+
+    }
+
     //최종 승인
     @Override
     @Transactional
@@ -105,6 +127,5 @@ public class SanctnLnServiceImpl implements SanctnLnService {
         tempAbsence.setStatus(ResultStatus.APPROVAL);
 
     }
-
 
 }
