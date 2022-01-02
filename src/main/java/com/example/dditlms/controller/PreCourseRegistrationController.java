@@ -46,7 +46,6 @@ public class PreCourseRegistrationController {
     @GetMapping("/student/preCourseRegistration")
     public String preCourseRegistration(Model model){
         getUserInfo();
-        log.info("==========preCourseRegistration=========");
         List<Major> majorList = majorRepository.findAll();
 
         Optional<SemesterByYear> semesterWrapper = semesterByYearRepository.selectNextSeme();
