@@ -253,6 +253,7 @@ public class SanctnServiceImpl implements SanctnService {
                 LocalDateTime localDateTime = beforeConvertDate.toLocalDateTime();
                 sanctnDTO.setSanctnDate(localDateTime);
             }
+            String sanctnOpinion = resultList.get("SANCTN_OPINION").toString();
             Integer sanctn_step = Integer.valueOf(resultList.get("SANCTN_STEP").toString());
             String sanctn_ls_apv = resultList.get("SANCTN_LS_APV").toString();
             String mber_nm = resultList.get("MBER_NM").toString();
@@ -279,6 +280,7 @@ public class SanctnServiceImpl implements SanctnService {
                     break;
 
             }
+            sanctnDTO.setSanctnOpinion(sanctnOpinion);
             sanctnDTO.setSanctnStep(sanctn_step);
             sanctnDTO.setLastApproval(sanctn_ls_apv);
             sanctnDTO.setName(mber_nm);

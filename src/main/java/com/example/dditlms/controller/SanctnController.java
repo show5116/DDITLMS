@@ -285,6 +285,7 @@ public class SanctnController {
         if (viewComplaintPro.isPresent()) {
             SanctnDTO sanctnDTO = viewComplaintPro.get();
             model.addAttribute("complimentPro", sanctnDTO);
+            log.info("교수 전자결재 결과" + String.valueOf(sanctnDTO));
         }
 
         //문서 ID 넘겨줌

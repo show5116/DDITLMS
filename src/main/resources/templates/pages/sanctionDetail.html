@@ -89,17 +89,46 @@
                     <th scope="col"
                         th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
                 </tr>
-                <tr th:if="${complimentPro.major_nm_kr != null}" th:each="com : ${complimentPro}"
-                    style="background-color:LightCyan;">
-                    <th th:text="${com.name}" th:id="names"></th>
-                    <th scope="col">교수</th>
-                    <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
-                    <div th:if="${com.sanctnLnProgress.toString().equals('WAITING')}">
+                <div>
+                    <tr th:if="${complimentPro.major_nm_kr != null} and ${com.sanctnLnProgress.toString().equals('WAITING')}"
+                        th:each="com : ${complimentPro}">
+                        <th th:text="${com.name}" th:id="names"></th>
+                        <th scope="col">교수</th>
+                        <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
                         <th scope="col" th:text="${com.sanctnLnProgress.krName}"></th>
-                    </div>
-                    <th scope="col"
-                        th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
-                </tr>
+                        <th scope="col"
+                            th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                    <tr th:if="${complimentPro.major_nm_kr != null} and ${com.sanctnLnProgress.toString().equals('PROCESS')}"
+                        th:each="com : ${complimentPro}"
+                        style="background-color:LightCyan;">
+                        <th th:text="${com.name}" th:id="names"></th>
+                        <th scope="col">교수</th>
+                        <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
+                        <th scope="col" th:text="${com.sanctnLnProgress.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                    <tr th:if="${complimentPro.major_nm_kr != null} and ${com.sanctnLnProgress.toString().equals('REJECT')}"
+                        th:each="com : ${complimentPro}"
+                        style="background-color:Tomato;">
+                        <th th:text="${com.name}" th:id="names"></th>
+                        <th scope="col">교수</th>
+                        <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
+                        <th scope="col" th:text="${com.sanctnLnProgress.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                    <tr th:if="${complimentPro.major_nm_kr != null} and ${com.sanctnLnProgress.toString().equals('REQUEST')} "
+                        th:each="com : ${complimentPro}">
+                        <th th:text="${com.name}" th:id="names"></th>
+                        <th scope="col">교수</th>
+                        <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
+                        <th scope="col" th:text="${com.sanctnLnProgress.krName}"></th>
+                        <th scope="col"
+                            th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
+                    </tr>
+                </div>
                 <div th:each="sanctnLn : ${sanctnLnList}">
                     <tr th:if="${sanctnLn.sanctnLnProgress.toString().equals('PROCESS')}"
                         style="background-color:LightCyan;">
@@ -243,9 +272,10 @@
             <br><br>
         </div>
         <div th:if="${complimentPro.major_nm_kr != null}" th:each="com : ${complimentPro}">
-            <div th:if="${com.userNumber == userNumber} and ${com.sanctnLnProgress.toString().equals('REQUEST')}" class="col-xxl-12 col-lg-6"
+            <div th:if="${com.sanctnLnProgress.toString().equals('REQUEST')} and ${com.userNumber == userNumber}"
+                 class="col-xxl-12 col-lg-6"
                  style="text-align: center; margin: 0 auto;">
-                <label for="opinion">결재의견</label>
+                <label for="opinion">결재의견-교수</label>
                 <input class="form-control btn-square" id="opinion" type="text" placeholder="해당 결재의견을 입력하세요"
                        data-bs-original-title="" style="text-align: center; margin: 0 auto;">
                 <hr>
@@ -375,6 +405,10 @@
 
         })
 }
+
+
+
+
 
 
 
