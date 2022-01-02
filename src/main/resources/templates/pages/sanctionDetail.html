@@ -78,9 +78,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="com : ${compliment}" style="background-color:LightCyan;">
+                <tr th:if="${compliment.major_nm_kr != null}" th:each="com : ${compliment}" style="background-color:LightCyan;">
                     <th th:text="${com.name}" th:id="names"></th>
-                    <th scope="col">학생</th>
+                    <th scope="col" th:text="학생"></th>
                     <th scope="col" th:text="|${com.major_nm_kr}과|"></th>
                     <div th:if="${com.sanctnLnProgress.toString().equals('PROCESS')}">
                         <th scope="col">민원신청</th>
@@ -88,7 +88,7 @@
                     <th scope="col"
                         th:text="${#temporals.format(com.sanctnDate, 'yyyy-MM-dd HH:mm')}"></th>
                 </tr>
-                <tr th:each="com : ${complimentPro}" style="background-color:LightCyan;">
+                <tr th:if="${complimentPro.major_nm_kr != null}" th:each="com : ${complimentPro}" style="background-color:LightCyan;">
                     <th th:text="${com.name}" th:id="names"></th>
                     <th scope="col">교수</th>
                     <th scope="col" th:text="|${com.major_nm_kr}과|"></th>

@@ -269,10 +269,10 @@ public class SanctnController {
 
         if (result.isPresent()) {
             System.out.println("나옴?");
-        SanctnDTO sanctnDTO = null;
-        sanctnDTO = result.get();
-        model.addAttribute("compliment", sanctnDTO);
-        log.info(String.valueOf(sanctnDTO));
+            SanctnDTO sanctnDTO = null;
+            sanctnDTO = result.get();
+            model.addAttribute("compliment", sanctnDTO);
+            log.info(String.valueOf(sanctnDTO));
         }
 
 
@@ -281,15 +281,15 @@ public class SanctnController {
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
 
-//        //민원 결재자 내역
-//        Optional<SanctnDTO> viewComplaintPro = sanctnService.viewComplaintPro(id);
-//        if(ObjectUtils.isEmpty(viewComplaintPro)) {
-//            System.out.println("나옴?");
-//            SanctnDTO sanctnDTO2 = null;
-//            sanctnDTO2 = viewComplaintPro.get();
-//            model.addAttribute("complimentPro", sanctnDTO2);
-//            log.info(String.valueOf(sanctnDTO2));
-//        }
+        //민원 결재자 내역
+
+        Optional<SanctnDTO> viewComplaintPro = sanctnService.viewComplaintPro(id);
+        if (viewComplaintPro.isPresent()) {
+            System.out.println("나옴?");
+            SanctnDTO sanctnDTO = viewComplaintPro.get();
+            model.addAttribute("complimentPro", sanctnDTO);
+            log.info(String.valueOf(sanctnDTO));
+        }
 
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
