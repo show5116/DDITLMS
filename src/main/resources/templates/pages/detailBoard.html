@@ -6,6 +6,7 @@
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
     <script type="text/javascript" th:src="@{/static/js/ckeditor/ckeditor.js}"></script>
+    <link rel="stylesheet" href="../../static/css/board.css">
     <div class="container-fluid">
         <div class="row">
             <div class="card m-b-10">
@@ -16,9 +17,9 @@
                             <div class="row col-sm-7 align-self-center">
                                 <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">자유 게시판</h4>
                             </div>
-                            <div class="col-sm-3 justify-content-end text-end">
-                                <button type="button" class="btn btn-secondary" data-bs-original-title="" title="">수정</button>
-                                <button type="button" class="btn btn-secondary" data-bs-original-title="" title="">삭제</button>
+                            <div th:if="${flag == 'true'}" class="col-sm-3 justify-content-end text-end">
+                                <button id="update-btn" type="button" class="btn btn-secondary">수정</button>
+                                <button id="delete-btn" type="button" class="btn btn-secondary">삭제</button>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -41,7 +42,16 @@
                                             <td style="height: 500px;" colspan="3"><p th:utext="${bbs.content}"></p></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="3">첨부파일 : <a href="#">파일</a></td>
+                                            <td colspan="3">
+                                                <div class="divGap">
+                                                    첨부파일 : <a th:each="attach,index : ${attachList}" th:text="${attach.originName}" th:value="${attach.id}+'-'+${index.index}" href="#">파일</a>
+                                                </div>
+                                            </td>
+<!--                                            <td colspan="3">-->
+<!--                                                <a style="display:block;" href="#">파일</a>-->
+<!--                                                <a style="display:block;" href="#">파일</a>-->
+<!--                                                <a style="display:block;" href="#">파일</a>-->
+<!--                                            </td>-->
                                         </tr>
 
                                         </tbody>
@@ -61,7 +71,30 @@
 
     <script th:inline="javascript">
         const listBtn = document.querySelector("#list-btn");
+        const updateBtn = document.querySelector("#update-btn");
+        const deleteBtn = document.querySelector("#delete-btn");
+        /* <![CDATA[ */
+        let boardId = /*[[${idx}]]*/;
+        /* ]]> */
 
+
+        if(deleteBtn!=null){
+            deleteBtn.addEventListener("click", function (){
+                const params = {
+                    "boardId" : boardId
+                };
+                $.ajax({
+                    url: "/community/delete",
+                    data:params,
+                    type:"POST",
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader(header,token);
+                    }
+                }).done(function (){
+                    location.href="/community/freeboard";
+                })
+            })
+        }
 
 
         listBtn.addEventListener("click", function (){

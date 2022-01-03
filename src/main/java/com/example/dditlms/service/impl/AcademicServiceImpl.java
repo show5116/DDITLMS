@@ -203,4 +203,29 @@ public class AcademicServiceImpl implements AcademicService {
 
     }
 
+
+    @Transactional
+    @Override
+    public void majorChangeHist(Map<String, Object> map){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        Student student = MemberUtil.getLoginMember().getStudent();
+
+        String reason = request.getParameter("reason");
+        String changeTerm = request.getParameter("change-term");
+        logger.info("reson : " + reason);
+
+        History history = History.builder()
+                .aplicationDate(new Date())
+                .status(AcademicStatus.CHANGEMAJOR)
+                .resultStatus(ResultStatus.STANDBY)
+                .note(reason)
+                .student(student)
+                .grade(student.getGrade())
+                .major(student.getMajor())
+                .build();
+
+
+    }
+
 }

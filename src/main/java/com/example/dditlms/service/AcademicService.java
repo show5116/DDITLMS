@@ -13,4 +13,6 @@ public interface AcademicService {
     void cancelService(Map<String, Object> map);
 
     void tempAbsenceUpdate(Map<String, Object> map);
+
+    void majorChangeHist(Map<String, Object> map);
 }

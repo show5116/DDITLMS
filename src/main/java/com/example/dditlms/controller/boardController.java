@@ -1,8 +1,10 @@
 package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.common.BoardCategory;
+import com.example.dditlms.domain.entity.Attachment;
 import com.example.dditlms.domain.entity.Bbs;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.repository.AttachmentRepository;
 import com.example.dditlms.domain.repository.BbsRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.util.FileUtil;
@@ -32,12 +34,13 @@ public class boardController {
 
     private final FileUtil fileUtil;
     private final BbsRepository bbsRepository;
+    private final AttachmentRepository attachmentRepository;
 
 
     @GetMapping("/community/freeboard")
     public ModelAndView freeboard(ModelAndView mav){
 
-        Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategory(BoardCategory.FREEBOARD);
+        Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategoryOrderByBbsDateDesc(BoardCategory.FREEBOARD);
         List<Bbs> bbsList = bbsWrapper.orElse(null);
         for (Bbs bbs : bbsList){
             String content = bbs.getContent();
@@ -111,7 +114,6 @@ public class boardController {
                                     @PathVariable(value = "targetId") String idx,
                                     HttpServletRequest request, HttpServletResponse response){
 
-        logger.info(idx);
         Member member = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
@@ -123,6 +125,16 @@ public class boardController {
         Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(Long.parseLong(idx));
         Bbs bbs = bbsWrapper.orElse(null);
 
+        List<String> list = new ArrayList<>();
+        List<Attachment> attachList = attachmentRepository.findAllById(bbs.getAtchmnflId());
+
+        for(Attachment attach : attachList) {
+            String token = fileUtil.makeFileToken(attach.getId(), attach.getOrder());
+            list.add(token);
+        }
+
+
+        Member writer = bbs.getMember();
         Long cnt = bbs.getBbsCnt();
 
         String code = member + idx;
@@ -158,11 +170,14 @@ public class boardController {
             response.addCookie(newCookie);
         }
 
-    ////////////////////////////////
+        if((writer.getUserNumber()).equals(member.getUserNumber())){
+            mav.addObject("flag", "true");
+        } else {
+            mav.addObject("flag", "false");
+        }
 
-        logger.info(String.valueOf(bbs.getCategory()));
-
-
+        mav.addObject("attachList", list);
+        mav.addObject("idx", idx);
         mav.addObject("bbs", bbs);
         mav.setViewName("pages/detailBoard");
         return mav;
@@ -172,12 +187,26 @@ public class boardController {
     @PostMapping("/community/detailBoard/{targetId}")
     public String detailBoardPost(@RequestParam Map<String, Object> paramMap
                             ,@PathVariable(value = "targetId") String idx){
-//        logger.info("idx : " + paramMap.get("targetId"));
+
         logger.info("idx : " + idx);
 
         //replace할거 아니면 redirect해야지
         JSONObject jsonObject = new JSONObject();
+
         jsonObject.put("idx", idx);
         return jsonObject.toJSONString();
+    }
+
+    @PostMapping("/community/delete")
+    public String deleteBoard(@RequestParam Map<String, Object> map){
+        Long boardId = Long.parseLong(String.valueOf(map.get("boardId")));
+
+        Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(boardId);
+        Bbs bbs = bbsWrapper.orElse(null);
+        logger.info("찾은거 : " + bbs);
+        bbsRepository.delete(bbs);
+
+
+        return "/pages/freeboard";
     }
 }

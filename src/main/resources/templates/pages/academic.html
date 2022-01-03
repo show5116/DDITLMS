@@ -43,13 +43,13 @@
                                             <th class="text-center">학부(과)</th>
                                             <th class="text-center">전공</th>
                                             <th class="text-center">학적상태</th>
+                                            <th class="text-center">복학예정</th>
                                             <th class="text-center">신청일자</th>
                                             <th class="text-center">확정일자</th>
                                             <th class="text-center">학년</th>
                                             <th class="text-center">학적변동</th>
                                             <th class="text-center">변동결과</th>
                                             <th class="text-center">사유</th>
-                                            <th class="text-center">복학예정</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -58,13 +58,13 @@
                                             <td th:text="${history.major.parent.korean}">전기,전자,통신공학부</td>
                                             <td th:text="${history.major.korean}">전자공학전공</td>
                                             <td th:text="${student.academicStatus.korean}">수료</td>
+                                            <td th:text="${history.tempAbsence.endsemstr.year}">2021</td>
                                             <td th:text="${history.aplicationDate}">2021.02.19</td>
                                             <td th:text="${history.changeDate}">2021.02.19</td>
                                             <td th:text="${history.grade.korean}">4</td>
                                             <td th:text="${history.status.korean}">휴,복학,전과</td>
                                             <td th:text="${history.resultStatus.korean}">승인,대기,반려</td>
                                             <td th:text="${history.note}">기타</td>
-                                            <td th:text="${history.tempAbsence.endsemstr.year}">2021</td>
                                         </tr>
                                         </tbody>
                                     </table>

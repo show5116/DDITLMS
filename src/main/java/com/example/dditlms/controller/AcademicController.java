@@ -3,12 +3,14 @@ package com.example.dditlms.controller;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.EnrolmentRepository;
 import com.example.dditlms.domain.repository.HistoryRepository;
+import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.student.StudentRepository;
 import com.example.dditlms.service.AcademicService;
 import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +27,7 @@ public class AcademicController {
     private final AcademicService academicService;
     private final StudentRepository studentRepository;
     private final EnrolmentRepository enrolmentRepository;
+    private final MajorRepository majorRepository;
 
     @GetMapping("/academic")
     public ModelAndView academic(ModelAndView mav){
@@ -96,6 +99,32 @@ public class AcademicController {
         academicService.tempAbsenceUpdate(map);
         return "pages/leave";
     }
+
+    @GetMapping("/academic/changeMajor")
+    public ModelAndView change(ModelAndView mav){
+        Student student = MemberUtil.getLoginMember().getStudent();
+
+        List<Major> majorList = majorRepository.findAll();
+
+        mav.addObject("student", student);
+        mav.addObject("majorList", majorList);
+        mav.setViewName("pages/changeMajor");
+        return mav;
+    }
+
+    @PostMapping("/academic/changePost")
+    public ModelAndView changePost(ModelAndView mav){
+
+
+        mav.setViewName("redirect:/academic/change");
+
+        return mav;
+    }
+
+//    @PostMapping("/academic/changeCancel")
+//    public ModelAndView changeCancel(ModelAndView modelAndView){
+//
+//    }
 
 //    public ModelAndView attendHistory(ModelAndView mav){
 //        Student student = MemberUtil.getLoginMember().getStudent();
