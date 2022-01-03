@@ -10,36 +10,79 @@
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
     <div class="container-fluid">
         <div class="col-sm-12 col-xl-6 xl-100">
+            <div style="height: 60px; justify-content: center;" class="card">
+                <div class="row">
+                    <div class="col-sm-3">
+                    </div>
+                    <div class="col-sm-3">
+                        <label>학과</label>
+                        <select name="kindId" style="width:80%;" id="major-search" onchange="curriculumSelected()">
+                            <option th:each="major : ${majorList}" th:value="${major.getId()}" th:text="${major.getKorean()}"></option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>이수구분</label>
+                        <select style="display: inline-block; width:50%;" class="form-control" id="section-select" onchange="curriculumSelected()">
+                            <option value="CULTURE_SELECT" selected>교선</option>
+                            <option value="CULTURE_REQUIRED">교필</option>
+                            <option value="MAJOR_SELECT">전선</option>
+                            <option value="MAJOR_REQUIRED">전필</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>학년</label>
+                        <select id="grade-select" style="display: inline-block; width:50%;" class="form-control" onchange="curriculumSelected()">
+                            <option value="FRESHMAN" selected>1학년</option>
+                            <option value="SOPHOMORE">2학년</option>
+                            <option value="JUNIOR">3학년</option>
+                            <option value="SENIOR">4학년</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>학기</label>
+                        <select id="semester-select" style="display: inline-block; width:50%;" class="form-control" onchange="curriculumSelected()">
+                            <option th:each="semester : ${semesterList}" th:value="${semester.getYear()}" th:text="${semester.getYear()}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-body">
-                    <div class="col-sm-6">
-                        <div class="pull-right row">
-                            <div class="col">
-                                <select name="kindId" style="width:80%;" id="major-search" onchange="scholarSelected()">
-                                    <option th:each="major : ${majorList}" th:value="${major.getId()}" th:text="${major.getKorean()}"></option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <select>
-                                    <option>1학년</option>
-                                    <option>2학년</option>
-                                    <option>3학년</option>
-                                    <option>4학년</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <select>
-                                    <option>1학기</option>
-                                    <option>2학기</option>
-                                </select>
-                            </div>
+                    <div>
+                        <div style="height: 60px;" class="search-bg"><i class="fa fa-search"></i>
+                            <select id="search-subject-select" class="pull-right" style="width:30%;">
+                                <option th:each="subject : ${subjectList}" th:value="${subject.getId()}" th:text="${subject.getId()}+' '+${subject.getName()}"></option>
+                            </select>
+                            <button id="add-subject-btn" class="btn btn-primary" type="bsutton">추가</button>
+                        </div>
+                        <div style="height: 60px;">
+                            <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
+                            <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-curriculum" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                            <button class="btn btn-primary pull-right" id="btn-curriculum-excel" type="button">엑셀파일읽기</button>
+                            <button class="btn btn-primary pull-right" id="btn-made-curriculum-excel" type="button">엑셀파일로 출력</button>
                         </div>
                     </div>
-                    <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
-                    <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-curriculum" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                    <button class="btn btn-primary pull-right" id="btn-curriculum-excel" type="button">엑셀파일읽기</button>
-                    <button class="btn btn-primary pull-right" id="btn-made-curriculum-excel" type="button">엑셀파일로 출력</button>
-                    <div id="grid-curriculum"></div>
+                    <div style="width: 100%;" class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>과목코드</th>
+                                <th>과목명</th>
+                                <th>학점</th>
+                                <th>삭제버튼</th>
+                            </tr>
+                            </thead>
+                            <tbody id="curriculum-table">
+                            <input id="duplicate" th:if="${duplicate}" type="hidden" />
+                            <tr th:each="curriculum : ${curriculumList}">
+                                <td th:text="${curriculum.getSubject()?.getId()}"></td>
+                                <td th:text="${curriculum.getSubject()?.getName()}"></td>
+                                <td th:text="${curriculum.getSubject()?.getPoint()}"></td>
+                                <td><button class="btn-primary btn-sm" type="button" th:onclick="'deleteCurriculum('+${curriculum.getId()}+')'">삭제</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,7 +90,98 @@
     <script th:src="@{/static/js/jsgrid.min.js}"></script>
     <script th:src="@{/static/js/excel.js}"></script>
     <script th:inline="javascript">
+        /* <![CDATA[ */
+        const nextSemester = /*[[${semester.year}]]*/;
+        /* ]]> */
+        const major = document.querySelector("#major-search");
+        const grade = document.querySelector("#grade-select");
+        const semester = document.querySelector("#semester-select");
+        const semesterOptions = semester.querySelectorAll("option");
+        const section = document.querySelector("#section-select");
+        const addSubjectBtn = document.querySelector("#add-subject-btn");
+        let semesterFlag = false;
+        const semesters = [];
+        semesterOptions.forEach((option)=>{
+            semesters.push(option.value);
+        });;
         $('#major-search').select2();
+        $('#search-subject-select').select2();
+        function curriculumSelected(){
+            if(semester.value > nextSemester){
+                semesterFlag = true;
+            }else{
+                semesterFlag = false;
+            }
+            const params = {
+                major : major.value,
+                grade : grade.value,
+                semester : semester.value,
+                section : section.value
+            };
+            $.ajax({
+                url: "/accademic/curriculum/search",
+                data: params,
+                method: "Post",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done((fragment)=>{
+                $("#curriculum-table").replaceWith(fragment);
+            })
+        }
+        addSubjectBtn.addEventListener("click",()=>{
+            if(!semesterFlag){
+                swal("추가 삭제가 불가능한 학기입니다.");
+                return;
+            }
+            const subject = document.querySelector("#search-subject-select");
+            const params = {
+                major : major.value,
+                grade : grade.value,
+                semester : semester.value,
+                section : section.value,
+                subject : subject.value
+            };
+            $.ajax({
+                url: "/accademic/curriculum/insert",
+                data: params,
+                method: "Post",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done((fragment)=>{
+                if(fragment.indexOf(`<input id="duplicate"`) != -1){
+                    swal("이미 등록된 과목입니다.");
+                }
+                $("#curriculum-table").replaceWith(fragment);
+            })
+        });
+        function deleteCurriculum(id){
+            if(!semesterFlag){
+                swal("추가 삭제가 불가능한 학기입니다.");
+                return;
+            }
+            const params = {
+                major : major.value,
+                grade : grade.value,
+                semester : semester.value,
+                section : section.value,
+                curriculum : id
+            };
+            $.ajax({
+                url: "/accademic/curriculum/delete",
+                data: params,
+                method: "Post",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done((fragment)=>{
+                $("#curriculum-table").replaceWith(fragment);
+            });
+        }
         const excelCurriculum = document.querySelector("#excel-curriculum");
         const excelCurriculumBtn = document.querySelector("#btn-curriculum-excel");
         excelCurriculumBtn.addEventListener("click",()=>{
@@ -60,190 +194,108 @@
             reader.onload = function (){
                 const data = reader.result;
                 const workBook = XLSX.read(data,{type:'binary'});
+                async function loadSheets(){
 
-                workBook.SheetNames.forEach(function (sheetName){
-                    const rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+                }
+                const curriculumList = [];
+                for(let i=0;i<workBook.SheetNames.length;i++){
+                    if(semesters.find(element=> element == workBook.SheetNames[i]) == null
+                        || workBook.SheetNames[i] < nextSemester){
+                        return;
+                    }
+                    const rows = XLSX.utils.sheet_to_json(workBook.Sheets[workBook.SheetNames[i]]);
                     rows.forEach(row => {
-                        if(row.과목코드 ==null || row.과목코드 =="" ||
-                            row.이름 ==null || row.이름 =="" ||
+                        if(row.학과코드 ==null || row.학과코드 =="" ||
                             row.이수구분 ==null || row.이수구분 =="" ||
-                            row.과목학점 ==null || row.과목학점 =="" ||
-                            row.과목개요 ==null || row.과목개요 ==""){
+                            row.학년 ==null || row.학년 =="" ||
+                            row.과목코드 ==null || row.과목코드 ==""){
                             return;
                         }
-                        if(controller.subjects.find(element => element.과목코드 == row.과목코드) != null){
+                        var curriculumObject = new Object();
+                        curriculumObject.semesterId = workBook.SheetNames[i];
+                        curriculumObject.majorId = row.학과코드;
+                        curriculumObject.subjectId = row.과목코드;
+                        if(row.학년 == "1학년"){
+                            curriculumObject.grade = "FRESHMAN";
+                        }else if(row.학년 == "2학년"){
+                            curriculumObject.grade = "SOPHOMORE";
+                        }else if(row.학년 == "3학년"){
+                            curriculumObject.grade = "JUNIOR";
+                        }else if(row.학년 == "4학년"){
+                            curriculumObject.grade = "SENIOR";
+                        }else{
                             return;
                         }
-                        var subjectObject = new Object();
-                        subjectObject.과목코드 = row.과목코드;
-                        subjectObject.이름 = row.이름;
-                        if(row.이수구분 == "전공"){
-                            row.이수구분 = "MAJOR";
-                        }else if(row.이수구분 == "교양"){
-                            row.이수구분 = "CULTURE";
+                        if(row.이수구분 == "교선"){
+                            curriculumObject.lectureSection = "CULTURE_SELECT";
+                        }else if(row.이수구분 == "교필"){
+                            curriculumObject.lectureSection = "CULTURE_REQUIRED";
+                        }else if(row.이수구분 == "전선"){
+                            curriculumObject.lectureSection = "MAJOR_SELECT";
+                        }else if(row.이수구분 == "전필"){
+                            curriculumObject.lectureSection = "MAJOR_REQUIRED";
+                        }else{
+                            return;
                         }
-                        subjectObject.이수구분 = row.이수구분;
-                        subjectObject.과목학점 = row.과목학점;
-                        subjectObject.과목개요 = row.과목개요;
-                        if(row.선수과목 == undefined){
-                            row.선수과목 = null;
-                        }
-                        subjectObject.선수과목 = row.선수과목;
-                        subjectObject.활성여부 = "EXISTED";
-                        insertSubject(subjectObject);
+                        curriculumList.push(curriculumObject);
                     });
-                    document.querySelector(".jsgrid-clear-filter-button").click();
+                }
+                const params = {
+                    major : major.value,
+                    grade : grade.value,
+                    semester : semester.value,
+                    section : section.value,
+                    curriculumList : curriculumList
+                };
+                $.ajax({
+                    url: "/accademic/curriculum/excel",
+                    data: JSON.stringify(params),
+                    method: "Post",
+                    contentType : "application/json; charset=UTF-8",
+                    beforeSend: function (xhr){
+                        xhr.setRequestHeader(header,token);
+                    }
+                })
+                .done((fragment)=>{
+                    $("#curriculum-table").replaceWith(fragment);
                 });
 
             }
             reader.readAsBinaryString(file.files[0]);
         });
 
-
-        const CustomLoadStrategy = function (grid){
-            jsGrid.loadStrategies.DirectLoadingStrategy.call(this,grid);
-        };
-        CustomLoadStrategy.prototype = new jsGrid.loadStrategies.DirectLoadingStrategy();
-        CustomLoadStrategy.prototype.finishInsert = function (insertItem){
-            const grid = this._grid;
-            grid.option("data").unshift(insertItem);
-            grid.refresh();
-        };
-        const controller = {
-            loadData: function (filter){
-                return $.grep(this.subjects, function(subjects) {
-                    return (!filter.과목코드 || subjects.과목코드.indexOf(filter.과목코드) > -1)
-                        && (!filter.이름 || subjects.이름.indexOf(filter.이름) > -1)
-                        && (!filter.이수구분 || subjects.이수구분.indexOf(filter.이수구분) > -1)
-                        && (!filter.과목학점 || subjects.과목학점.toString().indexOf(filter.과목학점) > -1)
-                        && (!filter.활성여부 || subjects.활성여부.toString().indexOf(filter.활성여부) > -1)
-                });
-            },
-            insertItem : function (insertItem){
-                insertSubject(insertItem);
-            },
-            updateItem : function (updateItem) {
-                updateSubject(updateItem);
-            },
-            deleteItem : function (deleteItem) {}
-        }
-        controller.subjects=[];
-        /*[# th:each="subject :${subjectList}"]*/
-        var subjectObject = new Object();
-        subjectObject.과목코드 =  /*[[${subject.getId()}]]*/;
-        subjectObject.이름 =  /*[[${subject.getName()}]]*/;
-        subjectObject.이수구분 =  /*[[${subject.getCompletionDiv()}]]*/;
-        subjectObject.과목개요 =  /*[[${subject.getCourseOutline()}]]*/;
-        subjectObject.과목학점 =  /*[[${subject.getPoint()}]]*/;
-        subjectObject.선수과목 =  /*[[${subject.getParent()?.getId()}]]*/;
-        subjectObject.활성여부 =  /*[[${subject.getStatus()}]]*/;
-        controller.subjects.push(subjectObject);
-        /*[/]*/
-        controller.subjectCategory = [
-            { id: "MAJOR",name: "전공"},
-            { id: "CULTURE",name: "교양"}
-        ];
-        controller.status = [
-            { id: "EXISTED" , name: "활성"},
-            { id: "DELETED" , name: "비활성"}
-        ];
-        $("#grid-curriculum").jsGrid({
-            width: "100%",
-            height: "auto",
-            filtering: true,
-            editing: true,
-            inserting: true,
-            loadStrategy : function (){
-                return new CustomLoadStrategy(this);
-            },
-            controller : controller,
-            sorting: true,
-            paging: true,
-            autoload: true,
-            pageSize: 10,
-            pageButtonCount: 5,
-            invalidMessage: "입력에 실패하였습니다.",
-            fields: [
-                { name: "과목코드", type: "text", editing:false,width: 70,validate: {validator:"required",message:"코드가 비었습니다."}},
-                { name: "이름", type: "text", width: 80 ,validate: {validator:"required",message:"이름이 비었습니다."}},
-                { name: "이수구분", type: "select", items:controller.subjectCategory,valueField: "id", textField: "name", width: 45},
-                { name: "과목학점", type: "number", width: 45 ,validate: {
-                        validator: function(value,item){
-                            return value.length = 1 && !isNaN(value);
-                        }, message: "학점 형식에 맞지 않습니다."}},
-                { name: "선수과목", type: "text", width: 70 },
-                { name: "활성여부",type: "select", width: 45 ,items:controller.status,valueField: "id",textField: "name"},
-                { name: "과목개요",css:"text-truncate",editcss:"height-35" ,type: "textarea", width: 80 ,validate:{validator:"required",message:"개요가 비었습니다."}},
-                { type: "control", deleteButton:false , width: 30}
-            ]
-        })
-        const madeSubjectXLSXBtn = document.querySelector("#btn-made-subject-excel");
-        madeSubjectXLSXBtn.addEventListener("click",()=>{
-            const excelData = {
-                fileName : "과목목록.xlsx",
-                sheetName : "과목 목록"
-            };
-            excelData.excelDatas = [];
-            const excelHeader = ["과목코드","이름","이수구분","과목학점","선수과목","활성여부","과목개요"];
-            excelData.excelDatas.push(excelHeader);
-            controller.subjects.forEach(subject => {
-                var innerArray = [];
-                innerArray.push(subject.과목코드);
-                innerArray.push(subject.이름);
-                innerArray.push(subject.이수구분);
-                innerArray.push(subject.과목학점);
-                innerArray.push(subject.선수과목);
-                innerArray.push(subject.활성여부);
-                innerArray.push(subject.과목개요);
-                excelData.excelDatas.push(innerArray);
-            });
-
-            exportExcel(excelData);
+        const curriculumExcelMadeBtn = document.querySelector("#btn-made-curriculum-excel");
+        curriculumExcelMadeBtn.addEventListener("click",function (){
+            $.ajax({
+                url: "/accademic/curriculum/export",
+                method: "Post",
+                beforeSend: function (xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+            .done((curriculums)=>{
+                const excelData = {
+                    fileName : "교과목록.xlsx",
+                    sheetName : "교과 목록"
+                };
+                excelData.excelDatas = [];
+                const excelHeader = ["","학과코드","확과명","이수구분","학년","과목코드","과목명","학점"];
+                excelData.excelDatas.push(excelHeader);
+                for(let i=0; i<curriculums.length; i++){
+                    var innerArray = [];
+                    innerArray.push(curriculums[i].semesterId);
+                    innerArray.push(curriculums[i].majorId);
+                    innerArray.push(curriculums[i].majorName);
+                    innerArray.push(curriculums[i].sectionName);
+                    innerArray.push(curriculums[i].gradeName);
+                    innerArray.push(curriculums[i].subjectId);
+                    innerArray.push(curriculums[i].subjectName);
+                    innerArray.push(curriculums[i].point);
+                    excelData.excelDatas.push(innerArray);
+                }
+                exportExcel(excelData);
+            })
         });
-        function insertSubject(insertItem){
-            const params = {
-                id : insertItem.과목코드,
-                name: insertItem.이름,
-                completionDiv : insertItem.이수구분,
-                courseOutline : insertItem.과목개요,
-                point : insertItem.과목학점,
-                parent : insertItem.선수과목,
-                status : insertItem.활성여부
-            };
-            $.ajax({
-                url: "/accademic/subjectManage/insert",
-                data: params,
-                method: "Post",
-                dataType: "json",
-                beforeSend: function (xhr){
-                    xhr.setRequestHeader(header,token);
-                }
-            })
-                .done((fragment)=>{
-                    controller.subjects.unshift(insertItem);
-                    document.querySelector(".jsgrid-clear-filter-button").click();
-                })
-        }
-        function updateSubject(updateItem){
-            const params = {
-                id : updateItem.과목코드,
-                name: updateItem.이름,
-                completionDiv : updateItem.이수구분,
-                courseOutline : updateItem.과목개요,
-                point : updateItem.과목학점,
-                parent : updateItem.선수과목,
-                status : updateItem.활성여부
-            };
-            $.ajax({
-                url: "/accademic/subjectManage/update",
-                data: params,
-                method: "Post",
-                dataType: "json",
-                beforeSend: function (xhr){
-                    xhr.setRequestHeader(header,token);
-                }
-            })
-        }
     </script>
 </th:block>
 </html>
