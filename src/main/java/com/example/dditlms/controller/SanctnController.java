@@ -14,6 +14,7 @@ import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
 import com.example.dditlms.util.FileUtil;
 import com.example.dditlms.util.MemberUtil;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
