@@ -9,15 +9,11 @@ import com.example.dditlms.domain.repository.SignupSearchRepository;
 import com.example.dditlms.security.AccountContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -50,7 +46,6 @@ public class PreCourseRegistrationController {
     @GetMapping("/student/preCourseRegistration")
     public String preCourseRegistration(Model model){
         getUserInfo();
-        log.info("==========preCourseRegistration=========");
         List<Major> majorList = majorRepository.findAll();
 
         Optional<SemesterByYear> semesterWrapper = semesterByYearRepository.selectNextSeme();
@@ -61,7 +56,7 @@ public class PreCourseRegistrationController {
             String id = openLecture.getId();
             String lectureClass = id.substring(id.length()-1);
             String kind = openLecture.getLectureKind() +"";
-            PreCourseDTO dto = openLecture.toDto();
+            PreCourseDTO  dto = openLecture.toDto();
             dto.setLectureClass(lectureClass);
             dto.setLectureSeme(openLecture.getLectureSection().getKorean());
             if (kind.equals("F")){
@@ -74,38 +69,26 @@ public class PreCourseRegistrationController {
             preCourseDTOList.add(dto);
         }
         int lectureCount = preCourseDTOList.size();
-        log.info("-----PreCourseRegistrationController[preCourseRegistration] :: 원래거 끝");
 
         Long studentNo = Long.parseLong(memNo);
         Student student = Student.builder()
                 .userNumber(studentNo).build();
-
         List<PreCourseRegistration> getPreRegistrationList = repository.findByStudentNo(student);
         List<PreCourseDTO> result = new ArrayList<>();
-        log.info("-----PreCourseRegistrationController[preCourseRegistration] :: getPreRegistrationList={}",getPreRegistrationList);
 
         for (PreCourseRegistration preCourseRegistration : getPreRegistrationList) {
-            log.info("-----PreCourseRegistrationController[preCourseRegistration] :: preCourseRegistration={}",preCourseRegistration);
-            String id = preCourseRegistration.getLectureCode().getId();
-            String lectureClass = id.substring(id.length()-1);
-            String kind = preCourseRegistration.getLectureCode().getLectureKind() +"";
-            PreCourseDTO dto = preCourseRegistration.toPreDto();
-            log.info("-----PreCourseRegistrationController[preCourseRegistration] :: dto={}",dto);
-            dto.setLectureClass(lectureClass);
-            dto.setLectureSeme(preCourseRegistration.getLectureCode().getLectureSection().getKorean());
-            if (kind.equals("F")){
-                kind = "오프라인 ";
-                log.info("-----PreCourseRegistrationController[preCourseRegistration] :: if(kind)={}",kind);
-                dto.setLecturedivision(kind);
-            } else if (kind.equals("O")){
-                kind = "온라인";
-                log.info("-----PreCourseRegistrationController[preCourseRegistration] :: if(kind)={}",kind);
-                dto.setLecturedivision(kind);
-            }
+            PreCourseDTO dto = PreCourseDTO.builder()
+                    .lectureCode(preCourseRegistration.getLectureCode().getId())
+                    .lectureSeme(preCourseRegistration.getLectureCode().getLectureSection().getKorean())
+                    .lectureName(preCourseRegistration.getLectureCode().getSubjectCode().getName())
+                    .professor(preCourseRegistration.getStudentNo().getMember().getName())
+                    .lectureSchedule(preCourseRegistration.getLectureCode().getLectureSchedule())
+                    .lectureRoom(preCourseRegistration.getLectureCode().getLectureId().getId())
+                    .subjectCode(preCourseRegistration.getLectureCode().getSubjectCode().getId())
+                    .build();
             result.add(dto);
         }
         int count = result.size();
-        log.info("-----PreCourseRegistrationController[preCourseRegistration] :: count={}",count);
         model.addAttribute("preRegistrationList",result);
         model.addAttribute("preTotalCount", count);
 
@@ -232,10 +215,40 @@ public class PreCourseRegistrationController {
     @ResponseBody
     @PostMapping("/preCourseRegistration/searchLectureId")
     public PreCourseDTO searchLectureId(@RequestParam String id){
-        JSONObject jsonObject = new JSONObject();
         OpenLecture openLecture = searchRepository.findById(id).get();
         PreCourseDTO dto = openLecture.toDto();
         return dto;
+    }
+
+    @ResponseBody
+    @PostMapping("/preCourseRegistration/savePreRegistration")
+    public String savePreRegistration(@RequestBody List<String> idList){
+        Long studentNo = Long.parseLong(memNo);
+        Student student = Student.builder()
+                .userNumber(studentNo).build();
+        for (String lecture : idList) {
+            OpenLecture addId = searchRepository.findById(lecture).get();
+            PreCourseRegistration registration = PreCourseRegistration.builder()
+                    .lectureCode(addId)
+                    .studentNo(student).build();
+            repository.save(registration);
+        }
+        return "success";
+    }
+
+    @ResponseBody
+    @PostMapping("/student/preCourseRegistration/deletePreRegistration")
+    public String deletePreRegistration(@RequestBody String id){
+        String deleteId = id.split("=")[0];
+        OpenLecture openLecture = searchRepository.findById(deleteId).get();
+        Long studentNo = Long.parseLong(memNo);
+        Student student = Student.builder()
+                .userNumber(studentNo).build();
+        PreCourseRegistration preRegistration = repository.findByStudentNoAndLectureCode(student, openLecture);
+        Long registrationId = preRegistration.getId();
+        repository.deleteById(registrationId);
+
+        return "success";
     }
 
 

@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface BbsRepository extends JpaRepository<Bbs, Integer> {
     Optional<Bbs> findByIdx(Long idx);
     Optional<List<Bbs>> findAllByCategory(BoardCategory boardCategory);
+    Optional<List<Bbs>> findAllByCategoryOrderByBbsDateDesc(BoardCategory boardCategory);
 
 }

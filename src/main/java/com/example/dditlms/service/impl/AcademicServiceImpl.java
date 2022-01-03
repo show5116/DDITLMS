@@ -24,9 +24,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -80,17 +78,30 @@ public class AcademicServiceImpl implements AcademicService {
                 .resultStatus(ResultStatus.STANDBY)
                 .note(reason)
                 .student(student)
+                .grade(student.getGrade())
+                .major(student.getMajor())
                 .tempAbsence(tempAbsence)
                 .build();
+        logger.info("학년 보기 : " + student.getGrade());
         histRepository.save(history);
+
 
         // 전자결재에 민원 추가 로직
         Long drafter = MemberUtil.getLoginMember().getUserNumber();
         Docform docform = docformRepository.findById(6L).get();
-        // 담당직원 강제로 삽입함, 실제로는 담당 직원 검색 메소드가 필요함
-        sanctnService.saveComplaint(docform, drafter, reason, 11111L);
-
-
+        // 담당직원, 담당교수, 최종승인 직원 강제로 삽입함, 실제로는 각각 검색 메소드가 필요함
+        // 실제 검색 로직 -> 학생의 담당교수를 검색한다. 당당 교수가 있을 경우 -> 중간 승인자 담당교수
+        // 학생의 담당교수를 검색한다. 당당 교수가 없을 경우 -> 중간 승인자 학과장
+        List<Long> userNumber = new ArrayList<>();
+        Long staff = 11111L;
+        Long professor = 8888L;
+        Long approver = 11112L;
+        userNumber.add(staff);
+        userNumber.add(professor);
+        userNumber.add(approver);
+        Long complimentId = history.getId();
+        String complimentType = "휴학신청 : ";
+        sanctnService.saveComplaint(docform, drafter, reason, userNumber,complimentId, complimentType);
     }
 
     @Transactional
@@ -189,6 +200,31 @@ public class AcademicServiceImpl implements AcademicService {
         tempAbsence.setStatus(ResultStatus.COMPANION);
 
         tempAbsenceRepository.save(tempAbsence);
+
+    }
+
+
+    @Transactional
+    @Override
+    public void majorChangeHist(Map<String, Object> map){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        Student student = MemberUtil.getLoginMember().getStudent();
+
+        String reason = request.getParameter("reason");
+        String changeTerm = request.getParameter("change-term");
+        logger.info("reson : " + reason);
+
+        History history = History.builder()
+                .aplicationDate(new Date())
+                .status(AcademicStatus.CHANGEMAJOR)
+                .resultStatus(ResultStatus.STANDBY)
+                .note(reason)
+                .student(student)
+                .grade(student.getGrade())
+                .major(student.getMajor())
+                .build();
+
 
     }
 

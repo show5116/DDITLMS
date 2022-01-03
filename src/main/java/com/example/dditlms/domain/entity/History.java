@@ -1,6 +1,7 @@
 package com.example.dditlms.domain.entity;
 
 import com.example.dditlms.domain.common.AcademicStatus;
+import com.example.dditlms.domain.common.Grade;
 import com.example.dditlms.domain.common.ResultStatus;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -28,6 +29,14 @@ public class History {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
     generator = "HIST_SEQ_GEN")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="HIST_GRADE")
+    private Grade grade;
+
+    @ManyToOne
+    @JoinColumn(name="HIST_MAJOR_CODE")
+    private Major major;
 
     @Column(name="HIST_CHANGE_REQSTMD")
     private Date aplicationDate;

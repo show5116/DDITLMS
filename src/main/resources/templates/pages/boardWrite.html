@@ -14,7 +14,7 @@
                         <div class="row col-sm-4 align-self-center">
 <!--                            멤버 분류에 따라서 공지와 게시판 나눔 sec 시큐리티로 나눔-->
 <!--                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">학사 공지</h4>-->
-                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">학사 공지</h4>
+                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">자유 게시판</h4>
                         </div>
                     </div>
                     <form enctype="multipart/form-data" method="post" id="board-write">
@@ -30,6 +30,7 @@
                         </div>
                     </form>
                     <div class="col-sm-12 justify-content-end text-end">
+                        <button type="button" id="list-btn" class="btn btn-secondary ">목록</button>
                         <button type="button" id="board-submit" class="btn btn-secondary ">등록</button>
                     </div>
 
@@ -42,6 +43,7 @@
         const boardSubmit = document.querySelector("#board-submit");
         const editor4 = document.querySelector("#editor4");
         const title = document.querySelector("#title");
+        const listBtn = document.querySelector("#list-btn");
         const boardWrite = document.querySelector("#board-write");
         var editor = CKEDITOR.replace('editor4');
             Dropzone.options.attachdropzone = {
@@ -73,8 +75,10 @@
                     this.on("successmultiple",(files,response)=>{
                        console.log(response.idx);
                        console.log(response);
+                       const targetId = response.idx;
 
-                       location.href="/community/detailBoard?idx="+response.idx;
+                       // location.href="/community/detailBoard?idx="+response.idx;
+                       location.href="/community/detailBoard/"+targetId;
                        console.log("아");
                     });
                 },
@@ -90,6 +94,9 @@
             console.log(keys);
         });
 
+        listBtn.addEventListener("click", function (){
+            location.href = "/community/freeboard"
+        })
 
 
 

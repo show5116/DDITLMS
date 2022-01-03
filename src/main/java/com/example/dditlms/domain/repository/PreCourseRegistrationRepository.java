@@ -11,6 +11,5 @@ import java.util.List;
 @Repository
 public interface PreCourseRegistrationRepository  extends JpaRepository<PreCourseRegistration, Long> {
     List<PreCourseRegistration> findByStudentNo(Student studentNo);
-
-
+    PreCourseRegistration findByStudentNoAndLectureCode(Student studentNo, OpenLecture lectureCode);
 }

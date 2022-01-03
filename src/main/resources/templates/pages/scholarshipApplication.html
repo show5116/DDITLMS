@@ -103,15 +103,15 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>기초전기전자실습</td>
-                                                <td>01</td>
-                                                <td>전필</td>
-                                                <td>이론+실습</td>
-                                                <td>이론+실습</td>
-                                                <td>이론+실습</td>
-                                                <td>이론+실습</td>
+                                            <tr th:each="pro : ${progress}">
+                                                <td th:text="${proStat.index +(1)}">1</td>
+                                                <td>-</td>
+                                                <td th:text="${pro.deptNm}">부서</td>
+                                                <td th:text="${pro.employeeRole.krName}">직급</td>
+                                                <td th:text="${pro.name}">결재자명</td>
+                                                <td th:text="${pro.sanctnLnProgress.krName}">처리결과</td>
+                                                <td th:text="${#temporals.format(pro.sanctnDate, 'yyyy-MM-dd HH:mm')}">처리일자</td>
+                                                <td th:text="${pro.sanctnOpinion}">처리의견</td>
                                             </tr>
                                             </tbody>
                                         </table>

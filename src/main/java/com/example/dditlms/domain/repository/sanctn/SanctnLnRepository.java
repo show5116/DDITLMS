@@ -31,7 +31,25 @@ public interface SanctnLnRepository extends JpaRepository<SanctnLn, Long>, Sanct
             " AND s.MAJOR_CODE = mj.MAJOR_CODE" ,nativeQuery = true)
     public Map<String, Object> viewCompliment(@Param("id") Long id);
 
-
+    @Query(value = "select sln.SANCTN_DATE ," +
+            "sln.SANCTN_OPINION ," +
+            "sln.SANCTN_STEP ," +
+            "sln.SANCTN_LS_APV ," +
+            "sln.SANCTN_STTUS ," +
+            "m.MBER_NM ," +
+            "sln.MBER_NO ," +
+            "mj.MAJOR_NM_KR " +
+            " from SANCTN_LN sln, " +
+            "MBER m, " +
+            "PROFSR p, " +
+            "MAJOR mj, " +
+            "SANCTN sn " +
+            " WHERE sn.SANCTN_SN = :id" +
+            " AND sln.SANCTN_SN = sn.SANCTN_SN" +
+            " AND sln.MBER_NO = m.MBER_NO" +
+            " AND m.MBER_NO = p.MBER_NO " +
+            " AND p.MAJOR_CODE = mj.MAJOR_CODE" ,nativeQuery = true)
+    public Map<String, Object>viewComplimentPro(@Param("id") Long id);
 
 
 }

@@ -36,6 +36,7 @@ public class SanctnDTO {
     private LocalDate sanctnUpdde;
     private String major_code;
     private String major_nm_kr;
+    private Long drafter;
 
 
 
@@ -64,12 +65,13 @@ public class SanctnDTO {
 
     @QueryProjection
 
-    public SanctnDTO(Long sanctnId, String sanctnSj, SanctnProgress status, LocalDate sanctnUpdde, String name) {
+    public SanctnDTO(Long sanctnId, String sanctnSj, SanctnProgress status, LocalDate sanctnUpdde, String name, Long drafter) {
         this.sanctnId = sanctnId;
         this.sanctnSj = sanctnSj;
         this.status = status;
         this.sanctnUpdde = sanctnUpdde;
         this.name = name;
+        this.drafter = drafter;
     }
 
     public SanctnDTO(LocalDateTime sanctnDate, String sanctnOpinion, Integer sanctnStep, String lastApproval, SanctnProgress status, String name, Long userNumber, String major_nm_kr) {
@@ -89,5 +91,16 @@ public class SanctnDTO {
         this.sanctnId = sanctnId;
         this.sanctnLnProgress = sanctnLnProgress;
         this.sanctnStep = sanctnStep;
+    }
+
+    @QueryProjection
+
+    public SanctnDTO(String deptNm, EmployeeRole employeeRole, String name, SanctnLnProgress sanctnLnProgress, LocalDateTime sanctnDate, String sanctnOpinion) {
+        this.deptNm = deptNm;
+        this.employeeRole = employeeRole;
+        this.name = name;
+        this.sanctnLnProgress = sanctnLnProgress;
+        this.sanctnDate = sanctnDate;
+        this.sanctnOpinion = sanctnOpinion;
     }
 }

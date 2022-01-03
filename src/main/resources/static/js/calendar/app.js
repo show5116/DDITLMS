@@ -22,16 +22,12 @@ function getMyInfo(){
     })
         .done(function(fragment){
             const test1 = fragment.myRole;
-            console.log("ajax 성공후 가져온 본인 역할"+ test1);
-
             myRole = test1;
-
         })
         .fail(function (er){
             swal("에러");
             console.log(er);
         })
-
 }
 
 //학과리스트 가져오기
@@ -43,14 +39,9 @@ function getMajor(){
     })
         .done(function(fragment){
             const test2 = fragment.getMajorList;
-            console.log("ajax 성공후 가져온 학과 리스트");
-            console.log(test2);
-
             majorList.push(test2);
-
         })
 }
-
 
 (function(window, Calendar) {
     var cal, resizeThrottled;
