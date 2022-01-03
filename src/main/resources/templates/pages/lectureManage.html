@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout}">
+<th:block layout:fragment="content">
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='과목 관리')"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
+    <div class="container-fluid">
+        <div class="col-sm-12 col-xl-6 xl-100">
+            <div class="card">
+                <div class="card-body">
+                    <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
+                    <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-lecture" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    <button class="btn btn-primary pull-right" id="btn-lecture-excel" type="button">엑셀파일읽기</button>
+                    <button class="btn btn-primary pull-right" id="btn-made-lecture-excel" type="button">엑셀파일로 출력</button>
+                    <div id="grid-subject"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

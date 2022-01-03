@@ -133,4 +133,11 @@ public class AccademicDepController {
         jsonObject.put("success","ok");
         return jsonObject.toJSONString();
     }
+
+    @GetMapping("/accademic/lectureManage")
+    public ModelAndView lectureManage(ModelAndView mav){
+
+        mav.setViewName("/pages/lectureManage");
+        return mav;
+    }
 }
