@@ -229,6 +229,9 @@ public class SanctnController {
             model.addAttribute("details", sanctn);
             Long drafter = details.get().getDrafter();
             Member findDrafter = memberRepository.findByUserNumber(drafter).get();
+            Long atchmnflId = sanctn.getAtchmnflId();
+            log.info("첨부파일 ID 확인" +String.valueOf(atchmnflId));
+            String s = fileUtil.makeFileToken(atchmnflId, 0);
             Role role = findDrafter.getRole();
             if (role == Role.ROLE_STUDENT) {
                 String compliment = "민원신청";
