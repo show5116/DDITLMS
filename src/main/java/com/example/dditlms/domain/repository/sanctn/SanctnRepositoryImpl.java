@@ -73,6 +73,7 @@ public class SanctnRepositoryImpl implements SanctnRepositoryCustom{
                 .innerJoin(sanctn)
                 .on(sanctnLn1.sanctnSn.eq(sanctn))
                 .where(sanctn.sanctnId.eq(id))
+                .orderBy(sanctnLn1.sanctnOpinion.desc())
                 .orderBy(sanctnLn1.sanctnDate.desc())
                 .orderBy(sanctnLn1.sanctnLn.asc())
                 .fetchFirst();
