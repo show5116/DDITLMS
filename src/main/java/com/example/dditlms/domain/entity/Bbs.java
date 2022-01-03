@@ -1,6 +1,7 @@
 package com.example.dditlms.domain.entity;
 
 import com.example.dditlms.domain.common.BoardCategory;
+import com.example.dditlms.domain.dto.BbsDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,4 +53,16 @@ public class Bbs {
 // 첨부파일 번호
     @Column(name = "ATCHMNFL_ID")
     private Long atchmnflId;
+
+    public BbsDTO toDTO(){
+        BbsDTO bbsDTO = BbsDTO.builder()
+                .idx(this.idx)
+                .title(this.title)
+                .content(this.content)
+                .member(this.member)
+                .bbsDate(this.bbsDate)
+                .bbsCnt(this.bbsCnt)
+                .build();
+        return bbsDTO;
+    }
 }

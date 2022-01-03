@@ -171,6 +171,8 @@ public class AcademicServiceImpl implements AcademicService {
 
         Student student = MemberUtil.getLoginMember().getStudent();
 
+        if(map.get("hist").equals("tempAbsence")){
+
         Optional<History> historyWrapper = histRepository.findByStudentAndStatusAndResultStatus(student, AcademicStatus.TAKEABREAK, ResultStatus.STANDBY);
         History history = historyWrapper.orElse(null);
 
@@ -178,6 +180,13 @@ public class AcademicServiceImpl implements AcademicService {
         TempAbsence tempAbsence = tempAbsenceWrapper.orElse(null);
         tempAbsenceRepository.delete(tempAbsence);
         histRepository.delete(history);
+
+        } else if(map.get("hist").equals("change")) {
+            Optional<History> historyWrapper = histRepository.findByStudentAndStatusAndResultStatus(student, AcademicStatus.CHANGEMAJOR, ResultStatus.STANDBY);
+            History history = historyWrapper.orElse(null);
+            histRepository.delete(history);
+
+        }
 
     }
 

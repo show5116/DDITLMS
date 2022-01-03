@@ -47,6 +47,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctn.setSanctnWritngde(now);
         sanctn.setSanctnUpdde(endDate);
         sanctn.setStatus(SanctnProgress.PROGRESS);
+        sanctn.setAtchmnflId(attFile);
         Sanctn savedSanctn = sanctnRepository.save(sanctn);
 
         //결재라인 저장 , 일단 다 때려박아서 작성, 나중에 리팩토링 대상!

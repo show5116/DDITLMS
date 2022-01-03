@@ -16,46 +16,44 @@
                         </div>
                     </div>
 
-<!--                    <div th:if="${history}!=null" class="col-sm-8 row bottom-interval">-->
-<!--                        <h5>신청 현황</h5>-->
-<!--                        <div class="table-responsive table-container">-->
-<!--                            <table class="table table-bordered table-striped">-->
-<!--                                <thead>-->
-<!--                                <tr>-->
-<!--                                    <th class="text-center">No.</th>-->
-<!--                                    <th class="text-center">학년도</th>-->
-<!--                                    <th class="text-center">학기</th>-->
-<!--                                    <th class="text-center">전공</th>-->
-<!--                                    <th class="text-center">변경 학과</th>-->
-<!--                                    <th class="text-center">신청상태</th>-->
-<!--                                    <th class="text-center">신청일자</th>-->
-<!--                                    <th class="text-center">확정일자</th>-->
-<!--                                    <th class="text-center">학년</th>-->
-<!--                                </tr>-->
-<!--                                </thead>-->
-<!--                                <tbody>-->
-<!--                                <tr class="text-center">-->
-<!--                                    <th>1</th>-->
-<!--                                    <td th:text="${#calendars.format(#calendars.createNow(),'yyyy')}">년도</td>-->
-<!--                                    <td th:text="${mon}">2</td>-->
-<!--                                    <td th:text="${student.major.korean}">전자공학전공</td>-->
-<!--                                    <td th:text="${student.academicStatus.getKorean()}">다른과요</td>-->
-<!--                                    <td th:text="${tempAbsence.status.getKorean()}">휴학신청</td>-->
-<!--                                    <td th:text="${tempAbsence.beginsemstr.semeStart}">2021.02.19</td>-->
+                    <div th:if="${history}!=null" class="col-sm-8 row bottom-interval">
+                        <h5>신청 현황</h5>
+                        <div class="table-responsive table-container">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">No.</th>
+                                    <th class="text-center">학년도</th>
+                                    <th class="text-center">학기</th>
+                                    <th class="text-center">학년</th>
+                                    <th class="text-center">전공</th>
+                                    <th class="text-center">학적상태</th>
+                                    <th class="text-center">신청상태</th>
+                                    <th class="text-center">신청일자</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center">
+                                    <th>1</th>
+                                    <td th:text="${#calendars.format(#calendars.createNow(),'yyyy')}">년도</td>
+                                    <td th:text="${mon}">2</td>
+                                    <td th:text="${student.grade.getKorean()}">4</td>
+                                    <td th:text="${history.major.korean}">전자공학전공</td>
+                                    <td th:text="${student.academicStatus.getKorean()}">재학</td>
+                                    <td th:text="${history.status.korean}">전과신청</td>
+                                    <td th:text="${history.aplicationDate}">2021.02.19</td>
 <!--                                    <td></td>-->
-<!--                                    <td th:text="${student.grade.getKorean()}">4</td>-->
-<!--                                    <td th:text="${tempAbsence.endsemstr.getSemeEnd()}">2021-?학기</td>-->
-<!--                                </tr>-->
-<!--                                </tbody>-->
-<!--                            </table>-->
-<!--                            <div class="col-sm row">-->
-<!--                                <button style="margin-top: 12px;" type="button" id="cancel-btn" class="col-sm-2 btn btn-outline-secondary-2x txt-secondary m-l-5">신청 취소-->
-<!--                                </button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-sm row">
+                                <button style="margin-top: 12px;" type="button" id="cancel-btn" class="col-sm-2 btn btn-outline-secondary-2x txt-secondary m-l-5">신청 취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                    <form id="change-form" th:action="@{/academic/changePost}" method="post">
+                    <form th:if="${history==null}" id="change-form" th:action="@{/academic/changePost}" method="post">
 
                             <div class="col-sm-2 row">
                                 <h5>현재 학과</h5>
@@ -100,12 +98,6 @@
 
 
         if(changeBtn!=null){
-            // console.log("메이저 코드네임 : "+majorCode.name);
-
-            // changeBtn.addEventListener("mouseover", function (){
-            // console.log("셀렉 코드 : "+changeMajor.value);
-            //     console.log("gg")
-            // })
 
             changeBtn.addEventListener("click", function (){
                 if(reason.value.length < 20){
@@ -123,19 +115,15 @@
 
         if(cancelBtn!=null){
             cancelBtn.addEventListener("click", function (){
-                const params = {
-
-                }
                 $.ajax({
                     url:"/academic/changeCancel",
                     type:"POST",
-                    data: params,
                     beforeSend: function(xhr){
                         xhr.setRequestHeader(header,token);
                     }
 
                 }).done(function (){
-                    location.href="/academic/change";
+                    location.href="/academic/changeMajor";
                 })
             });
         }
