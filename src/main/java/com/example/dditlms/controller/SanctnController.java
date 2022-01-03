@@ -194,14 +194,18 @@ public class SanctnController {
     public RedirectView submitSanctn(SanctnForm sanctnForm, @RequestParam(value = "file", required = false) MultipartFile file, MultipartHttpServletRequest request) {
         log.info("멀티파트 체킹!" + String.valueOf(request));
 
-        long id = fileUtil.uploadFiles(request.getFileMap());
+        Map<String,MultipartFile> map = request.getFileMap();
+        long id = fileUtil.uploadFiles(map);
 
-        sanctnService.saveSanctn(sanctnForm.getSanctnSj()
+        sanctnService.saveSanctn(
+                  sanctnForm.getSanctnSj()
                 , sanctnForm.getDocformSn()
                 , sanctnForm.getDrafter()
                 , sanctnForm.getSanctnCn()
                 , sanctnForm.getUserNumber()
                 , id);
+
+
 
 
         return new RedirectView("/sanctn");
