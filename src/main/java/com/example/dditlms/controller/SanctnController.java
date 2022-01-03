@@ -96,7 +96,6 @@ public class SanctnController {
         List<SanctnDTO> recentOpinion = sanctnLnRepository.findRecentOpinion(userNumber);
         model.addAttribute("recentOpinions", recentOpinion);
 
-
         return "/pages/sanction";
     }
 

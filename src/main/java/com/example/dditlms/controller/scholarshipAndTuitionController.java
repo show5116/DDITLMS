@@ -78,10 +78,6 @@ public class scholarshipAndTuitionController {
         mav.addObject("semester",semester);
         mav.addObject("scholarshipList",scholarshipList);
         mav.setViewName("/pages/tuitionApplication");
-
-        //진행현황 결과 출력
-        List<SanctnDTO> sanctnDTOS = sanctnService.showScholarshipApply(member.getUserNumber());
-        mav.addObject("progress",sanctnDTOS);
         return mav;
     }
 
@@ -107,6 +103,11 @@ public class scholarshipAndTuitionController {
         mav.addObject("scholarshipList",scholarshipList);
         mav.addObject("scholarshipKindList",scholarshipKindList);
         mav.setViewName("/pages/scholarshipApplication");
+
+        //진행현황 출력
+        List<SanctnDTO> sanctnDTOS = sanctnService.showScholarshipApply(MemberUtil.getLoginMember().getUserNumber());
+        mav.addObject("progress", sanctnDTOS);
+
         return mav;
     }
 

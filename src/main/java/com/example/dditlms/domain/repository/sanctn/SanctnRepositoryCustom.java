@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface SanctnRepositoryCustom {
     List<Tuple> showDetail(Long id);
-    List<String> findScholarshipId(Long id);
+    List<Long> findScholarshipId(Long id);
     SanctnDTO showScholarshipApplyList(Long id);
 }

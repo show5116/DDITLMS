@@ -301,17 +301,11 @@ public class SanctnServiceImpl implements SanctnService {
     @Override
     public List<SanctnDTO> showScholarshipApply(Long userNumber) {
 
-        List<String> scholarshipId = sanctnRepository.findScholarshipId(userNumber);
-        List<Long> scholarId = new ArrayList<>();
+        List<Long> scholarshipId = sanctnRepository.findScholarshipId(userNumber);
+
         List<SanctnDTO> sanctnDTOS = new ArrayList<>();
 
-        for (String s : scholarshipId) {
-            String[] split = s.split("\\$");
-            String s1 = split[1];
-            scholarId.add(Long.valueOf(s1));
-        }
-
-        for (Long aLong : scholarId) {
+        for (Long aLong : scholarshipId) {
             SanctnDTO sanctnDTO = sanctnRepository.showScholarshipApplyList(aLong);
             sanctnDTOS.add(sanctnDTO);
         }

@@ -38,10 +38,10 @@ public class SanctnRepositoryImpl implements SanctnRepositoryCustom{
 
     //장학금 신청 내역 ID 검색
     @Override
-    public List<String> findScholarshipId(Long id) {
+    public List<Long> findScholarshipId(Long id) {
 
         return queryFactory
-                .selectDistinct(sanctn.sanctnSj)
+                .selectDistinct(sanctn.sanctnId)
                 .from(scholarship)
                 .innerJoin(sanctnLn1)
                 .on(scholarship.student.member.eq(sanctnLn1.mberNo))
@@ -74,7 +74,8 @@ public class SanctnRepositoryImpl implements SanctnRepositoryCustom{
                 .on(sanctnLn1.sanctnSn.eq(sanctn))
                 .where(sanctn.sanctnId.eq(id))
                 .orderBy(sanctnLn1.sanctnDate.desc())
-                .fetchOne();
+                .orderBy(sanctnLn1.sanctnLn.asc())
+                .fetchFirst();
     }
 
 
