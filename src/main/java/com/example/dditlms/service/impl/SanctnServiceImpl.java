@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -297,6 +298,19 @@ public class SanctnServiceImpl implements SanctnService {
         return Optional.of(sanctnDTO);
     }
 
+    @Override
+    public List<SanctnDTO> showScholarshipApply(Long userNumber) {
 
+        List<Long> scholarshipId = sanctnRepository.findScholarshipId(userNumber);
+
+        List<SanctnDTO> sanctnDTOS = new ArrayList<>();
+
+        for (Long aLong : scholarshipId) {
+            SanctnDTO sanctnDTO = sanctnRepository.showScholarshipApplyList(aLong);
+            sanctnDTOS.add(sanctnDTO);
+        }
+        return sanctnDTOS;
+
+    }
 }
 
