@@ -68,7 +68,12 @@
         </div>
         <div>
             <h2>첨부파일</h2>
-
+            <table>
+                <tr th:each="att:${attFile}">
+                    <th th:text="${att.name}"></th>
+                </tr>
+            </table>
+            <br>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered">
@@ -283,7 +288,7 @@
                 <input type="number" th:value="${id}" id="id">
             </div>
             <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
-                <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
+                <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id="comId">
             </div>
             <br><br>
         </div>
@@ -316,7 +321,7 @@
                     <input type="number" th:value="${id}" id="id">
                 </div>
                 <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
-                    <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
+                    <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id="comId">
                 </div>
                 <br><br>
             </div>
@@ -508,6 +513,7 @@
 
         })
 }
+
 
 
     </script>

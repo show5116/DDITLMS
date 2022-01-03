@@ -5,9 +5,11 @@ import com.example.dditlms.domain.dto.DocFormDTO;
 import com.example.dditlms.domain.dto.EmployeeDTO;
 import com.example.dditlms.domain.dto.PageDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
+import com.example.dditlms.domain.entity.Attachment;
 import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.*;
+import com.example.dditlms.domain.repository.AttachmentRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.service.SanctnLnService;
@@ -51,6 +53,8 @@ public class SanctnController {
     private final SanctnLnService sanctnLnService;
 
     private final FileUtil fileUtil;
+
+    private final AttachmentRepository attachmentRepository;
 
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
@@ -230,8 +234,17 @@ public class SanctnController {
             Long drafter = details.get().getDrafter();
             Member findDrafter = memberRepository.findByUserNumber(drafter).get();
             Long atchmnflId = sanctn.getAtchmnflId();
-            log.info("첨부파일 ID 확인" +String.valueOf(atchmnflId));
-            String s = fileUtil.makeFileToken(atchmnflId, 0);
+            List<Attachment> attachList = attachmentRepository.findAllById(atchmnflId);
+            List<Map<String,String>> tokenList = new ArrayList<>();
+            for(Attachment attach : attachList) {
+                Map<String,String> token = new HashMap<>();
+                token.put("name",attach.getOriginName()+"."+attach.getExtension());
+                token.put("token",fileUtil.makeFileToken(attach.getId(), attach.getOrder()));
+                tokenList.add(token);
+            }
+            log.info( "토큰 리스트 결과" + String.valueOf(tokenList));
+            model.addAttribute("attFile" , tokenList);
+
             Role role = findDrafter.getRole();
             if (role == Role.ROLE_STUDENT) {
                 String compliment = "민원신청";
@@ -260,7 +273,6 @@ public class SanctnController {
         if (viewComplaintPro.isPresent()) {
             SanctnDTO sanctnDTO = viewComplaintPro.get();
             model.addAttribute("complimentPro", sanctnDTO);
-            log.info("교수 전자결재 결과" + String.valueOf(sanctnDTO));
         }
 
         //문서 ID 넘겨줌
