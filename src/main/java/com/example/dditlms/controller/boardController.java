@@ -1,6 +1,8 @@
 package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.common.BoardCategory;
+import com.example.dditlms.domain.dto.BbsDTO;
+import com.example.dditlms.domain.dto.PageDTO;
 import com.example.dditlms.domain.entity.Attachment;
 import com.example.dditlms.domain.entity.Bbs;
 import com.example.dditlms.domain.entity.Member;
@@ -12,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -38,26 +43,58 @@ public class boardController {
 
 
     @GetMapping("/community/freeboard")
-    public ModelAndView freeboard(ModelAndView mav){
+    public ModelAndView freeboard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
 
-        Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategoryOrderByBbsDateDesc(BoardCategory.FREEBOARD);
-        List<Bbs> bbsList = bbsWrapper.orElse(null);
-        for (Bbs bbs : bbsList){
-            String content = bbs.getContent();
-            logger.info("<img>여부 : " + content);
-            if(content.indexOf("<img") == -1){
-                logger.info("이미지를 안넣은거야");
-            } else {
-                logger.info("이미지를 넣은거야 : " + content.indexOf("<img"));
-                logger.info("\n이미지만 출력 : \n : "
-                        + content.substring(content.indexOf("<img"), content.indexOf("/>")+2));
-            }
+//        Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategoryOrderByBbsDateDesc(BoardCategory.FREEBOARD);
+//        List<Bbs> bbsList = bbsWrapper.orElse(null);
+
+        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
+        Long i = 1L;
+        for (BbsDTO result : results) {
+            result.setTotal(i);
+            i++;
         }
 
-        mav.addObject("bbsList", bbsList);
-        mav.setViewName("/pages/freeboard");
+        mav.addObject("bbsList", results);
+        mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
+//        mav.addObject("bbsList", bbsList);
+        mav.setViewName("pages/freeboard");
         return mav;
     }
+
+    @GetMapping("/community/replaceBoard")
+    public ModelAndView replaceBoard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
+
+        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
+
+        Long i = 1L;
+        for (BbsDTO result : results) {
+            result.setTotal(i);
+            i++;
+        }
+
+        mav.addObject("bbsList", results);
+        mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
+        mav.setViewName("pages/freeboard::#test");
+        return mav;
+    }
+
+
+
+//        for (Bbs bbs : bbsList){
+//            String content = bbs.getContent();
+//            logger.info("<img>여부 : " + content);
+//            if(content.indexOf("<img") == -1){
+//                logger.info("이미지를 안넣은거야");
+//            } else {
+//                logger.info("이미지를 넣은거야 : " + content.indexOf("<img"));
+//                logger.info("\n이미지만 출력 : \n : "
+//                        + content.substring(content.indexOf("<img"), content.indexOf("/>")+2));
+//            }
+//        }
+
+
+
 
     @GetMapping("/community/boardWrite")
     public ModelAndView boardWrite(ModelAndView mav){
@@ -125,14 +162,16 @@ public class boardController {
         Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(Long.parseLong(idx));
         Bbs bbs = bbsWrapper.orElse(null);
 
-        List<String> list = new ArrayList<>();
         List<Attachment> attachList = attachmentRepository.findAllById(bbs.getAtchmnflId());
-
+        List<Map<String,String>> tokenList = new ArrayList<>();
         for(Attachment attach : attachList) {
-            String token = fileUtil.makeFileToken(attach.getId(), attach.getOrder());
-            list.add(token);
+            Map<String,String> token = new HashMap<>();
+            token.put("name",attach.getOriginName()+attach.getExtension());
+            token.put("token",fileUtil.makeFileToken(attach.getId(), attach.getOrder()));
+            tokenList.add(token);
         }
-
+        BbsDTO bbsDTO = bbs.toDTO();
+        bbsDTO.setTokenList(tokenList);
 
         Member writer = bbs.getMember();
         Long cnt = bbs.getBbsCnt();
@@ -176,9 +215,7 @@ public class boardController {
             mav.addObject("flag", "false");
         }
 
-        mav.addObject("attachList", list);
-        mav.addObject("idx", idx);
-        mav.addObject("bbs", bbs);
+        mav.addObject("bbs", bbsDTO);
         mav.setViewName("pages/detailBoard");
         return mav;
     }
