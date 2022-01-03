@@ -30,7 +30,6 @@
                                     <th class="text-center">신청상태</th>
                                     <th class="text-center">신청일자</th>
                                     <th class="text-center">확정일자</th>
-                                    <th class="text-center">학년</th>
                                     <th class="text-center">복학예정</th>
                                 </tr>
                                 </thead>
@@ -41,9 +40,8 @@
                                     <td th:text="${mon}">2</td>
                                     <td th:text="${student.major.korean}">전자공학전공</td>
                                     <td th:text="${student.academicStatus.getKorean()}">재학</td>
-                                    <td th:text="${tempAbsence.status.getKorean()}">휴학신청</td>
+                                    <td th:text="${history.status.getKorean()}">휴학신청</td>
                                     <td th:text="${tempAbsence.beginsemstr.semeStart}">2021.02.19</td>
-                                    <td></td>
                                     <td th:text="${student.grade.getKorean()}">4</td>
                                     <td th:text="${tempAbsence.endsemstr.getSemeEnd()}">2021-?학기</td>
                                 </tr>
@@ -124,13 +122,9 @@
 
         if(cancelBtn!=null){
             cancelBtn.addEventListener("click", function (){
-                const params = {
-
-                }
                 $.ajax({
                     url:"/academic/cancel",
                     type:"POST",
-                    data: params,
                     beforeSend: function(xhr){
                         xhr.setRequestHeader(header,token);
                     }
