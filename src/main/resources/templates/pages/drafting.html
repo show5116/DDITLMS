@@ -159,13 +159,21 @@
                                    placeholder="기안서 제목을 입력하세요">
                             <textarea id="editor4" name="editor4"></textarea>
                         </div>
-                        <div>
-                            <br/>
-                            <label style="display: block;">첨부파일</label>
-                            <input id="attachment-text" style="display: inline-block; width: 70%;" class="form-control-plaintext disabled" type="text" placeholder="파일이름" readonly>
-                            <button id="attachment-btn" type="button" class="btn-success btn-sm"> <span class="icon-import"></span></button>
-                            <input name="attachment" id="attachment-file" style="width: 0px;height: 0px;overflow: hidden" type="file">
-                        </div>
+                        <form th:action="@{|/sanctn/submit?${_csrf.parameterName}=${_csrf.token}|}" th:method="post" id="sanctnForm" enctype=multipart/form-data>
+                            <input type="text" id="sanctnSj" th:name= "sanctnSj" th:value="${sanctnSj}" style="display:none"/>
+                            <textarea id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}" style="display:none"></textarea>
+                            <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}" style="display:none"/>
+                            <input type="text" id="drafter" th:name= "drafter" th:value="${drafter}" style="display:none"/>
+                            <select multiple="multiple" id="usernum"  th:name= "userNumber" th:value=${userNumber} style="display:none">
+                            </select>
+                            <div>
+                                <br/>
+                                <label style="display: block;">첨부파일</label>
+                                <input id="attachment-text" style="display: inline-block; width: 70%;" class="form-control-plaintext disabled" type="text" placeholder="파일이름" readonly>
+                                <button id="attachment-btn" type="button" class="btn-success btn-sm"> <span class="icon-import"></span></button>
+                                <input name="attachment" id="attachment-file" style="width: 0px;height: 0px;overflow: hidden" type="file">
+                            </div>
+                        </form>
                         <hr>
                         <div style="text-align: center; margin: 0 auto;">
                             <button class="btn btn-pill btn-success btn-air-secondary btn-lg" type="button"
@@ -173,15 +181,6 @@
                             </button>
                         </div>
 
-                        <form th:action="@{|/sanctnSubmit?${_csrf.parameterName}=${_csrf.token}|}" th:method="post" id="sanctnForm" enctype=multipart/form-data style="display">
-                            <input type="text" id="sanctnSj" th:name= "sanctnSj" th:value="${sanctnSj}"/>
-                            <textarea id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}"></textarea>
-                            <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}"/>
-                            <input type="text" id="drafter" th:name= "drafter" th:value="${drafter}"/>
-                            <select multiple="multiple" id="usernum"  th:name= "userNumber" th:value=${userNumber}>
-                            </select>
-                            <input type="file" id= "attFile" th:name="attFile" th:value="${attFile}"/>
-                        </form>
 
                     </div>
                 </div>
@@ -265,7 +264,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/sendFormCate",
+                url: "/drafting/sendFormCate",
                 data: {
                     "cate": result
                 },
@@ -290,14 +289,13 @@
 
             $.ajax({
                 type: "GET",
-                url: "/sendDept",
+                url: "/drafting/sendDept",
                 data: {
                     "dep": result
                 },
                 contentType: "application/json; charset=UTF-8",
                 success: function (data) {
 
-                    console.log(data);
                     let opt = "";
                     for (var i = 0; i <data.length; i++) {
                         let nm = data[i].name;
@@ -317,10 +315,9 @@
         function makeForm() {
              let form = document.querySelector('#docForm');
              let result = form.options[form.selectedIndex].value;
-
                 $.ajax({
                 type: "GET",
-                url: "/makeForm",
+                url: "/drafting/makeForm",
                 data: {
                     "form": result
                 },
@@ -337,6 +334,7 @@
         changeDep();
 
         const attachmentFile = document.querySelector("#attachment-file");
+
 
         document.querySelector("#attachment-btn").addEventListener("click",()=>{
             attachmentFile.click();
@@ -364,20 +362,16 @@
             const content =CKEDITOR.instances.editor4.getData();
             sanctnSj.setAttribute('value', title);
             docformSn.setAttribute('value', form);
+
             attFile = attachmentFile;
             document.querySelector('#sanctnCn').innerHTML = content;
 
             const file = attachmentFile.files[0];
-            if(file == undefined){
-                swal("첨부파일이 없습니다.")
-                return;
-            }
 
             const submitForm = document.querySelector("#sanctnForm");
             const formData = new FormData(submitForm);
-            console.log(formData);
             $.ajax({
-                url: "/sanctnSubmit",
+                url: "/sanctn/submit",
                 enctype : "multipart/form-data",
                 processData : false,
                 contentType : false,
@@ -389,7 +383,6 @@
                 }
             })
             .done((fragment)=>{
-                console.log(fragment);
                 window.location.href = '/sanctn';
             });
         });

@@ -28,8 +28,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepositoryCustom{
                 .select(new QEmployeeDTO(employee.employeeRole
                         , department.deptNm))
                 .from(employee)
-                .from(department)
-                .join(employee.deptCode, department)
+                .innerJoin(department)
+                .on(employee.deptCode.eq(department))
                 .where(employee.deptCode.eq(department)
                         , employee.userNumber.eq(userNumber))
                 .fetch();

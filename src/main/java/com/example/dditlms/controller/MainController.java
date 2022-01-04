@@ -6,9 +6,11 @@ import com.example.dditlms.domain.dto.SMSDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.security.CustomAuthenticationSuccessHandler;
+import com.example.dditlms.security.JwtSecurityService;
 import com.example.dditlms.service.MailService;
 import com.example.dditlms.service.MemberService;
 import com.example.dditlms.service.SMSService;
+import com.example.dditlms.util.MemberUtil;
 import com.example.dditlms.util.OtpUtil;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -18,10 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -45,6 +44,8 @@ public class MainController {
     private final SMSService smsService;
 
     private final OtpUtil otpUtil;
+
+    private final JwtSecurityService jwtSecurityService;
 
     private final CustomAuthenticationSuccessHandler successHandler;
 
@@ -204,4 +205,13 @@ public class MainController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/ssotoken")
+    public String madeSsoToken(){
+        JSONObject jsonObject = new JSONObject();
+        String id = MemberUtil.getLoginMember().getMemberId();
+        String token = jwtSecurityService.createToken(id,60000L);
+        jsonObject.put("token",token);
+        return jsonObject.toJSONString();
+    }
 }

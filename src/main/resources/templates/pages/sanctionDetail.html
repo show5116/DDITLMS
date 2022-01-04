@@ -68,7 +68,12 @@
         </div>
         <div>
             <h2>첨부파일</h2>
-
+            <table>
+                <tr th:if="!${att.name.toString().equals('null.null')}" th:each="att:${attFile}">
+                    <a th:href="@{/download?token={token}(token = ${att.token})}" th:text="${att.name}">다운로드</a>
+                </tr>
+            </table>
+            <br>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered">
@@ -283,7 +288,7 @@
                 <input type="number" th:value="${id}" id="id">
             </div>
             <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
-                <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
+                <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id="comId">
             </div>
             <br><br>
         </div>
@@ -316,7 +321,7 @@
                     <input type="number" th:value="${id}" id="id">
                 </div>
                 <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
-                    <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
+                    <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id="comId">
                 </div>
                 <br><br>
             </div>
@@ -341,7 +346,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/approval",
+                url: "/sanctn/approval",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -377,7 +382,7 @@
            $.ajax({
 
                 type: "POST",
-                url: "/reject",
+                url: "/sanctn/reject",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -396,7 +401,6 @@
 
         })
 }
-
         let btnLastApproval = document.querySelector("#btnLastApproval");
 
         if(btnLastApproval != null) {
@@ -413,7 +417,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/finalApproval",
+                url: "/sanctn/finalApproval",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -432,7 +436,6 @@
 
         })
 }
-
         let btnLastCompliment = document.querySelector("#btnLastCompliment");
 
         if(btnLastCompliment != null) {
@@ -450,7 +453,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/finalCompliment",
+                url: "/sanctn/finalCompliment",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -488,7 +491,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/rejectCompliment",
+                url: "/sanctn/rejectCompliment",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -508,8 +511,6 @@
 
         })
 }
-
-
     </script>
 </th:block>
 </html>
