@@ -93,7 +93,7 @@ public class SanctnController {
         model.addAttribute("findname", findname);
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnRe");
+        model.addAttribute("mapping", "sanctn/re");
 
 
         //최근결재의견 조회
@@ -116,7 +116,7 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnRe");
+        model.addAttribute("mapping", "sanctn/re");
 
         return "/pages/sanction::#test";
     }
@@ -439,7 +439,7 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnProgress");
+        model.addAttribute("mapping", "sanctn/progress");
 
         return "/pages/sanction::#test";
 
@@ -459,7 +459,7 @@ public class SanctnController {
 
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnReject");
+        model.addAttribute("mapping", "sanctn/reject");
 
         return "/pages/sanction::#test";
     }
@@ -478,7 +478,7 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnPublic");
+        model.addAttribute("mapping", "sanctn/public");
 
         return "/pages/sanction::#test";
 
@@ -497,7 +497,7 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnAll");
+        model.addAttribute("mapping", "sanctn/all");
 
 
         return "pages/sanction::#test";

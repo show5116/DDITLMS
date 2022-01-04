@@ -69,7 +69,7 @@
         <div>
             <h2>첨부파일</h2>
             <table>
-                <tr th:each="att:${attFile}">
+                <tr th:if="!${att.name.toString().equals('null.null')}" th:each="att:${attFile}">
                     <a th:href="@{/download?token={token}(token = ${att.token})}" th:text="${att.name}">다운로드</a>
                 </tr>
             </table>
