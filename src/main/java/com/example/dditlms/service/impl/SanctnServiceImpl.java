@@ -124,7 +124,7 @@ public class SanctnServiceImpl implements SanctnService {
     //민원 신청, 우선은 휴학신청만 구현, 나중에는 파라미터 값을 이용해서 해당하는 민원 서식 신청 하도록 구현 할 것!
     @Transactional
     @Override
-    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long complimentId, String complimentType) {
+    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long complimentId, String complimentType, Long fileId) {
 
         String complainant = MemberUtil.getLoginMember().getName();
         String compId = String.valueOf(complimentId);
@@ -140,6 +140,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctn.setSanctnWritngde(now);
         sanctn.setSanctnUpdde(endDate);
         sanctn.setStatus(SanctnProgress.PROGRESS);
+        sanctn.setAtchmnflId(fileId);
         Sanctn savedSanctn = sanctnRepository.save(sanctn);
 
         // 민원 결재선 저장(신청자 본인)

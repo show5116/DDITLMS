@@ -2,8 +2,8 @@ package com.example.dditlms.service.impl;
 
 import com.example.dditlms.domain.dto.EmailDTO;
 import com.example.dditlms.domain.entity.Member;
-import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.EmailService;
+import com.example.dditlms.util.MemberUtil;
 import com.example.dditlms.util.base64Parser;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
@@ -14,8 +14,6 @@ import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,22 +36,13 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public List<EmailDTO> receiveEmailList(String folderName) {
+        Member loginMember = MemberUtil.getLoginMember();
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
         String domain = "@ddit.site";
-
         String imapHost = "mail.ddit.site";
         String storeType = "imap";
-        String user = (member.getMemberId() + domain);
+        String user = (loginMember.getMemberId() + domain);
         String password = "java";
-
 
         try {
             //1) 세션값 받아옴
@@ -65,7 +54,6 @@ public class EmailServiceImpl implements EmailService {
             IMAPStore emailStore = (IMAPStore) emailSession.getStore(storeType);
             emailStore.connect(user, password);
 
-
             //3) 받은 메일함에 폴더에 접근 한다.
             Folder[] folders = emailStore.getDefaultFolder().list("*");
             log.info("-----------------" + Arrays.toString(folders));
@@ -73,9 +61,7 @@ public class EmailServiceImpl implements EmailService {
             UIDFolder uf = (UIDFolder) emailFolder;
             emailFolder.open(Folder.READ_WRITE);
 
-
             //4) 받은 메세지 정보를 순차별로 담고, 반환한다.
-
 
             List<Message> messages = Arrays.asList(emailFolder.getMessages());
             List<EmailDTO> emailDTOList = new ArrayList<>();
@@ -174,27 +160,19 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void writeMail(EmailDTO emailDTO) throws IOException {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-
-        }
+        Member loginMember = MemberUtil.getLoginMember();
 
         String domain = "@ddit.site";
-        String fromName = member.getName();
-        String fromAddress = (member.getMemberId() + domain);
+        String user = (loginMember.getMemberId() + domain);
+        String fromName = loginMember.getName();
+        String fromAddress = (user + domain);
 
         String subject = emailDTO.getSubject();
         Object content = emailDTO.getContent();
         String toAddress = emailDTO.getToAddress();
         MultipartFile[] multipartFile = emailDTO.getMultipartFile();
 
-
         Email email = null;
-
 
         //메일 첨부파일 등 처리, 리팩토링 필요 & 일부분만 구현
         if (Objects.equals(multipartFile[0].getOriginalFilename(), "")) {
@@ -229,7 +207,6 @@ public class EmailServiceImpl implements EmailService {
                 .buildMailer();
 
         inhouseMailer.sendMail(email);
-
 
     }
 
@@ -270,23 +247,13 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void replyMail(EmailDTO emailDTO) throws IOException {
 
-        log.info("받아온 DTO 값" + String.valueOf(emailDTO));
+        Member loginMember = MemberUtil.getLoginMember();
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
         String domain = "@ddit.site";
-
+        String user = (loginMember.getMemberId() + domain);
         String pop3Host = "mail.ddit.site";
         String storeType = "pop3";
-        String user = (member.getMemberId() + domain);
         String password = "java";
-
 
         //1) 세션값 받아옴, 메일 수신은 pop3프로토콜로만 받기로 함.
         Properties properties = new Properties();
@@ -333,21 +300,13 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sentMailCopy(EmailDTO emailDTO) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
-        String domain = "@ddit.site";
+        Member loginMember = MemberUtil.getLoginMember();
 
+        String domain = "@ddit.site";
+        String user = (loginMember.getMemberId() + domain);
         String imapHost = "mail.ddit.site";
         String storeType = "imap";
-        String user = (member.getMemberId() + domain);
         String password = "java";
-
 
         try {
             //1) 세션값 받아옴
@@ -355,10 +314,7 @@ public class EmailServiceImpl implements EmailService {
             properties.put("mail.host", imapHost);
             Session emailSession = Session.getDefaultInstance(properties);
 
-
             Message message = new MimeMessage(emailSession);
-
-
             message.addRecipient(
                     Message.RecipientType.TO,
                     new InternetAddress(emailDTO.getToAddress()));
@@ -395,7 +351,6 @@ public class EmailServiceImpl implements EmailService {
             // 완성된 멀티파트를 메시지로 저장함.
             message.setContent(multipart);
 
-
             //2) imap서버로 연결 함.
             IMAPStore emailStore = (IMAPStore) emailSession.getStore(storeType);
             emailStore.connect(user, password);
@@ -426,19 +381,11 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void tempMail(EmailDTO emailDTO) throws IOException {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        Long userNumber = member.getUserNumber();
+        Member loginMember = MemberUtil.getLoginMember();
         String domain = "@ddit.site";
-
+        String user = (loginMember.getMemberId() + domain);
         String imapHost = "mail.ddit.site";
         String storeType = "imap";
-        String user = (member.getMemberId() + domain);
         String password = "java";
 
 
@@ -505,19 +452,12 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void moveMail(String folderName, Long mailUID, String TargetFolderName) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException ignored) {
-        }
-        Long userNumber = member.getUserNumber();
-        String domain = "@ddit.site";
+        Member loginMember = MemberUtil.getLoginMember();
 
+        String domain = "@ddit.site";
+        String user = (loginMember.getMemberId() + domain);
         String imapHost = "mail.ddit.site";
         String storeType = "imap";
-        String user = (member.getMemberId() + domain);
         String password = "java";
 
 
@@ -551,7 +491,6 @@ public class EmailServiceImpl implements EmailService {
             folder.close();
             emailStore.close();
 
-
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -560,21 +499,13 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void deleteMail(String folderName, Long mailUID) {
 
-        //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException ignored) {
-        }
-        Long userNumber = member.getUserNumber();
-        String domain = "@ddit.site";
+        Member loginMember = MemberUtil.getLoginMember();
 
+        String domain = "@ddit.site";
+        String user = (loginMember.getMemberId() + domain);
         String imapHost = "mail.ddit.site";
         String storeType = "imap";
-        String user = (member.getMemberId() + domain);
         String password = "java";
-
 
         try {
             //1) 세션값 받아옴
@@ -605,17 +536,11 @@ public class EmailServiceImpl implements EmailService {
 
             folder.moveUIDMessages(new Message[]{messageByUID}, newToFolder);
 
-
             folder.close();
             emailStore.close();
-
-
 
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-
-
     }
-
 }

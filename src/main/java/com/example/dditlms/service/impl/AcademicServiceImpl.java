@@ -101,7 +101,8 @@ public class AcademicServiceImpl implements AcademicService {
         userNumber.add(approver);
         Long complimentId = history.getId();
         String complimentType = "휴학신청 : ";
-        sanctnService.saveComplaint(docform, drafter, reason, userNumber,complimentId, complimentType);
+        Long fileId = null;
+        sanctnService.saveComplaint(docform, drafter, reason, userNumber,complimentId, complimentType, fileId);
     }
 
     @Transactional

@@ -5,9 +5,11 @@ import com.example.dditlms.domain.dto.DocFormDTO;
 import com.example.dditlms.domain.dto.EmployeeDTO;
 import com.example.dditlms.domain.dto.PageDTO;
 import com.example.dditlms.domain.dto.SanctnDTO;
+import com.example.dditlms.domain.entity.Attachment;
 import com.example.dditlms.domain.entity.Department;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.sanction.*;
+import com.example.dditlms.domain.repository.AttachmentRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.*;
 import com.example.dditlms.service.SanctnLnService;
@@ -52,6 +54,8 @@ public class SanctnController {
 
     private final FileUtil fileUtil;
 
+    private final AttachmentRepository attachmentRepository;
+
     //결재메인페이지 접속 시, 기본정보 출력용(단순 조회, 전체 숫자 & 진행정보만 출력)
     @GetMapping("/sanctn")
     public String santn(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
@@ -89,7 +93,7 @@ public class SanctnController {
         model.addAttribute("findname", findname);
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnRe");
+        model.addAttribute("mapping", "sanctn/re");
 
 
         //최근결재의견 조회
@@ -100,7 +104,7 @@ public class SanctnController {
     }
 
     //에이잭스용 페이징 갱신 요청 주소
-    @GetMapping("/sanctnRe")
+    @GetMapping("/sanctn/re")
     public String sanctnRe(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
@@ -112,7 +116,7 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnRe");
+        model.addAttribute("mapping", "sanctn/re");
 
         return "/pages/sanction::#test";
     }
@@ -120,20 +124,17 @@ public class SanctnController {
 
     // 기안하기 페이지
 
-    @GetMapping("/drafting")
+    @GetMapping("/sanctn/drafting")
     public String drafting(Model model, SanctnForm sanctnForm) {
-
-        Long userNumber = MemberUtil.getLoginMember().getUserNumber();
-
-        model.addAttribute("drafter", userNumber);
-
-        // 로그인한 사람 이름 얻기
-        Optional<Member> findUser = memberRepository.findByUserNumber(userNumber);
-        String findname = findUser.get().getName();
-        model.addAttribute("findname", findname);
+        //로그인한 uesrNumber 정보
+        Member loginMember = MemberUtil.getLoginMember();
+        model.addAttribute("drafter",loginMember.getUserNumber());
+       
+        // 로그인한 사람 이름
+        model.addAttribute("findname", loginMember.getName());
 
         //로그인한 사람 직원 상세정보 조회
-        List<EmployeeDTO> dtoList = employeeRepository.viewDetails(userNumber);
+        List<EmployeeDTO> dtoList = employeeRepository.viewDetails(loginMember.getUserNumber());
         EmployeeDTO empDetails = dtoList.get(0);
         model.addAttribute("empDetails", empDetails);
 
@@ -145,12 +146,11 @@ public class SanctnController {
         List<Department> departmentList = departmentRepository.findAll();
         model.addAttribute("departmentList", departmentList);
 
-
         return "/pages/drafting";
     }
 
     //양식폼 2차 카테고리 결과 반환
-    @GetMapping("/sendFormCate")
+    @GetMapping("/drafting/sendFormCate")
     @ResponseBody
     public List<DocFormDTO> sendFormCate(@RequestParam Map<String, Object> param) {
 
@@ -160,7 +160,7 @@ public class SanctnController {
     }
 
     //부서별 직원목록 반환
-    @GetMapping("/sendDept")
+    @GetMapping("/drafting/sendDept")
     @ResponseBody
     public List<EmployeeDTO> sendDept(@RequestParam Map<String, Object> param) {
 
@@ -170,7 +170,7 @@ public class SanctnController {
     }
 
     //양식폼 생성
-    @GetMapping("/makeForm")
+    @GetMapping("/drafting/makeForm")
     @ResponseBody
     public Optional<Docform> makeForm(@RequestParam Map<Long, Object> param) {
 
@@ -190,13 +190,12 @@ public class SanctnController {
     }
 
     //기안하기
-    @PostMapping("/sanctnSubmit")
+    @PostMapping("/sanctn/submit")
     public RedirectView submitSanctn(SanctnForm sanctnForm, @RequestParam(value = "file", required = false) MultipartFile file, MultipartHttpServletRequest request) {
-        log.info("멀티파트 체킹!" + String.valueOf(request));
 
         Map<String,MultipartFile> map = request.getFileMap();
-        long id = fileUtil.uploadFiles(map);
 
+        long id = fileUtil.uploadFiles(map);
         sanctnService.saveSanctn(
                   sanctnForm.getSanctnSj()
                 , sanctnForm.getDocformSn()
@@ -204,9 +203,6 @@ public class SanctnController {
                 , sanctnForm.getSanctnCn()
                 , sanctnForm.getUserNumber()
                 , id);
-
-
-
 
         return new RedirectView("/sanctn");
     }
@@ -217,11 +213,8 @@ public class SanctnController {
     public String sanctnDetail(@PathVariable("id") Long id, Model model) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
-
-
         //로그인한 사람의 정보를 넘겨 줌
         model.addAttribute("userNumber", userNumber);
-
         Optional<Sanctn> details = sanctnRepository.findById(id);
 
         if (details.isPresent()) {
@@ -230,8 +223,16 @@ public class SanctnController {
             Long drafter = details.get().getDrafter();
             Member findDrafter = memberRepository.findByUserNumber(drafter).get();
             Long atchmnflId = sanctn.getAtchmnflId();
-            log.info("첨부파일 ID 확인" +String.valueOf(atchmnflId));
-            String s = fileUtil.makeFileToken(atchmnflId, 0);
+            List<Attachment> attachList = attachmentRepository.findAllById(atchmnflId);
+            List<Map<String,String>> tokenList = new ArrayList<>();
+            for(Attachment attach : attachList) {
+                Map<String,String> token = new HashMap<>();
+                token.put("name",attach.getOriginName()+"."+attach.getExtension());
+                token.put("token",fileUtil.makeFileToken(attach.getId(), attach.getOrder()));
+                tokenList.add(token);
+            }
+            model.addAttribute("attFile" , tokenList);
+
             Role role = findDrafter.getRole();
             if (role == Role.ROLE_STUDENT) {
                 String compliment = "민원신청";
@@ -248,11 +249,9 @@ public class SanctnController {
             model.addAttribute("compliment", sanctnDTO);
         }
 
-
         //일반 결재 내역
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
         model.addAttribute("sanctnLnList", sanctnDTOS);
-
 
         //민원 결재자 내역
 
@@ -260,17 +259,15 @@ public class SanctnController {
         if (viewComplaintPro.isPresent()) {
             SanctnDTO sanctnDTO = viewComplaintPro.get();
             model.addAttribute("complimentPro", sanctnDTO);
-            log.info("교수 전자결재 결과" + String.valueOf(sanctnDTO));
         }
 
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
-
         return "/pages/sanctionDetail";
     }
 
     // 결재 승인하기
-    @PostMapping("/approval")
+    @PostMapping("/sanctn/approval")
     public String apropval(@RequestParam Map<String, Object> param, Model model) {
 
         //의견 남기기 + 결재승인 처리
@@ -281,7 +278,6 @@ public class SanctnController {
         sanctnLnService.updateSanctnLn(opinion.toString(), userNumber, id);
 
         Long userNumber2 = MemberUtil.getLoginMember().getUserNumber();
-
 
         //로그인한 사람의 정보를 넘겨 줌
         model.addAttribute("userNumber", userNumber2);
@@ -302,7 +298,7 @@ public class SanctnController {
     }
 
     //결재 반려처리
-    @PostMapping("/reject")
+    @PostMapping("/sanctn/reject")
     public String reject(@RequestParam Map<String, Object> param, Model model) {
 
 
@@ -333,7 +329,7 @@ public class SanctnController {
     }
 
     //민원 반려처리
-    @PostMapping("/rejectCompliment")
+    @PostMapping("/sanctn/rejectCompliment")
     public String rejectCompliment(@RequestParam Map<String, Object> param, Model model) {
 
 
@@ -366,7 +362,7 @@ public class SanctnController {
 
 
     //최종승인
-    @PostMapping("/finalApproval")
+    @PostMapping("/sanctn/finalApproval")
     public String finalApproval(@RequestParam Map<String, Object> param, Model model) {
 
 
@@ -397,7 +393,7 @@ public class SanctnController {
     }
 
     //민원 최종승인
-    @PostMapping("/finalCompliment")
+    @PostMapping("/sanctn/finalCompliment")
     public String finalCompliment(@RequestParam Map<String, Object> param, Model model) {
 
 
@@ -420,7 +416,6 @@ public class SanctnController {
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
-
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
 
@@ -429,7 +424,7 @@ public class SanctnController {
 
 
     //진행 조회
-    @GetMapping("/sanctnProgress")
+    @GetMapping("/sanctn/progress")
     public String sanctnProgress(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
@@ -442,14 +437,14 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnProgress");
+        model.addAttribute("mapping", "sanctn/progress");
 
         return "/pages/sanction::#test";
 
     }
 
     //반려 조회
-    @GetMapping("/sanctnReject")
+    @GetMapping("/sanctn/reject")
     public String sanctnReject(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
@@ -462,14 +457,14 @@ public class SanctnController {
 
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnReject");
+        model.addAttribute("mapping", "sanctn/reject");
 
         return "/pages/sanction::#test";
     }
 
     //공람 조회
 
-    @GetMapping("/sanctnPublic")
+    @GetMapping("/sanctn/public")
     public String sanctnPublic(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
@@ -481,7 +476,7 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnPublic");
+        model.addAttribute("mapping", "sanctn/public");
 
         return "/pages/sanction::#test";
 
@@ -489,7 +484,7 @@ public class SanctnController {
 
     // 전체 조회
 
-    @GetMapping("/sanctnAll")
+    @GetMapping("/sanctn/all")
     public String sanctnAll(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
@@ -500,15 +495,14 @@ public class SanctnController {
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
 
         // 페이징 페이지 주소 매핑
-        model.addAttribute("mapping", "sanctnAll");
-
+        model.addAttribute("mapping", "sanctn/all");
 
         return "pages/sanction::#test";
 
     }
 
     // 완료 조회
-    @GetMapping("/sanctnCom")
+    @GetMapping("/sanctn/com")
     public String sanctnCom(Model model, @PageableDefault(size = 8) Pageable pageable) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();

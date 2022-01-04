@@ -81,7 +81,7 @@ public class ScholarshiptServiceImpl implements ScholarshipService {
         Long complimentId = scholarship.getId();
         String reason = scholarship.getKind().getKorean();
         String complimentType = "장학금 신청 : ";
-        sanctnService.saveComplaint(docform, drafter, reason, userNumber, complimentId, complimentType);
+        sanctnService.saveComplaint(docform, drafter, reason, userNumber, complimentId, complimentType, fileId);
     }
 
     @Override

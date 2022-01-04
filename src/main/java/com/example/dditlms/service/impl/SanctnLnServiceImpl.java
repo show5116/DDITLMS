@@ -13,9 +13,7 @@ import com.example.dditlms.domain.repository.ScholarshipRepository;
 import com.example.dditlms.domain.repository.TempAbsenceRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnLnRepository;
 import com.example.dditlms.domain.repository.sanctn.SanctnRepository;
-import com.example.dditlms.service.AcademicService;
 import com.example.dditlms.service.SanctnLnService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
