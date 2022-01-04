@@ -92,7 +92,7 @@ public class MailController {
             e.printStackTrace();
         }
 
-        response.setContentType("text/html; charset=euc-kr");
+        response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<script>opener.location.reload(); window.close();</script>");
         out.flush();

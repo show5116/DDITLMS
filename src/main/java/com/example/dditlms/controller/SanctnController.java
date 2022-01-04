@@ -196,7 +196,6 @@ public class SanctnController {
     //기안하기
     @PostMapping("/sanctnSubmit")
     public RedirectView submitSanctn(SanctnForm sanctnForm, @RequestParam(value = "file", required = false) MultipartFile file, MultipartHttpServletRequest request) {
-        log.info("멀티파트 체킹!" + String.valueOf(request));
 
         Map<String,MultipartFile> map = request.getFileMap();
         long id = fileUtil.uploadFiles(map);
