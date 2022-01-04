@@ -142,8 +142,6 @@ var subjectCodeList = [];
             }
         })
             .done(function(fragment){
-                console.log("=============searchSubject=============");
-                console.log(fragment);
                 $("#searchLectureList").replaceWith(fragment);
                 trEvent();
             })

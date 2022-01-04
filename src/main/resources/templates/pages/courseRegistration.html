@@ -61,14 +61,14 @@
             </div>
         </div>
         <div class="col-lg-12">
-            <div class="card">
+            <div class="card" id="pregistration-table-card">
                 <div class="p-20">
                     <div class="b-b-dark">
                         <div class="card-body-top">
                             <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                 <div class="row col-sm-3 align-self-center">
                                     <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">수강신청과목</h4>
-                                    <span class="col text-muted p-l-10 m-t-10" id="regist-lecture-count" th:text="|${registCount}건|"></span>
+                                    <span class="col text-muted p-l-10 m-t-10" id="regist-lecture-count" th:text="${#lists.size(registrationList)}+'건'"></span>
                                 </div>
                                 <div class="col-sm-2 justify-content-end text-end">
                                     <button type="button" id="regist-delete-btn" class="btn btn-secondary">취소</button>
@@ -82,7 +82,7 @@
                                             <th>No.</th>
                                             <th>대학구분</th>
                                             <th>학부(과)</th>
-                                            <th>과목코드</th>
+                                            <th>강의코드</th>
                                             <th>교과목명</th>
                                             <th>분반</th>
                                             <th>이수구분</th>
@@ -92,7 +92,7 @@
                                             <th>담당교수</th>
                                             <th>강의시간</th>
                                             <th>강의실</th>
-                                            <th>강의계획서</th>
+                                            <th>신청취소</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -100,7 +100,7 @@
                                             <td th:text="${index.index+1}"></td>
                                             <td th:text="${realRL.getCollege()}">학부</td>
                                             <td th:text="${realRL.getMajorKr()}">전기-전자-통신공학과</td>
-                                            <td th:text="${realRL.getSubjectCode()}">IFA100</td>
+                                            <td th:text="${realRL.getLectureCode()}">IFA100</td>
                                             <td><a onclick="testPDF();" class="btn btn-link txt-dark" th:text="${realRL.getLectureName()}"></a></td>
                                             <td th:text="${realRL.getLectureClass()}">01</td>
                                             <td th:text="${realRL.getLectureSeme()}">전필</td>
@@ -110,7 +110,7 @@
                                             <td th:text="${realRL.getProfessor()}">안치형</td>
                                             <td th:text="${realRL.getLectureSchedule()}">금03A~04B,06A~09B</td>
                                             <td th:text="${realRL.getLectureRoom()}">공학1관(B404)</td>
-                                            <td><button>보기</button></td>
+                                            <td><button id="registration-cancel">취소</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -120,12 +120,12 @@
                     <div>
                         <div class="tab-content m-t-15">
                             <div class="row">
-                                <div class="col-lg-7">
+                                <div class="col-lg-7"  id="open-lecture-tr">
                                     <div class="card-body-left">
                                         <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                             <div class="row col-sm-4 align-self-center">
                                                 <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">개설강좌</h4>
-                                                <span class="col text-muted p-l-10 m-t-10" th:text="|${openTotalCount}건|">12건</span>
+                                                <span class="col text-muted p-l-10 m-t-10" th:text="${#lists.size(openLectureList)}+'건'">12건</span>
                                             </div>
                                         </div>
                                         <div  style="height: 640px; overflow-y: auto;">
@@ -147,7 +147,6 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr class="open-lecture-tr" th:each="openRL : ${openLectureList}" th:id="${openRL.getLectureCode()}">
-                                                        <td class="hidden-lecture" style="display: none" th:text="${openRL}"></td>
                                                         <td th:text="${openRL.getMajorKr()}">전기-전자-통신공학과</td>
                                                         <td th:text="${openRL.getSubjectCode()}">IFA100</td>
                                                         <td><a onclick="testPDF();" class="btn btn-link txt-google-plus" th:text="${openRL.getLectureName()}"></a></td>
@@ -171,14 +170,14 @@
                                         <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                             <div class="row col-sm-7 align-self-center">
                                                 <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">예비수강과목</h4>
-                                                <span class="col text-muted p-l-10 m-t-10" th:text="|${preTotalCount}건|">0건</span>
+                                                <span class="col text-muted p-l-10 m-t-10" th:text="${#lists.size(preRegistrationList)}+'건'">0건</span>
                                             </div>
                                             <div class="col-sm-3 text-end">
-                                                <button type="button" th:id="${preRegistrationList}" class="btn btn-secondary total-registration-btn">일괄신청</button>
+                                                <button type="button" th:id="total-registration-btn" class="btn btn-secondary total-registration-btn">일괄신청</button>
                                             </div>
                                         </div>
                                         <div>
-                                            <table class="table table-bordered text-center" >
+                                            <table class="table table-bordered text-center" id="pre-registration-table">
                                                 <thead class="table-secondary">
                                                     <tr>
                                                         <th>신청</th>
@@ -191,14 +190,16 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr class="pre-registration-tr" th:each="preL : ${preRegistrationList}" th:id="${preL.getLectureCode()}">
-                                                        <td>수강</td>
-                                                        <td th:text="${preL.getLectureName()}">기초전기전자실습</td>
-                                                        <td th:text="${preL.getLectureClass()}">01</td>
-                                                        <td th:text="${preL.getLectureSeme()}">전필</td>
-                                                        <td th:text="${preL.getProfessor()}">안치형</td>
-                                                        <td th:text="${preL.getLectureSchedule()}">금03A~04B,06A~09B</td>
-                                                        <td th:text="${preL.getLectureRoom()}">공학1관(B404)</td>
+                                                    <tr class="pre-registration-tr" th:each="preL : ${preRegistrationList}" th:id="${preL.getLectureCode().getId()}">
+                                                        <td th:if="${preL.getExistence().equals('1')}">수강</td>
+                                                        <td th:if="${preL.getExistence().equals('0')}"><button class="btn-air-light">신청</button></td>
+                                                        <td th:text="${preL.getLectureCode().getSubjectCode().getName()}">기초전기전자실습</td>
+                                                        <td th:if="${#strings.endsWith(preL.getLectureCode().getId(),'A')}">01</td>
+                                                        <td th:unless="${#strings.endsWith(preL.getLectureCode().getId(),'A')}">02</td>
+                                                        <td th:text="${preL.getLectureCode().getLectureSection().getKorean()}">전필</td>
+                                                        <td th:text="${preL.getLectureCode().getProfessorNo().getMember().getName()}">안치형</td>
+                                                        <td th:text="${preL.getLectureCode().getLectureSchedule()}">금03A~04B,06A~09B</td>
+                                                        <td th:text="${preL.getLectureCode().getLectureId().getId()}">공학1관(B404)</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -214,10 +215,10 @@
     </div>
 
     <script>
+
         function testPDF(){
             event.stopImmediatePropagation();
             window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
-
         }
 
     </script>

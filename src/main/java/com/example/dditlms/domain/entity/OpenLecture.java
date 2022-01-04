@@ -58,9 +58,18 @@ public class OpenLecture {
 
     public PreCourseDTO toDto(){
         String lectureClass = "";
+        String college = "";
+        int count =0;
+        String kind = null;
+        if(this.lectureKind.equals("F")){
+            kind = "오프라인";
+        }else if(this.lectureKind.equals("O")){
+            kind = "온라인";
+        }
 
         PreCourseDTO dto = PreCourseDTO.builder()
                 .lectureCode(this.id)
+                .lectureClass(this.id.substring(id.length()-1))
                 .majorKr(this.majorCode.getKorean())
                 .subjectCode(this.subjectCode.getId())
                 .lectureName(this.subjectCode.getName())
@@ -70,7 +79,9 @@ public class OpenLecture {
                 .lectureSchedule(this.lectureSchedule)
                 .lectureRoom(this.lectureId.getId())
                 .lectureClass(lectureClass)
-                .lecturedivision(this.lectureKind +"").build();
+                .lecturedivision(kind)
+                .college(this.getMajorCode().getSelection().getName().split("대학")[0])
+                .applicantsCount(count).build();
         return dto;
     }
 

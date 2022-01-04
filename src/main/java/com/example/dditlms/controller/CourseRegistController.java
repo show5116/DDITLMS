@@ -6,23 +6,25 @@ import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.*;
 import com.example.dditlms.domain.repository.student.StudentRepository;
 import com.example.dditlms.security.AccountContext;
-import com.example.dditlms.service.SemesterByYearService;
+import com.example.dditlms.service.CourseRegistService;
+import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static com.example.dditlms.domain.entity.QMember.member;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class CourseRegistController {
+    private final CourseRegistService service;
 
     private final PreCourseRegistrationRepository preCourseRegistrationRepository;
     private final SignupSearchRepository searchRepository;
@@ -38,15 +40,10 @@ public class CourseRegistController {
     private Grade studentGrade;
 
     private void getUserInfo(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member =null;
-        try{
-            member = ((AccountContext)authentication.getPrincipal()).getMember();
-        }catch(ClassCastException e){
-        }
-        memNo = member.getUserNumber()+"";
-        memName = member.getName();
-        memRole = member.getRole().getValue();
+        Member loginMember = MemberUtil.getLoginMember();
+        memNo = loginMember.getUserNumber()+"";
+        memName = loginMember.getName();
+        memRole = loginMember.getRole().getValue();
 
         Long studentNo = Long.parseLong(memNo);
         student = studentRepository.findById(studentNo).get();
@@ -56,92 +53,21 @@ public class CourseRegistController {
     @GetMapping("/student/courseRegistration")
     public String courseRegistration(Model model) {
         getUserInfo();
+        Map<String, Object> map = new HashMap<>();
+        map.put("student", student);
+        service.courseRegistration(map);
+
         List<Major> majorList = majorRepository.findAll();
+        List<PreCourseDTO> registrationList = (List<PreCourseDTO>) map.get("registration");
+        List<PreCourseRegistration> preRegistrationList = (List<PreCourseRegistration>) map.get("preRegistrationList");
+        List<PreCourseDTO> openLectureList = (List<PreCourseDTO>) map.get("openLectureList");
+        String year = (String) map.get("year");
+        String seme = (String) map.get("seme");
 
-        SemesterByYear semester = semesterByYearRepository.selectNextSeme().get();
-        List<OpenLecture> openLectureList = searchRepository.findAllByYearSeme(semester);
-        List<PreCourseDTO> preCourseDTOList = new ArrayList<>();
-        for(OpenLecture openLecture : openLectureList){
-            String id = openLecture.getId();
-            String lectureClass = id.substring(id.length()-1);
-            String kind = openLecture.getLectureKind() +"";
-            PreCourseDTO  dto = openLecture.toDto();
-            dto.setLectureClass(lectureClass);
-            dto.setLectureSeme(openLecture.getLectureSection().getKorean());
-            if (kind.equals("F")){
-                kind = "오프라인";
-                dto.setLecturedivision(kind);
-            } else if(kind.equals("O")){
-                kind = "온라인";
-                dto.setLecturedivision(kind);
-            }
-            preCourseDTOList.add(dto);
-        }
-        int lectureCount = preCourseDTOList.size();
-
-        List<PreCourseRegistration> getPreRegistrationList = preCourseRegistrationRepository.findByStudentNo(student);
-        List<PreCourseDTO> preRegistrationList = new ArrayList<>();
-        for (PreCourseRegistration preCourseRegistration : getPreRegistrationList){
-            PreCourseDTO dto = PreCourseDTO.builder()
-                    .lectureCode(preCourseRegistration.getLectureCode().getId())
-                    .lectureSeme(preCourseRegistration.getLectureCode().getLectureSection().getKorean())
-                    .lectureName(preCourseRegistration.getLectureCode().getSubjectCode().getName())
-                    .professor(preCourseRegistration.getStudentNo().getMember().getName())
-                    .lectureSchedule(preCourseRegistration.getLectureCode().getLectureSchedule())
-                    .lectureRoom(preCourseRegistration.getLectureCode().getLectureId().getId())
-                    .subjectCode(preCourseRegistration.getLectureCode().getSubjectCode().getId())
-                    .build();
-            preRegistrationList.add(dto);
-        }
-        int preCount = preRegistrationList.size();
-
-        List<Enrolment> courseRegistrationList = repository.findAllByStudentAndGrade(student,studentGrade);
-        List<PreCourseDTO> registRectureList = new ArrayList<>();
-        for(Enrolment enrolment : courseRegistrationList){
-            String id = enrolment.getOpenLecture().getId();
-            String lectureClass = id.substring(id.length()-1);
-            String kind = enrolment.getOpenLecture().getLectureKind()+"";
-            if(kind.equals("F")){
-                kind = "오프라인";
-            } else if(kind.equals("O")){
-                kind = "온라인";
-            }
-
-            int applicantsCount = repository.countEnrolmentByOpenLecture(enrolment.getOpenLecture());
-
-            String collegeName = enrolment.getOpenLecture().getMajorCode().getSelection().getName().split("대학")[0];
-            PreCourseDTO dto = PreCourseDTO.builder()
-                    .lectureCode(enrolment.getOpenLecture().getId())
-                    .majorKr(enrolment.getOpenLecture().getMajorCode().getKorean())
-                    .subjectCode(enrolment.getOpenLecture().getSubjectCode().getId())
-                    .lectureName(enrolment.getOpenLecture().getSubjectCode().getName())
-                    .lectureSeme(enrolment.getOpenLecture().getLectureSection().getKorean())
-                    .maxPeopleCount(enrolment.getOpenLecture().getPeopleNumber())
-                    .professor(enrolment.getOpenLecture().getProfessorNo().getMember().getName())
-                    .lectureSchedule(enrolment.getOpenLecture().getLectureSchedule())
-                    .lectureRoom(enrolment.getOpenLecture().getLectureId().getId())
-                    .lectureClass(lectureClass)
-                    .lecturedivision(kind)
-                    .college(collegeName)
-                    .applicantsCount(applicantsCount)
-                    .build();
-            registRectureList.add(dto);
-        }
-        int registCount = registRectureList.size();
-
-        boolean contains = registRectureList.contains(preRegistrationList);
-        log.info("-----CourseRegistController[courseRegistration] :: contains ={}", contains);
-
-        model.addAttribute("registrationList", registRectureList);
-        model.addAttribute("registCount", registCount);
-
+        model.addAttribute("registrationList", registrationList);
         model.addAttribute("preRegistrationList", preRegistrationList);
-        model.addAttribute("preTotalCount", preCount);
+        model.addAttribute("openLectureList", openLectureList);
 
-        String year = semester.getYear().split("-")[0];
-        String seme = semester.getYear().split("-")[1];
-        model.addAttribute("openLectureList", preCourseDTOList);
-        model.addAttribute("openTotalCount", lectureCount);
         model.addAttribute("year",year);
         model.addAttribute("seme", seme);
         model.addAttribute("memberNo", memNo);
@@ -153,6 +79,89 @@ public class CourseRegistController {
         return "pages/courseRegistration";
     }
 
+    @PostMapping("/student/courseRegistration/searchLecture")
+    public String searchLecture(Model model, @RequestParam Map<String, Object> paramMap){
+        String division = (String) paramMap.get("division");
+        String majorName = (String) paramMap.get("major");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("division", division);
+        map.put("majorName", majorName);
+
+        service.searchLecture(map);
+        List<PreCourseDTO> openLectureList = (List<PreCourseDTO>) map.get("dto");
+        int count = (int) map.get("totalCount");
+
+        model.addAttribute("openLectureList", openLectureList);
+        model.addAttribute("openTotalCount",count);
+
+        return "pages/courseRegistration:: #open-lecture-tr";
+    }
+
+    @PostMapping("/student/courseRegistration/searchSubject")
+    public String searchSubject(Model model, @RequestParam String subject){
+        Map<String, Object> map = new HashMap<>();
+        map.put("subject", subject);
+
+        service.searchSubject(map);
+        List<PreCourseDTO> openLectureList = (List<PreCourseDTO>) map.get("result");
+        int count = (int) map.get("count");
+        log.info("-----CourseRegistController[searchSubejct] :: openLectureList={}", openLectureList);
+
+        model.addAttribute("openLectureList", openLectureList);
+
+        return "pages/courseRegistration:: #open-lecture-tr";
+    }
+
+    @ResponseBody
+    @PostMapping("/student/courseRegistration/preTotalRegistration")
+    public String preTotalRegistration(Model model, @RequestBody List<String> preLectureList){
+        log.info("-----CourseRegistController[preTotalRegistration] :: preLectureList={}", preLectureList);
+        Map<String, Object> map = new HashMap<>();
+        map.put("preLectureList", preLectureList);
+        map.put("student", student);
+
+        service.preTotalRegistration(map);
+
+        List<Enrolment> registrationList = (List<Enrolment>) map.get("registrationList");
+        List<String> successList = (List<String>) map.get("successList");
+
+        log.info("-----CourseRegistController[preTotalRegistration] :: registrationList={}", registrationList);
+        log.info("-----CourseRegistController[preTotalRegistration] :: successList={}", successList);
+
+        model.addAttribute("registrationList", registrationList);
+        model.addAttribute("successList",successList);
+
+        return "pages/courseRegistration :: #pages/courseRegistration";
+    }
+
+
+
+
+
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

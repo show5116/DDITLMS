@@ -2,18 +2,17 @@ package com.example.dditlms.domain.entity;
 
 import com.example.dditlms.domain.common.Grade;
 import com.example.dditlms.domain.idclass.EnrolmentId;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Entity
+@Builder
 @Table(name = "ATNLC_LCTRE")
 @IdClass(EnrolmentId.class)
 public class Enrolment {

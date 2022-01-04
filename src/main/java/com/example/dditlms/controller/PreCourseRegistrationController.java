@@ -1,5 +1,6 @@
 package com.example.dditlms.controller;
 
+import com.example.dditlms.domain.common.LectureSection;
 import com.example.dditlms.domain.dto.PreCourseDTO;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.MajorRepository;
@@ -107,7 +108,7 @@ public class PreCourseRegistrationController {
 
     @PostMapping("/preCourseRegistration/searchLecture")
     public String SearchLecture(Model model, @RequestParam Map<String, Object> paramMap){
-        String division = (String) paramMap.get("division");
+        LectureSection division = (LectureSection) paramMap.get("division");
         String majorName = (String) paramMap.get("major");
         List<OpenLecture> openLectureList = null;
         Optional<SemesterByYear> semesterWrapper = semesterByYearRepository.selectNextSeme();
