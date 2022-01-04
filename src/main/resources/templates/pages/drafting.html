@@ -173,7 +173,7 @@
                             </button>
                         </div>
 
-                        <form th:action="@{|/sanctnSubmit?${_csrf.parameterName}=${_csrf.token}|}" th:method="post" id="sanctnForm" enctype=multipart/form-data style="display">
+                        <form th:action="@{|/sanctn/submit?${_csrf.parameterName}=${_csrf.token}|}" th:method="post" id="sanctnForm" enctype=multipart/form-data style="display">
                             <input type="text" id="sanctnSj" th:name= "sanctnSj" th:value="${sanctnSj}"/>
                             <textarea id="sanctnCn" th:name= "sanctnCn" th:value="${sanctnCn}"></textarea>
                             <input type="text" id="docformSn" th:name= "docformSn" th:value="${docformSn}"/>
@@ -265,7 +265,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/sendFormCate",
+                url: "/drafting/sendFormCate",
                 data: {
                     "cate": result
                 },
@@ -290,7 +290,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/sendDept",
+                url: "/drafting/sendDept",
                 data: {
                     "dep": result
                 },
@@ -320,7 +320,7 @@
 
                 $.ajax({
                 type: "GET",
-                url: "/makeForm",
+                url: "/drafting/makeForm",
                 data: {
                     "form": result
                 },
@@ -376,7 +376,7 @@
             const submitForm = document.querySelector("#sanctnForm");
             const formData = new FormData(submitForm);
             $.ajax({
-                url: "/sanctnSubmit",
+                url: "/sanctn/submit",
                 enctype : "multipart/form-data",
                 processData : false,
                 contentType : false,

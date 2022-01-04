@@ -124,7 +124,7 @@ public class SanctnController {
 
     // 기안하기 페이지
 
-    @GetMapping("/drafting")
+    @GetMapping("/sanctn/drafting")
     public String drafting(Model model, SanctnForm sanctnForm) {
 
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
@@ -154,7 +154,7 @@ public class SanctnController {
     }
 
     //양식폼 2차 카테고리 결과 반환
-    @GetMapping("/sendFormCate")
+    @GetMapping("/drafting/sendFormCate")
     @ResponseBody
     public List<DocFormDTO> sendFormCate(@RequestParam Map<String, Object> param) {
 
@@ -164,7 +164,7 @@ public class SanctnController {
     }
 
     //부서별 직원목록 반환
-    @GetMapping("/sendDept")
+    @GetMapping("/drafting/sendDept")
     @ResponseBody
     public List<EmployeeDTO> sendDept(@RequestParam Map<String, Object> param) {
 
@@ -174,7 +174,7 @@ public class SanctnController {
     }
 
     //양식폼 생성
-    @GetMapping("/makeForm")
+    @GetMapping("/drafting/makeForm")
     @ResponseBody
     public Optional<Docform> makeForm(@RequestParam Map<Long, Object> param) {
 
@@ -194,7 +194,7 @@ public class SanctnController {
     }
 
     //기안하기
-    @PostMapping("/sanctnSubmit")
+    @PostMapping("/sanctn/submit")
     public RedirectView submitSanctn(SanctnForm sanctnForm, @RequestParam(value = "file", required = false) MultipartFile file, MultipartHttpServletRequest request) {
 
         Map<String,MultipartFile> map = request.getFileMap();

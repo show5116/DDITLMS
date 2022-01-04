@@ -62,7 +62,7 @@ public class MailController {
     }
 
     //메일 상세보기
-    @GetMapping("/mailView")
+    @GetMapping("/mail/mailView")
     public String mailView(Model model, @RequestParam("id") int id, @RequestParam("box") String mailBox) {
 
 
@@ -74,7 +74,7 @@ public class MailController {
     }
 
     //메일 쓰기페이지 이동
-    @GetMapping("/writeMail")
+    @GetMapping("/mail/write")
     public String writeMailPage(@ModelAttribute EmailDTO dto, HttpServletRequest request, Model model) {
 
         model.addAttribute("dto", dto);
@@ -82,7 +82,7 @@ public class MailController {
     }
 
     //메일 쓰기(보내기 + 보낸편지함 저장)
-    @PostMapping("/writeMail")
+    @PostMapping("/mail/write")
     public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletResponse response) throws IOException {
         EmailDTO emailDTO = dto;
         try {
@@ -100,14 +100,14 @@ public class MailController {
         return "redirect:/mail";
     }
     
-    @GetMapping("/replyMail/{id}")
+    @GetMapping("/mail/reply/{id}")
     public String replyMailView(Model model,  @PathVariable("id") int id) {
         EmailDTO dto = emailService.replyMailRead(id);
         model.addAttribute("dto", dto);
         return "/pages/mailWrite";
     }
 
-    @PostMapping("/replyMail")
+    @PostMapping("/mail/reply")
     public String replyMail(@ModelAttribute("dto") EmailDTO dto, HttpServletRequest request, Model model) {
         EmailDTO emailDTO = dto;
         try {
@@ -119,7 +119,7 @@ public class MailController {
         return "redirect:/mail";
     }
     //메일함별 조회
-    @GetMapping("/mailBox")
+    @GetMapping("/mail/mailBox")
     public String mailBox(Model model, @RequestParam Map<String, Object> param) {
 
         List<EmailDTO> inboxes = emailService.receiveEmailList(param.get("mailName").toString());
@@ -128,7 +128,7 @@ public class MailController {
         return "/pages/mailbox::#mail";
     }
     //메일 임시 저장
-    @PostMapping("/tempMail")
+    @PostMapping("/mail/tempMail")
     public String tempMail(@ModelAttribute("dto") EmailDTO dto, Model model, HttpServletResponse response) throws IOException {
         EmailDTO emailDTO = dto;
         try {
@@ -147,7 +147,7 @@ public class MailController {
 
     
     //메일 이동
-    @GetMapping("/moveMail")
+    @GetMapping("/mail/move")
     public String moveMail(@RequestParam Map<String, Object> param) {
         String mailBox = param.get("mailBox").toString();
         Long id = Long.valueOf(param.get("id").toString());
@@ -157,7 +157,7 @@ public class MailController {
         return "/pages/mailbox";
     }
 
-    @GetMapping("/deleteMail")
+    @GetMapping("/mail/delete")
     public String deleteMail(@RequestParam Map<String, Object> param) {
         String mailBox = param.get("mailBox").toString();
         Long id = Long.valueOf(param.get("id").toString());
