@@ -97,8 +97,6 @@
     </div>
 
     <script th:inline="javascript">
-        // const bbsClass = document.querySelectorAll(".bbsclass");
-        // bbsClass.forEach(bbs => targetBbs(bbs));
         const hoverImgs = document.querySelectorAll(".hover-img");
         hoverImgs.forEach(hoverImg => hoverEvent(hoverImg));
 
@@ -108,38 +106,6 @@
 
             });
         }
-
-        // function targetBbs(target) {
-        //     target.addEventListener("click", function (event) {
-        //         console.log(event.currentTarget.id);
-        //         targetId = event.currentTarget.id;
-        //         const params = {
-        //             targetId: targetId
-        //         };
-        //         $.ajax({
-        //             url: "/community/detailBoard/"+targetId,
-        //             data: params,
-        //             type: "post",
-        //             // json 데이터타입 해줘야 됨.
-        //             dataType: "json",
-        //             beforeSend: function (xhr) {
-        //                 xhr.setRequestHeader(header, token);
-        //             }
-        //         }).done(function (response) {
-        //             console.log("성공");
-        //             console.log("아이디 : " + targetId);
-        //             console.log("몰라" + response.idx);
-        //             console.log(response);
-        //             location.href = "/community/detailBoard/" + targetId;
-        //
-        //
-        //         }).fail(function () {
-        //             console.log("실패");
-        //         })
-        //     });
-        // }
-
-
 
 
         function paging(id) {
