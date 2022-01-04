@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/forget","/forget/**").permitAll()
                 .antMatchers("/signup","/signup/**").permitAll()
                 .antMatchers("/login").permitAll()
+                .antMatchers("/ssotoken").authenticated()
                 .antMatchers("/ws").authenticated()
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated();
