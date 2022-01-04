@@ -4,6 +4,7 @@ import com.example.dditlms.domain.dto.EmailDTO;
 import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.EmailService;
+import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -31,15 +32,11 @@ public class MailController {
     public String mail(Model model) {
 
         //현재 로그인한 사용자 정보(userNumber)를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = null;
-        try {
-            member = ((AccountContext) authentication.getPrincipal()).getMember();
-        } catch (ClassCastException e) {
-        }
-        String name = member.getName();
+        Member loginMember = MemberUtil.getLoginMember();
+        
+        String name = loginMember.getName();
         String domain = "@ddit.site";
-        String user = (member.getMemberId() + domain);
+        String user = (loginMember.getMemberId() + domain);
 
         model.addAttribute("name", name);
         model.addAttribute("user", user);

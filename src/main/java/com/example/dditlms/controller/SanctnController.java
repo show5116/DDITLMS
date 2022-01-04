@@ -194,8 +194,8 @@ public class SanctnController {
     public RedirectView submitSanctn(SanctnForm sanctnForm, @RequestParam(value = "file", required = false) MultipartFile file, MultipartHttpServletRequest request) {
 
         Map<String,MultipartFile> map = request.getFileMap();
-        long id = fileUtil.uploadFiles(map);
 
+        long id = fileUtil.uploadFiles(map);
         sanctnService.saveSanctn(
                   sanctnForm.getSanctnSj()
                 , sanctnForm.getDocformSn()
@@ -263,7 +263,6 @@ public class SanctnController {
 
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
-
         return "/pages/sanctionDetail";
     }
 
@@ -417,7 +416,6 @@ public class SanctnController {
         List<SanctnDTO> sanctnDTOS = sanctnLnRepository.showSanctnLine2(id);
         model.addAttribute("sanctnLnList", sanctnDTOS);
 
-
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
 
@@ -498,7 +496,6 @@ public class SanctnController {
 
         // 페이징 페이지 주소 매핑
         model.addAttribute("mapping", "sanctn/all");
-
 
         return "pages/sanction::#test";
 
