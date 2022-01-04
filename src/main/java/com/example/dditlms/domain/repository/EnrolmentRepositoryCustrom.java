@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface EnrolmentRepositoryCustrom {
     List<Enrolment> myPregidentList(Student student, String yearSeme);
+
+    int findSameSubjectCode(Student student, String subject);
 }

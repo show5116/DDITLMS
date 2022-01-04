@@ -1,7 +1,6 @@
 package com.example.dditlms.domain.repository;
 
 import com.example.dditlms.domain.entity.Enrolment;
-import com.example.dditlms.domain.entity.Member;
 import com.example.dditlms.domain.entity.QEnrolment;
 import com.example.dditlms.domain.entity.Student;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -26,6 +25,17 @@ public class EnrolmentRepositoryImpl implements EnrolmentRepositoryCustrom{
                 .where(QEnrolment.enrolment.student.eq(student),
                         QEnrolment.enrolment.openLecture.yearSeme.year.eq(yearSeme))
                 .fetch();
+    }
+
+    @Override
+    public int findSameSubjectCode(Student student, String subject){
+        List<Enrolment> enrolments = queryFactory
+                        .selectFrom(QEnrolment.enrolment)
+                        .where(QEnrolment.enrolment.student.eq(student),
+                                QEnrolment.enrolment.openLecture.subjectCode.id.eq(subject))
+                        .fetch();
+        int count = enrolments.size();
+        return count;
     }
 
 

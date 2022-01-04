@@ -62,8 +62,9 @@
         </div>
         <div class="col-lg-12">
             <div class="card" id="pregistration-table-card">
+                <input id="duplicate" type="hidden" th:if="${duplicate}"/>
                 <div class="p-20">
-                    <div class="b-b-dark">
+                    <div class="b-b-dark" id="registration-div">
                         <div class="card-body-top">
                             <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                 <div class="row col-sm-3 align-self-center">
@@ -101,7 +102,7 @@
                                             <td th:text="${realRL.getCollege()}">학부</td>
                                             <td th:text="${realRL.getMajorKr()}">전기-전자-통신공학과</td>
                                             <td th:text="${realRL.getLectureCode()}">IFA100</td>
-                                            <td><a onclick="testPDF();" class="btn btn-link txt-dark" th:text="${realRL.getLectureName()}"></a></td>
+                                            <td><a onclick="testPDF();" id="regist-lecture-name" class="btn btn-link txt-dark" th:text="${realRL.getLectureName()}"></a></td>
                                             <td th:text="${realRL.getLectureClass()}">01</td>
                                             <td th:text="${realRL.getLectureSeme()}">전필</td>
                                             <td th:text="${realRL.getLecturedivision()}">오프라인</td>
@@ -110,7 +111,7 @@
                                             <td th:text="${realRL.getProfessor()}">안치형</td>
                                             <td th:text="${realRL.getLectureSchedule()}">금03A~04B,06A~09B</td>
                                             <td th:text="${realRL.getLectureRoom()}">공학1관(B404)</td>
-                                            <td><button id="registration-cancel">취소</button></td>
+                                            <td><button id="registration-cancel" onclick="oneRegistCancel();">취소</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -158,14 +159,14 @@
                                                         <td th:text="${openRL.getProfessor()}">안치형</td>
                                                         <td th:text="${openRL.getLectureSchedule()}">금03A~04B,06A~09B</td>
                                                         <td th:text="${openRL.getLectureRoom()}">공학1관(B404)</td>
-                                                        <td><button class="course-registration-btn" th:id="${openRL.getLectureCode()}">신청</button></td>
+                                                        <td><button type="button" class="course-registration-btn" onclick="confirmDupl();">신청</button></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-5">
+                                <div class="col-lg-5" id="pre-top-div">
                                     <div class="card-body-right">
                                         <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                             <div class="row col-sm-7 align-self-center">
@@ -192,7 +193,7 @@
                                                 <tbody>
                                                     <tr class="pre-registration-tr" th:each="preL : ${preRegistrationList}" th:id="${preL.getLectureCode().getId()}">
                                                         <td th:if="${preL.getExistence().equals('1')}">수강</td>
-                                                        <td th:if="${preL.getExistence().equals('0')}"><button class="btn-air-light">신청</button></td>
+                                                        <td th:if="${preL.getExistence().equals('0')}"><button type="button" class="btn-air-light one-registration" onclick="oneRegist()">신청</button></td>
                                                         <td th:text="${preL.getLectureCode().getSubjectCode().getName()}">기초전기전자실습</td>
                                                         <td th:if="${#strings.endsWith(preL.getLectureCode().getId(),'A')}">01</td>
                                                         <td th:unless="${#strings.endsWith(preL.getLectureCode().getId(),'A')}">02</td>
@@ -215,6 +216,106 @@
     </div>
 
     <script>
+        function confirmDupl(){
+            const parent = event.target.parentNode.parentNode;
+            const lectureCode = parent.id;
+            $.ajax({
+                url : "/student/courseRegistration/confirmDupl",
+                method : "Post",
+                data : {
+                    lectureCode : lectureCode
+                },
+                beforeSend : function (xhr){
+                    xhr.setRequestHeader(header, token);
+                }
+            })
+                .done(function(fragment){
+                    if (fragment ==="notExist"){
+                        oneOpenLectureRegist(lectureCode);
+                    } else if (fragment ==="exist"){
+                        swal("등록된 강의입니다.");
+                    }
+                })
+        }
+
+        function oneOpenLectureRegist(lectureCode){
+            $.ajax({
+                url : "/student/courseRegistration/oneOpenLectureRegist",
+                method : "Post",
+                data : {
+                    lectureCode : lectureCode
+                },
+                beforeSend : function (xhr){
+                    xhr.setRequestHeader(header, token);
+                }
+            })
+            .done(function(fragment){
+                if(fragment.indexOf(`<input id="duplicate" type="hidden"`) != -1){
+                    swal("success가 아닐때");
+                    return;
+                }
+                $("#pregistration-table-card").replaceWith(fragment);
+            })
+        }
+
+
+
+        function oneRegistCancel(){
+            const parent = event.target.parentNode.parentNode;
+            const cancelLectureCode = parent.id;
+            const cancelLectureName = parent.querySelector("#regist-lecture-name").innerText;
+
+            swal(cancelLectureName +" 를 취소하시겠습니까?", {
+                buttons: ["Yes", "No"],
+            }).then((result)=>{
+                if(result == null){
+                    $.ajax({
+                        url : "/student/courseRegistration/onePreRegistrationCancel",
+                        method : "Post",
+                        data : {
+                            cancelLectureCode : cancelLectureCode
+                        },
+                        beforeSend : function (xhr){
+                            xhr.setRequestHeader(header, token);
+                        }
+                    })
+                        .done(function(fragment){
+                            console.log(fragment);
+                            console.log("성공");
+                            $("#pregistration-table-card").replaceWith(fragment);
+                        })
+                }else if(result == true){
+                }
+            })
+        }
+
+        function oneRegist(){
+            const parent = event.target.parentNode.parentNode;
+            const lectureCode = parent.id;
+            $.ajax({
+                url : "/student/courseRegistration/onePreRegistration",
+                method : "Post",
+                data : {
+                    lectureCode : lectureCode,
+                },
+                beforeSend : function (xhr){
+                    xhr.setRequestHeader(header, token);
+                }
+            })
+                .done(function(fragment){
+                    if (fragment==="fail"){
+                        swal("정원이 초과되었습니다.");
+                    } else if(fragment === "success"){
+                        $.ajax({
+                            url : "/student/courseRegistration/getRegistrationList",
+                            method : "get"
+                        })
+                            .done(function(fragment){
+                                $("#pregistration-table-card").replaceWith(fragment);
+                            })
+                    }
+                })
+        }
 
         function testPDF(){
             event.stopImmediatePropagation();

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,11 +48,6 @@ public class CourseRegistServiceImpl implements CourseRegistService {
 
         /* 첫화면 예비수강강좌 리스트 조회 */
         List<PreCourseRegistration> getPreRegistrationList = preCourseRegistrationRepository.findByStudentNo(student);
-        for(PreCourseRegistration preCourseRegistration : getPreRegistrationList){
-            String exist = preCourseRegistration.getExistence();
-
-            log.info("-----CourseRegistService[courseRegistration] :: exist={}", exist);
-        }
 
         /* 첫화면 수강신청 리스트 조회 */
         List<Enrolment> courseRegistrationList = repository.myPregidentList(student,semester.getYear());
@@ -147,12 +143,9 @@ public class CourseRegistServiceImpl implements CourseRegistService {
     @Override
     @Transactional
     public void preTotalRegistration(Map<String, Object> map){
-        log.info("-----CourseRegistService[preTotalRegistration] ");
-
         List<String> preLectureList = (List<String>) map.get("preLectureList");
         Student student = (Student) map.get("student");
 
-        List<String> successList = new ArrayList<>();
         for (String lectureCode : preLectureList){
             OpenLecture openLecture = searchRepository.findById(lectureCode).get();
             int applicantsCount = repository.countEnrolmentByOpenLecture(openLecture);  //신청인원수
@@ -165,13 +158,27 @@ public class CourseRegistServiceImpl implements CourseRegistService {
                         .major(student.getMajor())
                         .build();
                 repository.save(enrolment);
-                PreCourseRegistration preCourseRegistration = preCourseRegistrationRepository.findByStudentNoAndLectureCode(student,openLecture);
-                preCourseRegistration.setExistence("1");
-                successList.add(lectureCode);
+                Optional<PreCourseRegistration> preCourseRegistrationWrapper = preCourseRegistrationRepository.findByStudentNoAndLectureCode(student,openLecture);
+                PreCourseRegistration preCourseRegistration = preCourseRegistrationWrapper.orElse(null);
+                if(preCourseRegistration != null){
+                    preCourseRegistration.setExistence("1");
+                }
             }
         }
-        log.info("-----CourseRegistService[preTotalRegistration] :: successList={}", successList);
+        /* 첫화면 개설강좌 리스트 조회 */
+        List<OpenLecture> openLectureList = searchRepository.findAllByYearSeme(semester);
+        List<PreCourseDTO> preCourseDTOList = new ArrayList<>();
+        for(OpenLecture openLecture : openLectureList){
+            PreCourseDTO  dto = openLecture.toDto();
+            int applicantsCount = repository.countEnrolmentByOpenLecture(openLecture);
+            dto.setApplicantsCount(applicantsCount);
+            preCourseDTOList.add(dto);
+        }
 
+        /* 첫화면 예비수강강좌 리스트 조회 */
+        List<PreCourseRegistration> getPreRegistrationList = preCourseRegistrationRepository.findByStudentNo(student);
+
+        /* 수강신청과목 리스트 */
         List<Enrolment> courseRegistList = repository.myPregidentList(student,semester.getYear());
         List<PreCourseDTO> registrationList = new ArrayList<>();
         for (Enrolment enrolment : courseRegistList){
@@ -180,14 +187,155 @@ public class CourseRegistServiceImpl implements CourseRegistService {
             dto.setApplicantsCount(applicantsCount);
             registrationList.add(dto);
         }
-
-        log.info("-----CourseRegistService[preTotalRegistration] :: registrationList={}", registrationList);
-
-        map.put("successList",successList);
         map.put("registrationList",registrationList);
+        map.put("preRegistrationList",getPreRegistrationList);
+        map.put("openLectureList",preCourseDTOList);
     }
 
+    @Override
+    @Transactional
+    public void onePreRegistration(Map<String, Object> map){
+        String lectureCode = (String) map.get("lectureCode");
+        Student student = (Student) map.get("student");
 
+        OpenLecture openLecture = searchRepository.findById(lectureCode).get();
+        int applicantsCount = repository.countEnrolmentByOpenLecture(openLecture);
+        int maxCount = openLecture.getPeopleNumber();
+        if (applicantsCount < maxCount){
+            Enrolment enrolment = Enrolment.builder()
+                    .student(student)
+                    .openLecture(openLecture)
+                    .grade(student.getGrade())
+                    .major(student.getMajor())
+                    .build();
+            repository.save(enrolment);
+            Optional<PreCourseRegistration> preCourseRegistrationWrapper = preCourseRegistrationRepository.findByStudentNoAndLectureCode(student,openLecture);
+            PreCourseRegistration preCourseRegistration = preCourseRegistrationWrapper.orElse(null);
+            if(preCourseRegistration!=null){
+                preCourseRegistration.setExistence("1");
+            }
+            map.put("result","success");
+        } else if(applicantsCount >= maxCount){
+            map.put("result", "fail");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void courseRegistrationCancel(Map<String, Object> map){
+        String cancelLectureCode = (String) map.get("lectureCode");
+        Student student = (Student) map.get("student");
+        OpenLecture lecture = searchRepository.findById(cancelLectureCode).get();
+
+        Enrolment cancelEnrolment = repository.findEnrolmentByStudentAndOpenLecture(student,lecture);
+        repository.delete(cancelEnrolment);
+        Optional<PreCourseRegistration> preCourseRegistrationWrapper = preCourseRegistrationRepository.findByStudentNoAndLectureCode(student,lecture);
+        PreCourseRegistration preCourseRegistration = preCourseRegistrationWrapper.orElse(null);
+        if(preCourseRegistration != null){
+            preCourseRegistration.setExistence("0");
+        }
+
+        /* 첫화면 개설강좌 리스트 조회 */
+        List<OpenLecture> openLectureList = searchRepository.findAllByYearSeme(semester);
+        List<PreCourseDTO> preCourseDTOList = new ArrayList<>();
+        for(OpenLecture openLecture : openLectureList){
+            PreCourseDTO  dto = openLecture.toDto();
+            int applicantsCount = repository.countEnrolmentByOpenLecture(openLecture);
+            dto.setApplicantsCount(applicantsCount);
+            preCourseDTOList.add(dto);
+        }
+
+        /* 첫화면 예비수강강좌 리스트 조회 */
+        List<PreCourseRegistration> getPreRegistrationList = preCourseRegistrationRepository.findByStudentNo(student);
+
+        /* 수강신청과목 리스트 */
+        List<Enrolment> courseRegistList = repository.myPregidentList(student,semester.getYear());
+        List<PreCourseDTO> registrationList = new ArrayList<>();
+        for (Enrolment enrolment : courseRegistList){
+            int applicantsCount = repository.countEnrolmentByOpenLecture(enrolment.getOpenLecture());
+            PreCourseDTO dto = enrolment.getOpenLecture().toDto();
+            dto.setApplicantsCount(applicantsCount);
+            registrationList.add(dto);
+        }
+        map.put("registrationList",registrationList);
+        map.put("preRegistrationList",getPreRegistrationList);
+        map.put("openLectureList",preCourseDTOList);
+    }
+
+    @Override
+    @Transactional
+    public void confirmDupl(Map<String, Object> map){
+        String lectureCode = (String)map.get("lectureCode");
+        Student student = (Student) map.get("student");
+        OpenLecture openLecture = searchRepository.findById(lectureCode).get();
+        String subject = openLecture.getSubjectCode().getId();
+
+        int count = repository.findSameSubjectCode(student, subject);
+        if (count == 0){
+            map.put("result", "notExist");
+        } else if(count > 0){
+            map.put("result", "exist");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void oneOpenLectureRegist(Map<String, Object> map){
+        String lectureCode = (String) map.get("lectureCode");
+        Student student = (Student) map.get("student");
+
+        OpenLecture lecture = searchRepository.findById(lectureCode).get();
+        int appliCount = repository.countEnrolmentByOpenLecture(lecture);
+        int maxCount = lecture.getPeopleNumber();
+        if (appliCount >= maxCount) {
+            map.put("result", "fail");
+        } else if (appliCount < maxCount){
+            map.put("result", "success");
+
+            Enrolment enrolments = Enrolment.builder()
+                    .student(student)
+                    .openLecture(lecture)
+                    .grade(student.getGrade())
+                    .major(student.getMajor())
+                    .build();
+            repository.save(enrolments);
+
+            Optional<PreCourseRegistration> preCourseRegistrationWrapper = preCourseRegistrationRepository.findByStudentNoAndLectureCode(student, lecture);
+            PreCourseRegistration preCourseRegistration = preCourseRegistrationWrapper.orElse(null);
+            if (preCourseRegistration != null){
+                preCourseRegistration.setExistence("1");
+            }
+            /* 첫화면 개설강좌 리스트 조회 */
+            List<OpenLecture> openLectureList = searchRepository.findAllByYearSeme(semester);
+            List<PreCourseDTO> preCourseDTOList = new ArrayList<>();
+            for(OpenLecture openLecture : openLectureList){
+                PreCourseDTO  dto = openLecture.toDto();
+                int applicantsCount = repository.countEnrolmentByOpenLecture(openLecture);
+                dto.setApplicantsCount(applicantsCount);
+                preCourseDTOList.add(dto);
+            }
+
+            /* 첫화면 예비수강강좌 리스트 조회 */
+            List<PreCourseRegistration> getPreRegistrationList = preCourseRegistrationRepository.findByStudentNo(student);
+
+            /* 수강신청과목 리스트 */
+            List<Enrolment> courseRegistList = repository.myPregidentList(student,semester.getYear());
+            List<PreCourseDTO> registrationList = new ArrayList<>();
+            for (Enrolment enrolment : courseRegistList){
+                int applicantsCount = repository.countEnrolmentByOpenLecture(enrolment.getOpenLecture());
+                PreCourseDTO dto = enrolment.getOpenLecture().toDto();
+                dto.setApplicantsCount(applicantsCount);
+                registrationList.add(dto);
+            }
+            map.put("registrationList",registrationList);
+            map.put("preRegistrationList",getPreRegistrationList);
+            map.put("openLectureList",preCourseDTOList);
+        }
+
+
+
+
+    }
 
 }
 

@@ -16,4 +16,16 @@ public interface CourseRegistService {
 
     @Transactional
     void preTotalRegistration(Map<String, Object> map);
+
+    @Transactional
+    void onePreRegistration(Map<String, Object> map);
+
+    @Transactional
+    void courseRegistrationCancel(Map<String, Object> map);
+
+    @Transactional
+    void confirmDupl(Map<String, Object> map);
+
+    @Transactional
+    void oneOpenLectureRegist(Map<String, Object> map);
 }

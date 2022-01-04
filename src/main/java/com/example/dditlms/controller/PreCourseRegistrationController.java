@@ -231,7 +231,9 @@ public class PreCourseRegistrationController {
             OpenLecture addId = searchRepository.findById(lecture).get();
             PreCourseRegistration registration = PreCourseRegistration.builder()
                     .lectureCode(addId)
-                    .studentNo(student).build();
+                    .studentNo(student)
+                    .existence("0")
+                    .build();
             repository.save(registration);
         }
         return "success";
@@ -245,9 +247,12 @@ public class PreCourseRegistrationController {
         Long studentNo = Long.parseLong(memNo);
         Student student = Student.builder()
                 .userNumber(studentNo).build();
-        PreCourseRegistration preRegistration = repository.findByStudentNoAndLectureCode(student, openLecture);
-        Long registrationId = preRegistration.getId();
-        repository.deleteById(registrationId);
+        Optional<PreCourseRegistration> preRegistrationWrapper = repository.findByStudentNoAndLectureCode(student, openLecture);
+        PreCourseRegistration preCourseRegistration = preRegistrationWrapper.orElse(null);
+        if (preCourseRegistration != null){
+            Long registrationId = preCourseRegistration.getId();
+            repository.deleteById(registrationId);
+        }
 
         return "success";
     }

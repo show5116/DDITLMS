@@ -83,7 +83,6 @@ var leftList = [];          //예비수강리스트에서 수강신청된 강의
         preTotalRegistration();
     })
 
-
     function searchLecture(){
         var division = clickDivision.options[clickDivision.selectedIndex].value;
         var major = clickMajor.options[clickMajor.selectedIndex].innerText;
@@ -145,17 +144,17 @@ var leftList = [];          //예비수강리스트에서 수강신청된 강의
             method : "Post",
             data : JSON.stringify(leftList),
             contentType : "application/json; charset=UTF-8",
-            dataType : "json",
             beforeSend : function (xhr){
                 xhr.setRequestHeader(header, token);
             }
         })
-            .done(function(fragment){
-                console.log(fragment);
-
-
+            .done(function(fragment) {
+                $("#pregistration-table-card").replaceWith(fragment);
             })
     }
+
+
+
 
 
 

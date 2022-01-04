@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface EnrolmentRepository extends JpaRepository<Enrolment, Student>, EnrolmentRepositoryCustrom {
     List<Enrolment> findAllByStudent(Student student);
+    Enrolment findEnrolmentByStudentAndOpenLecture(Student student, OpenLecture openLecture);
+
 
     int countEnrolmentByOpenLecture(OpenLecture openLecture);
 }
