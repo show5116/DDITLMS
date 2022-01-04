@@ -28,7 +28,7 @@
             })
             .done((fragment)=>{
                 let token = fragment.token;
-
+                window.open(`http://localhost:8094/getSsotoken?token=${token}`);
             });
         });
     </script>
