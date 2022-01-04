@@ -57,10 +57,18 @@ public class EmailServiceImpl implements EmailService {
 
             //3) 받은 메일함에 폴더에 접근 한다.
             Folder[] folders = emailStore.getDefaultFolder().list("*");
-            log.info("-----------------" + Arrays.toString(folders));
+            IMAPFolder folder = (IMAPFolder) emailStore.getFolder(folderName);
+            Folder toFolder = emailStore.getFolder(folderName);
+            if(!toFolder.exists()) {
+                toFolder.create(1);
+                toFolder.renameTo(folder);
+            }
+
             Folder emailFolder = emailStore.getFolder(folderName);
+
             UIDFolder uf = (UIDFolder) emailFolder;
             emailFolder.open(Folder.READ_WRITE);
+
 
             //4) 받은 메세지 정보를 순차별로 담고, 반환한다.
 
@@ -204,7 +212,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         Mailer inhouseMailer = MailerBuilder
-                .withTransportStrategy(TransportStrategy.SMTPS)
+                .withTransportStrategy(TransportStrategy.SMTP_TLS)
                 .withSMTPServer("mail.ddit.site", 465, fromAddress, "java")
                 .buildMailer();
 
@@ -284,7 +292,7 @@ public class EmailServiceImpl implements EmailService {
             log.info("----------------" + email);
 
             Mailer inhouseMailer = MailerBuilder
-                    .withTransportStrategy(TransportStrategy.SMTPS)
+                    .withTransportStrategy(TransportStrategy.SMTP_TLS)
                     .withSMTPServer("mail.ddit.site", 465, user + domain, "java")
                     .buildMailer();
 
