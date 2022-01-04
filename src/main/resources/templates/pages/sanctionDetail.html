@@ -70,7 +70,7 @@
             <h2>첨부파일</h2>
             <table>
                 <tr th:each="att:${attFile}">
-                    <th th:text="${att.name}"></th>
+                    <a th:href="@{/download?token={token}(token = ${att.token})}" th:text="${att.name}">다운로드</a>
                 </tr>
             </table>
             <br>

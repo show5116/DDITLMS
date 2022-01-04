@@ -242,7 +242,6 @@ public class SanctnController {
                 token.put("token",fileUtil.makeFileToken(attach.getId(), attach.getOrder()));
                 tokenList.add(token);
             }
-            log.info( "토큰 리스트 결과" + String.valueOf(tokenList));
             model.addAttribute("attFile" , tokenList);
 
             Role role = findDrafter.getRole();
