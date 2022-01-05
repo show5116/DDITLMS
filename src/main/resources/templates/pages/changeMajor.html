@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                         <div class="row col-sm-4 align-self-center">
-                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5">휴학 신청</h4>
+                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5">전과 신청</h4>
                         </div>
                     </div>
 
@@ -25,12 +25,11 @@
                                     <th class="text-center">No.</th>
                                     <th class="text-center">학년도</th>
                                     <th class="text-center">학기</th>
+                                    <th class="text-center">학년</th>
                                     <th class="text-center">전공</th>
                                     <th class="text-center">학적상태</th>
                                     <th class="text-center">신청상태</th>
                                     <th class="text-center">신청일자</th>
-                                    <th class="text-center">확정일자</th>
-                                    <th class="text-center">복학예정</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -38,12 +37,12 @@
                                     <th>1</th>
                                     <td th:text="${#calendars.format(#calendars.createNow(),'yyyy')}">년도</td>
                                     <td th:text="${mon}">2</td>
-                                    <td th:text="${student.major.korean}">전자공학전공</td>
-                                    <td th:text="${student.academicStatus.getKorean()}">재학</td>
-                                    <td th:text="${history.status.getKorean()}">휴학신청</td>
-                                    <td th:text="${tempAbsence.beginsemstr.semeStart}">2021.02.19</td>
                                     <td th:text="${student.grade.getKorean()}">4</td>
-                                    <td th:text="${tempAbsence.endsemstr.getSemeEnd()}">2021-?학기</td>
+                                    <td th:text="${history.major.korean}">전자공학전공</td>
+                                    <td th:text="${student.academicStatus.getKorean()}">재학</td>
+                                    <td th:text="${history.status.korean}">전과신청</td>
+                                    <td th:text="${history.aplicationDate}">2021.02.19</td>
+<!--                                    <td></td>-->
                                 </tr>
                                 </tbody>
                             </table>
@@ -54,33 +53,19 @@
                         </div>
                     </div>
 
-                    <form th:if="${history}==null" id="leave-form" th:action="@{/academic/leavePost}" method="post">
-                        <div class="col-sm-2 row bottom-interval">
-                            <h5>휴학 기간</h5>
-                            <select id="start-date" name="start-date" class="col form-control">
-                                <option th:if="${mon}=='1학기'"
-                                    th:text="${#calendars.format(#calendars.createNow(),'yyyy')}+'-1'" th:value="${#calendars.format(#calendars.createNow(),'yyyy')}+'-1'"></option>
-                                <option
-                                    th:text="${#calendars.format(#calendars.createNow(),'yyyy')}+'-2'" th:value="${#calendars.format(#calendars.createNow(),'yyyy')}+'-2'"></option>
-                                <option th:if="${mon}=='2학기'"
-                                    th:text="${#calendars.format(#calendars.createNow(),'yyyy')}+1+'-1'" th:value="${#calendars.format(#calendars.createNow(),'yyyy')}+1+'-1'"></option>
-                            </select>
-                            <h6 style="text-align: center; margin-top: 8px;">부터</h6>
-                            <select class="col form-control" name="leave-term">
-<!--                                2022년 1학기 ~ -->
-                                <option value="1" selected>1학기</option>
-                                <option value="2">2학기</option>
-                                <option value="3">3학기</option>
-                                <option value="4">4학기</option>
-                            </select>
-                        </div>
+                    <form th:if="${history==null}" id="change-form" th:action="@{/academic/changePost}" method="post">
 
-                        <div class="col-sm row bottom-interval">
-                            <h5>휴학 종류</h5>
-                            <label><input type="radio" name="leave" value="일반휴학" checked >일반휴학</label>
-                            <label><input type="radio" name="leave" value="입대휴학" >입대휴학</label>
-                            <label><input type="radio" name="leave" value="질병휴학" >질병휴학</label>
-                            <label><input type="radio" name="leave" value="기타휴학" >기타휴학</label>
+                            <div class="col-sm-2 row">
+                                <h5>현재 학과</h5>
+                                <input type="text" class="col form-control" id="major-code" th:name="${student.major.id}" th:value="${student.major.korean}" readonly="" data-bs-original-title="" title="">
+                            </div>
+
+                        <div class="col-sm-2 row bottom-interval">
+                            <h5>변경 학과 선택</h5>
+
+                            <select id="change-major" class="col form-control" name="change-term">
+                                <option th:each="major : ${majorList}" th:value="${major?.id}" th:utext="${major.korean}"></option>
+                            </select>
                         </div>
 
                         <div class="col-sm row bottom-interval">
@@ -89,7 +74,7 @@
                         </div>
 
                         <div class="col-sm row">
-                            <button type="button" id="leave-btn" class="col-sm-1 btn btn-outline-secondary-2x txt-secondary m-l-5"
+                            <button type="button" id="change-btn" class="col-sm-1 btn btn-outline-secondary-2x txt-secondary m-l-5"
                                     data-bs-original-title="" title="">신청
                             </button>
                         </div>
@@ -103,34 +88,42 @@
     </div>
     <script th:inline="javascript">
 
-        const leaveForm = document.querySelector("#leave-form");
-        const leaveBtn = document.querySelector("#leave-btn");
+        const changeForm = document.querySelector("#change-form");
+        const changeBtn = document.querySelector("#change-btn");
         const reason = document.querySelector("#reason");
         const cancelBtn = document.querySelector("#cancel-btn");
+        const majorCode = document.querySelector("#major-code");
+        const changeMajor = document.querySelector("#change-major");
 
 
-        if(leaveBtn!=null){
-            leaveBtn.addEventListener("click", function (){
+
+        if(changeBtn!=null){
+
+            changeBtn.addEventListener("click", function (){
                 if(reason.value.length < 20){
                     alert("사유를 20자 이상 적어주세요.");
                     return;
                 }
+                if(majorCode.name == changeMajor.value){
+                    alert("같은 학과로는 전과 신청 할 수 없습니다.");
+                    return;
+                }
                 alert("신청이 완료되었습니다!");
-                leaveForm.submit();
+                changeForm.submit();
             });
         }
 
         if(cancelBtn!=null){
             cancelBtn.addEventListener("click", function (){
                 $.ajax({
-                    url:"/academic/cancel",
+                    url:"/academic/changeCancel",
                     type:"POST",
                     beforeSend: function(xhr){
                         xhr.setRequestHeader(header,token);
                     }
 
                 }).done(function (){
-                    location.href="/academic/leave";
+                    location.href="/academic/changeMajor";
                 })
             });
         }

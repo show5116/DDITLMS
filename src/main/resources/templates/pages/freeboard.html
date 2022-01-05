@@ -14,59 +14,78 @@
                         <div class="card mb-0">
                             <div class="card-header">
                                 <h5 class="mb-0">자유게시판</h5><a class="f-w-600" href="/community/boardWrite">글쓰기</a>
-                                <div>
-                                    <figure class="easyimage easyimage-full"><img alt="" src="clob:http://localhost:8094/38dad173-f54b-42be-9b65-6f9ad48d70e2" width="489" />
-                                        <figcaption></figcaption>
-                                    </figure>
-                                </div>
                             </div>
                             <div class="card-body p-0">
                                 <div class="taskadd">
-                                    <div class="table-responsive">
+                                    <div class="table-responsive" id="test">
                                         <table class="table">
-                                            <tr>
-                                                <td>
-                                                    <h6 class="task_title_0">No.1</h6>
-                                                    <!--                                                            <p class="project_name_0">General</p>-->
-                                                </td>
-                                                <td>
-                                                    <p class="task_desc_0">이거 제목은 준석이 바보입니다, 준석아 힘내라
-<!--                                                        <i class="fa fa-image"></i>-->
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                             stroke-width="2" stroke-linecap="round"
-                                                             stroke-linejoin="round" class="feather feather-link">
-                                                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                                                        </svg>
-                                                    </p>
-                                                </td>
-                                                <td><p>2021-11-29</p></td>
-                                                <td><p>이인환</p></td>
-                                                <td><p>15</p></td>
-                                            </tr>
                                             <tr th:each="bbs : ${bbsList}" th:id="${bbs.idx}" class="bbsclass">
-                                                <td>
-                                                    <h6 th:text="No.+ ${bbs.idx}" class="task_title_0">Task name</h6>
+                                                <td style="width: 200px;">
+                                                    <h6 th:text="${bbs.idx}" class="task_title_0">Task name</h6>
                                                 </td>
                                                 <td>
-                                                    <!--                                                            <p style="display: inline-block" th:text="${#strings.substringBefore(#strings.substringAfter(bbs.content,'<p>'),'</p>')}" class="task_desc_0"></p>-->
+                                                    <a th:href="@{/community/detailBoard/{idx}(idx=${bbs.idx})}">
                                                     <p style="display: inline-block" th:text="${bbs.title}"
-                                                       class="task_desc_0"></p>
-<!--                                                    <i class="fa fa-image hover-img"></i>-->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                       class="task_desc_0"></p></a>
+
+                                                    <svg th:if="${bbs.atchmnfId!=null}" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                                          class="feather feather-link">
                                                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                                                         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                                                     </svg>
+
                                                 </td>
                                                 <td><p th:text="${#strings.substring(bbs.bbsDate,0,10)}"></p></td>
                                                 <td><p th:text="${bbs.member.name}">ㅋㅋㅋ</p></td>
                                                 <td><p th:text="${bbs.bbsCnt}">해야됨 카운트</p></td>
                                             </tr>
                                         </table>
+                                        <br />
+                                        <div class="text-center"
+                                             style="text-align: center; margin: 0 auto; display:inline-block; float:center;">
+                                            <div class="text-center">
+                                                <nav aria-label="Page navigation">
+                                                    <ul class="pagination pagination-sm" id="pageNation">
+                                                        <li th:if="${page.isPrev()}" class="page-item">
+                                                            <a th:value="@{/community/replaceBoard?page={page}(page = ${page.getStartPage()-1})}"
+                                                               class="page-link" th:onclick="paging(this);" style="cursor:pointer;">First</a>
+                                                        </li>
+                                                        <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                                class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
+
+                                                        <li th:if="${page.isPrev()}" class="page-item"><a
+                                                                th:value="@{/community/replaceBoard?page={page}(page = ${page.getCurPage()-1})}"
+                                                                class="page-link" th:onclick="paging(this);"
+                                                                style="cursor:pointer;">Prev</a></li>
+                                                        <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                                class="page-link">Prev</a></li>
+
+                                                        <li class="page-item"
+                                                            th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
+                                                            <a th:value="@{/community/replaceBoard?page={page}(page = ${index.current-1})}"
+                                                               th:text="${num}"
+                                                               class="page-link" th:onclick="paging(this);" style="cursor:pointer;">1</a>
+                                                        </li>
+                                                        <li th:if="${page.isNext()}" class="page-item"><a
+                                                                th:value="@{/community/replaceBoard?page={page}(page = ${page.getCurPage()+1})}"
+                                                                class="page-link" th:onclick="paging(this);"
+                                                                style="cursor:pointer;">Next</a></li>
+                                                        <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                                class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
+
+                                                        <li th:if="${page.isNext()}" class="page-item"><a
+                                                                th:value="@{/community/replaceBoard?page={page}(page = ${page.getEndPage()-1})}"
+                                                                class="page-link" th:onclick="paging(this);"
+                                                                style="cursor:pointer;">Last</a></li>
+                                                        <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                                class="page-link">Last</a></li>
+                                                    </ul>
+                                                </nav>
+                                                <br>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -78,41 +97,8 @@
     </div>
 
     <script th:inline="javascript">
-        const bbsClass = document.querySelectorAll(".bbsclass");
-        bbsClass.forEach(bbs => targetBbs(bbs));
         const hoverImgs = document.querySelectorAll(".hover-img");
         hoverImgs.forEach(hoverImg => hoverEvent(hoverImg));
-
-        function targetBbs(target) {
-            target.addEventListener("click", function (event) {
-                console.log(event.currentTarget.id);
-                targetId = event.currentTarget.id;
-                const params = {
-                    targetId: targetId
-                };
-                $.ajax({
-                    url: "/community/detailBoard/"+targetId,
-                    data: params,
-                    type: "post",
-                    // json 데이터타입 해줘야 됨.
-                    dataType: "json",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    }
-                }).done(function (response) {
-                    console.log("성공");
-                    console.log("아이디 : " + targetId);
-                    console.log("몰라" + response.idx);
-                    console.log(response);
-                    location.href = "/community/detailBoard/" + targetId;
-
-
-                }).fail(function () {
-                    console.log("실패");
-                })
-            });
-        }
-
 
         function hoverEvent(hoverImg) {
             hoverImg.addEventListener("mouseover", function (event) {
@@ -120,6 +106,24 @@
 
             });
         }
+
+
+        function paging(id) {
+
+            let url = id.getAttribute("value");
+            console.log(url);
+
+            $.ajax({
+                type: "GET",
+                url: url ,
+            }).done(function (fragment) {
+
+                $("#test").replaceWith(fragment);
+
+            });
+
+        }
+
 
 
     </script>

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +47,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctn.setSanctnWritngde(now);
         sanctn.setSanctnUpdde(endDate);
         sanctn.setStatus(SanctnProgress.PROGRESS);
+        sanctn.setAtchmnflId(attFile);
         Sanctn savedSanctn = sanctnRepository.save(sanctn);
 
         //결재라인 저장 , 일단 다 때려박아서 작성, 나중에 리팩토링 대상!
@@ -122,7 +124,7 @@ public class SanctnServiceImpl implements SanctnService {
     //민원 신청, 우선은 휴학신청만 구현, 나중에는 파라미터 값을 이용해서 해당하는 민원 서식 신청 하도록 구현 할 것!
     @Transactional
     @Override
-    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long complimentId, String complimentType) {
+    public void saveComplaint(Docform docform, Long drafter, String sanctnCn, List<Long> userNumber, Long complimentId, String complimentType, Long fileId) {
 
         String complainant = MemberUtil.getLoginMember().getName();
         String compId = String.valueOf(complimentId);
@@ -138,6 +140,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctn.setSanctnWritngde(now);
         sanctn.setSanctnUpdde(endDate);
         sanctn.setStatus(SanctnProgress.PROGRESS);
+        sanctn.setAtchmnflId(fileId);
         Sanctn savedSanctn = sanctnRepository.save(sanctn);
 
         // 민원 결재선 저장(신청자 본인)
@@ -297,6 +300,19 @@ public class SanctnServiceImpl implements SanctnService {
         return Optional.of(sanctnDTO);
     }
 
+    @Override
+    public List<SanctnDTO> showScholarshipApply(Long userNumber) {
 
+        List<Long> scholarshipId = sanctnRepository.findScholarshipId(userNumber);
+
+        List<SanctnDTO> sanctnDTOS = new ArrayList<>();
+
+        for (Long aLong : scholarshipId) {
+            SanctnDTO sanctnDTO = sanctnRepository.showScholarshipApplyList(aLong);
+            sanctnDTOS.add(sanctnDTO);
+        }
+        return sanctnDTOS;
+
+    }
 }
 

@@ -66,6 +66,15 @@
                 <text id="contents" th:utext="${details.sanctnCn}">본문 내용 쭉쭉~~~~~~~</text>
             </div>
         </div>
+        <div>
+            <h2>첨부파일</h2>
+            <table>
+                <tr th:if="!${att.name.toString().equals('null.null')}" th:each="att:${attFile}">
+                    <a th:href="@{/download?token={token}(token = ${att.token})}" th:text="${att.name}">다운로드</a>
+                </tr>
+            </table>
+            <br>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead class="bg-success">
@@ -279,7 +288,7 @@
                 <input type="number" th:value="${id}" id="id">
             </div>
             <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
-                <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
+                <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id="comId">
             </div>
             <br><br>
         </div>
@@ -312,7 +321,7 @@
                     <input type="number" th:value="${id}" id="id">
                 </div>
                 <div th:if="${compliment.major_nm_kr != null}" th:each="detail : ${details}" style="display:none">
-                    <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id ="comId">
+                    <input type="text" th:value="${#strings.arraySplit(detail.sanctnSj,'$')[1]}" id="comId">
                 </div>
                 <br><br>
             </div>
@@ -337,7 +346,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/approval",
+                url: "/sanctn/approval",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -348,7 +357,7 @@
                 },
                 success: function (data) {
 
-                    document.write(data);
+                    location.reload();
                     opener.location.reload();
 
                 },
@@ -373,7 +382,7 @@
            $.ajax({
 
                 type: "POST",
-                url: "/reject",
+                url: "/sanctn/reject",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -384,7 +393,7 @@
                 },
                 success: function (data) {
 
-                    document.write(data);
+                    location.reload();
                     opener.location.reload();
 
                 },
@@ -392,7 +401,6 @@
 
         })
 }
-
         let btnLastApproval = document.querySelector("#btnLastApproval");
 
         if(btnLastApproval != null) {
@@ -409,7 +417,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/finalApproval",
+                url: "/sanctn/finalApproval",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -420,7 +428,7 @@
                 },
                 success: function (data) {
 
-                    document.write(data);
+                    location.reload();
                     opener.location.reload();
 
                 },
@@ -428,7 +436,6 @@
 
         })
 }
-
         let btnLastCompliment = document.querySelector("#btnLastCompliment");
 
         if(btnLastCompliment != null) {
@@ -446,7 +453,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/finalCompliment",
+                url: "/sanctn/finalCompliment",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -458,7 +465,7 @@
                 },
                 success: function (data) {
 
-                    document.write(data);
+                    location.reload();
                     opener.location.reload();
 
                 },
@@ -484,7 +491,7 @@
           $.ajax({
 
                 type: "POST",
-                url: "/rejectCompliment",
+                url: "/sanctn/rejectCompliment",
                 data: {
                     "opinion": opinion,
                     "userNumber": userNumber,
@@ -496,7 +503,7 @@
                 },
                 success: function (data) {
 
-                    document.write(data);
+                    location.reload();
                     opener.location.reload();
 
                 },
@@ -504,8 +511,6 @@
 
         })
 }
-
-
     </script>
 </th:block>
 </html>

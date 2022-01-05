@@ -56,7 +56,7 @@
     </div>
 </div>
     <div class="email-wrapper">
-        <form class="theme-form" th:action="@{|/writeMail?${_csrf.parameterName}=${_csrf.token}|}" th:object="${dto}"
+        <form class="theme-form" th:action="@{|/mail/write?${_csrf.parameterName}=${_csrf.token}|}" th:object="${dto}"
               method="post" id="dto" enctype=multipart/form-data>
             <div class="form-group">
                 <label class="col-form-label pt-0" for="exampleInputEmail1">받는사람</label>
@@ -92,9 +92,7 @@
 <script th:inline="javascript">
 
 CKEDITOR.replace('text-box');
- /*<![CDATA[*/
-          let url = tempMail? /*[[ ${_csrf.parameterName} = ${_csrf.token} ]]*/
-          /*]]*/
+
 function btnSubmit() {
 
         document.querySelector("#dto").submit();
@@ -116,7 +114,6 @@ function btnTempSubmit() {
                 },
             });
 
-<!--        document.querySelector("#tempDto").submit();-->
      }
 
 

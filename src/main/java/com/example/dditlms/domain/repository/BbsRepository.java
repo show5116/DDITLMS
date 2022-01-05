@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface BbsRepository extends JpaRepository<Bbs, Integer> {
+public interface BbsRepository extends JpaRepository<Bbs, Integer>, BbsRepositoryCustom {
     Optional<Bbs> findByIdx(Long idx);
-    Optional<List<Bbs>> findAllByCategory(BoardCategory boardCategory);
+    Optional<List<Bbs>> findAllByCategoryOrderByBbsDateDesc(BoardCategory boardCategory);
 
 }

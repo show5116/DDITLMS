@@ -7,7 +7,7 @@
             <h6>강의            </h6>
         </div>
     </li>
-    <li class="dropdown"><a class="nav-link menu-title link-nav" href="#"><i data-feather="airplay"></i><span>온라인 교육</span></a></li>
+    <li class="dropdown"><a id="online-lecture" class="nav-link menu-title link-nav"><i data-feather="airplay"></i><span>온라인 교육</span></a></li>
     <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="check-square"></i><span>수강 신청</span></a>
         <ul class="nav-submenu menu-content">
             <li><a href="/signUpSearch" th:href="@{/signUpSearch}">수강 검색</a></li>
@@ -47,5 +47,22 @@
             </li>
         </ul>
     </li>
+    <script>
+        const onlineLecture = document.querySelector("#online-lecture");
+        onlineLecture.addEventListener("click",()=>{
+            $.ajax({
+                url: "/ssotoken",
+                method: "Post",
+                dataType: "json",
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header,token);
+                }
+            })
+                .done((fragment)=>{
+                    let token = fragment.token;
+                    window.open(`http://localhost:8094/getSsotoken?token=${token}`);
+                });
+        });
+    </script>
 </th:block>
 </html>

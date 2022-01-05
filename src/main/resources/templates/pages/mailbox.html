@@ -154,7 +154,7 @@
         var _left = Math.ceil((window.screen.width - _width) / 2);
         var _top = Math.ceil((window.screen.height - _height) / 2);
 
-        window.open("/mailView?id=" + fIds + "&box=" + sIds, 'popup-test', 'width=' + _width + ', height=' + _height + ', left=' + _left +
+        window.open("/mail/mailView?id=" + fIds + "&box=" + sIds, 'popup-test', 'width=' + _width + ', height=' + _height + ', left=' + _left +
             ', top=' + _top)
 
         return false;
@@ -169,13 +169,12 @@
         var _left = Math.ceil((window.screen.width - _width) / 2);
         var _top = Math.ceil((window.screen.height - _height) / 2);
 
-        window.open("/writeMail", 'popup-test', 'width=' + _width + ', height=' + _height + ', left=' + _left +
+        window.open("/mail/write", 'popup-test', 'width=' + _width + ', height=' + _height + ', left=' + _left +
             ', top=' + _top)
 
         return false;
 
     })
-
 
     function mailBox(mailName) {
 
@@ -184,7 +183,7 @@
       $.ajax({
 
                 type: "GET",
-                url: "/mailBox",
+                url: "/mail/mailBox",
                 data: {
                     "mailName": boxName
                 },

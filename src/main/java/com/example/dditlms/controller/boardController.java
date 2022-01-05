@@ -1,8 +1,12 @@
 package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.common.BoardCategory;
+import com.example.dditlms.domain.dto.BbsDTO;
+import com.example.dditlms.domain.dto.PageDTO;
+import com.example.dditlms.domain.entity.Attachment;
 import com.example.dditlms.domain.entity.Bbs;
 import com.example.dditlms.domain.entity.Member;
+import com.example.dditlms.domain.repository.AttachmentRepository;
 import com.example.dditlms.domain.repository.BbsRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.util.FileUtil;
@@ -10,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,29 +39,62 @@ public class boardController {
 
     private final FileUtil fileUtil;
     private final BbsRepository bbsRepository;
+    private final AttachmentRepository attachmentRepository;
 
 
     @GetMapping("/community/freeboard")
-    public ModelAndView freeboard(ModelAndView mav){
+    public ModelAndView freeboard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
 
-        Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategory(BoardCategory.FREEBOARD);
-        List<Bbs> bbsList = bbsWrapper.orElse(null);
-        for (Bbs bbs : bbsList){
-            String content = bbs.getContent();
-            logger.info("<img>여부 : " + content);
-            if(content.indexOf("<img") == -1){
-                logger.info("이미지를 안넣은거야");
-            } else {
-                logger.info("이미지를 넣은거야 : " + content.indexOf("<img"));
-                logger.info("\n이미지만 출력 : \n : "
-                        + content.substring(content.indexOf("<img"), content.indexOf("/>")+2));
-            }
+//        Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategoryOrderByBbsDateDesc(BoardCategory.FREEBOARD);
+//        List<Bbs> bbsList = bbsWrapper.orElse(null);
+
+        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
+        Long i = 1L;
+        for (BbsDTO result : results) {
+            result.setTotal(i);
+            i++;
         }
 
-        mav.addObject("bbsList", bbsList);
-        mav.setViewName("/pages/freeboard");
+        mav.addObject("bbsList", results);
+        mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
+//        mav.addObject("bbsList", bbsList);
+        mav.setViewName("pages/freeboard");
         return mav;
     }
+
+    @GetMapping("/community/replaceBoard")
+    public ModelAndView replaceBoard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
+
+        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
+
+        Long i = 1L;
+        for (BbsDTO result : results) {
+            result.setTotal(i);
+            i++;
+        }
+
+        mav.addObject("bbsList", results);
+        mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
+        mav.setViewName("pages/freeboard::#test");
+        return mav;
+    }
+
+
+
+//        for (Bbs bbs : bbsList){
+//            String content = bbs.getContent();
+//            logger.info("<img>여부 : " + content);
+//            if(content.indexOf("<img") == -1){
+//                logger.info("이미지를 안넣은거야");
+//            } else {
+//                logger.info("이미지를 넣은거야 : " + content.indexOf("<img"));
+//                logger.info("\n이미지만 출력 : \n : "
+//                        + content.substring(content.indexOf("<img"), content.indexOf("/>")+2));
+//            }
+//        }
+
+
+
 
     @GetMapping("/community/boardWrite")
     public ModelAndView boardWrite(ModelAndView mav){
@@ -111,7 +151,6 @@ public class boardController {
                                     @PathVariable(value = "targetId") String idx,
                                     HttpServletRequest request, HttpServletResponse response){
 
-        logger.info(idx);
         Member member = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
@@ -123,6 +162,18 @@ public class boardController {
         Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(Long.parseLong(idx));
         Bbs bbs = bbsWrapper.orElse(null);
 
+        List<Attachment> attachList = attachmentRepository.findAllById(bbs.getAtchmnflId());
+        List<Map<String,String>> tokenList = new ArrayList<>();
+        for(Attachment attach : attachList) {
+            Map<String,String> token = new HashMap<>();
+            token.put("name",attach.getOriginName()+attach.getExtension());
+            token.put("token",fileUtil.makeFileToken(attach.getId(), attach.getOrder()));
+            tokenList.add(token);
+        }
+        BbsDTO bbsDTO = bbs.toDTO();
+        bbsDTO.setTokenList(tokenList);
+
+        Member writer = bbs.getMember();
         Long cnt = bbs.getBbsCnt();
 
         String code = member + idx;
@@ -158,12 +209,13 @@ public class boardController {
             response.addCookie(newCookie);
         }
 
-    ////////////////////////////////
+        if((writer.getUserNumber()).equals(member.getUserNumber())){
+            mav.addObject("flag", "true");
+        } else {
+            mav.addObject("flag", "false");
+        }
 
-        logger.info(String.valueOf(bbs.getCategory()));
-
-
-        mav.addObject("bbs", bbs);
+        mav.addObject("bbs", bbsDTO);
         mav.setViewName("pages/detailBoard");
         return mav;
     }
@@ -172,12 +224,26 @@ public class boardController {
     @PostMapping("/community/detailBoard/{targetId}")
     public String detailBoardPost(@RequestParam Map<String, Object> paramMap
                             ,@PathVariable(value = "targetId") String idx){
-//        logger.info("idx : " + paramMap.get("targetId"));
+
         logger.info("idx : " + idx);
 
         //replace할거 아니면 redirect해야지
         JSONObject jsonObject = new JSONObject();
+
         jsonObject.put("idx", idx);
         return jsonObject.toJSONString();
+    }
+
+    @PostMapping("/community/delete")
+    public String deleteBoard(@RequestParam Map<String, Object> map){
+        Long boardId = Long.parseLong(String.valueOf(map.get("boardId")));
+
+        Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(boardId);
+        Bbs bbs = bbsWrapper.orElse(null);
+        logger.info("찾은거 : " + bbs);
+        bbsRepository.delete(bbs);
+
+
+        return "/pages/freeboard";
     }
 }

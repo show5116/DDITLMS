@@ -43,13 +43,13 @@
                                             <th class="text-center">학부(과)</th>
                                             <th class="text-center">전공</th>
                                             <th class="text-center">학적상태</th>
+                                            <th class="text-center">복학예정</th>
                                             <th class="text-center">신청일자</th>
                                             <th class="text-center">확정일자</th>
                                             <th class="text-center">학년</th>
                                             <th class="text-center">학적변동</th>
                                             <th class="text-center">변동결과</th>
                                             <th class="text-center">사유</th>
-                                            <th class="text-center">복학예정</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -58,13 +58,13 @@
                                             <td th:text="${history.major.parent.korean}">전기,전자,통신공학부</td>
                                             <td th:text="${history.major.korean}">전자공학전공</td>
                                             <td th:text="${student.academicStatus.korean}">수료</td>
+                                            <td th:text="${history.tempAbsence.endsemstr.year}">2021</td>
                                             <td th:text="${history.aplicationDate}">2021.02.19</td>
                                             <td th:text="${history.changeDate}">2021.02.19</td>
                                             <td th:text="${history.grade.korean}">4</td>
                                             <td th:text="${history.status.korean}">휴,복학,전과</td>
                                             <td th:text="${history.resultStatus.korean}">승인,대기,반려</td>
                                             <td th:text="${history.note}">기타</td>
-                                            <td th:text="${history.tempAbsence.endsemstr.year}">2021</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -77,9 +77,7 @@
                                 <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                     <div class="row col-sm-12 align-self-center">
                                         <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">성적이력</h4>
-<!--                                        <span th:text="${#lists.size(enrolments)}+건" class="col text-muted p-l-10 m-t-10">??건</span>-->
                                         <div class="col-sm-4 justify-content-end text-end">
-<!--                                            <button type="button" class="btn btn-secondary" data-bs-original-title="" title="">출력</button>-->
                                             <a class="f-w-600" href="javascript:void(0)" data-bs-original-title="" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-printer me-2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>Print</a>
                                         </div>
                                     </div>
@@ -97,24 +95,22 @@
                                             <th class="text-center">교과목명</th>
                                             <th class="text-center">담당교수</th>
                                             <th class="text-center">이수구분</th>
-                                            <th class="text-center">학점</th>
+                                            <th class="text-center">이수학점</th>
                                             <th class="text-center">등급</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr th:each="enrolment,index : ${enrolments}" class="text-center">
+                                        <tr th:if="${enrolment.openLecture.yearSeme.year!=yearseme}" th:each="enrolment,index : ${enrolments}" class="text-center">
                                             <th th:text="${index.index+1}">61</th>
                                             <td th:text="${enrolment.openLecture.yearSeme.year}">2014</td>
-<!--                                            <td th:text="${enrolment.grade.korean}">1</td>-->
                                             <td>1</td>
-<!--                                            <td th:text="${enrolment.major.korean}">컴퓨터공학과</td>-->
                                             <td>컴퓨터공학과</td>
                                             <td th:text="${enrolment.openLecture.id}">IFE111</td>
                                             <td th:text="${enrolment.openLecture.subjectCode.name}">기초전자실습</td>
                                             <td th:text="${enrolment.openLecture.professorNo.member.name}">박종윤</td>
-                                            <td th:text="${enrolment.openLecture.lectureSection}">학부필</td>
-                                            <td th:text="${enrolment.pnt}">4.0</td>
-                                            <td>C+</td>
+                                            <td th:text="${enrolment.openLecture.lectureSection.korean}">학부필</td>
+                                            <td th:text="${enrolment.pnt}">3학점</td>
+                                            <td th:text="${enrolment.avgScore}">C+</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -131,7 +127,6 @@
     </div>
 
     <script th:inline="javascript">
-
 
     </script>
 </th:block>

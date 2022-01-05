@@ -101,7 +101,8 @@ public class AcademicServiceImpl implements AcademicService {
         userNumber.add(approver);
         Long complimentId = history.getId();
         String complimentType = "휴학신청 : ";
-        sanctnService.saveComplaint(docform, drafter, reason, userNumber,complimentId, complimentType);
+        Long fileId = null;
+        sanctnService.saveComplaint(docform, drafter, reason, userNumber,complimentId, complimentType, fileId);
     }
 
     @Transactional
@@ -171,6 +172,8 @@ public class AcademicServiceImpl implements AcademicService {
 
         Student student = MemberUtil.getLoginMember().getStudent();
 
+        if(map.get("hist").equals("tempAbsence")){
+
         Optional<History> historyWrapper = histRepository.findByStudentAndStatusAndResultStatus(student, AcademicStatus.TAKEABREAK, ResultStatus.STANDBY);
         History history = historyWrapper.orElse(null);
 
@@ -178,6 +181,13 @@ public class AcademicServiceImpl implements AcademicService {
         TempAbsence tempAbsence = tempAbsenceWrapper.orElse(null);
         tempAbsenceRepository.delete(tempAbsence);
         histRepository.delete(history);
+
+        } else if(map.get("hist").equals("change")) {
+            Optional<History> historyWrapper = histRepository.findByStudentAndStatusAndResultStatus(student, AcademicStatus.CHANGEMAJOR, ResultStatus.STANDBY);
+            History history = historyWrapper.orElse(null);
+            histRepository.delete(history);
+
+        }
 
     }
 
@@ -200,6 +210,31 @@ public class AcademicServiceImpl implements AcademicService {
         tempAbsence.setStatus(ResultStatus.COMPANION);
 
         tempAbsenceRepository.save(tempAbsence);
+
+    }
+
+
+    @Transactional
+    @Override
+    public void majorChangeHist(Map<String, Object> map){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        Student student = MemberUtil.getLoginMember().getStudent();
+
+        String reason = request.getParameter("reason");
+        String changeTerm = request.getParameter("change-term");
+        logger.info("reson : " + reason);
+
+        History history = History.builder()
+                .aplicationDate(new Date())
+                .status(AcademicStatus.CHANGEMAJOR)
+                .resultStatus(ResultStatus.STANDBY)
+                .note(reason)
+                .student(student)
+                .grade(student.getGrade())
+                .major(student.getMajor())
+                .build();
+
 
     }
 

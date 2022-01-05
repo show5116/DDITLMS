@@ -51,6 +51,7 @@
                 autoProcessQueue: false,
                 uploadMultiple: true,
                 addRemoveLinks: true,
+                parallelUploads: 5,
                 maxFiles: 5,
                 headers: {
                     'X-CSRF-Token': $('meta[name="_csrf"]').attr('content')
@@ -61,7 +62,7 @@
                         console.dir(editor4);
                         e.preventDefault();
                         e.stopPropagation();
-                        form.processQueue();
+                        form.processQueue();  //최대 허용개수보다 많으면 제어
                     });
 
                     this.on("sendingmultiple", (data, xhr, formData) => {
@@ -80,6 +81,10 @@
                        // location.href="/community/detailBoard?idx="+response.idx;
                        location.href="/community/detailBoard/"+targetId;
                        console.log("아");
+                    });
+                    this.on("errormultiple", function(files, response) {
+                        // Gets triggered when there was an error sending the files.
+                        // Maybe show form again, and notify user of error
                     });
                 },
             }
