@@ -91,10 +91,10 @@ public class MailController {
 
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.println("<script>window.close(); opener.location.reload(); </script>");
         out.flush();
 
-        return "redirect:/mail";
+        return "/pages/mailbox";
     }
     
     @GetMapping("/mail/reply/{id}")
@@ -136,7 +136,7 @@ public class MailController {
 
         response.setContentType("text/html; charset=euc-kr");
         PrintWriter out = response.getWriter();
-        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.println("<script>window.close(); opener.location.reload();</script>");
         out.flush();
 
         return "/mail";
