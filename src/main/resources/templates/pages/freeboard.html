@@ -11,7 +11,8 @@
                     <div class="ps-0">
                         <div class="card mb-0">
                             <div class="card-header">
-                                <h5 th:text="${boardCategory.korean}" class="mb-0">자유게시판</h5><a class="f-w-600" th:href="@{/community/{mapping}/boardWrite(mapping=${mapping})}">글쓰기</a>
+                                <h5 th:text="${boardCategory.korean}" class="mb-0">자유게시판</h5>
+                                <a class="f-w-600" style="float: right; margin-right: 50px;" th:href="@{/community/{mapping}/boardWrite(mapping=${mapping})}">글쓰기</a>
                             </div>
                             <div class="card-body p-0">
                                 <div class="taskadd">
@@ -41,6 +42,9 @@
                                             </tr>
                                         </table>
                                         <br />
+
+                                        <div style="display: flex; justify-content: center;">
+<!---->
                                         <div class="text-center"
                                              style="text-align: center; margin: 0 auto; display:inline-block; float:center;">
                                             <div class="text-center">
@@ -83,6 +87,8 @@
                                                 </nav>
                                                 <br>
                                             </div>
+                                        </div>
+                                            <!---->
                                         </div>
                                     </div>
                                 </div>

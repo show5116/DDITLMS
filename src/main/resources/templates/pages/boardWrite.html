@@ -63,15 +63,34 @@
                 init: function () {
                     const form = this;
                     boardSubmit.addEventListener("click", (e) => {
+                if(dzPreview!=null){
                         console.dir(editor4);
-                    if(dzPreview!=null){
                         e.preventDefault();
                         e.stopPropagation();
                         form.processQueue();  //최대 허용개수보다 많으면 제어
-                    } else {
-                        console.log("aaa");
-
-                    }
+                } else {
+                    const formData = new FormData();
+                    formData.append("_csrf",token);
+                    formData.append("_csrf_header",header);
+                    formData.append("content", editor.getData());
+                    formData.append("title", title.value);
+                    $.ajax({
+                        url: "/community/"+mappingId.value+"/boardWritePost",
+                        type: "POST",
+                        data: formData,
+                        dataType: "json",
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function (xhr){
+                            xhr.setRequestHeader(header,token);
+                        }
+                    }).done(function (response){
+                        console.log(response.idx);
+                        location.href="/community/"+mappingId.value+"/detailBoard/"+response.idx;
+                        console.log("easdasfwrew")
+                    })
+                    console.log(formData);
+                }
                     });
                         this.on("sendingmultiple", (data, xhr, formData) => {
                             console.log(CKEDITOR.instances.editor4.getData());
@@ -88,11 +107,16 @@
                            location.href="/community/"+mappingId.value+"/detailBoard/"+targetId;
                         });
                         this.on("errormultiple", function(files, response) {
-                            // Gets triggered when there was an error sending the files.
-                            // Maybe show form again, and notify user of error
+                            console.log("aa");
                         });
                 },
             }
+        // } else {
+        //     boardSubmit.addEventListener("click", function (){
+        //         console.log("ㅁㅁ");
+        //         boardWrite.submit();
+        //     });
+        // }
         //
         // boardSubmit.addEventListener("click", function (){
         //     const inputFiles = document.querySelector(".dz-hidden-input");
