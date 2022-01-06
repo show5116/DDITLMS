@@ -72,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/ssotoken").authenticated()
                 .antMatchers("/ws").authenticated()
                 .antMatchers("/").permitAll()
+                .antMatchers("/android/**").permitAll()
                 .anyRequest().authenticated();
 
         http.sessionManagement()
