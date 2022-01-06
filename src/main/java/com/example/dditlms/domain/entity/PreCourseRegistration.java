@@ -32,6 +32,10 @@ public class PreCourseRegistration {
     @JoinColumn(name = "ESTBL_COURS_CD")
     private OpenLecture lectureCode;
 
+    @Column(name = "PRE_EXIST")
+    private String existence;
+
+
     public PreCourseDTO toPreDto(){
         PreCourseDTO dto = PreCourseDTO.builder()
                 .lectureCode(this.lectureCode.getId())
@@ -40,7 +44,8 @@ public class PreCourseRegistration {
                 .professor(this.lectureCode.getProfessorNo()+"")
                 .lectureSchedule(this.lectureCode.getLectureSchedule())
                 .lectureRoom(this.lectureCode.getLectureId().getId())
-                .subjectCode(this.lectureCode.getSubjectCode().getId()).build();
+                .subjectCode(this.lectureCode.getSubjectCode().getId())
+                .existence(this.existence).build();
         return dto;
     }
 

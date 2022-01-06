@@ -43,7 +43,6 @@
         const editor4 = document.querySelector("#editor4");
         const title = document.querySelector("#title");
         const listBtn = document.querySelector("#list-btn");
-        const dzPreview = document.querySelector("#dz-preview");
         const boardWrite = document.querySelector("#board-write");
         console.log(mappingId.value + "아아");
         var editor = CKEDITOR.replace('editor4');
@@ -63,15 +62,39 @@
                 init: function () {
                     const form = this;
                     boardSubmit.addEventListener("click", (e) => {
-                        console.dir(editor4);
-                    if(dzPreview!=null){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        form.processQueue();  //최대 허용개수보다 많으면 제어
-                    } else {
-                        console.log("aaa");
-
-                    }
+                        const dzPreview = document.querySelector(".dz-preview");
+                        console.log("!ㅁㄴㅇㅁㄴㅇㄹ");
+                        console.log(dzPreview);
+                        if(dzPreview!=null ){
+                        console.log("!@12");
+                        console.log(dzPreview);
+                                console.dir(editor4);
+                                e.preventDefault();
+                                e.stopPropagation();
+                                form.processQueue();  //최대 허용개수보다 많으면 제어
+                        } else {
+                            const formData = new FormData();
+                            formData.append("_csrf",token);
+                            formData.append("_csrf_header",header);
+                            formData.append("content", editor.getData());
+                            formData.append("title", title.value);
+                            $.ajax({
+                                url: "/community/"+mappingId.value+"/boardWritePost",
+                                type: "POST",
+                                data: formData,
+                                dataType: "json",
+                                contentType: false,
+                                processData: false,
+                                beforeSend: function (xhr){
+                                    xhr.setRequestHeader(header,token);
+                                }
+                            }).done(function (response){
+                                console.log(response.idx);
+                                location.href="/community/"+mappingId.value+"/detailBoard/"+response.idx;
+                                console.log("easdasfwrew")
+                            })
+                            console.log(formData);
+                        }
                     });
                         this.on("sendingmultiple", (data, xhr, formData) => {
                             console.log(CKEDITOR.instances.editor4.getData());
@@ -88,11 +111,16 @@
                            location.href="/community/"+mappingId.value+"/detailBoard/"+targetId;
                         });
                         this.on("errormultiple", function(files, response) {
-                            // Gets triggered when there was an error sending the files.
-                            // Maybe show form again, and notify user of error
+                            console.log("aa");
                         });
                 },
             }
+        // } else {
+        //     boardSubmit.addEventListener("click", function (){
+        //         console.log("ㅁㅁ");
+        //         boardWrite.submit();
+        //     });
+        // }
         //
         // boardSubmit.addEventListener("click", function (){
         //     const inputFiles = document.querySelector(".dz-hidden-input");

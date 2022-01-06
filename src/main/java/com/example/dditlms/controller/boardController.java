@@ -175,10 +175,14 @@ public class boardController {
         }
 
         Map<String,MultipartFile> map = multiRequest.getFileMap();
-        long id = fileUtil.uploadFiles(map);
-        if(map.isEmpty()){
+
+        Long id =null;
+        if(!map.isEmpty()){
+            id = fileUtil.uploadFiles(map);
             logger.info("아아아아???");
             logger.info(String.valueOf(id));
+        } else {
+            logger.info("비었나?");
         }
         System.out.println(map);
 

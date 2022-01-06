@@ -10,8 +10,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EnrolmentRepository extends JpaRepository<Enrolment, Student> {
+public interface EnrolmentRepository extends JpaRepository<Enrolment, Student>, EnrolmentRepositoryCustrom {
     List<Enrolment> findAllByStudent(Student student);
-    List<Enrolment> findAllByStudentAndGrade(Student student, Grade grade);
+    Enrolment findEnrolmentByStudentAndOpenLecture(Student student, OpenLecture openLecture);
+
+
     int countEnrolmentByOpenLecture(OpenLecture openLecture);
 }

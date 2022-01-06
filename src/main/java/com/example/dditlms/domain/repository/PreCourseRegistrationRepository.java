@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PreCourseRegistrationRepository  extends JpaRepository<PreCourseRegistration, Long> {
     List<PreCourseRegistration> findByStudentNo(Student studentNo);
-    PreCourseRegistration findByStudentNoAndLectureCode(Student studentNo, OpenLecture lectureCode);
+    Optional<PreCourseRegistration> findByStudentNoAndLectureCode(Student studentNo, OpenLecture lectureCode);
+    int countAllByLectureCode(OpenLecture openLecture);
 }
