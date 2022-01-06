@@ -18,17 +18,10 @@ const majorList = [];
     }
     var  college = topSetting.college;
     college.onchange = function(){
-        var department = topSetting.department;
-        var selectText = college.options[college.selectedIndex].innerText;
         var selectValue = college.options[college.selectedIndex].value;
-
-        if (selectText=='(전체)'){
-            department.options.length=1;
-        }
         $.ajax({
             url : "/signUpSearch/getMajor",
             method:"Post",
-            dataType : "json",
             data : {
                 "selectValue" : selectValue
             },
@@ -37,20 +30,8 @@ const majorList = [];
             }
         })
             .done(function(fragment){
-                var text = fragment.majorList;
-                var value = fragment.majorCode;
-
-                department.options.length = 0;
-                var option = document.createElement('option');
-                option.setAttribute('value','total');
-                option.innerText = '(전체)';
-                department.append(option);
-                for (var i=0; i < text.length; i++){
-                    var option = document.createElement('option');
-                    option.setAttribute('value',value[i]);
-                    option.innerText = text[i];
-                    department.append(option);
-                }
+                console.log(fragment);
+                $("#department").replaceWith(fragment);
                 allAutoSearch();
             })
     }
@@ -88,71 +69,14 @@ const majorList = [];
             })
 
     }
-    function searchYear(){  // 학년도로 검색
-        var selectYear = topSetting.year.options[topSetting.year.selectedIndex].value;
-        var selectSeme = topSetting.semester.options[topSetting.semester.selectedIndex].innerText;
-        $.ajax({
-            url : "/signUpSearch/searchYear",
-            method : "Post",
-            data : {
-                "selectYear" : selectYear,
-                "selectSeme" : selectSeme
-            },
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-            }
-        })
-            .done(function(fragment){
-                $("#list").replaceWith(fragment);
-            })
 
-    }
-    function searchMajor(){
-        var college = topSetting.college.options[topSetting.college.selectedIndex].value;
-        var major = topSetting.department.options[topSetting.department.selectedIndex].innerText;
-        $.ajax({
-            url : "/signUpSearch/searchMajor",
-            method : "Post",
-            data : {
-                "college" : college,
-                "major" : major
-            },
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-            }
-        })
-            .done(function(fragment){
-                $("#list").replaceWith(fragment);
-            })
-    }
-    function searchCollege(){
-        var college = topSetting.college.options[topSetting.college.selectedIndex].value;
-        console.log("=============searchCoellge=============");
-        console.log(college);
-        $.ajax({
-            url : "/signUpSearch/searchCollege",
-            method : "Post",
-            data : {
-                "college" : college
-            },
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-            }
-        })
-            .done(function(fragment){
-                $("#list").replaceWith(fragment);
-            })
-    }
     function allAutoSearch(){
+        console.log("allAutoSearch");
         var searchYear = topSetting.year.options[topSetting.year.selectedIndex].innerText;
         var searchSeme = topSetting.semester.options[topSetting.semester.selectedIndex].innerText;
         var searchCollege = topSetting.college.options[topSetting.college.selectedIndex].value;
-        var searchMajor = topSetting.department.options[topSetting.department.selectedIndex].innerText;
+        var searchMajor = topSetting.department.options[topSetting.department.selectedIndex].value;
         var searchdivision = topSetting.completion.options[topSetting.completion.selectedIndex].value;
-
-        if (searchMajor==="(전체)"){
-            searchMajor = "total";
-        }
 
         $.ajax({
             url : "/signUpSearch/allAutoSearch",

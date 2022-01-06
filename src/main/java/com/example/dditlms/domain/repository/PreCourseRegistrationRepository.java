@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface PreCourseRegistrationRepository  extends JpaRepository<PreCourseRegistration, Long> {
     List<PreCourseRegistration> findByStudentNo(Student studentNo);
     Optional<PreCourseRegistration> findByStudentNoAndLectureCode(Student studentNo, OpenLecture lectureCode);
+    int countAllByLectureCode(OpenLecture openLecture);
 }

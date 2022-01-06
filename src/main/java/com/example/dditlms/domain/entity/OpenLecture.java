@@ -22,7 +22,7 @@ public class OpenLecture {
     private LectureSection lectureSection;
 
     @Column(name = "LCTRE_KND")
-    private Character lectureKind;
+    private String lectureKind;
 
     @Column(name = "LCTRE_NMPR")
     private int peopleNumber;
@@ -58,7 +58,6 @@ public class OpenLecture {
 
     public PreCourseDTO toDto(){
         String lectureClass = "";
-        String college = "";
         int count =0;
         String kind = null;
         if(this.lectureKind.equals("F")){
@@ -78,7 +77,6 @@ public class OpenLecture {
                 .professor(this.professorNo.getMember().getName())
                 .lectureSchedule(this.lectureSchedule)
                 .lectureRoom(this.lectureId.getId())
-                .lectureClass(lectureClass)
                 .lecturedivision(kind)
                 .college(this.getMajorCode().getSelection().getName().split("대학")[0])
                 .applicantsCount(count).build();

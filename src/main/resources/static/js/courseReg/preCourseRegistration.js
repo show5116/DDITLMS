@@ -64,12 +64,13 @@ var subjectCodeList = [];
                 deleteTarget.classList.add("bg-light");
                 const lectureName = document.querySelector(".pre-lecture-name").innerText;
                 swal(lectureName +" 를 취소하시겠습니까?", {
-                        buttons: ["No", "Yes"],
+                        buttons: ["Yes", "No"],
                 }).then((result)=>{
                     if(result == null){
-                    }else if(result == true){
+                        console.log("preTrEvent button Yes click");
                         deletePreRegistration(deleteTarget);
                         deleteTarget.classList.remove("bg-light");
+                    }else if(result == true){
                     }
                 })
             })
@@ -90,10 +91,9 @@ var subjectCodeList = [];
     saveBtn.addEventListener('click',function(){
         console.log("저장버튼 클릭");
         swal("목록을 저장하시겠습니까?", {
-            buttons: ["No", "Yes"],
+            buttons: ["Yes", "No"],
         }).then((result)=>{
             if(result == null){
-            }else if(result == true){
                 savePreRegistration();
                 swal("저장되었습니다.");
             }
@@ -194,6 +194,7 @@ var subjectCodeList = [];
             newTr.setAttribute('class','pre-tr-event');
             newTr.setAttribute('id',id);
             newTr.innerHTML = `
+                <td class="hidden-pre-lecture" style="display: none">${fragment.subjectCode}</td>
                 <td>${fragment.lectureSeme}</td>
                 <td class="pre-lecture-name">${fragment.lectureName}</td>
                 <td>${fragment.professor}</td>
@@ -234,8 +235,10 @@ var subjectCodeList = [];
     }
 
     function deletePreRegistration(deleteTarget){
+        console.log("deletePreRegistration");
+        console.log(deleteTarget);
         const deleteId = deleteTarget.id;
-        console.log(deleteId);
+        const test = deleteTarget.firstChild;
         preLectureList = preLectureList.filter((idx)=> idx !==deleteId);
         subjectCodeList = subjectCodeList.filter((idx)=> idx !== deleteTarget.querySelector(".hidden-pre-lecture").innerText);
         var isContains = originPreLectureList.includes(deleteId);
