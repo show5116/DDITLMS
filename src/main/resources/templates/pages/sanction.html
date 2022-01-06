@@ -158,28 +158,26 @@
                 </div>
                 <div class="card-body">
                     <div class="card-block row">
-                        <div class="col-xs-12 col-lg-12 col-xl-12">
-                            <div class="table-responsive"
-                                 th:each="recentOpinion : ${recentOpinions}">
-                                <table class="table">
-                                    <thead>
-                                    <tr class="text-center table-primary">
-                                        <th scope="col"
-                                            th:text="|${recentOpinion.name} ∘ ${recentOpinion.deptNm} ↻ ${#temporals.format(recentOpinion.sanctnDate, 'yy-MM-dd HH:mm')} |">
-                                            홍길동 ∘ 교무처
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr class="text-center table-light">
-                                        <th scope="row" th:text="${recentOpinion.sanctnOpinion}">
-                                            첨부파일이 빠져 있네요
-                                        </th>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <hr>
-                            </div>
+                        <div class="table-responsive"
+                             th:each="recentOpinion : ${recentOpinions}">
+                            <table class="table">
+                                <thead>
+                                <tr class="text-center table-primary">
+                                    <th scope="col"
+                                        th:text="|${recentOpinion.name} ∘ ${recentOpinion.deptNm} ↻ ${#temporals.format(recentOpinion.sanctnDate, 'yy-MM-dd HH:mm')} |">
+                                        홍길동 ∘ 교무처
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center table-light">
+                                    <th scope="row" th:text="${recentOpinion.sanctnOpinion}">
+                                        첨부파일이 빠져 있네요
+                                    </th>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <hr>
                         </div>
                     </div>
                 </div>
@@ -290,18 +288,6 @@
             });
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
