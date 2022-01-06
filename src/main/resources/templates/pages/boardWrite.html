@@ -12,16 +12,14 @@
                 <div class="card-body">
                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                         <div class="row col-sm-4 align-self-center">
-<!--                            멤버 분류에 따라서 공지와 게시판 나눔 sec 시큐리티로 나눔-->
-<!--                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">학사 공지</h4>-->
-                            <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">자유 게시판</h4>
+                            <h4 th:text="${boardCategory.korean}" class="col f-w-700 p-l-10 m-b-0 m-t-5  ">자유 게시판</h4>
                         </div>
                     </div>
                     <form enctype="multipart/form-data" method="post" id="board-write">
                         <div class="mb-2 row justify-content-around">
                             <div class="col-sm row">
-                <!--                <label class="col-sm-3 align-self-center bookmark">제목</label>-->
                                 <h5>제목</h5>
+                                <input type="hidden" id="mappingId" th:value="${mapping}">
                                 <input type="text" id="title" name="title" class="col form-control">
                             </div>
                         </div>
@@ -41,13 +39,19 @@
 
     <script th:inline="javascript">
         const boardSubmit = document.querySelector("#board-submit");
+        const mappingId = document.querySelector("#mappingId");
         const editor4 = document.querySelector("#editor4");
         const title = document.querySelector("#title");
         const listBtn = document.querySelector("#list-btn");
+        const dzPreview = document.querySelector("#dz-preview");
         const boardWrite = document.querySelector("#board-write");
+        console.log(mappingId.value + "아아");
         var editor = CKEDITOR.replace('editor4');
+
+
+
             Dropzone.options.attachdropzone = {
-                url: "/community/boardWritePost.do",
+                url: "/community/"+mappingId.value+"/boardWritePost",
                 autoProcessQueue: false,
                 uploadMultiple: true,
                 addRemoveLinks: true,
@@ -60,47 +64,48 @@
                     const form = this;
                     boardSubmit.addEventListener("click", (e) => {
                         console.dir(editor4);
+                    if(dzPreview!=null){
                         e.preventDefault();
                         e.stopPropagation();
                         form.processQueue();  //최대 허용개수보다 많으면 제어
-                    });
+                    } else {
+                        console.log("aaa");
 
-                    this.on("sendingmultiple", (data, xhr, formData) => {
-                        console.log(CKEDITOR.instances.editor4.getData());
-                        console.log(editor.getData());
-                        // formData.append("content", document.querySelector(".ck_contents_ltr").innerHTML);
-                        formData.append("content", editor.getData());
-                        formData.append("title", title.value);
+                    }
                     });
+                        this.on("sendingmultiple", (data, xhr, formData) => {
+                            console.log(CKEDITOR.instances.editor4.getData());
+                            console.log(editor.getData());
+                            formData.append("content", editor.getData());
+                            formData.append("title", title.value);
+                        });
 
-                    this.on("successmultiple",(files,response)=>{
-                       console.log(response.idx);
-                       console.log(response);
-                       const targetId = response.idx;
+                        this.on("successmultiple",(files,response)=>{
+                           console.log(response.idx);
+                           console.log(response);
+                           const targetId = response.idx;
 
-                       // location.href="/community/detailBoard?idx="+response.idx;
-                       location.href="/community/detailBoard/"+targetId;
-                       console.log("아");
-                    });
-                    this.on("errormultiple", function(files, response) {
-                        // Gets triggered when there was an error sending the files.
-                        // Maybe show form again, and notify user of error
-                    });
+                           location.href="/community/"+mappingId.value+"/detailBoard/"+targetId;
+                        });
+                        this.on("errormultiple", function(files, response) {
+                            // Gets triggered when there was an error sending the files.
+                            // Maybe show form again, and notify user of error
+                        });
                 },
             }
-
-        boardSubmit.addEventListener("click", function (){
-            const inputFiles = document.querySelector(".dz-hidden-input");
-            console.log(inputFiles.files);
-
-            const form = new FormData(document.getElementById('board-write'));
-            console.log(form);
-            var keys = form.keys();
-            console.log(keys);
-        });
+        //
+        // boardSubmit.addEventListener("click", function (){
+        //     const inputFiles = document.querySelector(".dz-hidden-input");
+        //     console.log(inputFiles.files);
+        //
+        //     const form = new FormData(document.getElementById('board-write'));
+        //     console.log(form);
+        //     var keys = form.keys();
+        //     console.log(keys);
+        // });
 
         listBtn.addEventListener("click", function (){
-            location.href = "/community/freeboard"
+            location.href = "/community/"+mappingId.value;
         })
 
 

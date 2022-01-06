@@ -22,11 +22,11 @@
     <li class="dropdown"><a class="nav-link menu-title link-nav" href="/mail"><i data-feather="mail"></i><span>메일</span></a></li>
     <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="book-open"></i><span>게시판</span></a>
         <ul class="nav-submenu menu-content">
-            <li><a href="/community/general">일반 공지</a></li>
-            <li><a href="/community/scholarship">장학 공지</a></li>
-            <li><a href="/community/bachelor">학사 공지</a></li>
-            <li><a href="/community/major">학과 공지</a></li>
-            <li><a href="/community/freeboard">자유 게시판</a></li>
+            <li><a th:href="@{/community/{mapping}(mapping='general')}">일반 공지</a></li>
+            <li><a th:href="@{/community/{mapping}(mapping='scholarship')}">장학 공지</a></li>
+            <li><a th:href="@{/community/{mapping}(mapping='bachelor')}">학사 공지</a></li>
+            <li><a th:href="@{/community/{mapping}(mapping='major')}">학과 공지</a></li>
+            <li><a th:href="@{/community/{mapping}(mapping='freeboard')}">자유 게시판</a></li>
         </ul>
     </li>
 </th:block>
