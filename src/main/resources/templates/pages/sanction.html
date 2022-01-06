@@ -6,186 +6,179 @@
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='전자결재')"></th:block>
     <!-- Container-fluid starts-->
-    <div class="container-fluid" style="height=1200px;">
-        <div class="row">
-            <div class="col-xl-2 box-col-2 pe-0">
-                <div class="job-sidebar"><a class="btn btn-primary job-toggle" href="javascript:void(0)">전체조회</a>
+    <div class="container-fluid">
+        <div class="card-deck row">
+            <div class="card col-2">
+                <div class="card-body">
                     <div class="job-left-aside custom-scrollbar">
-                        <div class="file-sidebar">
-                            <div class="card">
-                                <div class="card-body">
-                                    <ul>
-                                        <li>
-                                            <a class="btn btn-light justify-content-center"
-                                               href="/sanctn/drafting">기안하기</a>
-                                        </li>
-                                        <li>
-                                            <a class="btn btn-light justify-content-center" href="/sanctn">결재처리</a>
-                                        </li>
-                                        <li>
-                                            <a class="btn btn-light justify-content-center" href="/sanctn">공람처리</a>
-                                        </li>
-                                    </ul>
-
-                                    <div class="card-body dropdown-basic" style="text-align: center; margin: 0 auto;">
-                                        <div class="dropdown justify-content-center"
-                                             style="text-align: center; margin: 0 auto;">
-                                            <div class="btn-group mb-0">
-                                                <button class="dropbtn btn-success btn-round justify-content-center"
-                                                        type="button" style="text-align: center; margin: 0 auto;"
-                                                        id="btnSanctnAll">전체조회
-                                                    <span><i class="icofont icofont-arrow-down"></i></span></button>
-                                                <div class="dropdown-content justify-content-center"
-                                                     style="text-align: center; margin: 0 auto;">
-                                                    <a id="btnSanctnCom" style="cursor:pointer;">승인완료</a>
-                                                    <a style="cursor:pointer;" th:onclick="btnPro()">진행중</a>
-                                                    <a style="cursor:pointer;" th:onclick="btnReject()">반려</a>
-                                                    <a style="cursor:pointer;" th:onclick="btnPublic()">공람</a>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <ul>
+                            <li>
+                                <a class="btn btn-light -content-center"
+                                   href="/sanctn/drafting">기안하기</a>
+                            </li>
+                            <li>
+                                <a class="btn btn-light justify-content-center" href="/sanctn">결재처리</a>
+                            </li>
+                            <li>
+                                <a class="btn btn-light justify-content-center" href="/sanctn">공람처리</a>
+                            </li>
+                        </ul>
+                        <div class="card-body dropdown-basic"
+                             style="text-align: center; margin: 0 auto;">
+                            <div class="dropdown justify-content-center"
+                                 style="text-align: center; margin: 0 auto;">
+                                <div class="btn-group mb-0">
+                                    <button class="dropbtn btn-success btn-round"
+                                            type="button" style="text-align: center; margin: 0 auto;"
+                                            id="btnSanctnAll">전체조회
+                                        <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                    <div class="dropdown-content"
+                                         style="text-align: center; margin: 0 auto;">
+                                        <a id="btnSanctnCom" style="cursor:pointer;">승인완료</a>
+                                        <a style="cursor:pointer;" th:onclick="btnPro()">진행중</a>
+                                        <a style="cursor:pointer;" th:onclick="btnReject()">반려</a>
+                                        <a style="cursor:pointer;" th:onclick="btnPublic()">공람</a>
                                     </div>
-                                    <hr>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-7 col-xs-7 box-col-7" style="text-align: center; margin: 0 auto;">
-                <div class="file-content" style="text-align: center; margin: 0 auto;">
-                    <div class="card" style="text-align: center; margin: 0 auto;">
-                        <div class="card-header center-block style=width:300px; padding:15px;">
-                            <ul style='display:inline-block'>
-                                <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br>
-                                    <div style="text-align: center; margin: 0 auto;"><span
-                                            th:text="|총 : ${totalPro} 건|">총 0건</span></div>
-                                </li>
-                                <li style='display:inline-block'><i class="fa fa-arrow-left fa-5x p-2">반려</i><br>
-                                    <div style="text-align: center; margin: 0 auto;"><span
-                                            th:text="|총 : ${totalRej} 건|">총 3건</span></div>
-                                </li>
-                                <li style='display:inline-block'><i class="fa fa-repeat fa-5x p-2">공람</i><br>
-                                    <div style="text-align: center; margin: 0 auto;"><span
-                                            th:text="|총 : ${totalPub} 건|">총 3건</span></div>
-                                </li>
-                            </ul>
-                        </div>
-                        <hr>
-                        <div class="select-button">
-                            <button class="btn btn-square btn-outline-success btn-lg" type="button"
-                                    data-bs-original-title="" th:onclick="btnPro()">진행중
-                            </button>
-                            <button class="btn btn-square btn-outline-success btn-lg" type="button"
-                                    data-bs-original-title="" th:onclick="btnReject()">반려
-                            </button>
-                            <button class="btn btn-square btn-outline-success btn-lg" type="button"
-                                    data-bs-original-title="" th:onclick="btnPublic()">공람
-                            </button>
-                        </div>
-                        </hr>
+            <div class="card col-7" style="text-align: center; margin: 0 auto;">
+                <div class="card-body center-block style=width:300px; padding:15px;">
+                    <ul style='display:inline-block'>
+                        <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br>
+                            <div style="text-align: center; margin: 0 auto;"><span
+                                    th:text="|총 : ${totalPro} 건|">총 0건</span></div>
+                        </li>
+                        <li style='display:inline-block'><i
+                                class="fa fa-arrow-left fa-5x p-2">반려</i><br>
+                            <div style="text-align: center; margin: 0 auto;"><span
+                                    th:text="|총 : ${totalRej} 건|">총 3건</span></div>
+                        </li>
+                        <li style='display:inline-block'><i
+                                class="fa fa-repeat fa-5x p-2">공람</i><br>
+                            <div style="text-align: center; margin: 0 auto;"><span
+                                    th:text="|총 : ${totalPub} 건|">총 3건</span></div>
+                        </li>
+                    </ul>
+                    <hr/>
+                    <div class="select-button">
+                        <button class="btn btn-square btn-outline-success btn-lg" type="button"
+                                data-bs-original-title="" th:onclick="btnPro()">진행중
+                        </button>
+                        <button class="btn btn-square btn-outline-success btn-lg" type="button"
+                                data-bs-original-title="" th:onclick="btnReject()">반려
+                        </button>
+                        <button class="btn btn-square btn-outline-success btn-lg" type="button"
+                                data-bs-original-title="" th:onclick="btnPublic()">공람
+                        </button>
+                    </div>
+                    <br>
+                    <div class="table" id="test">
+                        <table class="table table-border-horizontal"
+                               style="text-align: center; margin: 0 auto;">
+                            <thead>
+                            <tr>
+                                <th scope="col">결재단계</th>
+                                <th scope="col">결재제목</th>
+                                <th scope="col">기안자</th>
+                                <th scope="col">상태</th>
+                                <th scope="col">결재기한</th>
+                            </tr>
+                            </thead>
+                            <tbody th:each="result : ${results}">
+                            <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;"
+                                th:value="@{ {id}(id= ${result.sanctnId})}"
+                                th:onclick="btnShowSanctn(this)" th:id="idValue">
+                                <td th:text="${result.sanctnStep}">결재단계</td>
+                                <td th:text="${#strings.arraySplit(result.sanctnSj,'$')[0]}">결재명</td>
+                                <td th:text="${result.name}">기안자</td>
+                                <td th:text="${result.status.krName}">상태</td>
+                                <td th:text="${result.sanctnUpdde}">기한</td>
+                            </tr>
+                            </tbody>
+                        </table>
                         <br>
-                        <div class="table" id="test">
-                            <table class="table table-border-horizontal" style="text-align: center; margin: 0 auto;">
-                                <thead>
-                                <tr>
-                                    <th scope="col">결재단계</th>
-                                    <th scope="col">결재제목</th>
-                                    <th scope="col">기안자</th>
-                                    <th scope="col">상태</th>
-                                    <th scope="col">결재기한</th>
-                                </tr>
-                                </thead>
-                                <tbody th:each="result : ${results}">
-                                <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;"
-                                    th:value="@{ {id}(id= ${result.sanctnId})}"
-                                    th:onclick="btnShowSanctn(this)" th:id="idValue">
-                                    <td th:text="${result.sanctnStep}">결재단계</td>
-                                    <td th:text="${#strings.arraySplit(result.sanctnSj,'$')[0]}">결재명</td>
-                                    <td th:text="${result.name}">기안자</td>
-                                    <td th:text="${result.status.krName}">상태</td>
-                                    <td th:text="${result.sanctnUpdde}">기한</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <br>
-                            <div class="text-center"
-                                 style="text-align: center; margin: 0 auto; display:inline-block; float:center;">
-                                <div class="text-center">
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination pagination-sm" id="pageNation">
-                                            <li th:if="${page.isPrev()}" class="page-item">
-                                                <a th:value="@{/{mapping}?page={page}(page = ${page.getStartPage()-1}, mapping = ${mapping})}"
-                                                   class="page-link" th:onclick="paging(this);" style="cursor:pointer;">First</a>
-                                            </li>
-                                            <li th:unless="${page.isPrev()}" class="page-item disabled"><a
-                                                    class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
+                        <div class="text-center"
+                             style="text-align: center; margin: 0 auto; display:inline-block; float:center;">
+                            <div class="text-center">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm" id="pageNation">
+                                        <li th:if="${page.isPrev()}" class="page-item">
+                                            <a th:value="@{/{mapping}?page={page}(page = ${page.getStartPage()-1}, mapping = ${mapping})}"
+                                               class="page-link" th:onclick="paging(this);"
+                                               style="cursor:pointer;">First</a>
+                                        </li>
+                                        <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
 
-                                            <li th:if="${page.isPrev()}" class="page-item"><a
-                                                    th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()-1}, mapping = ${mapping})}"
-                                                    class="page-link" th:onclick="paging(this);"
-                                                    style="cursor:pointer;">Prev</a></li>
-                                            <li th:unless="${page.isPrev()}" class="page-item disabled"><a
-                                                    class="page-link">Prev</a></li>
+                                        <li th:if="${page.isPrev()}" class="page-item"><a
+                                                th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()-1}, mapping = ${mapping})}"
+                                                class="page-link" th:onclick="paging(this);"
+                                                style="cursor:pointer;">Prev</a></li>
+                                        <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                class="page-link">Prev</a></li>
 
-                                            <li class="page-item"
-                                                th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
-                                                <a th:value="@{/{mapping}?page={page}(page = ${index.current-1}, mapping = ${mapping})}"
-                                                   th:text="${num}"
-                                                   class="page-link" th:onclick="paging(this);" style="cursor:pointer;">1</a>
-                                            </li>
-                                            <li th:if="${page.isNext()}" class="page-item"><a
-                                                    th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()+1}, mapping = ${mapping})}"
-                                                    class="page-link" th:onclick="paging(this);"
-                                                    style="cursor:pointer;">Next</a></li>
-                                            <li th:unless="${page.isNext()}" class="page-item disabled"><a
-                                                    class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
+                                        <li class="page-item"
+                                            th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
+                                            <a th:value="@{/{mapping}?page={page}(page = ${index.current-1}, mapping = ${mapping})}"
+                                               th:text="${num}"
+                                               class="page-link" th:onclick="paging(this);"
+                                               style="cursor:pointer;">1</a>
+                                        </li>
+                                        <li th:if="${page.isNext()}" class="page-item"><a
+                                                th:value="@{/{mapping}?page={page}(page = ${page.getCurPage()+1}, mapping = ${mapping})}"
+                                                class="page-link" th:onclick="paging(this);"
+                                                style="cursor:pointer;">Next</a></li>
+                                        <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
 
-                                            <li th:if="${page.isNext()}" class="page-item"><a
-                                                    th:value="@{/{mapping}?page={page}(page = ${page.getEndPage()-1}, mapping = ${mapping})}"
-                                                    class="page-link" th:onclick="paging(this);"
-                                                    style="cursor:pointer;">Last</a></li>
-                                            <li th:unless="${page.isNext()}" class="page-item disabled"><a
-                                                    class="page-link">Last</a></li>
-                                        </ul>
-                                    </nav>
-                                    <br>
-                                </div>
+                                        <li th:if="${page.isNext()}" class="page-item"><a
+                                                th:value="@{/{mapping}?page={page}(page = ${page.getEndPage()-1}, mapping = ${mapping})}"
+                                                class="page-link" th:onclick="paging(this);"
+                                                style="cursor:pointer;">Last</a></li>
+                                        <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                class="page-link">Last</a></li>
+                                    </ul>
+                                </nav>
+                                <br>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 box-col-3 pe-0">
-                <div class="file-content">
-                    <div class="card">
-                        <div class="text-center">
-                            <br>
-                            <h3>최근결재의견</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-block row">
-                                <div class="col-xs-12 col-lg-12 col-xl-12">
-                                    <div class="table-responsive" th:each="recentOpinion : ${recentOpinions}">
-                                        <table class="table">
-                                            <thead>
-                                            <tr class="text-center table-primary">
-                                                <th scope="col"
-                                                    th:text="|${recentOpinion.name} ∘ ${recentOpinion.deptNm} ↻ ${#temporals.format(recentOpinion.sanctnDate, 'yy-MM-dd HH:mm')} |">
-                                                    홍길동 ∘ 교무처
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="text-center table-light">
-                                                <th scope="row" th:text="${recentOpinion.sanctnOpinion}">첨부파일이 빠져 있네요
-                                                </th>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <hr>
-                                    </div>
-                                </div>
+            <div class="card col-3">
+                <div class="card-header">
+                    <div class="text-center">
+                        <br>
+                        <h3>최근결재의견</h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-block row">
+                        <div class="col-xs-12 col-lg-12 col-xl-12">
+                            <div class="table-responsive"
+                                 th:each="recentOpinion : ${recentOpinions}">
+                                <table class="table">
+                                    <thead>
+                                    <tr class="text-center table-primary">
+                                        <th scope="col"
+                                            th:text="|${recentOpinion.name} ∘ ${recentOpinion.deptNm} ↻ ${#temporals.format(recentOpinion.sanctnDate, 'yy-MM-dd HH:mm')} |">
+                                            홍길동 ∘ 교무처
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="text-center table-light">
+                                        <th scope="row" th:text="${recentOpinion.sanctnOpinion}">
+                                            첨부파일이 빠져 있네요
+                                        </th>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <hr>
                             </div>
                         </div>
                     </div>
@@ -196,15 +189,15 @@
     <!-- Container-fluid Ends-->
     <script>
 
-         function btnPro() {
+        function btnPro() {
 
 
             $.ajax({
                 type: "GET",
                 url: "/sanctn/progress",
-                }).done(function (fragment) {
-                    $("#test").replaceWith(fragment);
-                });
+            }).done(function (fragment) {
+                $("#test").replaceWith(fragment);
+            });
 
         }
 
@@ -214,9 +207,9 @@
             $.ajax({
                 type: "GET",
                 url: "/sanctn/progress",
-                }).done(function (fragment) {
-                    $("#test").replaceWith(fragment);
-                });
+            }).done(function (fragment) {
+                $("#test").replaceWith(fragment);
+            });
 
         }
 
@@ -226,9 +219,9 @@
             $.ajax({
                 type: "GET",
                 url: "/sanctn/reject",
-                }).done(function (fragment) {
-                    $("#test").replaceWith(fragment);
-                });
+            }).done(function (fragment) {
+                $("#test").replaceWith(fragment);
+            });
 
         }
 
@@ -238,9 +231,9 @@
             $.ajax({
                 type: "GET",
                 url: "/sanctn/public",
-                }).done(function (fragment) {
-                    $("#test").replaceWith(fragment);
-                });
+            }).done(function (fragment) {
+                $("#test").replaceWith(fragment);
+            });
 
         }
 
@@ -248,40 +241,40 @@
 
         btnSanctnAll.addEventListener("click", function () {
 
-        $.ajax({
+            $.ajax({
                 type: "GET",
                 url: "/sanctn/all",
-                }).done(function (fragment) {
-                    $("#test").replaceWith(fragment);
-                });
+            }).done(function (fragment) {
+                $("#test").replaceWith(fragment);
+            });
         })
 
         const btnSanctnCom = document.querySelector("#btnSanctnCom");
 
         btnSanctnCom.addEventListener("click", function () {
 
-        $.ajax({
+            $.ajax({
                 type: "GET",
                 url: "/sanctn/com",
-                }).done(function (fragment) {
-                    $("#test").replaceWith(fragment);
-                });
+            }).done(function (fragment) {
+                $("#test").replaceWith(fragment);
+            });
         })
 
-        function btnShowSanctn(id){
+        function btnShowSanctn(id) {
 
-        let ids = id.getAttribute("value");
+            let ids = id.getAttribute("value");
 
-        var _width = '800';
-        var _height = '800';
+            var _width = '800';
+            var _height = '800';
 
-        var _left = Math.ceil(( window.screen.width - _width )/2);
-        var _top = Math.ceil(( window.screen.height - _height )/2);
+            var _left = Math.ceil((window.screen.width - _width) / 2);
+            var _top = Math.ceil((window.screen.height - _height) / 2);
 
-        window.open("/showSanctn/" + ids, 'popup-test', 'width='+ _width +', height='+ _height +', left=' + _left + ', top='+ _top)
+            window.open("/showSanctn/" + ids, 'popup-test', 'width=' + _width + ', height=' + _height + ', left=' + _left + ', top=' + _top)
 
-        return false;
-    }
+            return false;
+        }
 
         function paging(id) {
 
@@ -289,14 +282,28 @@
 
             $.ajax({
                 type: "GET",
-                url: url ,
-                }).done(function (fragment) {
+                url: url,
+            }).done(function (fragment) {
 
                 $("#test").replaceWith(fragment);
 
-                });
+            });
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     </script>
 </th:block>
