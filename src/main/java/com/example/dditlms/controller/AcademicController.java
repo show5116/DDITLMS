@@ -67,9 +67,7 @@ public class AcademicController {
                 avgList.add(rst);
             }
             Collections.sort(avgList);
-            logger.info("avgList sort 직후입니다. : " + avgList.toString());
 
-            //점수만 빼와서 오름차순
             EnrolmentDTO enrolmentDTO = enrolment.toDTO();
             Optional<Score> scoreWrapper = scoreRepository.findByEnrolment_StudentAndEnrolment_OpenLecture(enrolment.getStudent(),enrolment.getOpenLecture());
             Score myScore = scoreWrapper.orElse(null);
@@ -100,10 +98,6 @@ public class AcademicController {
             } else {
                 st.append(2);
             }
-            logger.info("st : " + st.toString());
-            logger.info("avgList remove 직후입니다. : " + avgList.toString());
-
-            logger.info(String.valueOf(avgList.indexOf(myRst)));
 
             if(avgList.indexOf(myRst)!=-1){
                 int myAvgPer = avgList.indexOf(myRst)/avgList.size()*100;
@@ -128,7 +122,6 @@ public class AcademicController {
                 }  else if(myAvgPer<=100){
                     myAvg = "D";
                 }
-                logger.info("겟 이어" + enrolment.getOpenLecture().getYearSeme().getYear());
                 enrolmentDTO.setAvgScore(myAvg);
                 dtoList.add(enrolmentDTO);
             }
