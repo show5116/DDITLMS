@@ -41,31 +41,74 @@ public class boardController {
     private final BbsRepository bbsRepository;
     private final AttachmentRepository attachmentRepository;
 
+    @GetMapping("/community/{mapping}")
+    public ModelAndView mappingBoard(ModelAndView mav, @PathVariable(value = "mapping") String mapping,
+                                     @PageableDefault(size = 4)Pageable pageable){
 
-    @GetMapping("/community/freeboard")
-    public ModelAndView freeboard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
-
-//        Optional<List<Bbs>> bbsWrapper = bbsRepository.findAllByCategoryOrderByBbsDateDesc(BoardCategory.FREEBOARD);
-//        List<Bbs> bbsList = bbsWrapper.orElse(null);
-
-        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
+        BoardCategory boardCategory = null;
+        if(mapping.equals("freeboard")){
+            boardCategory = BoardCategory.FREEBOARD;
+        } else if(mapping.equals("general")){
+            boardCategory = BoardCategory.GENERAL;
+        } else if(mapping.equals("scholarship")){
+            boardCategory = BoardCategory.SCHOLARSHIPNOTICE;
+        } else if(mapping.equals("bachelor")){
+            boardCategory = BoardCategory.BACHELORNOTICE;
+        } else if(mapping.equals("major")){
+            boardCategory = BoardCategory.MAJORNOTICE;
+        }
+        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, boardCategory);
         Long i = 1L;
         for (BbsDTO result : results) {
             result.setTotal(i);
             i++;
         }
 
+        mav.addObject("boardCategory", boardCategory);
+        mav.addObject("mapping", mapping);
         mav.addObject("bbsList", results);
         mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
-//        mav.addObject("bbsList", bbsList);
         mav.setViewName("pages/freeboard");
         return mav;
     }
 
-    @GetMapping("/community/replaceBoard")
-    public ModelAndView replaceBoard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
+//    @GetMapping("/community/freeboard")
+//    public ModelAndView freeboard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
+//
+//        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
+//        Long i = 1L;
+//        for (BbsDTO result : results) {
+//            result.setTotal(i);
+//            i++;
+//        }
+//
+//        mav.addObject("bbsList", results);
+//        mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
+//        mav.setViewName("pages/freeboard");
+//        return mav;
+//    }
 
-        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
+    @GetMapping("/community/replaceBoard/{mapping}")
+    public ModelAndView replaceBoard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable,
+                                     @PathVariable(value = "mapping") String mapping){
+
+
+        logger.info("mapping이란다: " + mapping);
+
+        BoardCategory boardCategory = null;
+        if(mapping.equals("freeboard")){
+            boardCategory = BoardCategory.FREEBOARD;
+        } else if(mapping.equals("general")){
+            boardCategory = BoardCategory.GENERAL;
+        } else if(mapping.equals("scholarship")){
+            boardCategory = BoardCategory.SCHOLARSHIPNOTICE;
+        } else if(mapping.equals("bachelor")){
+            boardCategory = BoardCategory.BACHELORNOTICE;
+        } else if(mapping.equals("major")){
+            boardCategory = BoardCategory.MAJORNOTICE;
+        }
+
+        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, boardCategory);
 
         Long i = 1L;
         for (BbsDTO result : results) {
@@ -73,12 +116,12 @@ public class boardController {
             i++;
         }
 
+        mav.addObject("boardCategory", boardCategory);
         mav.addObject("bbsList", results);
         mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
         mav.setViewName("pages/freeboard::#test");
         return mav;
     }
-
 
 
 //        for (Bbs bbs : bbsList){
@@ -96,16 +139,32 @@ public class boardController {
 
 
 
-    @GetMapping("/community/boardWrite")
-    public ModelAndView boardWrite(ModelAndView mav){
+    @GetMapping("/community/{mapping}/boardWrite")
+    public ModelAndView boardWrite(ModelAndView mav, @PathVariable(value = "mapping") String mapping){
+
+        BoardCategory boardCategory = null;
+        if(mapping.equals("freeboard")){
+            boardCategory = BoardCategory.FREEBOARD;
+        } else if(mapping.equals("general")){
+            boardCategory = BoardCategory.GENERAL;
+        } else if(mapping.equals("scholarship")){
+            boardCategory = BoardCategory.SCHOLARSHIPNOTICE;
+        } else if(mapping.equals("bachelor")){
+            boardCategory = BoardCategory.BACHELORNOTICE;
+        } else if(mapping.equals("major")){
+            boardCategory = BoardCategory.MAJORNOTICE;
+        }
+
+        mav.addObject("mapping", mapping);
+        mav.addObject("boardCategory", boardCategory);
         mav.setViewName("pages/boardWrite");
         return mav;
     }
 
     @ResponseBody
-    @PostMapping("/community/boardWritePost.do")
+    @PostMapping("/community/{mapping}/boardWritePost")
     public String boardWritePost(MultipartHttpServletRequest multiRequest, HttpServletRequest request
-        , Model model){
+        , ModelAndView mav, @PathVariable(value = "mapping") String mapping){
         JSONObject jsonObject = new JSONObject();
 
         Member member = null;
@@ -127,28 +186,42 @@ public class boardController {
         logger.info("title : " + title);
          String content = request.getParameter("content");
 
+        BoardCategory boardCategory = null;
+        if(mapping.equals("freeboard")){
+            boardCategory = BoardCategory.FREEBOARD;
+        } else if(mapping.equals("general")){
+            boardCategory = BoardCategory.GENERAL;
+        } else if(mapping.equals("scholarship")){
+            boardCategory = BoardCategory.SCHOLARSHIPNOTICE;
+        } else if(mapping.equals("bachelor")){
+            boardCategory = BoardCategory.BACHELORNOTICE;
+        } else if(mapping.equals("major")){
+            boardCategory = BoardCategory.MAJORNOTICE;
+        }
 
-         logger.info(String.valueOf(member.getUserNumber()));
+        logger.info(String.valueOf(member.getUserNumber()));
         Bbs bbs = Bbs.builder()
                 .member(member)
                 .title(title)
                 .content(content)
-                .category(BoardCategory.FREEBOARD)
+                .category(boardCategory)
                 .bbsCnt(0L)
                 .bbsDate(new Date())
                 .atchmnflId(id)
                 .build();
         bbsRepository.save(bbs);
-        model.addAttribute("id", bbs.getIdx());
+
+        mav.addObject("mapping", mapping);
+        mav.addObject("id", bbs.getIdx());
         jsonObject.put("idx",bbs.getIdx());
         return jsonObject.toJSONString();
     }
 
 
-    @GetMapping("/community/detailBoard/{targetId}")
+    @GetMapping("/community/{mapping}/detailBoard/{targetId}")
     public ModelAndView detailBoard(ModelAndView mav,
-//                                    @RequestParam String idx,
                                     @PathVariable(value = "targetId") String idx,
+                                    @PathVariable(value = "mapping") String mapping,
                                     HttpServletRequest request, HttpServletResponse response){
 
         Member member = null;
@@ -156,6 +229,19 @@ public class boardController {
         try {
             member = ((AccountContext) authentication.getPrincipal()).getMember();
         } catch (ClassCastException e) {
+        }
+
+        BoardCategory boardCategory = null;
+        if(mapping.equals("freeboard")){
+            boardCategory = BoardCategory.FREEBOARD;
+        } else if(mapping.equals("general")){
+            boardCategory = BoardCategory.GENERAL;
+        } else if(mapping.equals("scholarship")){
+            boardCategory = BoardCategory.SCHOLARSHIPNOTICE;
+        } else if(mapping.equals("bachelor")){
+            boardCategory = BoardCategory.BACHELORNOTICE;
+        } else if(mapping.equals("major")){
+            boardCategory = BoardCategory.MAJORNOTICE;
         }
 
         logger.info("idx : " + idx);
@@ -210,20 +296,21 @@ public class boardController {
         }
 
         if((writer.getUserNumber()).equals(member.getUserNumber())){
-            mav.addObject("flag", "true");
-        } else {
-            mav.addObject("flag", "false");
+            mav.addObject("flag", true);
         }
 
+        mav.addObject("mapping", mapping);
+        mav.addObject("boardCategory", boardCategory);
         mav.addObject("bbs", bbsDTO);
         mav.setViewName("pages/detailBoard");
         return mav;
     }
 
     @ResponseBody
-    @PostMapping("/community/detailBoard/{targetId}")
+    @PostMapping("/community/{mapping}/detailBoard/{targetId}")
     public String detailBoardPost(@RequestParam Map<String, Object> paramMap
-                            ,@PathVariable(value = "targetId") String idx){
+                            ,@PathVariable(value = "targetId") String idx
+                            ,@PathVariable(value = "mapping") String mapping){
 
         logger.info("idx : " + idx);
 
@@ -235,15 +322,20 @@ public class boardController {
     }
 
     @PostMapping("/community/delete")
-    public String deleteBoard(@RequestParam Map<String, Object> map){
-        Long boardId = Long.parseLong(String.valueOf(map.get("boardId")));
+    public ModelAndView deleteBoard(@RequestParam(value = "bbs-idx") Long bbsIdx,
+                                    @RequestParam(value = "mapping") String mapping,
+                                    ModelAndView mav){
+        logger.info("boardController - deleteBoard - bbsIdx : {}", bbsIdx);
 
-        Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(boardId);
+        logger.info("boardController - deleteBoard - boardId : {}", mapping);
+
+        Optional<Bbs> bbsWrapper = bbsRepository.findByIdx(bbsIdx);
         Bbs bbs = bbsWrapper.orElse(null);
-        logger.info("찾은거 : " + bbs);
+        logger.info("boardController - deleteBoard - bbs : {} : ", bbs);
         bbsRepository.delete(bbs);
 
-
-        return "/pages/freeboard";
+        mav.addObject("mapping", mapping);
+        mav.setViewName("redirect:/community/"+mapping);
+        return mav;
     }
 }
