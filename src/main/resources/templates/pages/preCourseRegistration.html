@@ -70,7 +70,7 @@
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="row col-sm-4 align-self-center">
                                             <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">개설강좌</h4>
-                                            <span class="col text-muted p-l-10 m-t-10" th:text="|${totalCount}건|"></span>
+                                            <span class="col text-muted p-l-10 m-t-10" th:text="${#lists.size(openLectureList)+'건'}"></span>
                                         </div>
                                     </div>
                                     <div style="height: 640px; overflow-y: auto;">
@@ -100,7 +100,7 @@
                                                     <td th:text="${lecture.getLectureSeme()}"></td>
                                                     <td th:text="${lecture.getLecturedivision()}"></td>
                                                     <td th:text="${lecture.getMaxPeopleCount()}"></td>
-                                                    <td th:text="0"></td>
+                                                    <td th:text="${lecture.getApplicantsCount()}"></td>
                                                     <td th:text="${lecture.getProfessor()}"></td>
                                                     <td th:text="${lecture.getLectureSchedule()}"></td>
                                                     <td th:text="${lecture.getLectureRoom()}"></td>
@@ -116,7 +116,7 @@
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="row col-sm-7 align-self-center">
                                             <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">예비수강과목</h4>
-                                            <span class="col text-muted p-l-10 m-t-10" th:text="|${preTotalCount}건|" id="pre-count"></span>
+                                            <span class="col text-muted p-l-10 m-t-10" th:text="${#lists.size(preRegistrationList)+'건'}" id="pre-count"></span>
                                         </div>
                                         <div class="col-sm-3 justify-content-end text-end">
                                             <button type="button" class="btn btn-secondary" id="save-btn">저장</button>
@@ -158,7 +158,6 @@
         function testPDF(){
             event.stopImmediatePropagation();
             window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
-
         }
 
     </script>

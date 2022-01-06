@@ -72,9 +72,9 @@ public class ScholarshiptServiceImpl implements ScholarshipService {
         // 실제 로직 -> 장학금 종류에 따라, 담당 직원과 최종승인자를 검색해서
         // 전자결재선에 해당 사람을 추가한다.
         List<Long> userNumber = new ArrayList<>();
-        Long staff = 11111L;
-        Long professor = 8888L;
-        Long approver = 11112L;
+        Long staff = 11126L;
+        Long professor = 11127L;
+        Long approver = 11130L;
         userNumber.add(staff);
         userNumber.add(professor);
         userNumber.add(approver);

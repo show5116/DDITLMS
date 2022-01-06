@@ -15,11 +15,14 @@
                     <div class="card-body-right">
                         <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                             <div class="row col-sm-7 align-self-center">
-                                <h4 class="col f-w-700 p-l-10 m-b-0 m-t-5  ">자유 게시판</h4>
+                                <h4 th:text="${boardCategory.korean}" class="col f-w-700 p-l-10 m-b-0 m-t-5  ">자유 게시판</h4>
                             </div>
-                            <div th:if="${flag == 'true'}" class="col-sm-3 justify-content-end text-end">
-                                <button id="update-btn" type="button" class="btn btn-secondary">수정</button>
-                                <button id="delete-btn" type="button" class="btn btn-secondary">삭제</button>
+                            <div th:if="${flag}" class="col-sm-3 justify-content-end text-end">
+                                <form th:action="@{/community/delete}" method="post">
+                                    <input type="hidden" id="bbs-idx" name="bbs-idx" th:value="${bbs.idx}" />
+                                    <input type="hidden" name="mapping" th:value="${mapping}" />
+                                    <button id="delete-btn" type="submit" class="btn btn-secondary">삭제</button>
+                                </form>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -27,7 +30,7 @@
                                 <div class="table-responsive">
                                     <table class="table table-bordered f-14">
                                         <thead class="table-secondary">
-                                        <input type="hidden" id="bbs-idx" th:value="${bbs.idx}" />
+<!--                                        <input type="hidden" id="bbs-idx" th:value="${bbs.idx}" />-->
                                         <tr>
                                             <td style="padding-top: 12px; padding-bottom: 12px;" colspan="3"><p th:text="${bbs.title}"></p></td>
                                         </tr>
@@ -77,32 +80,13 @@
         const boardId = document.querySelector("#bbs-idx");
 
         console.log("비비 : " + boardId.value);
-        // /* <![CDATA[ */
-        // let boardId = /*[[${idx}]]*/;
-        // /* ]]> */
-
-
-        if(deleteBtn!=null){
-            deleteBtn.addEventListener("click", function (){
-                const params = {
-                    "boardId" : boardId.value
-                };
-                $.ajax({
-                    url: "/community/delete",
-                    data:params,
-                    type:"POST",
-                    beforeSend: function(xhr){
-                        xhr.setRequestHeader(header,token);
-                    }
-                }).done(function (){
-                    location.href="/community/freeboard";
-                })
-            })
-        }
-
+        /* <![CDATA[ */
+        let mapping = /*[[${mapping}]]*/;
+        /* ]]> */
 
         listBtn.addEventListener("click", function (){
-            location.href="/community/freeboard";
+            console.log(mapping);
+            location.href="/community/"+mapping;
         });
 
 

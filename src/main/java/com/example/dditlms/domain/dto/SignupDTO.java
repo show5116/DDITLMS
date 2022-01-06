@@ -1,11 +1,14 @@
 package com.example.dditlms.domain.dto;
 
 import com.example.dditlms.domain.common.LectureSection;
-import com.example.dditlms.domain.entity.*;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Builder
+@ToString
 public class SignupDTO {
     private String yearSeme;
     private String majorKr;
@@ -19,12 +22,10 @@ public class SignupDTO {
     private int peopleNumber;
     private int fileId;
 
-
-    public SignupDTO() {
-    }
+    @QueryProjection
+    public SignupDTO(String lectureCode) { this.lectureCode = lectureCode; }
 
     @QueryProjection
-
     public SignupDTO(String yearSeme, String majorKr, LectureSection lectureSection, String lectureCode, String lectureName, String professorName, String lectureSchedule, String lectureRoom, int point, int peopleNumber, int fileId) {
         this.yearSeme = yearSeme;
         this.majorKr = majorKr;

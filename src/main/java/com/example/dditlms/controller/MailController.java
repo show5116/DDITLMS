@@ -80,7 +80,7 @@ public class MailController {
 
     //메일 쓰기(보내기 + 보낸편지함 저장)
     @PostMapping("/mail/write")
-    public String writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletResponse response) throws IOException {
+    public void writeMail(@ModelAttribute("dto") EmailDTO dto, HttpServletResponse response) throws IOException {
         EmailDTO emailDTO = dto;
         try {
             emailService.writeMail(emailDTO);
@@ -91,10 +91,8 @@ public class MailController {
 
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.println("<script>window.close(); opener.location.reload(); </script>");
         out.flush();
-
-        return "redirect:/mail";
     }
     
     @GetMapping("/mail/reply/{id}")
@@ -136,7 +134,7 @@ public class MailController {
 
         response.setContentType("text/html; charset=euc-kr");
         PrintWriter out = response.getWriter();
-        out.println("<script>opener.location.reload(); window.close();</script>");
+        out.println("<script>window.close(); opener.location.reload();</script>");
         out.flush();
 
         return "/mail";

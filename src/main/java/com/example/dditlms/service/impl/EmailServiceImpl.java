@@ -12,6 +12,7 @@ import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingExcepti
 import lombok.extern.slf4j.Slf4j;
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.mailer.Mailer;
+import org.simplejavamail.api.mailer.config.TransportStrategy;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.springframework.stereotype.Service;
@@ -56,10 +57,18 @@ public class EmailServiceImpl implements EmailService {
 
             //3) 받은 메일함에 폴더에 접근 한다.
             Folder[] folders = emailStore.getDefaultFolder().list("*");
-            log.info("-----------------" + Arrays.toString(folders));
+            IMAPFolder folder = (IMAPFolder) emailStore.getFolder(folderName);
+            Folder toFolder = emailStore.getFolder(folderName);
+            if(!toFolder.exists()) {
+                toFolder.create(1);
+                toFolder.renameTo(folder);
+            }
+
             Folder emailFolder = emailStore.getFolder(folderName);
+
             UIDFolder uf = (UIDFolder) emailFolder;
             emailFolder.open(Folder.READ_WRITE);
+
 
             //4) 받은 메세지 정보를 순차별로 담고, 반환한다.
 
@@ -163,7 +172,7 @@ public class EmailServiceImpl implements EmailService {
         Member loginMember = MemberUtil.getLoginMember();
 
         String domain = "@ddit.site";
-        String user = (loginMember.getMemberId() + domain);
+        String user = (loginMember.getMemberId());
         String fromName = loginMember.getName();
         String fromAddress = (user + domain);
 
@@ -203,7 +212,8 @@ public class EmailServiceImpl implements EmailService {
         }
 
         Mailer inhouseMailer = MailerBuilder
-                .withSMTPServer("mail.ddit.site", 25, fromAddress, "java")
+                .withTransportStrategy(TransportStrategy.SMTP_TLS)
+                .withSMTPServer("mail.ddit.site", 465, fromAddress, "java")
                 .buildMailer();
 
         inhouseMailer.sendMail(email);
@@ -282,7 +292,8 @@ public class EmailServiceImpl implements EmailService {
             log.info("----------------" + email);
 
             Mailer inhouseMailer = MailerBuilder
-                    .withSMTPServer("mail.ddit.site", 25, user + domain, "java")
+                    .withTransportStrategy(TransportStrategy.SMTP_TLS)
+                    .withSMTPServer("mail.ddit.site", 465, user + domain, "java")
                     .buildMailer();
 
             inhouseMailer.sendMail(email);
