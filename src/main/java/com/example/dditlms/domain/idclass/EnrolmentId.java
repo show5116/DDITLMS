@@ -14,8 +14,8 @@ import java.io.Serializable;
 
 public class EnrolmentId implements Serializable {
 
-    private Student student;
+    private Long student;
 
-    private OpenLecture openLecture;
+    private String openLecture;
 
 }

@@ -4,17 +4,95 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
-    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='과목 관리')"></th:block>
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='강의 관리')"></th:block>
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
     <div class="container-fluid">
-        <div class="col-sm-12 col-xl-6 xl-100">
-            <div class="card">
-                <div class="card-body">
-                    <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
-                    <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-lecture" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                    <button class="btn btn-primary pull-right" id="btn-lecture-excel" type="button">엑셀파일읽기</button>
-                    <button class="btn btn-primary pull-right" id="btn-made-lecture-excel" type="button">엑셀파일로 출력</button>
-                    <div id="grid-subject"></div>
+        <div class="card">
+            <div class="card-body">
+                <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
+                <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-lecture" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                <button class="btn btn-primary pull-right m-l-10" id="btn-lecture-excel" type="button">엑셀파일읽기</button>
+                <button class="btn btn-primary pull-right" id="btn-made-lecture-excel" type="button">엑셀파일로 출력</button>
+                <div id="grid-subject" class="m-t-30">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="b-b-light">
+                                <div class="add-lecture-form m-b-20">
+                                    <div class="row">
+                                        <div class="col m-l-20">
+                                            <select class="form-select" id="add-lecture-major">
+                                                <option>학부(과)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-select" id="add-lecture-section">
+                                                <option>이수구분</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" type="text" id="add-lecture-point" placeholder="학점"/>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" type="text" id="add-lecture-maxPeople" placeholder="정원">
+                                        </div>
+                                        <div class="col ">
+                                            <button class="btn btn-secondary active" type="button" id="add-lecture-btn">추가</button>
+                                        </div>
+                                    </div>
+                                    <div class="row m-t-15">
+                                        <div class="col m-l-20">
+                                            <select class="form-control" type="text" id="add-lecture-name" placeholder="교과목명">
+                                                <option>강의명</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" type="text" id="add-lecture-professor" placeholder="담당교수">
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" type="text" id="add-lecture-schedule" placeholder="강의시간">
+                                        </div>
+                                        <div class="col">
+                                            <select class="form-select" id="add-lecture-room">
+                                                <option>A101</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-info active" type="reset" id="add-lecture-cancel">취소</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="list">
+                                <div class="row b-l-warning border-6 m-t-10 m-b-15">
+                                    <h4 class="col-sm-2 f-w-700 p-l-10 m-b-0 align-self-center ">개설강좌</h4>
+                                    <span class="col-sm-1 text-muted p-l-0" th:text="'건'"></span>
+                                </div>
+                                <div style="height: 640px; overflow-y: auto;">
+                                    <table class="table table-bordered text-center" id="open-lecture" >
+                                        <thead class="table-secondary">
+                                            <tr style="height: 1px;">
+                                                <th>개설년도</th>
+                                                <th>학부(과)</th>
+                                                <th>이수구분</th>
+                                                <th>학점</th>
+                                                <th>교과목명</th>
+                                                <th>담당교수</th>
+                                                <th>강의시간</th>
+                                                <th>강의실</th>
+                                                <th>정원</th>
+                                                <th>과목코드</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="height: 1px;">
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
