@@ -43,6 +43,7 @@ public class BbsRepositoryImpl implements BbsRepositoryCustom{
                         ))
                 .from(bbs)
                 .where(bbs.category.eq(boardCategory))
+                .orderBy(bbs.bbsDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
