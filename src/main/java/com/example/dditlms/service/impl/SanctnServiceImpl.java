@@ -191,7 +191,6 @@ public class SanctnServiceImpl implements SanctnService {
     @Override
     public void deleteComplaint(Long id) {
         Sanctn bySanctnSjEndingWith = sanctnRepository.findBySanctnSjEndingWith("$" + id);
-        log.info(String.valueOf(bySanctnSjEndingWith));
         sanctnRepository.delete(bySanctnSjEndingWith);
     }
 
