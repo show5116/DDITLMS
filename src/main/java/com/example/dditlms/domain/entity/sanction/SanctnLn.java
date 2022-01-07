@@ -48,7 +48,7 @@ public class SanctnLn {
     @JoinColumn(name = "MBER_NO")
     private Member mberNo;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "SANCTN_SN")
     private Sanctn sanctnSn;
 

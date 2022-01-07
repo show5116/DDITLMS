@@ -60,7 +60,6 @@ public class SanctnController {
     @GetMapping("/sanctn")
     public String santn(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
 
-
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress reject = SanctnProgress.REJECT;

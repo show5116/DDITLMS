@@ -181,6 +181,7 @@ public class AcademicServiceImpl implements AcademicService {
         TempAbsence tempAbsence = tempAbsenceWrapper.orElse(null);
         tempAbsenceRepository.delete(tempAbsence);
         histRepository.delete(history);
+        sanctnService.deleteComplaint(history.getId());
 
         } else if(map.get("hist").equals("change")) {
             Optional<History> historyWrapper = histRepository.findByStudentAndStatusAndResultStatus(student, AcademicStatus.CHANGEMAJOR, ResultStatus.STANDBY);
@@ -188,6 +189,7 @@ public class AcademicServiceImpl implements AcademicService {
             histRepository.delete(history);
 
         }
+
 
     }
 
