@@ -172,7 +172,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctnLn2.setMberNo(byUserNumber2.get());
         sanctnLn2.setSanctnLnProgress(SanctnLnProgress.WAITING);
         sanctnLn2.setLastApproval("N");
-        sanctnLn2.setSanctnStep(1);
+        sanctnLn2.setSanctnStep(2);
         sanctnLnRepository.save(sanctnLn2);
 
         // 민원 결재선 저장(최종승인 직원)
@@ -182,7 +182,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctnLn3.setMberNo(byUserNumber3.get());
         sanctnLn3.setSanctnLnProgress(SanctnLnProgress.WAITING);
         sanctnLn3.setLastApproval("Y");
-        sanctnLn3.setSanctnStep(1);
+        sanctnLn3.setSanctnStep(3);
         sanctnLnRepository.save(sanctnLn3);
 
     }

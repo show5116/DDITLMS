@@ -200,8 +200,8 @@
 
         <div class="project-status mt-4">
             <div class="media mb-0">
-                <p th:if="${showPro < 98}"th:text="${showPro}">50%</p>
-                <p th:if="${showPro > 98}">100 </p>
+                <p th:if="${showPro < 98}"th:text="$|{showPro}%|">50%</p>
+                <p th:if="${showPro > 98}">100% </p>
                 <div class="media-body text-end"><span>최종승인</span></div>
             </div>
             <div class="progress" style="height: 5px">
