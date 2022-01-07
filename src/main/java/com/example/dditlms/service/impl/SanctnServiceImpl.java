@@ -186,8 +186,8 @@ public class SanctnServiceImpl implements SanctnService {
         sanctnLnRepository.save(sanctnLn3);
 
     }
-    
-    
+
+
     //학생 민원신청 결과 반환
     @Override
     public Optional<SanctnDTO> viewComplaint(Long id) {
@@ -195,9 +195,8 @@ public class SanctnServiceImpl implements SanctnService {
         Map<String, Object> resultList = null;
         Optional<Map<String, Object>> result = Optional.ofNullable(sanctnLnRepository.viewCompliment(id));
         SanctnDTO sanctnDTO = new SanctnDTO();
-        
-        if (!result.get().isEmpty()) {
 
+        if (!result.get().isEmpty()) {
 
 
             resultList = result.get();
@@ -253,12 +252,12 @@ public class SanctnServiceImpl implements SanctnService {
             resultList = result.get();
 
             Timestamp beforeConvertDate = (Timestamp) resultList.get("SANCTN_DATE");
-            if (beforeConvertDate !=null) {
+            if (beforeConvertDate != null) {
                 LocalDateTime localDateTime = beforeConvertDate.toLocalDateTime();
                 sanctnDTO.setSanctnDate(localDateTime);
             }
             Object sanctn_opinion = resultList.get("SANCTN_OPINION");
-            if (sanctn_opinion !=null){
+            if (sanctn_opinion != null) {
                 String sanctnOpinion = sanctn_opinion.toString();
                 sanctnDTO.setSanctnOpinion(sanctnOpinion);
             }
@@ -313,6 +312,24 @@ public class SanctnServiceImpl implements SanctnService {
         }
         return sanctnDTOS;
 
+    }
+
+    @Override
+    public String showSanctnCountProgress(Long id) {
+
+        int Procount = 0;
+        int totalCount = 0;
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.countSanctn(id);
+        for (SanctnDTO sanctnDTO : sanctnDTOS) {
+            SanctnLnProgress sanctnLnProgress = sanctnDTO.getSanctnLnProgress();
+            if (sanctnLnProgress.toString().equals("PROCESS")) {
+                Procount++;
+            }else {
+                totalCount ++;
+            }
+        }
+
+        return Procount + "!" + (totalCount + Procount);
     }
 }
 

@@ -13,4 +13,5 @@ public interface SanctnService {
     public Optional<SanctnDTO> viewComplaint(Long id);
     public Optional<SanctnDTO> viewComplaintPro(Long id);
     public List<SanctnDTO> showScholarshipApply(Long userNumber);
+    String showSanctnCountProgress(Long id);
 }
