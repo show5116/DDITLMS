@@ -187,6 +187,14 @@ public class SanctnServiceImpl implements SanctnService {
 
     }
 
+    @Transactional
+    @Override
+    public void deleteComplaint(Long id) {
+        Sanctn bySanctnSjEndingWith = sanctnRepository.findBySanctnSjEndingWith("$" + id);
+        log.info(String.valueOf(bySanctnSjEndingWith));
+        sanctnRepository.delete(bySanctnSjEndingWith);
+    }
+
 
     //학생 민원신청 결과 반환
     @Override

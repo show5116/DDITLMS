@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SanctnRepository extends JpaRepository <Sanctn, Long>, SanctnRepositoryCustom {
+    Sanctn findBySanctnSjEndingWith(String fromId);
 }
