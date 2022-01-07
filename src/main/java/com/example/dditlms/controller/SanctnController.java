@@ -278,6 +278,17 @@ public class SanctnController {
             model.addAttribute("complimentPro", sanctnDTO);
         }
 
+        String s = sanctnService.showSanctnCountProgress(id);
+        String[] split = s.split("!");
+        Integer Pro = Integer.valueOf(split[0]);
+        Integer Total = Integer.valueOf(split[1]);
+
+        int show = 100 / Total;
+        int showPro = show * Pro;
+
+
+        model.addAttribute("showPro", showPro);
+
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
         return "/pages/sanctionDetail";

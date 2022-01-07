@@ -200,13 +200,20 @@
 
         <div class="project-status mt-4">
             <div class="media mb-0">
-                <p>50% </p>
+                <p th:if="${showPro < 98}"th:text="${showPro}">50%</p>
+                <p th:if="${showPro > 98}">100 </p>
                 <div class="media-body text-end"><span>최종승인</span></div>
             </div>
             <div class="progress" style="height: 5px">
-                <div class="progress-bar-animated bg-primary progress-bar-striped"
+                <div th:if="${showPro < 98}"
+                        class="progress-bar-animated bg-primary progress-bar-striped"
                      role="progressbar"
-                     style="width: 50%" aria-valuenow="10" aria-valuemin="0"
+                     th:style="@{width:{percent}% (percent = ${showPro})}" aria-valuenow="10" aria-valuemin="0"
+                     aria-valuemax="100">
+                </div>
+                <div th:if="${showPro > 98}" class="progress-bar-animated bg-primary progress-bar-striped"
+                     role="progressbar"
+                     style="width:100%" aria-valuenow="10" aria-valuemin="0"
                      aria-valuemax="100">
                 </div>
             </div>
