@@ -93,7 +93,6 @@
                                             <thead>
                                             <tr>
                                                 <th>No.</th>
-                                                <th>단계구분</th>
                                                 <th>결재부서</th>
                                                 <th>결재자구분</th>
                                                 <th>결재자성명</th>
@@ -105,7 +104,6 @@
                                             <tbody>
                                             <tr th:each="pro : ${progress}">
                                                 <td th:text="${proStat.index +(1)}">1</td>
-                                                <td>-</td>
                                                 <td th:text="${pro.deptNm}">부서</td>
                                                 <td th:text="${pro.employeeRole.krName}">직급</td>
                                                 <td th:text="${pro.name}">결재자명</td>
