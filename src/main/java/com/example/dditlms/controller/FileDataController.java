@@ -225,7 +225,8 @@ public class FileDataController {
         String filename = current2.getFileName() + current2.getExtension();
 
         String objectName = sb.toString();
-        String downloadFilePath = "/Users/inhwan/Documents/uploadThrough/"+filename;
+//        String downloadFilePath = "/Users/inhwan/Documents/uploadThrough/"+filename;        // 이 경로 대신 /tmp로 해버리면 지우지 않아도 될까?
+        String downloadFilePath = "/tmp/"+filename;        // 이 경로 대신 /tmp로 해버리면 지우지 않아도 될까?
 
 // download object
         try {
@@ -253,7 +254,8 @@ public class FileDataController {
         }
 
 
-        Resource resource = new FileSystemResource("/Users/inhwan/Documents/uploadThrough/"+filename);
+//        Resource resource = new FileSystemResource("/Users/inhwan/Documents/uploadThrough/"+filename);      // 그럼 여기도 tmp에서 꺼내와야해
+        Resource resource = new FileSystemResource("/tmp/"+filename);      // 그럼 여기도 tmp에서 꺼내와야해
 
 
         String resourceName = resource.getFilename();
