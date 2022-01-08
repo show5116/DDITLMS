@@ -249,7 +249,6 @@ public class EmailServiceImpl implements EmailService {
                 + dto.getContent());
         dto.setSubject("RE : " + dto.getSubject());
         dto.setToAddress(dto.getFromAddress().toString().split(" ")[1].replace("<", "").replace(">", ""));
-        log.info("메일 읽었을 때 DTO 값" + String.valueOf(dto));
         return dto;
     }
 
@@ -281,15 +280,12 @@ public class EmailServiceImpl implements EmailService {
             emailFolder.open(Folder.READ_ONLY);
             MimeMessage mimeMessage = (MimeMessage) emailFolder.getMessage(emailDTO.getMessageNumber());
             Address[] replyTo = mimeMessage.getReplyTo();
-            log.info("----------------" + String.valueOf(replyTo));
             String s = replyTo[0].toString();
-            log.info("----------------" + String.valueOf(s));
 
             Email email = EmailBuilder.replyingTo(mimeMessage)
                     .from(user + domain)
                     .prependText("")
                     .buildEmail();
-            log.info("----------------" + email);
 
             Mailer inhouseMailer = MailerBuilder
                     .withTransportStrategy(TransportStrategy.SMTP_TLS)

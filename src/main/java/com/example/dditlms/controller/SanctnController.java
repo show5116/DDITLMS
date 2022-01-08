@@ -60,7 +60,6 @@ public class SanctnController {
     @GetMapping("/sanctn")
     public String santn(Model model, @PageableDefault(size = 8) Pageable pageable, SanctnProgress sanctnProgress) {
 
-
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         SanctnProgress reject = SanctnProgress.REJECT;
@@ -79,6 +78,15 @@ public class SanctnController {
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+
+        for (SanctnDTO result : results) {
+            String s = sanctnService.showSanctnCountProgress(result.getSanctnId());
+            String[] split = s.split("!");
+            String s1 = split[0];
+            String s2 = split[1];
+            result.setSanctnStep(Integer.valueOf(s1));
+            result.setCountPro(Long.valueOf(s2));
+        }
 
 
         model.addAttribute("results", results);
@@ -111,6 +119,14 @@ public class SanctnController {
 
         SanctnProgress progress = SanctnProgress.PROGRESS;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        for (SanctnDTO result : results) {
+            String s = sanctnService.showSanctnCountProgress(result.getSanctnId());
+            String[] split = s.split("!");
+            String s1 = split[0];
+            String s2 = split[1];
+            result.setSanctnStep(Integer.valueOf(s1));
+            result.setCountPro(Long.valueOf(s2));
+        }
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -260,6 +276,17 @@ public class SanctnController {
             SanctnDTO sanctnDTO = viewComplaintPro.get();
             model.addAttribute("complimentPro", sanctnDTO);
         }
+
+        String s = sanctnService.showSanctnCountProgress(id);
+        String[] split = s.split("!");
+        Integer Pro = Integer.valueOf(split[0]);
+        Integer Total = Integer.valueOf(split[1]);
+
+        int show = 100 / Total;
+        int showPro = show * Pro;
+
+
+        model.addAttribute("showPro", showPro);
 
         //문서 ID 넘겨줌
         model.addAttribute("id", id);
@@ -432,6 +459,15 @@ public class SanctnController {
         SanctnProgress progress = SanctnProgress.PROGRESS;
 
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, progress);
+        for (SanctnDTO result : results) {
+            String s = sanctnService.showSanctnCountProgress(result.getSanctnId());
+            String[] split = s.split("!");
+            String s1 = split[0];
+            String s2 = split[1];
+            result.setSanctnStep(Integer.valueOf(s1));
+            result.setCountPro(Long.valueOf(s2));
+        }
+
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -451,6 +487,14 @@ public class SanctnController {
 
         SanctnProgress reject = SanctnProgress.REJECT;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, reject);
+        for (SanctnDTO result : results) {
+            String s = sanctnService.showSanctnCountProgress(result.getSanctnId());
+            String[] split = s.split("!");
+            String s1 = split[0];
+            String s2 = split[1];
+            result.setSanctnStep(Integer.valueOf(s1));
+            result.setCountPro(Long.valueOf(s2));
+        }
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -471,6 +515,14 @@ public class SanctnController {
 
         SanctnProgress publicize = SanctnProgress.PUBLICIZE;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, publicize);
+        for (SanctnDTO result : results) {
+            String s = sanctnService.showSanctnCountProgress(result.getSanctnId());
+            String[] split = s.split("!");
+            String s1 = split[0];
+            String s2 = split[1];
+            result.setSanctnStep(Integer.valueOf(s1));
+            result.setCountPro(Long.valueOf(s2));
+        }
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -490,6 +542,14 @@ public class SanctnController {
         Long userNumber = MemberUtil.getLoginMember().getUserNumber();
 
         Page<SanctnDTO> results = sanctnLnRepository.inquireAll(userNumber, pageable);
+        for (SanctnDTO result : results) {
+            String s = sanctnService.showSanctnCountProgress(result.getSanctnId());
+            String[] split = s.split("!");
+            String s1 = split[0];
+            String s2 = split[1];
+            result.setSanctnStep(Integer.valueOf(s1));
+            result.setCountPro(Long.valueOf(s2));
+        }
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));
@@ -509,6 +569,14 @@ public class SanctnController {
 
         SanctnProgress completion = SanctnProgress.COMPLETION;
         Page<SanctnDTO> results = sanctnLnRepository.inquirePageWithProgress(userNumber, pageable, completion);
+        for (SanctnDTO result : results) {
+            String s = sanctnService.showSanctnCountProgress(result.getSanctnId());
+            String[] split = s.split("!");
+            String s1 = split[0];
+            String s2 = split[1];
+            result.setSanctnStep(Integer.valueOf(s1));
+            result.setCountPro(Long.valueOf(s2));
+        }
 
         model.addAttribute("results", results);
         model.addAttribute("page", new PageDTO(results.getTotalElements(), pageable));

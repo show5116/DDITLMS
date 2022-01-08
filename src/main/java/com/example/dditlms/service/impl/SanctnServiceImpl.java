@@ -172,7 +172,7 @@ public class SanctnServiceImpl implements SanctnService {
         sanctnLn2.setMberNo(byUserNumber2.get());
         sanctnLn2.setSanctnLnProgress(SanctnLnProgress.WAITING);
         sanctnLn2.setLastApproval("N");
-        sanctnLn2.setSanctnStep(1);
+        sanctnLn2.setSanctnStep(2);
         sanctnLnRepository.save(sanctnLn2);
 
         // 민원 결재선 저장(최종승인 직원)
@@ -182,12 +182,19 @@ public class SanctnServiceImpl implements SanctnService {
         sanctnLn3.setMberNo(byUserNumber3.get());
         sanctnLn3.setSanctnLnProgress(SanctnLnProgress.WAITING);
         sanctnLn3.setLastApproval("Y");
-        sanctnLn3.setSanctnStep(1);
+        sanctnLn3.setSanctnStep(3);
         sanctnLnRepository.save(sanctnLn3);
 
     }
-    
-    
+
+    @Transactional
+    @Override
+    public void deleteComplaint(Long id) {
+        Sanctn bySanctnSjEndingWith = sanctnRepository.findBySanctnSjEndingWith("$" + id);
+        sanctnRepository.delete(bySanctnSjEndingWith);
+    }
+
+
     //학생 민원신청 결과 반환
     @Override
     public Optional<SanctnDTO> viewComplaint(Long id) {
@@ -195,9 +202,8 @@ public class SanctnServiceImpl implements SanctnService {
         Map<String, Object> resultList = null;
         Optional<Map<String, Object>> result = Optional.ofNullable(sanctnLnRepository.viewCompliment(id));
         SanctnDTO sanctnDTO = new SanctnDTO();
-        
-        if (!result.get().isEmpty()) {
 
+        if (!result.get().isEmpty()) {
 
 
             resultList = result.get();
@@ -253,12 +259,12 @@ public class SanctnServiceImpl implements SanctnService {
             resultList = result.get();
 
             Timestamp beforeConvertDate = (Timestamp) resultList.get("SANCTN_DATE");
-            if (beforeConvertDate !=null) {
+            if (beforeConvertDate != null) {
                 LocalDateTime localDateTime = beforeConvertDate.toLocalDateTime();
                 sanctnDTO.setSanctnDate(localDateTime);
             }
             Object sanctn_opinion = resultList.get("SANCTN_OPINION");
-            if (sanctn_opinion !=null){
+            if (sanctn_opinion != null) {
                 String sanctnOpinion = sanctn_opinion.toString();
                 sanctnDTO.setSanctnOpinion(sanctnOpinion);
             }
@@ -313,6 +319,24 @@ public class SanctnServiceImpl implements SanctnService {
         }
         return sanctnDTOS;
 
+    }
+
+    @Override
+    public String showSanctnCountProgress(Long id) {
+
+        int Procount = 0;
+        int totalCount = 0;
+        List<SanctnDTO> sanctnDTOS = sanctnLnRepository.countSanctn(id);
+        for (SanctnDTO sanctnDTO : sanctnDTOS) {
+            SanctnLnProgress sanctnLnProgress = sanctnDTO.getSanctnLnProgress();
+            if (sanctnLnProgress.toString().equals("PROCESS")) {
+                Procount++;
+            }else {
+                totalCount ++;
+            }
+        }
+
+        return Procount + "!" + (totalCount + Procount);
     }
 }
 

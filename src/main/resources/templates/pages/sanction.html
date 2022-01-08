@@ -93,7 +93,7 @@
                         <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;"
                             th:value="@{ {id}(id= ${result.sanctnId})}"
                             th:onclick="btnShowSanctn(this)" th:id="idValue">
-                            <td th:text="${result.sanctnStep}">결재단계</td>
+                            <td th:text="|${result.sanctnStep}/${result.countPro}|">결재단계</td>
                             <td th:text="${#strings.arraySplit(result.sanctnSj,'$')[0]}">결재명</td>
                             <td th:text="${result.name}">기안자</td>
                             <td th:text="${result.status.krName}">상태</td>

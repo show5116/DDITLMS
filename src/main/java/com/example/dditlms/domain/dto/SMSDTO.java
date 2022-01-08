@@ -7,6 +7,7 @@ import java.util.HashMap;
 @Getter @Setter
 @AllArgsConstructor
 @ToString
+@Builder
 public class SMSDTO {
     private String to;
     private String from;

@@ -93,9 +93,9 @@ public class AcademicServiceImpl implements AcademicService {
         // 실제 검색 로직 -> 학생의 담당교수를 검색한다. 당당 교수가 있을 경우 -> 중간 승인자 담당교수
         // 학생의 담당교수를 검색한다. 당당 교수가 없을 경우 -> 중간 승인자 학과장
         List<Long> userNumber = new ArrayList<>();
-        Long staff = 11111L;
+        Long staff = 11134L;
         Long professor = 8888L;
-        Long approver = 11112L;
+        Long approver = 11139L;
         userNumber.add(staff);
         userNumber.add(professor);
         userNumber.add(approver);
@@ -181,6 +181,7 @@ public class AcademicServiceImpl implements AcademicService {
         TempAbsence tempAbsence = tempAbsenceWrapper.orElse(null);
         tempAbsenceRepository.delete(tempAbsence);
         histRepository.delete(history);
+        sanctnService.deleteComplaint(history.getId());
 
         } else if(map.get("hist").equals("change")) {
             Optional<History> historyWrapper = histRepository.findByStudentAndStatusAndResultStatus(student, AcademicStatus.CHANGEMAJOR, ResultStatus.STANDBY);
@@ -188,6 +189,7 @@ public class AcademicServiceImpl implements AcademicService {
             histRepository.delete(history);
 
         }
+
 
     }
 

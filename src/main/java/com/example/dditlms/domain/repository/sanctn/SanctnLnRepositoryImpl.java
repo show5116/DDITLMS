@@ -7,6 +7,7 @@ import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.util.MemberUtil;
 import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -248,8 +249,5 @@ public class SanctnLnRepositoryImpl implements SanctnLnRepositoryCustom {
                 .fetch();
 
     }
-
-
-
 
 }

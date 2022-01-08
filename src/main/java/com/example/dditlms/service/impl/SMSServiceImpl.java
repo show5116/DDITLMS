@@ -17,6 +17,7 @@ public class SMSServiceImpl implements SMSService {
         try{
             coolsms.send(smsdto.ToHashMap());
         }catch(CoolsmsException e){
+            System.out.println(e);
         }
     }
 }

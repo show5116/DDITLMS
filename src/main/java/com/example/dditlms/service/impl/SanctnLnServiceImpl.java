@@ -48,7 +48,6 @@ public class SanctnLnServiceImpl implements SanctnLnService {
 
         // 다음 결재자 요청상태로 변경하기
         SanctnLn nextSanctnId = sanctnLnRepository.findNextSanctnId(userNumber, id);
-        log.info(String.valueOf(nextSanctnId));
 
         if (nextSanctnId != null) {
 

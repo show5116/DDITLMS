@@ -16,62 +16,59 @@
                                 <div class="card-body">
                                     <div class="email-app-sidebar">
                                         <div class="media">
+                                            <div class="media-size-email"><img class="me-3 rounded-circle"
+                                                                               src=""
+                                                                               alt=""></div>
                                             <div class="media-body">
                                                 <h6 class="f-w-600" th:text="${name}">사용자이름</h6>
                                                 <p th:text="${user}">사용자ID@ddit.site</p>
                                             </div>
                                         </div>
-                                        <div>
-                                            <ul class="nav main-menu" role="tablist">
-                                                <li class="nav-item"><a class="btn-primary btn-block btn-mail w-100"
-                                                                        id="btnWriteMail" data-bs-toggle="pill"
-                                                                        href="" role="tab"
-                                                                        aria-controls="pills-darkhome"
-                                                                        aria-selected="true"><i
-                                                        class="icofont icofont-envelope me-2"></i>메일 쓰기</a></li>
-                                                <li class="nav-item"><a class="show" id="pills-darkprofile-tab"
-                                                                        data-bs-toggle="pill" href="#"
-                                                                        onclick="mailBox('INBOX');return false;"
-                                                                        role="tab" aria-controls="pills-darkprofile"
-                                                                        aria-selected="false"><span class="title"><i
-                                                        class="icon-import"></i>받은 메일함</span><span
-                                                        class="badge pull-right"
-                                                        th:text="|(${mailCount})|"></span></a>
-                                                </li>
-                                                <li><a href="#" onclick="mailBox('Sent');return false;">
-                                                    <span class="title"><i class="icon-new-window"></i>보낸 메일함</span>
-                                                    <span class="badge pull-right"
-                                                          th:text="|(${sentMailCount})|">(69)</span></a>
-                                                </li>
-                                                <li><a href="#" onclick="mailBox('Drafts');return false;"><span
-                                                        class="title"><i
-                                                        class="icon-pencil-alt"></i>임시 보관함</span><span
-                                                        class="badge pull-right"
-                                                        th:text="|(${draftMailCount})|">(59)</span></a>
-                                                </li>
-                                                <li><a href="#" onclick="mailBox('Trash');return false;"><span
-                                                        class="title"><i
-                                                        class="icon-trash"></i>지운 메일함</span><span
-                                                        class="badge pull-right"
-                                                        th:text="|(${trashMailCount})|">(99)</span></a>
-                                                </li>
-                                                <li><a href="#"><span class="title"><i
-                                                        class="icon-info-alt"></i>중요 메일함</span></a>
-                                                </li>
-                                                <li><a href="#"><span class="title"><i
-                                                        class="icon-star"></i>별표 메일함</span></a>
-                                                </li>
-                                                <li>
-                                                    <hr>
-                                                </li>
-                                                <li><a href="#"><span class="title"><i
-                                                        class="icon-email"></i>읽지않음</span></a>
-                                                </li>
-                                                <li><a href="#"><span class="title"><i
-                                                        class="icon-export"></i>스팸메일</span></a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <ul class="nav main-menu" role="tablist">
+                                            <li class="nav-item"><a class="btn-primary btn-block btn-mail w-100"
+                                                                    id="btnWriteMail" data-bs-toggle="pill"
+                                                                    href="" role="tab" aria-controls="pills-darkhome"
+                                                                    aria-selected="true"><i
+                                                    class="icofont icofont-envelope me-2"></i>메일 쓰기</a></li>
+                                            <li class="nav-item"><a class="show" id="pills-darkprofile-tab"
+                                                                    data-bs-toggle="pill" href="#"
+                                                                    onclick="mailBox('INBOX');return false;"
+                                                                    role="tab" aria-controls="pills-darkprofile"
+                                                                    aria-selected="false"><span class="title"><i
+                                                    class="icon-import"></i>받은 메일함</span><span class="badge pull-right"
+                                                                                               th:text="|(${mailCount})|"></span></a>
+                                            </li>
+                                            <li><a href="#" onclick="mailBox('Sent');return false;">
+                                                <span class="title"><i class="icon-new-window"></i>보낸 메일함</span>
+                                                <span class="badge pull-right"
+                                                      th:text="|(${sentMailCount})|">(69)</span></a>
+                                            </li>
+                                            <li><a href="#" onclick="mailBox('Drafts');return false;"><span
+                                                    class="title"><i
+                                                    class="icon-pencil-alt"></i>임시 보관함</span><span
+                                                    class="badge pull-right" th:text="|(${draftMailCount})|">(59)</span></a>
+                                            </li>
+                                            <li><a href="#" onclick="mailBox('Trash');return false;"><span
+                                                    class="title"><i
+                                                    class="icon-trash"></i>지운 메일함</span><span class="badge pull-right"
+                                                                                              th:text="|(${trashMailCount})|">(99)</span></a>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-info-alt"></i>중요 메일함</span></a>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-star"></i>별표 메일함</span></a>
+                                            </li>
+                                            <li>
+                                                <hr>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-email"></i>읽지않음</span></a>
+                                            </li>
+                                            <li><a href="#"><span class="title"><i
+                                                    class="icon-export"></i>스팸메일</span></a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -93,20 +90,23 @@
                                                 <div class="dropdown">
                                                     <button class="btn btn-primary dropdown-toggle show"
                                                             id="dropdownMenuButton" type="button"
-                                                            data-bs-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="true">Action
+                                                            data-bs-toggle="dropdown" aria-haspopup="false"
+                                                            aria-expanded="false">Action
                                                     </button>
-                                                    <div class="dropdown-menu show"
-                                                         aria-labelledby="dropdownMenuButton"
-                                                         style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 37px);"
-                                                         data-popper-placement="bottom-start"><a
-                                                            class="dropdown-item"
-                                                            href="javascript:void(0)">Refresh</a><a
-                                                            class="dropdown-item" href="javascript:void(0)">Mark as
-                                                        important</a><a class="dropdown-item"
-                                                                        href="javascript:void(0)">Move to span</a><a
-                                                            class="dropdown-item" href="javascript:void(0)">Move to
-                                                        trash </a></div>
+<!--                                                    <div>-->
+<!--                                                        <div class="dropdown-menu show"-->
+<!--                                                             aria-labelledby="dropdownMenuButton"-->
+<!--                                                             style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 37px);"-->
+<!--                                                             data-popper-placement="bottom-start"><a-->
+<!--                                                                class="dropdown-item"-->
+<!--                                                                href="javascript:void(0)">Refresh</a><a-->
+<!--                                                                class="dropdown-item" href="javascript:void(0)">Mark as-->
+<!--                                                            important</a><a class="dropdown-item"-->
+<!--                                                                            href="javascript:void(0)">Move to span</a><a-->
+<!--                                                                class="dropdown-item" href="javascript:void(0)">Move to-->
+<!--                                                            trash </a>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
                                                 </div>
                                             </div>
                                         </div>
@@ -118,11 +118,9 @@
                                     <div class="media">
                                         <div class="media-size-email">
                                             <label class="d-block mb-0" for="chk-ani">
-                                                <input class="checkbox_animated" id="" type="checkbox"
+                                                <input class="checkbox_animated" id="chk-ani" type="checkbox"
                                                        checked="">
-                                            </label><i class="like" data-feather="star"></i><img
-                                                class="me-3 rounded-circle" src="../assets/images/user/user.png"
-                                                alt="">
+                                            </label>
                                         </div>
                                         <div class="media-body">
                                             <h6 th:text="${inbox.fromAddress}">Pork Lorn </h6>
@@ -199,6 +197,10 @@
             },
         });
     }
+
+
+
+
 
 
 </script>
