@@ -13,4 +13,7 @@ public interface SignupSearchService {
 
     @Transactional
     void allAutoSearch(Map<String, Object> map);
+
+    @Transactional
+    void getLectureManageList(Map<String, Object> map);
 }

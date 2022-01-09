@@ -4,16 +4,16 @@ import com.example.dditlms.domain.common.Grade;
 import com.example.dditlms.domain.common.LectureSection;
 import com.example.dditlms.domain.common.WheatherToDelete;
 import com.example.dditlms.domain.dto.CurriculumDTO;
+import com.example.dditlms.domain.dto.PreCourseDTO;
+import com.example.dditlms.domain.dto.SignupDTO;
 import com.example.dditlms.domain.dto.SubjectDTO;
-import com.example.dditlms.domain.entity.Curriculum;
-import com.example.dditlms.domain.entity.Major;
-import com.example.dditlms.domain.entity.SemesterByYear;
-import com.example.dditlms.domain.entity.Subject;
-import com.example.dditlms.domain.repository.CurriculumRepository;
+import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.SemesterByYearRepository;
 import com.example.dditlms.domain.repository.SubjectRepository;
 import com.example.dditlms.service.CurriculumService;
+import com.example.dditlms.service.PreCourseRegistrationService;
+import com.example.dditlms.service.SignupSearchService;
 import com.example.dditlms.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.dditlms.domain.entity.QOpenLecture.openLecture;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,6 +41,9 @@ public class AccademicDepController {
     private final MajorRepository majorRepository;
 
     private final SemesterByYearRepository semesterRepository;
+
+    private final SignupSearchService signupSearchService;
+    private final PreCourseRegistrationService courseRegistrationService;
 
     @GetMapping("/accademic/curriculum")
     public ModelAndView addCurriculum(ModelAndView mav){
@@ -136,8 +142,13 @@ public class AccademicDepController {
 
     @GetMapping("/accademic/lectureManage")
     public ModelAndView lectureManage(ModelAndView mav){
-
-        mav.setViewName("/pages/lectureManage");
+        Map<String, Object> map = new HashMap<>();
+        signupSearchService.getLectureManageList(map);
+        List<OpenLecture> lectureList = (List<OpenLecture>) map.get("lectureList");
+        List<Major> majorList = (List<Major>) map.get("majorList");
+        mav.addObject("majorList", majorList);
+        mav.addObject("openLecture",lectureList);
+        mav.setViewName("pages/lectureManage");
         return mav;
     }
 }

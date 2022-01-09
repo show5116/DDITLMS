@@ -42,48 +42,46 @@ function hexToRGBA(hex) {
 }
 
 (function() {
-    var calendar;
-    var id = 0;
 
-    calendar = new CalendarInfo();
+    let calendar1 = new CalendarInfo();
     // id += 1;
-    calendar.id = 'PRIVATE';
-    calendar.name = '개인';
-    calendar.color = '#FFFFFF';
-    calendar.bgColor = '#24695c';
-    calendar.dragBgColor = '#24695c';
-    calendar.borderColor = '#24695c';
-    addCalendar(calendar);
+    calendar1.id = 'PRIVATE';
+    calendar1.name = '개인';
+    calendar1.color = '#FFFFFF';
+    calendar1.bgColor = '#24695c';
+    calendar1.dragBgColor = '#24695c';
+    calendar1.borderColor = '#24695c';
+    addCalendar(calendar1);
 
-    calendar = new CalendarInfo();
+    let calendar2 = new CalendarInfo();
     // id += 1;
-    calendar.id = 'MAJOR';
-    calendar.name = '학과';
-    calendar.color = '#FFFFFF';
-    calendar.bgColor = '#ba895d';
-    calendar.dragBgColor = '#ba895d';
-    calendar.borderColor = '#ba895d';
-    addCalendar(calendar);
+    calendar2.id = 'MAJOR';
+    calendar2.name = '학과';
+    calendar2.color = '#FFFFFF';
+    calendar2.bgColor = '#ba895d';
+    calendar2.dragBgColor = '#ba895d';
+    calendar2.borderColor = '#ba895d';
+    addCalendar(calendar2);
 
-    calendar = new CalendarInfo();
+    let calendar3 = new CalendarInfo();
     // id += 1;
-    calendar.id = 'COLLEGE';
-    calendar.name = '학부';
-    calendar.color = '#ffffff';
-    calendar.bgColor = '#03bd9e';
-    calendar.dragBgColor = '#03bd9e';
-    calendar.borderColor = '#03bd9e';
-    addCalendar(calendar);
+    calendar3.id = 'COLLEGE';
+    calendar3.name = '학부';
+    calendar3.color = '#ffffff';
+    calendar3.bgColor = '#03bd9e';
+    calendar3.dragBgColor = '#03bd9e';
+    calendar3.borderColor = '#03bd9e';
+    addCalendar(calendar3);
 
-    calendar = new CalendarInfo();
+    let calendar4 = new CalendarInfo();
     // id += 1;
-    calendar.id = 'TOTAL';
-    calendar.name = '학교';
-    calendar.color = '#FFFFFF';
-    calendar.bgColor = '#ff5583';
-    calendar.dragBgColor = '#ff5583';
-    calendar.borderColor = '#ff5583';
-    addCalendar(calendar);
+    calendar4.id = 'TOTAL';
+    calendar4.name = '학교';
+    calendar4.color = '#FFFFFF';
+    calendar4.bgColor = '#ff5583';
+    calendar4.dragBgColor = '#ff5583';
+    calendar4.borderColor = '#ff5583';
+    addCalendar(calendar4);
 
     /*calendar = new CalendarInfo();
     id += 1;

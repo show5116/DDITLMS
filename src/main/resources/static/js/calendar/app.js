@@ -26,7 +26,6 @@ function getMyInfo(){
         })
         .fail(function (er){
             swal("에러");
-            console.log(er);
         })
 }
 
@@ -83,6 +82,7 @@ function getMajor(){
             modalBtn.click();
             getTypeList();
             console.log('beforeCreateSchedule', e);
+            console.log(e.start._date);
             // saveNewSchedule(e);
 
             e.guide.clearGuideElement();
@@ -178,8 +178,6 @@ function getMajor(){
         var options = cal.getOptions();
         var viewName = '';
 
-        console.log(target);
-        console.log(action);
         switch (action) {
             case 'toggle-daily':
                 viewName = 'day';
@@ -355,20 +353,20 @@ function getMajor(){
     function onChangeCalendars(e) {
         var calendarId = e.target.value;
         var checked = e.target.checked;
-        var viewAll = document.querySelector('.lnb-calendars-item input');
+        var btns = document.querySelectorAll('.lnb-calendars-item input');
+        var viewAll = btns[btns.length-1];
         var calendarElements = Array.prototype.slice.call(document.querySelectorAll('#calendarList input'));
         var allCheckedCalendars = true;
-
         if (calendarId === 'all') {
             allCheckedCalendars = checked;
-
             calendarElements.forEach(function(input) {
+
                 var span = input.parentNode;
                 input.checked = checked;
                 span.style.backgroundColor = checked ? span.style.borderColor : 'transparent';
             });
-
             CalendarList.forEach(function(calendar) {
+
                 calendar.checked = checked;
             });
         } else {
@@ -465,8 +463,6 @@ function getMajor(){
             schedule.dragBgColor = findCalender.dragBgColor;
             schedule.borderColor = findCalender.borderColor;
         })
-        console.log("--------------SETSCHEDULES(ScheduleList)------------");
-        console.log(ScheduleList);
         setTimeout(function (){
 
             cal.createSchedules(ScheduleList);
@@ -503,13 +499,10 @@ function getMajor(){
 // LNY function STR=================================================================================
     //일정 삭체--------------------------------------------------------------------------------------
     function myDeleteSchedule(scheduleData){
-        console.log(scheduleData.schedule.id);
         const delSchedule = scheduleData.schedule.id;
         const params = {
             deleteSchedule : delSchedule
         };
-
-        console.log(params);
 
         $.ajax({
             url : "/calendar/delete",
@@ -525,7 +518,6 @@ function getMajor(){
                     swal("본인 일정만 삭제 가능합니다.")
                     return;
                 }
-                console.log(fragment);
                 // swal("삭제 성공");
 
                 cal.deleteSchedule(scheduleData.schedule.id, scheduleData.schedule.calendarId)
@@ -648,8 +640,6 @@ function getMajor(){
                     return;
                 }
                 // swal("스케줄이 등록되었습니다.");
-                console.log("----------ADDEVENTLISTENER(성공후 넘어온 일정리스트)-------------");
-                console.log(fragment.list);
                 const cancelBtn = document.querySelector("#cancel-btn");
                 cancelBtn.click();
                 ScheduleList=[];
@@ -672,15 +662,12 @@ function getMajor(){
 
                     ScheduleList.push(schedule);
                 })
-                console.log("등록성공후 scheduleList0----------------------");
-                console.log(ScheduleList);
                 setSchedules();
                 refreshScheduleVisibility();
                 cleanSchedule();
             })
             .fail(function (er){
                 swal("에러");
-                console.log(er);
             })
 
     })
@@ -693,10 +680,7 @@ function getMajor(){
         const typeDetail = document.querySelector("#update-schedule-type-detail");
         const typeOption = updateSchduleType.options[updateSchduleType.selectedIndex].innerText;
 
-        console.log("구분 선택했을때의 구분의 value값 : ");
         const typevaule = updateSchduleType.options[updateSchduleType.selectedIndex].value;
-        console.log(typevaule);
-        console.log("ajax밖에서 majorList : " + majorList);
         const typeDetailOptions = {
             none: ['선택'],
             noneValue : ['NONE'],
@@ -747,10 +731,7 @@ function getMajor(){
         const typeDetail = document.querySelector("#new-schedule-type-detail");
         const typeOption = scheduleType.options[scheduleType.selectedIndex].innerText;
 
-        console.log("구분 선택했을때의 구분의 value값 : ");
         const typevaule = scheduleType.options[scheduleType.selectedIndex].value;
-        console.log(typevaule);
-        console.log("ajax밖에서 majorList : " + majorList);
         const typeDetailOptions = {
             none: ['선택'],
             noneValue : ['NONE'],
@@ -799,7 +780,6 @@ function getMajor(){
     //권한별로 다른 일정구분 목록리스트
     function getTypeList() {
 
-        console.log("getTypeList로 넘어온 role : " + myRole);
         const typeOptions = {
             student: ['선택', '개인'],
             studentValue: ['NONE','PRIVATE'],
@@ -818,8 +798,6 @@ function getMajor(){
 
         const type = document.querySelector("#new-schedule-type");
         const updatetype = document.querySelector("#update-schedule-type");
-
-        console.log("switch전 role : " + myRole);
 
         switch (myRole) {
             case 'ROLE_STUDENT':
@@ -871,8 +849,6 @@ function getMajor(){
     function updateModal(fragment) {
         getTypeList();
 
-        console.log("updateModal 이벤트에 들어옴");
-        console.log(fragment);
         var type = document.querySelector("#update-schedule-type");
         var typeDetail = document.querySelector("#update-schedule-type-detail");
         var title = document.querySelector("#update-schedule-title");
@@ -958,24 +934,16 @@ function getMajor(){
                         const alarmType = type[c];
                         if (alarmType == "SMS"){
                             isAlarmSMS = alarmSms.checked
-                            console.log(isAlarmSMS);
                             isAlarmSMS = true;
-                            console.log(isAlarmSMS);
                         }
                         if (alarmType == "KAKAO"){
                             isAlarmKAKAO = alarmKakao.checked
-                            console.log(isAlarmKAKAO);
                             isAlarmKAKAO = true;
-                            console.log(isAlarmKAKAO);
                         }
                     }
                 }
 
-                console.log("=====if문 들어가기전 typeDetaileValue : " + typeDetailValue);
                 if (typeDetailValue != 'none' || typeDetailValue != 'PRIVATE' || typeDetailValue != 'TOTAL'){
-                    console.log("=====if문 안 typeDetaileValue : " + typeDetailValue);
-                    console.log("=====if문 안 majorList : ");
-                    console.log(majorList[0][1]);
                     for (var c=0; c < majorList[0].length; c++) {
                         var optionValue = majorList[0][c];
                         if (optionValue == typeDetailValue) {
@@ -986,9 +954,6 @@ function getMajor(){
                 }
 
                 const KR_TIME_DIFF = 9 * 60 * 60 * 1000; //한국시간표시
-
-                console.log(new Date(startDateValue + KR_TIME_DIFF).toISOString().slice(0,16))
-                console.log(typeDetailIdx);
 
                 type.selectedIndex = typeOptionIdx;
                 typeDetail.selectedIndex = typeDetailIdx;
@@ -1013,7 +978,6 @@ function getMajor(){
     updateBtn.addEventListener("click", updateSchedule);
 
     function updateSchedule(){
-        console.log("updateSchedule들어옴");
         var type = document.querySelector("#update-schedule-type").value;
         var typeDetail = document.querySelector("#update-schedule-type-detail").value;
         var title = document.querySelector("#update-schedule-title").value;
@@ -1025,16 +989,6 @@ function getMajor(){
         var alarmTime = document.querySelector("#update-schedule-alam-time").value;
         var alarmSms = document.querySelector("#update-schedule-alam-sms").checked;
         var alarmKakao = document.querySelector("#update-schedule-alam-kakao").checked;
-
-
-        console.log("updateSchedule - getValue ::=========================");
-        console.log("type : " + type);
-        console.log("typeDetail : " + typeDetail);
-        console.log("title : " + title);
-        console.log("content : " + content)
-
-
-
 
         var strArr = startDate.split("T");
         var str = strArr[0] + " " + strArr[1];
@@ -1120,8 +1074,6 @@ function getMajor(){
 
                     ScheduleList.push(schedule);
                 })
-                console.log("등록성공후 scheduleList0----------------------");
-                console.log(ScheduleList);
                 setSchedules();
                 refreshScheduleVisibility();
                 cleanSchedule();

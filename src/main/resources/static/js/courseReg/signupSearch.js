@@ -32,6 +32,10 @@ const majorList = [];
             .done(function(fragment){
                 console.log(fragment);
                 $("#department").replaceWith(fragment);
+                var major = document.querySelector("#department");
+                major.onchange = function(){
+                    allAutoSearch();
+                }
                 allAutoSearch();
             })
     }
@@ -42,7 +46,10 @@ const majorList = [];
     var division = topSetting.completion;
     year.onchange = function(){allAutoSearch();}
     seme.onchange = function(){allAutoSearch();}
-    major.onchange = function(){allAutoSearch();}
+    major.onchange = function(){
+        console.log("major onchange");
+        allAutoSearch();
+    }
     division.onchange = function(){allAutoSearch();}
     var searchBtn = topSetting.searchBtn;
     searchBtn.addEventListener("click",function(){
@@ -77,6 +84,8 @@ const majorList = [];
         var searchCollege = topSetting.college.options[topSetting.college.selectedIndex].value;
         var searchMajor = topSetting.department.options[topSetting.department.selectedIndex].value;
         var searchdivision = topSetting.completion.options[topSetting.completion.selectedIndex].value;
+
+        console.log(searchMajor);
 
         $.ajax({
             url : "/signUpSearch/allAutoSearch",

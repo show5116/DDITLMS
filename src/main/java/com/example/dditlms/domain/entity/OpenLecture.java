@@ -79,7 +79,9 @@ public class OpenLecture {
                 .lectureRoom(this.lectureId.getId())
                 .lecturedivision(kind)
                 .college(this.getMajorCode().getSelection().getName().split("대학")[0])
-                .applicantsCount(count).build();
+                .applicantsCount(count)
+                .point(this.subjectCode.getPoint())
+                .build();
         return dto;
     }
 

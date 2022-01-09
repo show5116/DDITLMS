@@ -1,19 +1,14 @@
 package com.example.dditlms.controller;
 
-import com.example.dditlms.domain.common.LectureSection;
 import com.example.dditlms.domain.dto.PreCourseDTO;
 import com.example.dditlms.domain.entity.*;
 import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.PreCourseRegistrationRepository;
 import com.example.dditlms.domain.repository.SemesterByYearRepository;
 import com.example.dditlms.domain.repository.SignupSearchRepository;
-import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.PreCourseRegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +23,6 @@ public class PreCourseRegistrationController {
 
     private final PreCourseRegistrationRepository repository;
     private final SignupSearchRepository searchRepository;
-    private final SemesterByYearRepository semesterByYearRepository;
-    private final MajorRepository majorRepository;
 
     private String memNo;
 

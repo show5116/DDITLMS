@@ -6,26 +6,26 @@ import java.util.Map;
 
 public interface CourseRegistService {
     @Transactional
-    void courseRegistration(Map<String, Object> map);
+    public void courseRegistration(Map<String, Object> map);
 
     @Transactional
-    void searchLecture(Map<String, Object> map);
+    public void searchLecture(Map<String, Object> map);
 
     @Transactional
-    void searchSubject(Map<String, Object> map);
+    public void searchSubject(Map<String, Object> map);
 
     @Transactional
-    void preTotalRegistration(Map<String, Object> map);
+    public void preTotalRegistration(Map<String, Object> map);
 
     @Transactional
-    void onePreRegistration(Map<String, Object> map);
+    public void onePreRegistration(Map<String, Object> map);
 
     @Transactional
-    void courseRegistrationCancel(Map<String, Object> map);
+    public void courseRegistrationCancel(Map<String, Object> map);
 
     @Transactional
-    void confirmDupl(Map<String, Object> map);
+    public void confirmDupl(Map<String, Object> map);
 
     @Transactional
-    void oneOpenLectureRegist(Map<String, Object> map);
+    public void oneOpenLectureRegist(Map<String, Object> map);
 }

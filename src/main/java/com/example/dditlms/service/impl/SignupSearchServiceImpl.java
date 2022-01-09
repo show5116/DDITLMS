@@ -1,8 +1,11 @@
 package com.example.dditlms.service.impl;
 
+import com.example.dditlms.domain.dto.PreCourseDTO;
 import com.example.dditlms.domain.dto.SignupDTO;
 import com.example.dditlms.domain.entity.Major;
+import com.example.dditlms.domain.entity.OpenLecture;
 import com.example.dditlms.domain.entity.SemesterByYear;
+import com.example.dditlms.domain.repository.EnrolmentRepository;
 import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.SemesterByYearRepository;
 import com.example.dditlms.domain.repository.SignupSearchRepository;
@@ -12,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +24,16 @@ public class SignupSearchServiceImpl implements SignupSearchService {
     private final SemesterByYearRepository byYearRepository;
     private final MajorRepository majorRepository;
     private final SignupSearchRepository repository;
+    private final EnrolmentRepository enrolmentRepository;
 
     @Override
     @Transactional
     public void signUpSearch(Map<String, Object> map){
+        Optional<SemesterByYear> semesterWrapper = byYearRepository.selectNextSeme();
+        SemesterByYear semester = semesterWrapper.orElse(null);
+        String semeYear = semester.getYear().split("-")[0];
+        int parseSemeYear = Integer.parseInt(semeYear);
+
         List<SemesterByYear> semesterByYearList = byYearRepository.findAll();
         List<String> yearList = new ArrayList<>();
         int i =0;
@@ -35,13 +41,22 @@ public class SignupSearchServiceImpl implements SignupSearchService {
             String years = byYear.getYear();
             String[] split = years.split("-");
             String distinctYear = split[0];
-            if (yearList.size()==0){
-                yearList.add(distinctYear);
+            int parseYear = Integer.parseInt(distinctYear);
+            log.info("-------SERVICEIMPL[signUpSearch] :: parseYear = {}",parseYear);
+            log.info("-------SERVICEIMPL[signUpSearch] :: parseSemeYear = {}",parseSemeYear);
+            if (parseYear > parseSemeYear){
+                log.info("-------SERVICEIMPL[signUpSearch] :: if(parseYear>parseSemeYear) = {}",parseYear>parseSemeYear);
+
+            }else {
+                if (yearList.size()==0){
+                    yearList.add(distinctYear);
+                }
+                if (!yearList.get(i).equals(distinctYear)){
+                    yearList.add(distinctYear);
+                    i++;
+                }
             }
-            if (!yearList.get(i).equals(distinctYear)){
-                yearList.add(distinctYear);
-                i++;
-            }
+
         }
         Map<String,Object> search = new HashMap<>();
         search.put("name","totalList");
@@ -70,8 +85,6 @@ public class SignupSearchServiceImpl implements SignupSearchService {
         map.put("majorList", majorList);
     }
 
-
-
     @Override
     @Transactional
     public void allAutoSearch(Map<String, Object> map){
@@ -81,8 +94,8 @@ public class SignupSearchServiceImpl implements SignupSearchService {
         String major = (String) map.get("major");
         String division = (String) map.get("division");
 
-        log.info("-------------SERVICE[allAutoSearch] :: college = {}",  college);
-        log.info("-------------SERVICE[allAutoSearch] :: major = {}",  major);
+        Major majorKr = majorRepository.findById(major).get();
+        major = majorKr.getKorean();
 
         Map<String,Object> search = new HashMap<>();
         search.put("name", "allAutoSearch");
@@ -96,8 +109,23 @@ public class SignupSearchServiceImpl implements SignupSearchService {
 
         map.put("result", result);
     }
-    
-    
+
+    @Override
+    @Transactional
+    public void getLectureManageList(Map<String, Object> map){
+        SemesterByYear semester = byYearRepository.selectNextSeme().orElse(null);
+        List<Major> majorList = majorRepository.findAll();
+        List<OpenLecture> lectureList = repository.findAllByYearSeme(semester);
+        for (OpenLecture lecture : lectureList){
+            int applicants = enrolmentRepository.countEnrolmentByOpenLecture(lecture);
+
+        }
+
+
+        map.put("lectureList",lectureList);
+        map.put("majorList", majorList);
+
+    }
     
 
 }

@@ -7,7 +7,6 @@ import com.example.dditlms.domain.repository.SignupSearchRepository;
 import com.example.dditlms.service.SignupSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +24,6 @@ import java.util.Map;
 public class SignupSearchController {
     private final SignupSearchService service;
 
-    private final MajorRepository majorRepository;
     private final SignupSearchRepository repository;
 
     @GetMapping("/signUpSearch")
@@ -85,6 +80,8 @@ public class SignupSearchController {
         String college = (String) paramMap.get("searchCollege");
         String major =(String)paramMap.get("searchMajor");
         String searchdivision = (String)paramMap.get("searchdivision");
+
+        log.info("--------CONTROLLER[allAutoSearch] :: major = {}", major);
 
         Map<String, Object> map = new HashMap<>();
         map.put("year",searchYear);

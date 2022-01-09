@@ -63,6 +63,7 @@ public class PreCourseRegistrationServiceImpl implements PreCourseRegistrationSe
         getUserInfo();
         String year = semester.getYear().split("-")[0];
         String seme = semester.getYear().split("-")[1];
+        String yearSeme = semester.getYear();
         List<Major> majorList = majorRepository.findAll();
 
         /* 개설강의 리스트 */
@@ -72,10 +73,6 @@ public class PreCourseRegistrationServiceImpl implements PreCourseRegistrationSe
             int applicantsCount = repository.countAllByLectureCode(openLecture);
             PreCourseDTO  dto = openLecture.toDto();
             dto.setApplicantsCount(applicantsCount);
-
-            log.info("--------SERVICE[preCourseRegistration] :: lectureCode = {}", dto.getLectureCode());
-            log.info("--------SERVICE[preCourseRegistration] :: lectureClass = {}", dto.getLectureClass());
-            log.info("--------SERVICE[preCourseRegistration] :: lecturedivision = {}", dto.getLecturedivision());
 
             preCourseDTOList.add(dto);
         }
@@ -96,7 +93,7 @@ public class PreCourseRegistrationServiceImpl implements PreCourseRegistrationSe
                     .build();
             result.add(dto);
         }
-
+        map.put("semester",yearSeme);
         map.put("memNo", memNo);
         map.put("memName", memName);
         map.put("year", year);

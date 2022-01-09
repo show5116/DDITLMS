@@ -80,8 +80,11 @@ public class SignupSearchRepositoryImpl implements SignupSearchRepositoryCustom{
                 String allcollege = (String) searchSubject.get("college");
                 String allmajor = (String)searchSubject.get("major");
                 String alldivision = (String)searchSubject.get("division");
+                log.info("-------REPOSITORY[totalLectureList] :: college = {}", allcollege);
+                log.info("-------REPOSITORY[totalLectureList] :: major = {}", allmajor);
 
                 if (allcollege.equals("total")){
+                    log.info("-------REPOSITORY[totalLectureList] :: college==total = {}", allcollege.equals("total"));
                     allcollege = "";
                 }else {
                     query.where(QMajor.major.selection.eq(MajorSelection.valueOf(allcollege)));

@@ -1,8 +1,6 @@
 package com.example.dditlms.config.scheduler;
 
 import com.example.dditlms.domain.dto.SMSDTO;
-import com.example.dditlms.domain.entity.Calendar;
-import com.example.dditlms.domain.entity.CalendarAlarm;
 import com.example.dditlms.domain.repository.CalendarAlarmRepository;
 import com.example.dditlms.service.CalendarAlarmService;
 import com.example.dditlms.service.SMSService;
@@ -10,11 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +19,6 @@ import java.util.Map;
 public class scheduler {
 
     private final CalendarAlarmService service;
-    private final CalendarAlarmRepository calendarAlarmRepository;
 
     private final SMSService smsService;
     //cron 규칙 (초 분 시 일 월 요일 연도(생략가능))

@@ -4,7 +4,18 @@ var originPreLectureList =[];
 var preLectureList = [];
 var deleteLectureList = [];
 var subjectCodeList = [];
+
+alert("hi");
+
+function testPDF(code){
+    console.log("hi");
+    console.log(code);
+    event.stopImmediatePropagation();
+    window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
+}
+
 (function(){
+
     getOriginList();
     let testId;
     trEvent();
@@ -269,6 +280,12 @@ var subjectCodeList = [];
         preCount.innerText = `${text*1 -1}건`;
         deleteTarget.remove();
     }
+
+    // let index = {
+    //     testPDF: function(fileNo){
+    //         console.log(fileNo);
+    //     }
+    // }
 
 
 

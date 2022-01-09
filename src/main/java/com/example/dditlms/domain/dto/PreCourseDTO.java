@@ -25,6 +25,7 @@ public class PreCourseDTO {
     private String college;         // 단대이름
     private int applicantsCount;    // 신청인원
     private String existence;       // 신청유무
+    private int point;              // 학점
 
 
     @QueryProjection

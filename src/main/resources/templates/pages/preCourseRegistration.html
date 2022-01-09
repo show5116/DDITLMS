@@ -7,6 +7,7 @@
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='예비 수강 신청')"></th:block>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript" th:src="@{/static/js/courseReg/preCourseRegistration.js}"></script>
     <div class="container-fluid">
         <div class="row">
             <div class="card m-b-10">
@@ -95,7 +96,7 @@
                                                     <td class="hidden-lecture" style="display: none" th:text="${lecture}"></td>
                                                     <td th:text="${lecture.getMajorKr()}"></td>
                                                     <td th:text="${lecture.getSubjectCode()}" th:class="subjectCode"></td>
-                                                    <td><a onclick="testPDF();" class="btn btn-link txt-google-plus" th:text="${lecture.getLectureName()}"></a></td>
+                                                    <td th:data-parameter="${lecture.getLectureCode()}" th:onclick="testPDF('parameter');" class="txt-google-plus" th:text="${lecture.getLectureName()}"></td>
                                                     <td th:text="${lecture.getLectureClass()}"></td>
                                                     <td th:text="${lecture.getLectureSeme()}"></td>
                                                     <td th:text="${lecture.getLecturedivision()}"></td>
@@ -153,16 +154,17 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function testPDF(){
+    <script type="text/javascript" th:inline="javascript">
+        function testPDF(code){
+            console.log("hi");
+            console.log(code);
             event.stopImmediatePropagation();
             window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
         }
 
     </script>
 
-    <script th:src="@{/static/js/courseReg/preCourseRegistration.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/courseReg/preCourseRegistration.js}"></script>
 
 
 </th:block>
