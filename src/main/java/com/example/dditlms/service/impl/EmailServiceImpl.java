@@ -161,7 +161,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public EmailDTO viewMail(int messageNumber, List<EmailDTO> emailDTOList) {
         EmailDTO email = emailDTOList.get(messageNumber);
-
+        log.info("이메일 로그!!!!!!!" + String.valueOf(email));
         return email;
     }
 
