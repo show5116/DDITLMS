@@ -22,30 +22,32 @@
                 </ul>
                 <div class="tab-content" id="pills-darktabContent">
                   <div class="tab-pane fade show active" id="pills-id" role="tabpanel" aria-labelledby="pills-id">
-                    <div>
-                      <div class="form-group">
-                        <br/>
-                        <label>학번</label>
-                        <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
-                          <input id="identification-findID" class="form-control" type="text" name="userNumber"  required="" placeholder="학번">
+                    <div class="card height-equal m-t-10">
+                      <div class="card-body">
+                        <div class="form-group">
+                          <br/>
+                          <label>학번</label>
+                          <div class="input-group"><span class="input-group-text"><i class="icon-id-badge"></i></span>
+                            <input id="identification-findID" class="form-control" type="text" name="userNumber"  required="" placeholder="학번">
+                          </div>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label>이름</label>
-                        <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
-                          <input id="name-findID" class="form-control" type="text" name="name"  required="" placeholder="이름">
+                        <div class="form-group">
+                          <label>이름</label>
+                          <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
+                            <input id="name-findID" class="form-control" type="text" name="name"  required="" placeholder="이름">
+                          </div>
                         </div>
+                        <div class="form-group">
+                          <button style="float:right" id="button-findID" class="btn btn-primary" type="button">ID 찾기</button>
+                        </div>
+                        <p><a class="ms-2" href="/login">돌아가기</a></p>
                       </div>
-                      <div class="form-group">
-                        <button style="float:right" id="button-findID" class="btn btn-primary" type="button">ID 찾기</button>
-                      </div>
-                      <p><a class="ms-2" href="/login">돌아가기</a></p>
                     </div>
                   </div>
                   <div class="tab-pane fade" id="pills-password" role="tabpanel" aria-labelledby="pills-password">
                     <div>
-                      <div class="col-sm-12 col-xl-6 xl-100">
-                        <div class="card height-equal">
+                      <div class="col">
+                        <div class="card height-equal m-t-10">
                           <div class="card-body">
                             <ul class="nav nav-pills" id="pills-icontab" role="tablist">
                               <li class="nav-item"><a class="nav-link active" id="pills-mail-li" data-bs-toggle="pill" href="#pills-mail" role="tab" aria-controls="pills-mail" aria-selected="true"><i class="icon-email"></i>Mail</a></li>
