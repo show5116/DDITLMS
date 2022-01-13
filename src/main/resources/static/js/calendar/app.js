@@ -583,7 +583,7 @@ function getMajor(){
         const end = endArr[0] + " " + endArr[1];
         const enddate = new Date(end);
 
-        const selectedIsAllday = isAllday.checked;
+        const selectedIsAllday = false;
         const selectedAlarmSMS = alarmSms.checked;
         const selectedAlarmKakao = alarmKakao.checked;
 
@@ -962,7 +962,7 @@ function getMajor(){
                 location.value = locationValue;
                 startDate.value = new Date(startDateValue + KR_TIME_DIFF).toISOString().slice(0,16);
                 endDate.value = new Date(endDateValue + KR_TIME_DIFF).toISOString().slice(0,16);;
-                isAllday.checked = isAlldayValue;
+                // isAllday.checked = isAlldayValue;
                 alarmTime.selectedIndex = alarmOptionIdx;
                 alarmSms.checked = isAlarmSMS;
                 alarmKakao.checked = isAlarmKAKAO;
@@ -985,7 +985,8 @@ function getMajor(){
         var location = document.querySelector("#update-schedule-location").value;
         var startDate = document.querySelector("#update-startDate").value;
         var endDate = document.querySelector("#update-endDate").value;
-        var isAllday = document.querySelector("#update-schedule-allday").checked;
+        // var isAllday = document.querySelector("#update-schedule-allday").checked;
+        var isAllday = false;
         var alarmTime = document.querySelector("#update-schedule-alam-time").value;
         var alarmSms = document.querySelector("#update-schedule-alam-sms").checked;
         var alarmKakao = document.querySelector("#update-schedule-alam-kakao").checked;

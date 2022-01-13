@@ -94,9 +94,6 @@ public class SignupSearchServiceImpl implements SignupSearchService {
         String major = (String) map.get("major");
         String division = (String) map.get("division");
 
-        Major majorKr = majorRepository.findById(major).get();
-        major = majorKr.getKorean();
-
         Map<String,Object> search = new HashMap<>();
         search.put("name", "allAutoSearch");
         search.put("searchYear",year);
