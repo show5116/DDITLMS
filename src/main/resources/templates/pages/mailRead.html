@@ -61,7 +61,7 @@
                                             <div class="media"><img class="me-3 rounded-circle"
                                                                     src="" alt="">
                                                 <div class="media-body">
-                                                    <h4 class="d-block" th:text="${mail.subject}">제목 </h4>
+                                                    <h4 class="d-block m-4" th:text="${mail.subject}">제목 </h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -70,25 +70,13 @@
                                 <div class="email-wrapper">
                                     <div class="emailread-group">
                                         <div class="read-group">
-                                            <h6 th:text="${mail.fromAddress}">보낸사람</h6>
+                                            <h6 class="m-4" th:text="|보낸사람 : ${mail.fromAddress}|">보낸사람</h6>
                                             <hr/>
+                                            <h6 class="m-4" th:text="|받는사람 : ${#strings.arraySplit(mail.toList[0], ' ')[1]}|">받는사람</h6>
                                             <p th:utext="${mail.content}">메일 본문 </p>
                                         </div>
                                     </div>
                                     <hr>
-                                    <div class="emailread-group">
-                                        <h6 class="text-muted mb-0"><i class="icofont icofont-clip"></i> 첨부파일
-                                        </h6><a class="text-muted text-end right-download font-primary f-w-600"
-                                                href="#"><i class="fa fa-long-arrow-down me-2"></i>전체다운로드</a>
-                                        <div class="clearfix"></div>
-                                        <div class="attachment">
-                                            <ul>
-                                                <li><img class="img-fluid" src="" alt="">
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <hr>
-                                    </div>
                                     <div class="emailread-group">
                                         <div class="action-wrapper">
                                             <ul class="actions" style="text-align: center; margin: 0 auto;">
