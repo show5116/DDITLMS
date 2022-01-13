@@ -18,6 +18,7 @@ import com.example.dditlms.service.FileService;
 import com.example.dditlms.util.AmazonS3Util;
 import com.example.dditlms.util.FileUtil;
 import lombok.RequiredArgsConstructor;
+import org.codehaus.groovy.tools.shell.IO;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -85,6 +87,25 @@ public class FileDataController {
 
         fileService.tokenService(map);
         List<FileDataDTO> dtoList = (List<FileDataDTO>) map.get("dtoList");
+
+        String rootPath = System.getProperty("user.dir");
+        logger.info("루트패스: "+rootPath);
+
+        Path directoryPath = Paths.get(rootPath+"\\tmp");
+
+        try {
+            // 없으면 디렉토리 생성
+            Files.createDirectory(directoryPath);
+
+            logger.info(directoryPath + "디렉토리가 생성되었습니다.");
+        } catch (FileAlreadyExistsException e){
+            logger.info("이미 디렉토리 있어");
+        } catch (NoSuchFileException e){
+            logger.info("디렉토리 경로가 없어");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
 
         mav.addObject("jsonObj", jsonObj);
         mav.addObject("idx", rootFolder.getFileIdx());
