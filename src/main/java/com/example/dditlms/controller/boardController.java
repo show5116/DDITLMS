@@ -10,6 +10,7 @@ import com.example.dditlms.domain.repository.AttachmentRepository;
 import com.example.dditlms.domain.repository.BbsRepository;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.util.FileUtil;
+import com.example.dditlms.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -45,6 +46,10 @@ public class boardController {
     public ModelAndView mappingBoard(ModelAndView mav, @PathVariable(value = "mapping") String mapping,
                                      @PageableDefault(size = 4)Pageable pageable){
 
+        Member loginMember = MemberUtil.getLoginMember();
+        logger.info(String.valueOf(loginMember.getRole()));
+
+
         BoardCategory boardCategory = null;
         if(mapping.equals("freeboard")){
             boardCategory = BoardCategory.FREEBOARD;
@@ -64,6 +69,8 @@ public class boardController {
             i++;
         }
 
+
+
         mav.addObject("boardCategory", boardCategory);
         mav.addObject("mapping", mapping);
         mav.addObject("bbsList", results);
@@ -71,22 +78,6 @@ public class boardController {
         mav.setViewName("pages/freeboard");
         return mav;
     }
-
-//    @GetMapping("/community/freeboard")
-//    public ModelAndView freeboard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable){
-//
-//        Page<BbsDTO> results = bbsRepository.pageWithFree(pageable, BoardCategory.FREEBOARD);
-//        Long i = 1L;
-//        for (BbsDTO result : results) {
-//            result.setTotal(i);
-//            i++;
-//        }
-//
-//        mav.addObject("bbsList", results);
-//        mav.addObject("page", new PageDTO(results.getTotalElements(), pageable));
-//        mav.setViewName("pages/freeboard");
-//        return mav;
-//    }
 
     @GetMapping("/community/replaceBoard/{mapping}")
     public ModelAndView replaceBoard(ModelAndView mav, @PageableDefault(size = 4)Pageable pageable,
@@ -122,22 +113,6 @@ public class boardController {
         mav.setViewName("pages/freeboard::#test");
         return mav;
     }
-
-
-//        for (Bbs bbs : bbsList){
-//            String content = bbs.getContent();
-//            logger.info("<img>여부 : " + content);
-//            if(content.indexOf("<img") == -1){
-//                logger.info("이미지를 안넣은거야");
-//            } else {
-//                logger.info("이미지를 넣은거야 : " + content.indexOf("<img"));
-//                logger.info("\n이미지만 출력 : \n : "
-//                        + content.substring(content.indexOf("<img"), content.indexOf("/>")+2));
-//            }
-//        }
-
-
-
 
     @GetMapping("/community/{mapping}/boardWrite")
     public ModelAndView boardWrite(ModelAndView mav, @PathVariable(value = "mapping") String mapping){

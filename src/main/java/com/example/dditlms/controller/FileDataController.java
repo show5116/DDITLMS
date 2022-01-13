@@ -18,6 +18,7 @@ import com.example.dditlms.service.FileService;
 import com.example.dditlms.util.AmazonS3Util;
 import com.example.dditlms.util.FileUtil;
 import lombok.RequiredArgsConstructor;
+import org.codehaus.groovy.tools.shell.IO;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -85,6 +87,26 @@ public class FileDataController {
 
         fileService.tokenService(map);
         List<FileDataDTO> dtoList = (List<FileDataDTO>) map.get("dtoList");
+
+        String rootPath = System.getProperty("user.dir");
+        logger.info("루트패스: "+rootPath);
+
+        Path directoryPath = Paths.get(rootPath+File.separator+"tmp");
+//        Path directoryPath = Paths.get(rootPath+"\\tmp");
+
+        try {
+            // 없으면 디렉토리 생성
+            Files.createDirectory(directoryPath);
+
+            logger.info(directoryPath + "디렉토리가 생성되었습니다.");
+        } catch (FileAlreadyExistsException e){
+            logger.info("이미 디렉토리 있어");
+        } catch (NoSuchFileException e){
+            logger.info("디렉토리 경로가 없어");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
 
         mav.addObject("jsonObj", jsonObj);
         mav.addObject("idx", rootFolder.getFileIdx());
@@ -388,16 +410,22 @@ public class FileDataController {
         String zipName = "아카이브.zip";
         String tempPath = "";
 
+        String rootPath = System.getProperty("user.dir");
+        logger.info("루트패스: "+rootPath);
+
         if(files.length > 0){
             try{
-                tempPath = "/Users/inhwan/Documents/uploadThrough";
+//                tempPath = "/Users/inhwan/Documents/uploadThrough";
+                tempPath = rootPath+File.separator+"tmp"+File.separator;
 
-                zout = new ZipOutputStream(new FileOutputStream(tempPath + "/" + zipName));
+//                zout = new ZipOutputStream(new FileOutputStream(tempPath + "/" + zipName));
+                zout = new ZipOutputStream(new FileOutputStream(tempPath + File.separator + zipName));
                 byte[] buffer = new byte[1024];
                 FileInputStream in = null;
 
                 for(int k=0; k<files.length; k++){
-                    in = new FileInputStream("/Users/inhwan/Documents/uploadThrough/" + files[k]);
+                    in = new FileInputStream(tempPath + files[k]);
+//                    in = new FileInputStream("/Users/inhwan/Documents/uploadThrough/" + files[k]);
                     zout.putNextEntry(new ZipEntry(files[k]));
 
                     int len;
@@ -415,7 +443,7 @@ public class FileDataController {
                 response.addHeader("Content-Disposition", "attachment;filename=" + new String(
                         zipName.getBytes("UTF-8"), "ISO-8859-1"));
 
-                FileInputStream fis = new FileInputStream(tempPath + "/" + zipName);
+                FileInputStream fis = new FileInputStream(tempPath + File.separator + zipName);
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 ServletOutputStream so = response.getOutputStream();
                 BufferedOutputStream bos = new BufferedOutputStream(so);

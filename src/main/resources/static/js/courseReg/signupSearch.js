@@ -79,13 +79,18 @@ const majorList = [];
 
     function allAutoSearch(){
         console.log("allAutoSearch");
+        var major = document.querySelector("#department");
+
         var searchYear = topSetting.year.options[topSetting.year.selectedIndex].innerText;
         var searchSeme = topSetting.semester.options[topSetting.semester.selectedIndex].innerText;
         var searchCollege = topSetting.college.options[topSetting.college.selectedIndex].value;
-        var searchMajor = topSetting.department.options[topSetting.department.selectedIndex].value;
+        var searchMajor = major.options[major.selectedIndex].innerText;
         var searchdivision = topSetting.completion.options[topSetting.completion.selectedIndex].value;
 
-        console.log(searchMajor);
+        if (searchMajor =="(전체)"){
+            searchMajor = "total"
+
+        }
 
         $.ajax({
             url : "/signUpSearch/allAutoSearch",

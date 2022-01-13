@@ -12,7 +12,9 @@
                         <div class="card mb-0">
                             <div class="card-header">
                                 <h5 th:text="${boardCategory.korean}" class="mb-0">자유게시판</h5>
-                                <a class="f-w-600" style="float: right; margin-right: 50px;" th:href="@{/community/{mapping}/boardWrite(mapping=${mapping})}">글쓰기</a>
+                                <div>
+                                    <a class="f-w-600" style="float: right; margin-right: 50px;" th:href="@{/community/{mapping}/boardWrite(mapping=${mapping})}">글쓰기</a>
+                                </div>
                             </div>
                             <div class="card-body p-0">
                                 <div class="taskadd">
