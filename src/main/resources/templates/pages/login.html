@@ -28,7 +28,7 @@
                         <div class="form-group">
                             <label>Password</label>
                             <div class="input-group"><span class="input-group-text"><i class="icon-lock"></i></span>
-                                <input class="form-control" type="password" name="password"  required="" placeholder="*********">
+                                <input id="password" class="form-control" type="password" name="password"  required="" placeholder="*********">
                                 <div class="show-hide"><span class="show">                         </span></div>
                             </div>
                         </div>
@@ -39,9 +39,22 @@
                             </div><a class="link" href="/forget">아이디/비밀번호 찾기</a>
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-primary btn-block" type="submit">로그인</button>
+                            <button id="submit-btn" class="btn btn-primary btn-block" type="submit">로그인</button>
                         </div>
                         <p>계정이 없으신가요?<a class="ms-2" href="/signup">회원가입</a></p>
+                        <div class="form-group pull-right">
+                            <select id="auto-login" style="display:inline-block;" >
+                                <option value="1">학생</option>
+                                <option value="2">교수</option>
+                                <option value="3">학생과</option>
+                                <option value="4">총무과1</option>
+                                <option value="5">총무과2</option>
+                                <option value="6">총무과3</option>
+                                <option value="7">행정 지원과</option>
+                                <option value="8">교무과</option>
+                            </select>
+                            <button id="auto-login-btn" type="button" style="display:inline-block;" class="btn btn-primary btn-block">자동 로그인</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -50,6 +63,42 @@
 </section>
 <th:block th:replace="/fragment/script.html :: scriptFragment"></th:block>
 <script th:inline="javascript">
+    const autoLoginBtn = document.querySelector("#auto-login-btn");
+    const autoSelect = document.querySelector("#auto-login");
+    const account = document.querySelector("#account");
+    const password = document.querySelector("#password");
+    const submitBtn = document.querySelector("#submit-btn");
+
+    autoLoginBtn.addEventListener("click",()=>{
+        let selectValue = autoSelect.value;
+        if(selectValue == 1){
+            account.value = "leejunseok95";
+            password.value = "Leejs950329!";
+        }else if(selectValue == 2){
+            account.value = "9999";
+            password.value = "Leejs950329!";
+        }else if(selectValue == 3){
+            account.value = "studentDe3";
+            password.value = "Dditorkr1!";
+        }else if(selectValue == 4){
+            account.value = "general1";
+            password.value = "Dditorkr1!";
+        }else if(selectValue == 5){
+            account.value = "general2";
+            password.value = "Dditorkr1!";
+        }else if(selectValue == 6){
+            account.value = "general5";
+            password.value = "Dditorkr1!";
+        }else if(selectValue == 7){
+            account.value = "adminis1";
+            password.value = "Dditorkr1!";
+        }else if(selectValue == 8){
+            account.value = "academic1";
+            password.value = "Dditorkr1!";
+        }
+        submitBtn.click();
+    })
+
     /* <![CDATA[ */
         const exception = /*[[${param.exception}]]*/;
         const cnt = /*[[${param.cnt}]]*/;
@@ -69,7 +118,6 @@
         }
     }
 
-    const account = document.querySelector("#account");
 
     account.addEventListener("keyup",function(){
         const accountIcon = document.querySelector("#account_icon");

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="side_student_Fragment">
+    <li>
+        <span th:text="${session.depart}"></span>
+    </li>
+    <li><span th:text="${session.grade}"></span>
+        <p>Experince</p>
+    </li>
+    <li>
+        <span th:text="${session.major}"></span>
+        <p>major</p>
+    </li>
+</th:block>
+</html>

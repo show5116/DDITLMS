@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@EqualsAndHashCode(of = {"username"})
 public class AccountContext implements UserDetails {
 
     private String username;
