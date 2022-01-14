@@ -7,15 +7,15 @@
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='과목 관리')"></th:block>
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
     <div class="container-fluid">
-        <div class="col-sm-12 col-xl-6 xl-100">
-            <div class="card">
-                <div class="card-body">
+        <div class="card">
+            <div class="card-body p-t-20" style="height: 855px">
+                <div class="m-b-30">
                     <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
                     <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-subject" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                    <button class="btn btn-primary pull-right" id="btn-subject-excel" type="button">엑셀파일읽기</button>
-                    <button class="btn btn-primary pull-right" id="btn-made-subject-excel" type="button">엑셀파일로 출력</button>
-                    <div id="grid-subject"></div>
+                    <button class="btn btn-primary btn-sm pull-right m-l-5" id="btn-subject-excel" type="button">엑셀파일읽기</button>
+                    <button class="btn btn-primary btn-sm pull-right" id="btn-made-subject-excel" type="button">엑셀파일로 출력</button>
                 </div>
+                <div id="grid-subject"></div>
             </div>
         </div>
     </div>
