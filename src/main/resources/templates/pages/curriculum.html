@@ -9,80 +9,74 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
     <div class="container-fluid">
-        <div class="col-sm-12 col-xl-6 xl-100">
-            <div style="height: 60px; justify-content: center;" class="card">
-                <div class="row">
-                    <div class="col-sm-3">
-                    </div>
-                    <div class="col-sm-3">
-                        <label>학과</label>
-                        <select name="kindId" style="width:80%;" id="major-search" onchange="curriculumSelected()">
-                            <option th:each="major : ${majorList}" th:value="${major.getId()}" th:text="${major.getKorean()}"></option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <label>이수구분</label>
-                        <select style="display: inline-block; width:50%;" class="form-control" id="section-select" onchange="curriculumSelected()">
-                            <option value="CULTURE_SELECT" selected>교선</option>
-                            <option value="CULTURE_REQUIRED">교필</option>
-                            <option value="MAJOR_SELECT">전선</option>
-                            <option value="MAJOR_REQUIRED">전필</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <label>학년</label>
-                        <select id="grade-select" style="display: inline-block; width:50%;" class="form-control" onchange="curriculumSelected()">
-                            <option value="FRESHMAN" selected>1학년</option>
-                            <option value="SOPHOMORE">2학년</option>
-                            <option value="JUNIOR">3학년</option>
-                            <option value="SENIOR">4학년</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <label>학기</label>
-                        <select id="semester-select" style="display: inline-block; width:50%;" class="form-control" onchange="curriculumSelected()">
-                            <option th:each="semester : ${semesterList}" th:value="${semester.getYear()}" th:text="${semester.getYear()}"></option>
-                        </select>
-                    </div>
+        <div style="height: 70px; justify-content: center;" class="card">
+            <div class="row m-t-5 m-b-5">
+                <div class="col-sm-3 m-l-20">
+                    <label>학과</label>
+                    <select name="kindId" style="width:80%;" id="major-search" onchange="curriculumSelected()">
+                        <option th:each="major : ${majorList}" th:value="${major.getId()}" th:text="${major.getKorean()}"></option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <label>이수구분</label>
+                    <select style="display: inline-block; width:50%;" class="form-control" id="section-select" onchange="curriculumSelected()">
+                        <option value="CULTURE_SELECT" selected>교선</option>
+                        <option value="CULTURE_REQUIRED">교필</option>
+                        <option value="MAJOR_SELECT">전선</option>
+                        <option value="MAJOR_REQUIRED">전필</option>
+                    </select>
+                </div>
+                <div class="col-sm-2 p-0">
+                    <label>학년</label>
+                    <select id="grade-select" style="display: inline-block; width:50%;" class="form-control" onchange="curriculumSelected()">
+                        <option value="FRESHMAN" selected>1학년</option>
+                        <option value="SOPHOMORE">2학년</option>
+                        <option value="JUNIOR">3학년</option>
+                        <option value="SENIOR">4학년</option>
+                    </select>
+                </div>
+                <div class="col-sm-2 p-0">
+                    <label>학기</label>
+                    <select id="semester-select" style="display: inline-block; width:50%;" class="form-control" onchange="curriculumSelected()">
+                        <option th:each="semester : ${semesterList}" th:value="${semester.getYear()}" th:text="${semester.getYear()}"></option>
+                    </select>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-body">
-                    <div>
-                        <div style="height: 60px;" class="search-bg"><i class="fa fa-search"></i>
-                            <select id="search-subject-select" class="pull-right" style="width:30%;">
-                                <option th:each="subject : ${subjectList}" th:value="${subject.getId()}" th:text="${subject.getId()}+' '+${subject.getName()}"></option>
-                            </select>
-                            <button id="add-subject-btn" class="btn btn-primary" type="bsutton">추가</button>
-                        </div>
-                        <div style="height: 60px;">
-                            <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
-                            <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-curriculum" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                            <button class="btn btn-primary pull-right" id="btn-curriculum-excel" type="button">엑셀파일읽기</button>
-                            <button class="btn btn-primary pull-right" id="btn-made-curriculum-excel" type="button">엑셀파일로 출력</button>
-                        </div>
-                    </div>
-                    <div style="width: 100%;" class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>과목코드</th>
-                                <th>과목명</th>
-                                <th>학점</th>
-                                <th>삭제버튼</th>
-                            </tr>
-                            </thead>
-                            <tbody id="curriculum-table">
-                            <input id="duplicate" th:if="${duplicate}" type="hidden" />
-                            <tr th:each="curriculum : ${curriculumList}">
-                                <td th:text="${curriculum.getSubject()?.getId()}"></td>
-                                <td th:text="${curriculum.getSubject()?.getName()}"></td>
-                                <td th:text="${curriculum.getSubject()?.getPoint()}"></td>
-                                <td><button class="btn-primary btn-sm" type="button" th:onclick="'deleteCurriculum('+${curriculum.getId()}+')'">삭제</button></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+        </div>
+        <div class="card">
+            <div class="card-body" style="height: 735px">
+                <div style="height: 37px;">
+                    <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
+                    <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-curriculum" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    <button class="btn btn-primary pull-right m-l-5" id="btn-curriculum-excel" type="button">엑셀파일읽기</button>
+                    <button class="btn btn-primary pull-right" id="btn-made-curriculum-excel" type="button">엑셀파일로 출력</button>
+                </div>
+                <div style="height: 60px;" class="search-bg b-b-light"><i class="fa fa-search"></i>
+                    <select id="search-subject-select" class="pull-right" style="width:30%;">
+                        <option th:each="subject : ${subjectList}" th:value="${subject.getId()}" th:text="${subject.getId()}+' '+${subject.getName()}"></option>
+                    </select>
+                    <button id="add-subject-btn" class="btn btn-primary" type="button">추가</button>
+                </div>
+                <div style="width: 100%;" class="table-responsive">
+                    <table class="table table-hover text-center">
+                        <thead>
+                        <tr>
+                            <th>과목코드</th>
+                            <th>과목명</th>
+                            <th>학점</th>
+                            <th>삭제버튼</th>
+                        </tr>
+                        </thead>
+                        <tbody id="curriculum-table">
+                        <input id="duplicate" th:if="${duplicate}" type="hidden" />
+                        <tr th:each="curriculum : ${curriculumList}">
+                            <td th:text="${curriculum.getSubject()?.getId()}"></td>
+                            <td th:text="${curriculum.getSubject()?.getName()}"></td>
+                            <td th:text="${curriculum.getSubject()?.getPoint()}"></td>
+                            <td><button class="btn-primary btn-sm" type="button" th:onclick="'deleteCurriculum('+${curriculum.getId()}+')'">삭제</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
