@@ -10,14 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <div class="container-fluid">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body p-t-15" style="height: 860px;">
                 <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
                 <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-lecture" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                <button class="btn btn-primary pull-right m-l-10" id="btn-lecture-excel" type="button">엑셀파일읽기</button>
-                <button class="btn btn-primary pull-right" id="btn-made-lecture-excel" type="button">엑셀파일로 출력</button>
-                <div id="grid-subject" class="m-t-30">
+                <button class="btn btn-primary btn-sm pull-right m-l-10" id="btn-lecture-excel" type="button">엑셀파일읽기</button>
+                <button class="btn btn-primary btn-sm pull-right" id="btn-made-lecture-excel" type="button">엑셀파일로 출력</button>
+                <div id="grid-subject" class="m-t-20">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body p-t-20">
                             <div class="b-b-light">
                                 <div class="add-lecture-form m-b-20">
                                     <div class="row">
@@ -70,12 +70,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-content" id="list">
+                            <div class="tab-content p-t-5" id="list">
                                 <div class="row b-l-warning border-6 m-t-10 m-b-15">
                                     <h4 class="col-sm-1 f-w-700 p-l-10 m-b-0 align-self-center ">개설강좌</h4>
-                                    <span class="col-sm-1 text-muted p-l-0" th:text="${#lists.size(openLecture)}+'건'"></span>
+                                    <span class="col-sm-1 text-muted p-l-0 align-self-center" th:text="${#lists.size(openLecture)}+'건'"></span>
                                 </div>
-                                <div style="height: 640px; overflow-y: auto;">
+                                <div style="height: 570px; overflow-y: auto;">
                                     <table class="table table-bordered text-center" id="open-lecture" >
                                         <thead class="table-secondary">
                                             <tr style="height: 1px;">
