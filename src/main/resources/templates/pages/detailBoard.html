@@ -79,13 +79,11 @@
         const deleteBtn = document.querySelector("#delete-btn");
         const boardId = document.querySelector("#bbs-idx");
 
-        console.log("비비 : " + boardId.value);
         /* <![CDATA[ */
         let mapping = /*[[${mapping}]]*/;
         /* ]]> */
 
         listBtn.addEventListener("click", function (){
-            console.log(mapping);
             location.href="/community/"+mapping;
         });
 

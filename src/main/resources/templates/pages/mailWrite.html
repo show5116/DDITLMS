@@ -100,8 +100,6 @@ function btnSubmit() {
 
 function btnTempSubmit() {
           let queryString = $("#dto").serialize();
-          console.log(queryString);
-          console.log(url);
           $.ajax({
 
                 type: "POST",
@@ -110,7 +108,7 @@ function btnTempSubmit() {
                       queryString
                 },
                 success: function (data) {
-                    console.log(data);
+
                 },
             });
 

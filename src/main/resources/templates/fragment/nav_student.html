@@ -4,11 +4,13 @@
     <th:block th:replace="/fragment/nav_common.html :: nav_commonFragment"></th:block>
     <li class="sidebar-main-title">
         <div>
-            <h6>강의            </h6>
+            <h6>강의 </h6>
         </div>
     </li>
-    <li class="dropdown"><a id="online-lecture" class="nav-link menu-title link-nav"><i data-feather="airplay"></i><span>온라인 교육</span></a></li>
-    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="check-square"></i><span>수강 신청</span></a>
+    <li class="dropdown"><a id="online-lecture" class="nav-link menu-title link-nav" style="cursor: pointer"><i
+            data-feather="airplay"></i><span>온라인 교육</span></a></li>
+    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i
+            data-feather="check-square"></i><span>수강 신청</span></a>
         <ul class="nav-submenu menu-content">
             <li><a href="/signUpSearch" th:href="@{/signUpSearch}">수강 검색</a></li>
             <li><a href="/student/preCourseRegistration" th:href="@{/student/preCourseRegistration}">예비 수강 신청</a></li>
@@ -17,25 +19,29 @@
     </li>
     <li class="sidebar-main-title">
         <div>
-            <h6>학적            </h6>
+            <h6>학적 </h6>
         </div>
     </li>
-    <li class="dropdown"><a class="nav-link menu-title link-nav" href="/academic"><i data-feather="user"></i><span>학적 기본</span></a></li>
+    <li class="dropdown"><a class="nav-link menu-title link-nav" href="/academic"><i
+            data-feather="user"></i><span>학적 기본</span></a></li>
     <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="user-plus"></i><span>학적 변경</span></a>
         <ul class="nav-submenu menu-content">
             <li><a href="/academic/leave">휴학 신청</a></li>
             <li><a href="/academic/changeMajor">전과 신청</a></li>
         </ul>
     </li>
-    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="send"></i><span>장학/등록</span></a><
+    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i
+            data-feather="send"></i><span>장학/등록</span></a><
         <ul class="nav-submenu menu-content">
-            <li><a class="submenu-title" href="javascript:void(0)">등록<span class="sub-arrow"><i class="fa fa-chevron-right"></i></span></a>
+            <li><a class="submenu-title" href="javascript:void(0)">등록<span class="sub-arrow"><i
+                    class="fa fa-chevron-right"></i></span></a>
                 <ul class="nav-sub-childmenu submenu-content">
                     <li><a href="/student/tuitionApplication">등록금 고지서</a></li>
                     <li><a href="/student/tuitionShow">등록 조회</a></li>
                 </ul>
             </li>
-            <li><a class="submenu-title" href="javascript:void(0)">장학<span class="sub-arrow"><i class="fa fa-chevron-right"></i></span></a>
+            <li><a class="submenu-title" href="javascript:void(0)">장학<span class="sub-arrow"><i
+                    class="fa fa-chevron-right"></i></span></a>
                 <ul class="nav-sub-childmenu submenu-content">
                     <li><a href="/student/scholarshipApplication">장학금 신청</a></li>
                     <li><a href="/student/scholarshipShow">장학 조회</a></li>
@@ -45,16 +51,16 @@
     </li>
     <script>
         const onlineLecture = document.querySelector("#online-lecture");
-        onlineLecture.addEventListener("click",()=>{
+        onlineLecture.addEventListener("click", () => {
             $.ajax({
                 url: "/ssotoken",
                 method: "Post",
                 dataType: "json",
-                beforeSend: function(xhr){
-                    xhr.setRequestHeader(header,token);
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
                 }
             })
-                .done((fragment)=>{
+                .done((fragment) => {
                     let token = fragment.token;
                     window.open(`http://localhost:8094/getSsotoken?token=${token}`);
                 });

@@ -156,8 +156,6 @@
     </div>
     <script type="text/javascript" th:inline="javascript">
         function testPDF(code){
-            console.log("hi");
-            console.log(code);
             event.stopImmediatePropagation();
             window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
         }
