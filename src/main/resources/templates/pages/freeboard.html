@@ -10,13 +10,16 @@
                 <div class="card email-body radius-left">
                     <div class="ps-0">
                         <div class="card mb-0">
-                            <div class="card-header">
-                                <h5 th:text="${boardCategory.korean}" class="mb-0">자유게시판</h5>
-                                <div>
-                                    <a class="f-w-600" style="float: right; margin-right: 50px;" th:href="@{/community/{mapping}/boardWrite(mapping=${mapping})}">글쓰기</a>
+                            <div class="card-header row m-0">
+                                <div class="col">
+                                    <i class="icon-comment-alt f-36"></i>
+                                    <span th:text="${boardCategory.korean}" class="mb-0 f-w-600 f-38 m-l-10">자유게시판</span>
                                 </div>
                             </div>
-                            <div class="card-body p-0">
+                            <div class="card-body p-0" style="height: 750px">
+                                <div class="col text-end">
+                                    <a class="f-w-600 f-18" style="float: right; margin-right: 50px;" th:href="@{/community/{mapping}/boardWrite(mapping=${mapping})}">글쓰기</a>
+                                </div>
                                 <div class="taskadd">
                                     <div class="table-responsive" id="test">
                                         <table class="table">
@@ -26,8 +29,8 @@
                                                 </td>
                                                 <td>
                                                     <a th:href="@{/community/{mapping}/detailBoard/{idx}(idx=${bbs.idx}, mapping=${mapping})}">
-                                                    <p style="display: inline-block" th:text="${bbs.title}"
-                                                       class="task_desc_0"></p></a>
+                                                        <p style="display: inline-block" th:text="${bbs.title}"
+                                                           class="task_desc_0"></p></a>
 
                                                     <svg th:if="${bbs.atchmnfId!=null}" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                          viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -46,50 +49,50 @@
                                         <br />
 
                                         <div style="display: flex; justify-content: center;">
-<!---->
-                                        <div class="text-center"
-                                             style="text-align: center; margin: 0 auto; display:inline-block; float:center;">
-                                            <div class="text-center">
-                                                <nav aria-label="Page navigation">
-                                                    <ul class="pagination pagination-sm" id="pageNation">
-                                                        <li th:if="${page.isPrev()}" class="page-item">
-                                                            <a th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getStartPage()-1}, mapping=${mapping})}"
-                                                               class="page-link" th:onclick="paging(this);" style="cursor:pointer;">First</a>
-                                                        </li>
-                                                        <li th:unless="${page.isPrev()}" class="page-item disabled"><a
-                                                                class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
+                                            <!---->
+                                            <div class="text-center"
+                                                 style="text-align: center; margin: 0 auto; display:inline-block; float:center;">
+                                                <div class="text-center">
+                                                    <nav aria-label="Page navigation">
+                                                        <ul class="pagination pagination-sm" id="pageNation">
+                                                            <li th:if="${page.isPrev()}" class="page-item">
+                                                                <a th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getStartPage()-1}, mapping=${mapping})}"
+                                                                   class="page-link" th:onclick="paging(this);" style="cursor:pointer;">First</a>
+                                                            </li>
+                                                            <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                                    class="page-link">First</a></li>&nbsp;&nbsp;&nbsp;
 
-                                                        <li th:if="${page.isPrev()}" class="page-item"><a
-                                                                th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getCurPage()-1}, mapping=${mapping})}"
-                                                                class="page-link" th:onclick="paging(this);"
-                                                                style="cursor:pointer;">Prev</a></li>
-                                                        <li th:unless="${page.isPrev()}" class="page-item disabled"><a
-                                                                class="page-link">Prev</a></li>
+                                                            <li th:if="${page.isPrev()}" class="page-item"><a
+                                                                    th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getCurPage()-1}, mapping=${mapping})}"
+                                                                    class="page-link" th:onclick="paging(this);"
+                                                                    style="cursor:pointer;">Prev</a></li>
+                                                            <li th:unless="${page.isPrev()}" class="page-item disabled"><a
+                                                                    class="page-link">Prev</a></li>
 
-                                                        <li class="page-item"
-                                                            th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
-                                                            <a th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${index.current-1}, mapping=${mapping})}"
-                                                               th:text="${num}"
-                                                               class="page-link" th:onclick="paging(this);" style="cursor:pointer;">1</a>
-                                                        </li>
-                                                        <li th:if="${page.isNext()}" class="page-item"><a
-                                                                th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getCurPage()+1}, mapping=${mapping})}"
-                                                                class="page-link" th:onclick="paging(this);"
-                                                                style="cursor:pointer;">Next</a></li>
-                                                        <li th:unless="${page.isNext()}" class="page-item disabled"><a
-                                                                class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
+                                                            <li class="page-item"
+                                                                th:each="num, index: ${#numbers.sequence(page.getStartPage(), page.getEndPage())}">
+                                                                <a th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${index.current-1}, mapping=${mapping})}"
+                                                                   th:text="${num}"
+                                                                   class="page-link" th:onclick="paging(this);" style="cursor:pointer;">1</a>
+                                                            </li>
+                                                            <li th:if="${page.isNext()}" class="page-item"><a
+                                                                    th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getCurPage()+1}, mapping=${mapping})}"
+                                                                    class="page-link" th:onclick="paging(this);"
+                                                                    style="cursor:pointer;">Next</a></li>
+                                                            <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                                    class="page-link">Next</a></li>&nbsp;&nbsp;&nbsp;
 
-                                                        <li th:if="${page.isNext()}" class="page-item"><a
-                                                                th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getEndPage()-1}, mapping=${mapping})}"
-                                                                class="page-link" th:onclick="paging(this);"
-                                                                style="cursor:pointer;">Last</a></li>
-                                                        <li th:unless="${page.isNext()}" class="page-item disabled"><a
-                                                                class="page-link">Last</a></li>
-                                                    </ul>
-                                                </nav>
-                                                <br>
+                                                            <li th:if="${page.isNext()}" class="page-item"><a
+                                                                    th:value="@{/community/replaceBoard/{mapping}?page={page}(page = ${page.getEndPage()-1}, mapping=${mapping})}"
+                                                                    class="page-link" th:onclick="paging(this);"
+                                                                    style="cursor:pointer;">Last</a></li>
+                                                            <li th:unless="${page.isNext()}" class="page-item disabled"><a
+                                                                    class="page-link">Last</a></li>
+                                                        </ul>
+                                                    </nav>
+                                                    <br>
+                                                </div>
                                             </div>
-                                        </div>
                                             <!---->
                                         </div>
                                     </div>
