@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
     <div class="container-fluid">
-        <div style="height: 70px; justify-content: center;" class="card">
+        <div style="height: 70px; justify-content: center;" class="card m-b-10">
             <div class="row m-t-5 m-b-5">
                 <div class="col-sm-3 m-l-20">
                     <label>학과</label>
@@ -44,39 +44,41 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-body" style="height: 735px">
+            <div class="card-body p-t-20" style="height: 765px">
                 <div style="height: 37px;">
                     <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
                     <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-curriculum" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                     <button class="btn btn-primary pull-right m-l-5" id="btn-curriculum-excel" type="button">엑셀파일읽기</button>
                     <button class="btn btn-primary pull-right" id="btn-made-curriculum-excel" type="button">엑셀파일로 출력</button>
                 </div>
-                <div style="height: 60px;" class="search-bg b-b-light"><i class="fa fa-search"></i>
-                    <select id="search-subject-select" class="pull-right" style="width:30%;">
-                        <option th:each="subject : ${subjectList}" th:value="${subject.getId()}" th:text="${subject.getId()}+' '+${subject.getName()}"></option>
-                    </select>
-                    <button id="add-subject-btn" class="btn btn-primary" type="button">추가</button>
-                </div>
-                <div style="width: 100%;" class="table-responsive">
-                    <table class="table table-hover text-center">
-                        <thead>
-                        <tr>
-                            <th>과목코드</th>
-                            <th>과목명</th>
-                            <th>학점</th>
-                            <th>삭제버튼</th>
-                        </tr>
-                        </thead>
-                        <tbody id="curriculum-table">
-                        <input id="duplicate" th:if="${duplicate}" type="hidden" />
-                        <tr th:each="curriculum : ${curriculumList}">
-                            <td th:text="${curriculum.getSubject()?.getId()}"></td>
-                            <td th:text="${curriculum.getSubject()?.getName()}"></td>
-                            <td th:text="${curriculum.getSubject()?.getPoint()}"></td>
-                            <td><button class="btn-primary btn-sm" type="button" th:onclick="'deleteCurriculum('+${curriculum.getId()}+')'">삭제</button></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="b-light p-10" style="height: 695px">
+                    <div style="height: 60px;" class="search-bg b-b-light m-l-5"><i class="fa fa-search"></i>
+                        <select id="search-subject-select" class="pull-right" style="width:30%;">
+                            <option th:each="subject : ${subjectList}" th:value="${subject.getId()}" th:text="${subject.getId()}+' '+${subject.getName()}"></option>
+                        </select>
+                        <button id="add-subject-btn" class="btn btn-primary" type="button">추가</button>
+                    </div>
+                    <div style="width: 100%;" class="table-responsive">
+                        <table class="table table-hover text-center">
+                            <thead>
+                            <tr>
+                                <th>과목코드</th>
+                                <th>과목명</th>
+                                <th>학점</th>
+                                <th>삭제버튼</th>
+                            </tr>
+                            </thead>
+                            <tbody id="curriculum-table">
+                            <input id="duplicate" th:if="${duplicate}" type="hidden" />
+                            <tr th:each="curriculum : ${curriculumList}">
+                                <td th:text="${curriculum.getSubject()?.getId()}"></td>
+                                <td th:text="${curriculum.getSubject()?.getName()}"></td>
+                                <td th:text="${curriculum.getSubject()?.getPoint()}"></td>
+                                <td><button class="btn-primary btn-sm" type="button" th:onclick="'deleteCurriculum('+${curriculum.getId()}+')'">삭제</button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
