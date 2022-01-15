@@ -71,7 +71,7 @@ function NotificationList(fragment){
         dotSpan.classList.add("dot-animated");
         let dropboxHtml = "";
         let eleHtml = "";
-        for(let i=0; i<3; i++){
+        for(let i=0; i<fragment.notificationList.length; i++){
             const notifictionEle = fragment.notificationList[i];
             const that = new Date(notifictionEle.time);
             const timeText = getTimeGap(that);

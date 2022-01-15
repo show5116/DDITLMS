@@ -129,7 +129,7 @@ function seeChatContent(i){
     const chatMemberImgUl = chat.querySelector(".avatar-group-ul");
     const chatMemberList = chatRoom.memberList;
     chatMemberList.forEach(chatMember=>{
-        let chatMemberImgLi = document.querySelector("li");
+        let chatMemberImgLi = document.createElement("li");
         chatMemberImgLi.setAttribute("data-bs-toggle","tooltip");
         chatMemberImgLi.setAttribute("data-bs-placement","bottom");
         chatMemberImgLi.setAttribute("title",chatMember.userName);
