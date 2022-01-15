@@ -5,13 +5,12 @@ var preLectureList = [];
 var deleteLectureList = [];
 var subjectCodeList = [];
 
-alert("hi");
 
-function testPDF(code){
-    console.log("hi");
-    console.log(code);
+function testPDF(){
+    const target = event.target.id;
+    console.log(target);
     event.stopImmediatePropagation();
-    window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
+    window.open("/static/pdf/"+target+".pdf", "target", "scrollbars = yes,location = no", false);
 }
 
 (function(){

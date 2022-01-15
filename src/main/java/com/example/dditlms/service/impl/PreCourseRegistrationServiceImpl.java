@@ -4,12 +4,10 @@ package com.example.dditlms.service.impl;
 import com.example.dditlms.domain.common.LectureSection;
 import com.example.dditlms.domain.dto.PreCourseDTO;
 import com.example.dditlms.domain.entity.*;
-import com.example.dditlms.domain.repository.MajorRepository;
-import com.example.dditlms.domain.repository.PreCourseRegistrationRepository;
-import com.example.dditlms.domain.repository.SemesterByYearRepository;
-import com.example.dditlms.domain.repository.SignupSearchRepository;
+import com.example.dditlms.domain.repository.*;
 import com.example.dditlms.security.AccountContext;
 import com.example.dditlms.service.PreCourseRegistrationService;
+import com.example.dditlms.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -31,6 +29,7 @@ public class PreCourseRegistrationServiceImpl implements PreCourseRegistrationSe
     private final SignupSearchRepository searchRepository;
     private final SemesterByYearRepository semesterByYearRepository;
     private final MajorRepository majorRepository;
+    private final AttachmentRepository attachmentRepository;
 
     private String memNo;
     private String memName;
@@ -72,8 +71,9 @@ public class PreCourseRegistrationServiceImpl implements PreCourseRegistrationSe
         for(OpenLecture openLecture : openLectureList){
             int applicantsCount = repository.countAllByLectureCode(openLecture);
             PreCourseDTO  dto = openLecture.toDto();
+            Attachment attachment = attachmentRepository.findByIdAndOrder(Long.valueOf(openLecture.getSyllabusFileId()),1).get();
             dto.setApplicantsCount(applicantsCount);
-
+            dto.setFilePath(attachment.getOriginName());
             preCourseDTOList.add(dto);
         }
 
