@@ -69,10 +69,10 @@
                                 </div>
                                 <div class="email-wrapper">
                                     <div class="emailread-group">
-                                        <div class="read-group">
+                                        <div class="read-group m-4">
                                             <h6 class="m-4" th:text="|보낸사람 : ${mail.fromAddress}|">보낸사람</h6>
                                             <hr/>
-                                            <h6 class="m-4" th:text="|받는사람 : ${#strings.arraySplit(mail.toList[0], ' ')[1]}|">받는사람</h6>
+                                            <h6 class="m-4" th:if="${mail.toList != null}" th:text="|받는사람 : ${#strings.arraySplit(mail.toList[0], ' ')[0]}|">받는사람</h6>
                                             <p th:utext="${mail.content}">메일 본문 </p>
                                         </div>
                                     </div>

@@ -264,7 +264,7 @@ public class FileServiceImpl implements FileService {
             int idx = file.getOriginalFilename().lastIndexOf(".");
 
 //            String saveFileName = "/Users/inhwan/Documents/uploadThrough/" + file.getOriginalFilename();
-            String saveFileName = "tmp\\" + file.getOriginalFilename();
+            String saveFileName = "tmp"+File.separator+ file.getOriginalFilename();
 
 ///Users/inhwan/Documents/uploadThrough
             try (
@@ -295,7 +295,7 @@ public class FileServiceImpl implements FileService {
             String objectName = fileName.toString() + file.getOriginalFilename();
             // 풀네임(폴더 계층형이요)
 //            String filePath = "/Users/inhwan/Documents/uploadThrough/" + file.getOriginalFilename();
-            String filePath = "tmp\\" + file.getOriginalFilename();
+            String filePath = "tmp"+File.separator+file.getOriginalFilename();
             // 다운 받을 곳 path
 
             try {

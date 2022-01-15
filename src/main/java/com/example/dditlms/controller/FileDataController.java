@@ -330,38 +330,6 @@ public class FileDataController {
     }
 
 
-//    @PostMapping("/cloud/zipDownload")
-//    public ModelAndView zipDownload(ModelAndView mav,
-//                                    @RequestBody Map<String, Object> paramMap){
-//        List<String> chkArr = (List<String>) paramMap.get("chkArr");
-//        logger.info("chkArr : " + chkArr);
-//
-//
-//        byte[] buffer = new byte[1024];
-//
-//        try{
-//            FileOutputStream fos = new FileOutputStream("넣을 파일 경로 + 새로운 zip이름");
-//            ZipOutputStream zos = new ZipOutputStream(fos);
-//            ZipEntry ze = new ZipEntry("경로를 뺀 파일의 이름(txt)");
-//            zos.putNextEntry(ze);
-//            FileInputStream in = new FileInputStream("내 컴퓨터의 경로상 파일 너을거야");
-//
-//            int len;
-//            while ((len = in.read(buffer)) > 0) {
-//                zos.write(buffer, 0, len);
-//            }
-//            in.close();
-//            zos.closeEntry();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        mav.setViewName("pages/filemanager");
-//        return mav;
-//    }
-
     @PostMapping("/cloud/chkList")
     public ModelAndView chkList(@RequestBody Map<String, Object> paramMap, ModelAndView mav) {
         List<String> chkArr = (List<String>) paramMap.get("chkArr");
@@ -385,21 +353,39 @@ public class FileDataController {
                             @PathVariable(value = "chkArr") String token){
 
         //폴더가 있으면 폴더 이름만 두고 폴더를 생성? 그 안에 file넣고 또 폴더 있으면 폴더 만들고 file넣고
-
+        String bucketName = "lms-project";
 
         Map<String, List<FileData>> chkArr = (Map<String, List<FileData>>)fileUtil.getZipDownToken(token);
         List<FileData> zipToken = chkArr.get("cloudToken");
         logger.info("token : " + token);
         logger.info("리스트 사이즈 궁금해서 : " + zipToken.size());
         String[] files = new String[zipToken.size()];
+        Integer[] filesIdx = new Integer[zipToken.size()];
         int i = 0;
         for(FileData fileData : zipToken){
 
             String fileName = fileData.getFileName()+fileData.getExtension();
             files[i] = fileName;
+            filesIdx[i] = fileData.getFileIdx();
             logger.info("fileName : " + fileName);
             i++;
         }
+
+        Optional<FileData> fileDataWrapper = fileDataRepository.findByFileIdx(filesIdx[0]);
+        FileData current = fileDataWrapper.orElse(null);
+        FileData parent = current.getParent();
+        StringBuilder sb = new StringBuilder();
+        while (true){
+            sb.insert(0,"/");
+            sb.insert(0, parent.getFileName());
+            if(parent.getParent()==null) {
+                System.out.println("끝!");
+                break;
+            } else {
+                parent = parent.getParent();
+            }
+        }
+        logger.info("여기 sb는 : " + sb.toString());
 
 
 //        String[] files = {"3-3M2블록(국임)추가입주자모집공고문최종(21.11.26).pdf",
@@ -424,6 +410,21 @@ public class FileDataController {
                 FileInputStream in = null;
 
                 for(int k=0; k<files.length; k++){
+                    //여기서 다운로드 tmp 폴더에 s3집어넣고
+
+                    S3Object s3Object = s3.getObject(bucketName, sb.toString()+files[k]);
+                    S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+
+                    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream("tmp"+ File.separator+files[k]));
+                    byte[] bytesArray = new byte[4096];
+                    int bytesRead = -1;
+                    while ((bytesRead = s3ObjectInputStream.read(bytesArray)) != -1){
+                        outputStream.write(bytesArray, 0, bytesRead);
+                    }
+                    outputStream.close();
+                    s3ObjectInputStream.close();
+
+                    //
                     in = new FileInputStream(tempPath + files[k]);
 //                    in = new FileInputStream("/Users/inhwan/Documents/uploadThrough/" + files[k]);
                     zout.putNextEntry(new ZipEntry(files[k]));

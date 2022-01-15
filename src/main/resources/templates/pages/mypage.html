@@ -10,12 +10,17 @@
             <div class="row">
                 <div class="col-xl-4">
                     <div class="card">
-                        <div class="card-header pb-0">
-                            <h4 class="card-title mb-0">내 정보</h4>
+                        <div class="card-header row pb-0 m-0 align-items-center">
+                            <div class="col">
+                                <h4 class="card-title mb-0">내 정보</h4>
+                            </div>
+                            <div class="col text-end">
+                                <button id="btn-main-save" type="button" class="btn btn-outline-danger"><i class="icofont icofont-ui-check"></i></button>
+                            </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="height: 730px">
                             <form>
-                                <div class="row mb-2">
+                                <div class="row mb-3">
                                     <div class="profile-title">
                                         <div class="media">
                                             <img style="cursor:pointer;" id="changeImg" class="img-70 rounded-circle img-fluid" alt="" th:src="${session.memberImg}">
@@ -23,25 +28,29 @@
                                                 <div style="height: 0px;width: 0px; overflow:hidden;">
                                                     <input id="file-img" type="file" accept="image/*">
                                                 </div>
-                                                <h3 th:text="${session.userName}" class="mb-1 f-20 txt-primary"></h3>
-                                                <p class="f-12">직업</p>
+                                                <h3 th:text="${session.userName}" class="mb-1 f-20 txt-dark"></h3>
+<!--                                                <p class="f-12">직업</p>-->
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-5">
+                                    <i class="icofont icofont-id-card"></i>
                                     <label class="form-label">Id</label>
-                                    <p class="f-12" th:text="${member.getMemberId()}"></p>
+                                    <input class="f-12 b-light bg-white form-control" th:value="${member.getMemberId()}" readonly>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">학번??</label>
-                                    <p class="f-12" th:text="${member.getUserNumber()}"></p>
+                                <div class="mb-5">
+                                    <i class="icofont icofont-finger-print"></i>
+                                    <label class="form-label">학번/교번</label>
+                                    <input class="f-12 b-light bg-white form-control" th:value="${member.getUserNumber()}" readonly>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-5">
+                                    <i class="icofont icofont-ui-email"></i>
                                     <label class="form-label">Email</label>
                                     <input id="txt-email" class="form-control" th:value="${member.getEmail()}" placeholder="your-email@domain.com">
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-5">
+                                    <i class="icofont icofont-ui-call"></i>
                                     <label class="form-label">전화번호</label>
                                     <div class="row">
                                         <div class="col">
@@ -55,22 +64,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-footer">
-                                    <button id="btn-main-save" type="button" class="btn btn-primary btn-block">저장</button>
-                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-8">
                     <form class="card">
-                        <div class="card-header pb-0">
-                            <h4 class="card-title mb-0">상세 정보</h4>
+                        <div class="card-header row pb-0 m-0 align-items-center">
+                            <div class="col">
+                                <h4 class="card-title mb-0">상세 정보</h4>
+                            </div>
+                            <div class="col text-end">
+                                <button id="btn-detail-change" class="btn btn-outline-danger m-r-20 m-b-10" type="button"><i class="icofont icofont-ui-check"></i></button>
+                            </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" style="height: 720px">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
+                                        <i class="icofont icofont-bank-alt"></i>
                                         <label class="form-label">은행</label>
                                         <select id="bank" class="form-control btn-square">
                                             <option value="null">--선택--</option>
@@ -92,39 +104,45 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="mb-3">
+                                        <i class="icofont icofont-social-flikr"></i>
                                         <label class="form-label">계좌 번호</label>
                                         <input id="accountNo" th:value="${member.getMemberDetail()?.getAcnutNo()}" class="form-control" type="text" onkeyup="checkInputNum()" placeholder="000-000-000000">
                                     </div>
                                 </div>
                                 <div class="col-md-7">
                                     <div class="mb-3">
+                                        <i class="icofont icofont-map-search"></i>
                                         <label class="form-label">우편번호</label>
                                         <div>
                                             <input style="display: inline;width: 60%;" th:value="${member.getMemberDetail()?.getZip()}" id="sample4_postcode" class="form-control" type="text" readonly="true">
-                                            <button onclick="sample4_execDaumPostcode()" class="btn btn-primary" type="button">우편번호 찾기</button>
+                                            <button onclick="sample4_execDaumPostcode()" class="btn btn-outline-info" type="button">우편번호 찾기</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-7">
                                     <div class="mb-3">
+                                        <i class="icofont icofont-social-google-map"></i>
                                         <label class="form-label">도로명주소</label>
                                         <input th:value="${member.getMemberDetail()?.getRdnmAdr()}" id="sample4_roadAddress" class="form-control" type="text" readonly="true">
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="mb-3">
+                                        <i class="icofont icofont-social-google-map"></i>
                                         <label class="form-label">지번주소</label>
                                         <input th:value="${member.getMemberDetail()?.getLnmAdr()}" id="sample4_jibunAddress" class="form-control" type="text" readonly="true">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="mb-3">
+                                        <i class="icofont icofont-home"></i>
                                         <label class="form-label">상세주소</label>
                                         <input th:value="${member.getMemberDetail()?.getDetailAdr()}" id="sample4_detailAddress" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
+                                        <i class="icofont icofont-info-circle"></i>
                                         <label class="form-label">참고항목</label>
                                         <input th:value="${member.getMemberDetail()?.getRefer()}" id="sample4_extraAddress" class="form-control" type="text" readonly="true">
                                     </div>
@@ -136,9 +154,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer text-end">
-                            <button id="btn-detail-change" class="btn btn-primary" type="button">저장</button>
                         </div>
                     </form>
                 </div>

@@ -207,6 +207,7 @@ public class FileUtil {
                 .extension(extension)
                 .size(file.getSize())
                 .downloadCount(0L).build();
+        System.out.println(attachment);
         attachmentRepository.save(attachment);
     }
 

@@ -44,7 +44,6 @@
         const title = document.querySelector("#title");
         const listBtn = document.querySelector("#list-btn");
         const boardWrite = document.querySelector("#board-write");
-        console.log(mappingId.value + "아아");
         var editor = CKEDITOR.replace('editor4');
 
 
@@ -63,11 +62,7 @@
                     const form = this;
                     boardSubmit.addEventListener("click", (e) => {
                         const dzPreview = document.querySelector(".dz-preview");
-                        console.log("!ㅁㄴㅇㅁㄴㅇㄹ");
-                        console.log(dzPreview);
                         if(dzPreview!=null ){
-                        console.log("!@12");
-                        console.log(dzPreview);
                                 console.dir(editor4);
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -89,29 +84,21 @@
                                     xhr.setRequestHeader(header,token);
                                 }
                             }).done(function (response){
-                                console.log(response.idx);
                                 location.href="/community/"+mappingId.value+"/detailBoard/"+response.idx;
-                                console.log("easdasfwrew")
                             })
-                            console.log(formData);
                         }
                     });
                         this.on("sendingmultiple", (data, xhr, formData) => {
-                            console.log(CKEDITOR.instances.editor4.getData());
-                            console.log(editor.getData());
                             formData.append("content", editor.getData());
                             formData.append("title", title.value);
                         });
 
                         this.on("successmultiple",(files,response)=>{
-                           console.log(response.idx);
-                           console.log(response);
                            const targetId = response.idx;
 
                            location.href="/community/"+mappingId.value+"/detailBoard/"+targetId;
                         });
                         this.on("errormultiple", function(files, response) {
-                            console.log("aa");
                         });
                 },
             }

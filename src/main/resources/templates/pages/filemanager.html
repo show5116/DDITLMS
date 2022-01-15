@@ -189,7 +189,6 @@
     <!-- Container-fluid Ends-->
     <script th:inline="javascript">
 
-        console.log("스크립트 있음");
         const newFolder = document.querySelector("#newFolder");
         let folderMoves = document.querySelectorAll(".folder-move");
         let fileTargets = document.querySelectorAll(".file-target");
@@ -210,7 +209,6 @@
                 } else {
                     chkArr = chkArr.filter((e) => e !== chk.value);
                 }
-                console.log(chkArr);
                 const param = {
                             chkArr : chkArr
                         }
@@ -224,10 +222,8 @@
                     }
                 }).done(function (fragment){
                     $("#zipReplace").replaceWith(fragment);
-                    console.log("fragment입니다. : "+fragment);
                     // const chklist = document.querySelectorAll("input[name='chklist']");
                     // chklist.forEach(chk => checkList(chk));
-                    console.log("chkArr : " + chkArr);
                 }).fail(function (){
 
                 });
@@ -272,8 +268,6 @@
 
         function replaceEvent(target){
             target.addEventListener("click",function (event){
-                console.log("타겟임 " + target);
-                console.log(event.currentTarget.id);
                 targetId = event.currentTarget.id;
                 const params = {
                     targetId : targetId
@@ -286,7 +280,6 @@
                         xhr.setRequestHeader(header,token);
                    }
                 }).done(function (fragment){
-                    console.log("전" + fragment);
                     $("#folderReplace").replaceWith(fragment);
                     folderMoves = document.querySelectorAll(".folder-move");
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
@@ -297,16 +290,11 @@
 
                     //이걸 백에서 하면서 변수로 넣는 법이 있을까?
                 }).fail(function (data, textStatus, errorThrown){
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                    console.log(data);
                 })
             });
         }
 
             newFolder.addEventListener("click", function(){
-                console.log("이벤트 리스너");
-                console.log(targetId);
                 const fileDataDTO = {
                     fileName : createFolder.value,
                     extension : "folder",
@@ -321,7 +309,6 @@
                     fileDataDTO.parentId = targetId*1;
                 }
 
-                console.log(fileDataDTO);
                 $.ajax({
                     url:"/cloud/addFolder",
                     data: JSON.stringify(fileDataDTO),
@@ -331,8 +318,6 @@
                         xhr.setRequestHeader(header,token);
                     }
                 }).done(function (fragment){
-                    console.log("일단 성공");
-                    console.log("전" + fragment);
                     $("#folderReplace").replaceWith(fragment);
                     folderMoves = document.querySelectorAll(".folder-move");
                     folderMoves.forEach(folderMove => replaceEvent(folderMove));
@@ -348,14 +333,9 @@
             const fileVal = uploadFileInput.value;
             const fileSplit = fileVal.split("\\");
             const fileNameSp = fileSplit[fileSplit.length-1].split(".");
-            console.log("파일 이름만 : " + fileNameSp);
             const reader = new FileReader();
-            console.log("일단 얘부터 되야지");
-            console.log("sas"+fileVal);
 
             reader.onload = function (){
-                console.log("오 이게 될까?");
-                console.log(targetId);
                 const data = reader.result;
                 uploadFile(fileVal, targetId);
             }
@@ -372,11 +352,6 @@
             const fileName = fileSplit[fileSplit.length-1];
             const fileNameSp = fileName.split(".");
 
-            console.log("val : "+ val);
-            console.log(fileName+"dlld")
-            console.log("확장자찍는다 : " + fileNameSp[fileNameSp.length-1]);
-            console.log("네임 찍는다 : " + fileName.substring(0,fileName.lastIndexOf(".")));
-
             $.ajax({
                 url:"/cloud/upload",
                 data: data,
@@ -388,7 +363,6 @@
                     xhr.setRequestHeader(header,token);
                 }
             }).done(function (fragment) {
-                console.log("성공입니다.");
                 $("#folderReplace").replaceWith(fragment);
                 folderMoves = document.querySelectorAll(".folder-move");
                 folderMoves.forEach(folderMove => replaceEvent(folderMove));
@@ -396,9 +370,7 @@
                 rightClick.forEach(right => {
                     handleCreateContextMenu(right)
                 });
-                console.log(fragment);
             }).fail(function (){
-                console.log("실패입니다.");
             });
         }
 
@@ -418,16 +390,12 @@
                             xhr.setRequestHeader(header,token);
                         }
                     }).done(function (fragment){
-                        console.log("전" + fragment);
                         $("#folderReplace").replaceWith(fragment);
                         folderMoves = document.querySelectorAll(".folder-move");
                         folderMoves.forEach(folderMove => replaceEvent(folderMove));
 
                         //이걸 백에서 하면서 변수로 넣는 법이 있을까?
                     }).fail(function (data, textStatus, errorThrown){
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                        console.log(data);
                     });
                 },
                 "plugins" : [ "types",

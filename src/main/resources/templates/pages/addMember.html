@@ -7,22 +7,36 @@
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='회원 등록')"></th:block>
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/jsgrid.css}">
     <div class="container-fluid">
-        <div class="col-sm-12 col-xl-6 xl-100">
-            <div class="card">
-                <div class="card-body" style="height: 914px;">
-                    <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                        <li class="nav-item"><a id="card-student-tab" class="nav-link active" href="#card-student" data-bs-toggle="pill" role="tab" aria-controls="card-student" aria-selected="true">학생
-                            <div class="media"></div></a></li>
-                    </ul>
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="card-student" role="tabpanel" aria-labelledby="card-student-tab">
-                            <a th:href="@{/download?token=}+${token}">엑셀 폼 다운로드</a>
-                            <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-student" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                            <button class="btn btn-primary pull-right" id="btn-student-excel" type="button">엑셀파일읽기</button>
-                            <div id="grid-student"></div>
-                            <button class="btn btn-primary pull-right" id="btn-student-save" type="button">저장</button>
-                            <button class="btn btn-primary pull-right" id="btn-student-autoMade" type="button">학번자동생성</button>
+        <div class="card">
+            <div class="card-body" style="height: 914px;">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                    <li class="nav-item"><a id="card-student-tab" class="nav-link active" href="#card-student" data-bs-toggle="pill" role="tab" aria-controls="card-student" aria-selected="true">학생
+                        <div class="media"></div></a></li>
+                    <li class="nav-item"><a id="card-professor-tab" class="nav-link" href="#card-professor" data-bs-toggle="pill" role="tab" aria-controls="card-professor" aria-selected="false">교수</a></li>
+                    <li class="nav-item"><a id="card-staff-tab" class="nav-link" href="#card-staff" data-bs-toggle="pill" role="tab" aria-controls="card-staff" aria-selected="false">직원</a></li>
+                </ul>
+                <div class="tab-content m-t-10 b-t-light" id="pills-tabContent">
+                    <div class="tab-pane fade show active m-t-10" id="card-student" role="tabpanel" aria-labelledby="card-student-tab">
+                        <div class="row">
+                            <div class="col-sm-6 row m-b-10">
+                                <button class="col-sm-2 btn btn-pill btn-outline-light btn-sm txt-google-plus p-0 m-l-10">
+                                    <a th:href="@{/download?token=}+${token}" class="col-sm-1 txt-google-plus">엑셀 폼 다운로드</a>
+                                </button>
+                                <button class="col-sm-2 btn btn-pill btn-outline-light btn-sm txt-google-plus m-r-15 m-l-5" id="btn-student-excel" type="button">엑셀파일읽기</button>
+                                <input style="height: 0px;width: 0px; overflow:hidden;" id="excel-student" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="col-sm-1">
+                            </div>
+                            <div class="col-sm-6 row m-l-30 m-b-10 justify-content-end">
+                                <button class="col-sm-2 btn btn-primary btn-sm" id="btn-student-autoMade" type="button">학번자동생성</button>
+                                <button class="col-sm-2 btn btn-secondary btn-sm m-r-10 m-l-5" id="btn-student-save" type="button">저장</button>
+                            </div>
                         </div>
+                        <div id="grid-student"></div>
+                    </div>
+                    <div class="tab-pane fade" id="card-professor" role="tabpanel" aria-labelledby="card-professor-tab">
+                        <div id="grid-professor"></div>
+                    </div>
+                    <div class="tab-pane fade" id="card-staff" role="tabpanel" aria-labelledby="card-staff-tab">
+                        <div id="grid-staff"></div>
                     </div>
                 </div>
             </div>

@@ -78,17 +78,17 @@
                                         <table class="table table-bordered text-center f-14">
                                             <thead class="table-secondary">
                                                 <tr style="height: 1px;">
-                                                    <th>학부(과)</th>
-                                                    <th>과목코드</th>
-                                                    <th>교과목명</th>
-                                                    <th>분반</th>
-                                                    <th>이수구분</th>
-                                                    <th>강의구분</th>
-                                                    <th>정원</th>
-                                                    <th>신청인원</th>
-                                                    <th>담당교수</th>
-                                                    <th>강의시간</th>
-                                                    <th>강의실</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">학부(과)</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">과목코드</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">교과목명</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">분반</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">이수구분</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">강의구분</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">정원</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">신청인원</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">담당교수</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">강의시간</th>
+                                                    <th class="p-0 p-t-10 p-b-10 pl-1">강의실</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -96,7 +96,7 @@
                                                     <td class="hidden-lecture" style="display: none" th:text="${lecture}"></td>
                                                     <td th:text="${lecture.getMajorKr()}"></td>
                                                     <td th:text="${lecture.getSubjectCode()}" th:class="subjectCode"></td>
-                                                    <td th:data-parameter="${lecture.getLectureCode()}" th:onclick="testPDF('parameter');" class="txt-google-plus" th:text="${lecture.getLectureName()}"></td>
+                                                    <td th:id="${lecture.getFilePath()}" th:data-parameter="${lecture.getLectureCode()}" onclick="testPDF();" class="txt-google-plus" th:text="${lecture.getLectureName()}"></td>
                                                     <td th:text="${lecture.getLectureClass()}"></td>
                                                     <td th:text="${lecture.getLectureSeme()}"></td>
                                                     <td th:text="${lecture.getLecturedivision()}"></td>
@@ -155,12 +155,10 @@
         </div>
     </div>
     <script type="text/javascript" th:inline="javascript">
-        function testPDF(code){
-            console.log("hi");
-            console.log(code);
-            event.stopImmediatePropagation();
-            window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
-        }
+        // function testPDF(code){
+        //     event.stopImmediatePropagation();
+        //     window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
+        // }
 
     </script>
 

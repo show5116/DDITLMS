@@ -26,6 +26,7 @@ public class PreCourseDTO {
     private int applicantsCount;    // 신청인원
     private String existence;       // 신청유무
     private int point;              // 학점
+    private String filePath;        // 파일경로
 
 
     @QueryProjection
