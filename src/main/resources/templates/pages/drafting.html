@@ -324,11 +324,7 @@
                 contentType: "application/json; charset=UTF-8",
                 success: function (data) {
 
-                 let content =data.docformCn
-
-<!--                 let change = content.replace("${test}" , "121");-->
-
-                 CKEDITOR.instances.editor4.setData(content)
+                 CKEDITOR.instances.editor4.setData(data)
 
                 }
             });

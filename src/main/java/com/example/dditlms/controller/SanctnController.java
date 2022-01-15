@@ -12,11 +12,11 @@ import com.example.dditlms.domain.entity.sanction.*;
 import com.example.dditlms.domain.repository.AttachmentRepository;
 import com.example.dditlms.domain.repository.MemberRepository;
 import com.example.dditlms.domain.repository.sanctn.*;
+import com.example.dditlms.service.DocformService;
 import com.example.dditlms.service.SanctnLnService;
 import com.example.dditlms.service.SanctnService;
 import com.example.dditlms.util.FileUtil;
 import com.example.dditlms.util.MemberUtil;
-import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,6 +43,8 @@ public class SanctnController {
     private final EmployeeRepository employeeRepository;
 
     private final DocformRepository docformRepository;
+
+    private final DocformService docformService;
 
     private final DepartmentRepository departmentRepository;
 
@@ -188,11 +190,12 @@ public class SanctnController {
     //양식폼 생성
     @GetMapping("/drafting/makeForm")
     @ResponseBody
-    public Optional<Docform> makeForm(@RequestParam Map<Long, Object> param) {
+    public String makeForm(@RequestParam Map<Long, Object> param) {
 
-        Optional<Docform> form = docformRepository.findById(Long.valueOf((String) param.get("form")));
+        Docform form = docformRepository.findById(Long.valueOf((String) param.get("form"))).get();
+        String formContent = docformService.replaceDocform(form.getDocformCn());
 
-        return form;
+        return formContent;
     }
 
     //직원 상세정보 조회
