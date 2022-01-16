@@ -5,10 +5,11 @@
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='수강 검색')"></th:block>
+<!--    /<script th:src="@{/static/js/courseReg/signupSearch.js}"></script>-->
     <div class="container-fluid">
         <div class="row">
             <div class="card m-b-10">
-                <div class="card-body">
+                <div class="card-body p-b-15">
                     <div class="mb-2 row justify-content-around">
                         <div class="col-sm row ">
                             <label class="col-sm-3 align-self-center bookmark">학년도</label>
@@ -59,16 +60,10 @@
                                 <option value="MAJOR_SELECT">전공선택</option>
                             </select>
                         </div>
-                        <div class="col-sm row justify-content-around">
-                            <label class="col-sm-3 align-self-center bookmark">강의계획</label>
-                            <div class="col align-self-center">
-                                <input type="radio" name="syllabus" id="total-lecture" class="col-sm-1" checked>전체
-                                <input type="radio" name="syllabus" id="input-lecture" class="col-sm-1">입력
-                                <input type="radio" name="syllabus" id="undefine-lecture" class="col-sm-1">미정
-                            </div>
+                        <div class="col-sm row">
+                            <button type="button" class="col-sm-3 btn btn-square btn-outline-info m-l-30 m-t-5" id="btn-search">검색</button>
                         </div>
-                        <div class="col-sm row justify-content-end text-end">
-                            <button type="button" class="col-sm-3 btn btn-air-light m-l-30" id="btn-search">검색</button>
+                        <div class="col-sm row justify-content-around">
                         </div>
                     </div>
                 </div>
@@ -105,7 +100,7 @@
                                         <td th:if="${lecture.getLectureSection().toString().equals('MAJOR_REQUIRED')}">전필</td>
                                         <td th:if="${lecture.getLectureSection().toString().equals('MAJOR_SELECT')}">전선</td>
                                         <td th:text="${lecture.getPoint()}"></td>
-                                        <td><a onclick="testPDF();" class="btn btn-link txt-google-plus" th:text="${lecture.getLectureName()}"></a></td>
+                                        <td th:id="${lecture.getFilePath()}" th:data-parameter="${lecture.getLectureCode()}" onclick="testPDF();" class="txt-google-plus" th:text="${lecture.getLectureName()}"></td>
 
                                         <td th:text="${lecture.getProfessorName()}"></td>
                                         <td th:text="${lecture.getLectureSchedule()}"></td>
@@ -121,11 +116,11 @@
             </div>
         </div>
     </div>
-    <script>
-        function testPDF(){
-            event.stopImmediatePropagation();
-            window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
-        }
+    <script type="text/javascript" th:inline="javascript">
+        // function testPDF(code){
+        //     event.stopImmediatePropagation();
+        //     window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
+        // }
 
     </script>
 

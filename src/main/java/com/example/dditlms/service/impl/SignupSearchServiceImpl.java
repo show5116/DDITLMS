@@ -2,13 +2,11 @@ package com.example.dditlms.service.impl;
 
 import com.example.dditlms.domain.dto.PreCourseDTO;
 import com.example.dditlms.domain.dto.SignupDTO;
+import com.example.dditlms.domain.entity.Attachment;
 import com.example.dditlms.domain.entity.Major;
 import com.example.dditlms.domain.entity.OpenLecture;
 import com.example.dditlms.domain.entity.SemesterByYear;
-import com.example.dditlms.domain.repository.EnrolmentRepository;
-import com.example.dditlms.domain.repository.MajorRepository;
-import com.example.dditlms.domain.repository.SemesterByYearRepository;
-import com.example.dditlms.domain.repository.SignupSearchRepository;
+import com.example.dditlms.domain.repository.*;
 import com.example.dditlms.service.SignupSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,7 @@ public class SignupSearchServiceImpl implements SignupSearchService {
     private final MajorRepository majorRepository;
     private final SignupSearchRepository repository;
     private final EnrolmentRepository enrolmentRepository;
+    private final AttachmentRepository attachmentRepository;
 
     @Override
     @Transactional
@@ -42,11 +41,7 @@ public class SignupSearchServiceImpl implements SignupSearchService {
             String[] split = years.split("-");
             String distinctYear = split[0];
             int parseYear = Integer.parseInt(distinctYear);
-            log.info("-------SERVICEIMPL[signUpSearch] :: parseYear = {}",parseYear);
-            log.info("-------SERVICEIMPL[signUpSearch] :: parseSemeYear = {}",parseSemeYear);
             if (parseYear > parseSemeYear){
-                log.info("-------SERVICEIMPL[signUpSearch] :: if(parseYear>parseSemeYear) = {}",parseYear>parseSemeYear);
-
             }else {
                 if (yearList.size()==0){
                     yearList.add(distinctYear);
@@ -56,19 +51,25 @@ public class SignupSearchServiceImpl implements SignupSearchService {
                     i++;
                 }
             }
-
         }
+
         Map<String,Object> search = new HashMap<>();
         search.put("name","totalList");
         List<SignupDTO> openLectures = repository.totalLectureList(search);
-        int count = openLectures.size();
+        List<SignupDTO> result = new ArrayList<>();
+        for (SignupDTO dto : openLectures){
+            int fileId = dto.getFileId();
+            Attachment attachment = attachmentRepository.findByIdAndOrder(Long.valueOf(fileId),1).get();
+            dto.setFilePath(attachment.getOriginName());
+            result.add(dto);
+        }
+        log.info("-----serviceImpl :: result = {}", result);
 
         List<Major> majorList = majorRepository.findAll();
 
         map.put("majorList", majorList);
         map.put("yearList", yearList);
-        map.put("openLectures", openLectures);
-        map.put("totalCount", count);
+        map.put("openLectures", result);
     }
 
     @Override
@@ -102,8 +103,14 @@ public class SignupSearchServiceImpl implements SignupSearchService {
         search.put("division",division);
         search.put("major",major);
 
-        List<SignupDTO> result = repository.totalLectureList(search);
-
+        List<SignupDTO> searchLecture = repository.totalLectureList(search);
+        List<SignupDTO> result = new ArrayList<>();
+        for (SignupDTO dto : searchLecture){
+            int fileId = dto.getFileId();
+            Attachment attachment = attachmentRepository.findByIdAndOrder(Long.valueOf(fileId),1).get();
+            dto.setFilePath(attachment.getOriginName());
+            result.add(dto);
+        }
         map.put("result", result);
     }
 

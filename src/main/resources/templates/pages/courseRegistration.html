@@ -6,8 +6,7 @@
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='수강신청')"></th:block>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <div class="container-fluid">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>    <div class="container-fluid">
         <div class="card m-b-10">
             <div class="card-body">
                 <div class="mb-2 row justify-content-around">
@@ -216,6 +215,10 @@
     </div>
 
     <script>
+        const saveBtn = document.querySelector("#total-registration-btn");
+        saveBtn.addEventListener('click', function(){
+        })
+
         function confirmDupl(){
             const parent = event.target.parentNode.parentNode;
             const lectureCode = parent.id;
@@ -235,6 +238,7 @@
                     } else if (fragment ==="exist"){
                         swal("등록된 강의입니다.");
                     }
+
                 })
         }
 
@@ -281,6 +285,7 @@
                     })
                         .done(function(fragment){
                             $("#pregistration-table-card").replaceWith(fragment);
+                            leftList.push(cancelLectureCode);
                         })
                 }else if(result == true){
                 }
@@ -315,10 +320,6 @@
                 })
         }
 
-        function testPDF(){
-            event.stopImmediatePropagation();
-            window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
-        }
 
     </script>
 
