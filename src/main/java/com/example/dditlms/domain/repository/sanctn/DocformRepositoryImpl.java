@@ -36,6 +36,7 @@ public class DocformRepositoryImpl implements DocformRepositoryCustom{
                 .select(new QDocFormDTO(docform.docformNm, docform.docformId))
                 .from(docform)
                 .where(docform.docFormCategory.eq(DocFormCategory.valueOf(cate)))
+                .orderBy(docform.docformNm.asc())
                 .fetch();
 
     }
