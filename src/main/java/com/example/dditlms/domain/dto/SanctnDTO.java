@@ -95,12 +95,13 @@ public class SanctnDTO {
 
     @QueryProjection
 
-    public SanctnDTO(String deptNm, EmployeeRole employeeRole, String name, SanctnLnProgress sanctnLnProgress, LocalDateTime sanctnDate, String sanctnOpinion) {
+    public SanctnDTO(String deptNm, EmployeeRole employeeRole, String name, SanctnLnProgress sanctnLnProgress, LocalDateTime sanctnDate, String sanctnOpinion, Long sanctnId) {
         this.deptNm = deptNm;
         this.employeeRole = employeeRole;
         this.name = name;
         this.sanctnLnProgress = sanctnLnProgress;
         this.sanctnDate = sanctnDate;
         this.sanctnOpinion = sanctnOpinion;
+        this.sanctnId = sanctnId;
     }
 }
