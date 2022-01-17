@@ -42,7 +42,7 @@ public class FileUtil {
         originToken.append(id);
         originToken.append("&");
         originToken.append(order);
-        return jwtSecurityService.createToken(originToken.toString(),60000L);
+        return jwtSecurityService.createToken(originToken.toString(),30000L);
     }
 
     public String makeFileDownToken(int fileIdx){
@@ -57,7 +57,7 @@ public class FileUtil {
         originToken.append("&");
         originToken.append(fileIdx);
 
-        return jwtSecurityService.createToken(originToken.toString(),60000L);
+        return jwtSecurityService.createToken(originToken.toString(),30000L);
     }
 
     public String makeZipDownToken(List<String> list){
@@ -74,7 +74,7 @@ public class FileUtil {
             originToken.append(fileIdx);
         }
 
-        return jwtSecurityService.createToken(originToken.toString(),60000L);
+        return jwtSecurityService.createToken(originToken.toString(),30000L);
     }
 
     public Map<String,String> getToken(String token){
@@ -130,7 +130,6 @@ public class FileUtil {
 
         map.put("success","Y");
         map.put("cloudToken", String.valueOf(Long.parseLong(parses[1])));
-//        map.put("cloudToken", String.valueOf(filedata.getFileIdx()));
         return map;
     }
 
@@ -140,7 +139,6 @@ public class FileUtil {
         try{
             parseToken = jwtSecurityService.getToken(token);
         }catch (ExpiredJwtException e){
-//            map.put("success","N");
             return map;
         }
         String[] parses = parseToken.split("&");
@@ -151,7 +149,6 @@ public class FileUtil {
         }catch(ClassCastException e){
         }
         if(member.getUserNumber() != Long.parseLong(parses[0])){
-//            map.put("success","N");
             return map;
         }
         List<FileData> list = new ArrayList<>();
@@ -162,9 +159,7 @@ public class FileUtil {
             list.add(filedata);
         }
 
-//        map.put("success","Y");
         map.put("cloudToken", list);
-//        map.put("cloudToken", String.valueOf(filedata.getFileIdx()));
         return map;
     }
 

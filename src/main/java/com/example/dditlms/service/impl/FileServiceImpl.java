@@ -60,7 +60,6 @@ public class FileServiceImpl implements FileService {
     @Transactional
     @Override
     public FileData addRootFolder(Member member){
-//        Entity에서 할거임 백에서만이니까
         FileData fileData = FileData.builder()
                 .member(member)
                 .fileName("user"+member.getUserNumber())
@@ -96,7 +95,6 @@ public class FileServiceImpl implements FileService {
         fileData.setCreateTime(new Date());
         fileDataRepository.save(fileData);
 
-//        FileData current = fileData;
         StringBuilder name = new StringBuilder();
         FileData parent = fileData.getParent();
         while (true) {
@@ -115,12 +113,10 @@ public class FileServiceImpl implements FileService {
 
         String bucketName = "lms-project";
         String folderName = name.toString();
-        // 집어 넣을때 parent(name) + "/" + idx(name)
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(0L);
         objectMetadata.setContentType("application/x-directory");
-        // 생성 유형 - 폴더
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
 
         try {
@@ -161,7 +157,6 @@ public class FileServiceImpl implements FileService {
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(0L);
             objectMetadata.setContentType("application/x-directory");
-            // 생성 유형 - 폴더
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, targetId, new ByteArrayInputStream(new byte[0]), objectMetadata);
 
             try {
@@ -202,7 +197,6 @@ public class FileServiceImpl implements FileService {
             }
             data.put("text", fileData.getFileName());
             if(fileData.getExtension().equals("folder")) {
-//                data.put("icon", "icofont icofont-folder font-theme");
                 data.put("icon", "icofont icofont-ui-folder font-theme");
             } else if(fileData.getFileIdx()==1){
                 data.put("icon", "icofont icofont-ui-folder font-theme");
@@ -263,10 +257,8 @@ public class FileServiceImpl implements FileService {
         for (MultipartFile file : files) {
             int idx = file.getOriginalFilename().lastIndexOf(".");
 
-//            String saveFileName = "/Users/inhwan/Documents/uploadThrough/" + file.getOriginalFilename();
             String saveFileName = "tmp"+File.separator+ file.getOriginalFilename();
 
-///Users/inhwan/Documents/uploadThrough
             try (
                     FileOutputStream fos = new FileOutputStream(saveFileName);
                     InputStream is = file.getInputStream();
@@ -293,10 +285,7 @@ public class FileServiceImpl implements FileService {
             }
 
             String objectName = fileName.toString() + file.getOriginalFilename();
-            // 풀네임(폴더 계층형이요)
-//            String filePath = "/Users/inhwan/Documents/uploadThrough/" + file.getOriginalFilename();
             String filePath = "tmp"+File.separator+file.getOriginalFilename();
-            // 다운 받을 곳 path
 
             try {
                 s3.putObject(bucketName, objectName, new File(filePath));
@@ -306,7 +295,6 @@ public class FileServiceImpl implements FileService {
             } catch (SdkClientException e) {
                 e.printStackTrace();
             }
-            //파일 받아오는데 나중에 스케줄러 써서 삭제 시키는거도 해보기
 
 
             FileData fileData = FileData.builder()
