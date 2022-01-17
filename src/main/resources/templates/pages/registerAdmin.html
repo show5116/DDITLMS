@@ -7,25 +7,25 @@
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='등록 관리')"></th:block>
     <div class="container-fluid">
         <div class="col-lg-12">
-            <div style="height:500px;" class="card">
-                <div style="overflow: auto;" class="p-20">
+            <div style="height:800px;" class="card">
+                <div style="overflow: auto;" class="p-20 p-t-5">
                     <div id="not-regist-students" class="tab-content m-t-15">
-                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                        <div class="row justify-content-between b-l-secondary border-6 m-b-20 ">
                             <div class="col align-self-center">
                                 <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">등록 관리</h4>
                                 <span class="text-muted p-l-10 m-t-10" th:text="${#lists.size(studentList)+'건'}"></span>
                             </div>
-                            <div class="col search-bg">
-                                <select id="student-search-category">
-                                    <option value="name">이름</option>
-                                    <option value="number">학번</option>
-                                </select>
-                                <i class="fa fa-search"></i>
-                                <input onkeyup="searchStudent()" id="student-serch-box" style="display:inline-block; width:50%;" class="form-control-plaintext" placeholder="학생 검색">
-                            </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
+                        <div class="col search-bg m-l-10">
+                            <select id="student-search-category">
+                                <option value="name">이름</option>
+                                <option value="number">학번</option>
+                            </select>
+                            <i class="fa fa-search m-l-10"></i>
+                            <input onkeyup="searchStudent()" id="student-serch-box" style="display:inline-block; width:50%;" class="form-control-plaintext" placeholder="학생 검색">
+                        </div>
+                        <div class="table-responsive b-t-light">
+                            <table class="table table-hover text-center">
                                 <thead>
                                 <tr>
                                     <th>학번</th>
@@ -39,13 +39,13 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="student : ${studentList}">
-                                    <td class="student-number" th:text="${student.getUserNumber()}"></td>
-                                    <td class="student-name" th:text="${student.getName()}"></td>
-                                    <td th:text="${student.getMajor()}"></td>
-                                    <td th:text="${student.getPayment()}"></td>
-                                    <td th:text="${student.getRealPayment()}"></td>
-                                    <td><button class="btn-primary btn-sm" type="button" onclick="completePay()">완납</button></td>
-                                    <td><button class="btn-primary btn-sm" type="button" onclick="notPay()">미납</button></td>
+                                    <td class="student-number p-b-0" th:text="${student.getUserNumber()}"></td>
+                                    <td class="student-name p-b-0" th:text="${student.getName()}"></td>
+                                    <td class="p-b-0" th:text="${student.getMajor()}"></td>
+                                    <td class="p-b-0" th:text="${student.getPayment()}"></td>
+                                    <td class="p-b-0" th:text="${student.getRealPayment()}"></td>
+                                    <td class="p-t-5 p-b-5"><button class="btn-primary btn-sm" type="button" onclick="completePay()">완납</button></td>
+                                    <td class="p-t-5 p-b-5"><button class="btn-primary btn-sm" type="button" onclick="notPay()">미납</button></td>
                                 </tr>
                                 </tbody>
                             </table>
