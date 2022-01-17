@@ -62,7 +62,8 @@ public class SanctnRepositoryImpl implements SanctnRepositoryCustom{
                         , member.name
                         , sanctnLn1.sanctnLnProgress
                         , sanctnLn1.sanctnDate
-                        , sanctnLn1.sanctnOpinion))
+                        , sanctnLn1.sanctnOpinion
+                        , sanctn.sanctnId))
                 .from(sanctnLn1)
                 .innerJoin(member)
                 .on(sanctnLn1.mberNo.eq(member))

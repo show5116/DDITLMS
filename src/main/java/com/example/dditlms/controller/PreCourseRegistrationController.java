@@ -2,10 +2,7 @@ package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.dto.PreCourseDTO;
 import com.example.dditlms.domain.entity.*;
-import com.example.dditlms.domain.repository.MajorRepository;
-import com.example.dditlms.domain.repository.PreCourseRegistrationRepository;
-import com.example.dditlms.domain.repository.SemesterByYearRepository;
-import com.example.dditlms.domain.repository.SignupSearchRepository;
+import com.example.dditlms.domain.repository.*;
 import com.example.dditlms.service.PreCourseRegistrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +20,7 @@ public class PreCourseRegistrationController {
 
     private final PreCourseRegistrationRepository repository;
     private final SignupSearchRepository searchRepository;
+    private final AttachmentRepository attachmentRepository;
 
     private String memNo;
 
@@ -69,29 +67,13 @@ public class PreCourseRegistrationController {
     @PostMapping("/preCourseRegistration/searchSubject")
     public String searchSubject(Model model, @RequestParam Map<String, Object> paramMap){
         String searchSubject = (String) paramMap.get("searchSubject");
-        List<OpenLecture> openLectureList = searchRepository.searchSubject(searchSubject);
-        List<PreCourseDTO> result = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchSubject", searchSubject);
+        service.searchSubject(map);
 
-        for (OpenLecture openLecture : openLectureList) {
-            String id = openLecture.getId();
-            String lectureClass = id.substring(id.length()-1);
-            String kind = openLecture.getLectureKind() +"";
-            PreCourseDTO dto = openLecture.toDto();
-            dto.setLectureClass(lectureClass);
-            dto.setLectureSeme(openLecture.getLectureSection().getKorean());
-            if (kind.equals("F")){
-                kind = "오프라인 ";
-                dto.setLecturedivision(kind);
-            } else if (kind.equals("O")){
-                kind = "온라인";
-                dto.setLecturedivision(kind);
-            }
-            result.add(dto);
-        }
-        int count = result.size();
+        List<PreCourseDTO> openLectureList = (List<PreCourseDTO>)map.get("openLectureList");
 
-        model.addAttribute("openLectureList", result);
-        model.addAttribute("totalCount", count);
+        model.addAttribute("openLectureList", openLectureList);
 
         return "pages/preCourseRegistration::#searchLectureList";
     }

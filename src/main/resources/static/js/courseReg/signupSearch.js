@@ -5,6 +5,13 @@ var memberNumber;
 const yearList = [];
 const majorList = [];
 
+function testPDF(){
+    const target = event.target.id;
+    console.log(target);
+    event.stopImmediatePropagation();
+    window.open("/static/pdf/"+target+".pdf", "target", "scrollbars = yes,location = no", false);
+}
+
 (function(){
     var topSetting = {
         year : document.querySelector("#course-year"),
@@ -16,9 +23,16 @@ const majorList = [];
         lectureTable : document.querySelector("#open-lecture"),
         searchBtn : document.querySelector("#btn-search")
     }
-    var  college = topSetting.college;
+    var college = document.querySelector("#college-division");
     college.onchange = function(){
-        var selectValue = college.options[college.selectedIndex].value;
+       searchCollege();
+
+    }
+    function searchCollege(){
+        console.log("searchCollege");
+        const selectValue = event.target.value;
+        console.log(selectValue);
+
         $.ajax({
             url : "/signUpSearch/getMajor",
             method:"Post",
@@ -38,6 +52,8 @@ const majorList = [];
                 }
                 allAutoSearch();
             })
+
+
     }
 
     var year = topSetting.year;
@@ -89,8 +105,14 @@ const majorList = [];
 
         if (searchMajor =="(전체)"){
             searchMajor = "total"
-
         }
+
+        console.log(searchYear);
+        console.log(searchSeme);
+        console.log(searchCollege);
+        console.log(searchMajor);
+        console.log(searchdivision);
+
 
         $.ajax({
             url : "/signUpSearch/allAutoSearch",

@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString
 public class SignupDTO {
@@ -21,6 +22,7 @@ public class SignupDTO {
     private int point;
     private int peopleNumber;
     private int fileId;
+    private String filePath;
 
     @QueryProjection
     public SignupDTO(String lectureCode) { this.lectureCode = lectureCode; }

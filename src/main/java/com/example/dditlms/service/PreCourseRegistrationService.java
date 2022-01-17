@@ -10,4 +10,7 @@ public interface PreCourseRegistrationService {
 
     @Transactional
     void searchLecture(Map<String, Object> map);
+
+    @Transactional
+    void searchSubject(Map<String, Object> map);
 }

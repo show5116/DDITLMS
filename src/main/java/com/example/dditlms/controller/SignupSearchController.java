@@ -2,7 +2,6 @@ package com.example.dditlms.controller;
 
 import com.example.dditlms.domain.dto.SignupDTO;
 import com.example.dditlms.domain.entity.Major;
-import com.example.dditlms.domain.repository.MajorRepository;
 import com.example.dditlms.domain.repository.SignupSearchRepository;
 import com.example.dditlms.service.SignupSearchService;
 import lombok.RequiredArgsConstructor;
@@ -26,20 +25,18 @@ public class SignupSearchController {
 
     private final SignupSearchRepository repository;
 
-    @GetMapping("/signUpSearch")
+    @GetMapping("/student/signUpSearch")
     public ModelAndView signUpSearch(ModelAndView mav) {
         Map<String, Object> map = new HashMap<>();
         service.signUpSearch(map);
 
         List<String> yearList = (List<String>) map.get("yearList");
         List<SignupDTO> openLectures = (List<SignupDTO>) map.get("openLectures");
-        int count = (int) map.get("totalCount");
         List<Major> majorList = (List<Major>) map.get("majorList");
 
         mav.addObject("majorList", majorList);
         mav.addObject("yearList", yearList);
-        mav.addObject("openLectures", openLectures);
-        mav.addObject("totalCount",count);
+        mav.addObject("openLectures", openLectures) ;
 
         mav.setViewName("pages/signUpSearch");
         return mav;
@@ -48,6 +45,8 @@ public class SignupSearchController {
     @PostMapping("/signUpSearch/getMajor")
     public ModelAndView getMajor(ModelAndView mav, @RequestParam Map<String, Object> paramMap){
         String college = (String) paramMap.get("selectValue");
+        log.info("-------------controller :: college = {}", college);
+
         Map<String, Object> map = new HashMap<>();
         map.put("college", college);
         service.getMajor(map);

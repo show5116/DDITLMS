@@ -5,9 +5,18 @@ var preLectureList = [];    //예비수강신청 리스트
 var deleteLectureList = []; //취소 리스트
 var subjectCodeList = [];
 var leftList = [];          //예비수강리스트에서 수강신청된 강의를 제외한 리스트
+var getId;
+
+
+
+function testPDF(){
+    event.stopImmediatePropagation();
+    window.open("/static/pdf/lny.pdf", "target", "scrollbars = yes,location = no", false);
+}
+
 
 (function(){
-    var getId;
+    // var getId;
     getOriginList();
     lectureTrEvent();
 
@@ -41,6 +50,8 @@ var leftList = [];          //예비수강리스트에서 수강신청된 강의
                 preLectureList.push(preRegist.id);
             })
         }
+        console.log("PreLectureList");
+        console.log(preLectureList);
         preLectureList.forEach(lecture => {
             var exist = registrationList.includes(lecture);
             if (!exist){
@@ -150,17 +161,9 @@ var leftList = [];          //예비수강리스트에서 수강신청된 강의
         })
             .done(function(fragment) {
                 $("#pregistration-table-card").replaceWith(fragment);
+                lectureTrEvent();
             })
     }
-
-
-
-
-
-
-
-
-
 
 
 

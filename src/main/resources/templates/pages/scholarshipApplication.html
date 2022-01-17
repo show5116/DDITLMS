@@ -82,17 +82,17 @@
                                     </form>
                                 </div>
                                 <div class="col-lg-12">
-                                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 " th:each="pro : ${progress}">
+                                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
                                         <div class="align-self-center">
-                                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5  ">진행현황</h4>
-                                            <span class="text-muted p-l-10 m-t-10" th:text="|${proStat.size}건|">0건</span>
+                                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">진행현황</h4>
+                                            <span class="text-muted p-l-10 m-t-10" th:text="${#lists.size(scholarshipList)}+'건'">0건</span>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table class="table table-hover" id="progress-app">
                                             <thead>
                                             <tr>
-                                                <th>No.</th>
+                                                <th>접수번호</th>
                                                 <th>결재부서</th>
                                                 <th>결재자구분</th>
                                                 <th>결재자성명</th>
@@ -102,8 +102,8 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="pro : ${progress}">
-                                                <td th:text="${proStat.index +(1)}">1</td>
+                                            <tr th:each="pro : ${progress}" th:if="!${pro.sanctnLnProgress.krName.equals('결재완료')}">
+                                                <td th:text="${pro.sanctnId}">1</td>
                                                 <td th:text="${pro.deptNm}">부서</td>
                                                 <td th:text="${pro.employeeRole.krName}">직급</td>
                                                 <td th:text="${pro.name}">결재자명</td>
@@ -181,6 +181,7 @@
             })
             .done((fragment)=>{
                 $("#scholarshipList").replaceWith(fragment);
+                $('#progress-app').load(location.href+' #progress-app');
             });
         });
     </script>

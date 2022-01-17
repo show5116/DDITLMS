@@ -131,14 +131,29 @@ public class PreCourseRegistrationServiceImpl implements PreCourseRegistrationSe
         for(OpenLecture openLecture : openLectureList){
             int applicantsCount = repository.countAllByLectureCode(openLecture);
             PreCourseDTO dto = openLecture.toDto();
+            Attachment attachment = attachmentRepository.findByIdAndOrder(Long.valueOf(openLecture.getSyllabusFileId()),1).get();
             dto.setApplicantsCount(applicantsCount);
+            dto.setFilePath(attachment.getOriginName());
             result.add(dto);
         }
 
         map.put("openLectureList", result);
     }
 
+    @Override
+    @Transactional
+    public void searchSubject(Map<String, Object> map){
+        String searchSubject = (String) map.get("searchSubject");
 
+        List<OpenLecture> openLectureList = searchRepository.searchSubject(searchSubject);
+        List<PreCourseDTO> result = new ArrayList<>();
+
+        for (OpenLecture openLecture : openLectureList) {
+            PreCourseDTO dto = openLecture.toDto();
+            result.add(dto);
+        }
+        map.put("openLectureList", result);
+    }
 
 
 
