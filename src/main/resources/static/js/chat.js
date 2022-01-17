@@ -30,7 +30,7 @@ async function getChat(){
             }
             chatDropBox.style="";
         } else{
-            for(let i=4; i>=0; i--){
+            for(let i=3; i>=0; i--){
                 seeChatRoom(i);
             }
             chatDropBox.style="";
