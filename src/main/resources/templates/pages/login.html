@@ -44,6 +44,7 @@
                         <p>계정이 없으신가요?<a class="ms-2" href="/signup">회원가입</a></p>
                         <div class="form-group pull-right">
                             <select id="auto-login" style="display:inline-block;" >
+                                <option value="0">로그인 실패</option>
                                 <option value="1">학생</option>
                                 <option value="2">교수</option>
                                 <option value="3">학생과</option>
@@ -71,7 +72,10 @@
 
     autoLoginBtn.addEventListener("click",()=>{
         let selectValue = autoSelect.value;
-        if(selectValue == 1){
+        if(selectValue == 0){
+            account.value = "2014161091";
+            password.value = "111";
+        }else if(selectValue == 1){
             account.value = "leejunseok95";
             password.value = "Leejs950329!";
         }else if(selectValue == 2){

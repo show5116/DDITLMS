@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="~{layout/layout}">
 <th:block layout:fragment="content">
-    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='수강신청')"></th:block>
+    <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='(<span>과목 관리</span> -> <span>교과과정 편성</span> -> <span>강의 관리</span> -> <br><span>수강 검색</span> -> <span>예비 수강 신청</span> -> <bold>수강 신청</bold>)')"></th:block>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <div class="container-fluid">

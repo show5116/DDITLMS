@@ -57,12 +57,10 @@ public class AmazonS3Util {
                     .withBucketName(bucketName)
                     .withDelimiter("/")
                     .withPrefix(targetId)
-                    //.withPrefix(userNumber)
                     .withMaxKeys(300);
 
             objectListing = s3.listObjects(listObjectsRequest);
 
-//            objectListing.getObjectSummaries().remove(0);
 
         } catch (AmazonS3Exception e) {}
         catch(SdkClientException e) {}
