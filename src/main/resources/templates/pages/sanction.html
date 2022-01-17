@@ -7,19 +7,19 @@
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='전자결재')"></th:block>
     <!-- Container-fluid starts-->
     <div class="container-fluid">
-        <div class="card-deck row">
-            <div class="card col-2">
+        <div class="card-deck row" style="height: 780px">
+            <div class="card col-2 m-0">
                 <div class="card-header" style="text-align: center; margin: 0 auto;">
                     <div class="job-left-aside custom-scrollbar">
                         <ul>
-                            <li>
+                            <li class="m-b-10">
                                 <a class="btn btn-light -content-center"
                                    href="/sanctn/drafting">기안하기</a>
                             </li>
-                            <li>
+                            <li class="m-b-10">
                                 <a class="btn btn-light justify-content-center" href="/sanctn">결재처리</a>
                             </li>
-                            <li>
+                            <li class="m-b-10">
                                 <a class="btn btn-light justify-content-center" href="/sanctn">공람처리</a>
                             </li>
                         </ul>
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="card col-7" style="text-align: center; margin: 0 auto;">
-                <div>
+                <div class="m-t-30">
                     <ul style='display:inline-block'>
                         <li style='display:inline-block'><i class="fa fa-briefcase fa-5x p-2">진행</i><br>
                             <div style="text-align: center; margin: 0 auto;"><span
@@ -89,7 +89,7 @@
                             <th scope="col">결재기한</th>
                         </tr>
                         </thead>
-                        <tbody th:each="result : ${results}">
+                        <tbody th:each="result : ${results}" style="height: 500px">
                         <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;"
                             th:value="@{ {id}(id= ${result.sanctnId})}"
                             th:onclick="btnShowSanctn(this)" th:id="idValue">
@@ -145,7 +145,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card col-3">
+            <div class="card col-3 m-0">
                 <div class="card-header">
                     <div class="text-center">
                         <br>

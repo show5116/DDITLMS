@@ -10,76 +10,78 @@
     <div class="container-fluid">
         <div class="col-lg-12">
             <div class="card">
-                <div class="p-20">
+                <div class="p-20 p-t-10" style="height: 800px;">
                     <div>
                         <div class="tab-content m-t-15">
                             <div class="row">
-                                <div id="scholarshipList" style="height:400px;" class="card col-lg-6">
-                                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
-                                        <div class="align-self-center">
-                                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">신청정보</h4>
-                                            <span class="text-muted p-l-10 m-t-10" th:text="${#lists.size(scholarshipList)}+'건'"></span>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <colgroup>
-                                                <col width="30%"/>
-                                                <col width="15%"/>
-                                                <col width="19%"/>
-                                                <col width="18%"/>
-                                                <col width="18%"/>
-                                            </colgroup>
-                                            <thead>
-                                            <tr>
-                                                <th>장학명칭</th>
-                                                <th>신청일</th>
-                                                <th>신청상태</th>
-                                                <th>장학금액</th>
-                                                <th>지급방식</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr th:each="scholarship : ${scholarshipList}">
-                                                <td th:text="${scholarship.getKind().getKorean()}"></td>
-                                                <td th:text="${#dates.format(scholarship.getApliDate(),'yy-MM-dd')}"></td>
-                                                <td th:text="${scholarship.getStatus().getKorean()}"></td>
-                                                <td th:text="${#numbers.formatInteger(scholarship.getPrice(),3,'COMMA')}"></td>
-                                                <td th:text="${scholarship.getMethod().getKorean()}"></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div style="height:400px;" class="card col-lg-6">
-                                    <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
-                                        <div class="align-self-center">
-                                            <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">장학신청</h4>
-                                            <button id="aplication-btn" class="pull-right btn btn-primary" type="button">신청</button>
-                                        </div>
-                                    </div>
-                                    <form id="scholarship-form">
-                                        <div>
-                                            <label>장학명칭</label>
-                                            <div class="search-bg"><i class="fa fa-search"></i>
-                                                <select name="kindId" style="width:80%;" id="scholarship-search" onchange="scholarSelected()">
-                                                    <option th:each="scholarshipKind : ${scholarshipKindList}" th:value="${scholarshipKind.getId()}" th:text="${scholarshipKind.getKorean()}"></option>
-                                                </select>
+                                <div class="row justify-content-around">
+                                    <div id="scholarshipList" style="height:350px;" class="card col-lg-6 p-t-10">
+                                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                                            <div class="align-self-center">
+                                                <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">신청정보</h4>
+                                                <span class="text-muted p-l-10 m-t-10" th:text="${#lists.size(scholarshipList)}+'건'"></span>
                                             </div>
                                         </div>
-                                        <div>
-                                            <br/>
-                                            <label style="display: block;">첨부파일</label>
-                                            <input id="attachment-text" style="display: inline-block; width: 70%;" class="form-control-plaintext disabled" type="text" placeholder="파일이름" readonly>
-                                            <button id="attachment-btn" type="button" class="btn-success btn-sm"> <span class="icon-import"></span></button>
-                                            <input name="attachment" id="attachment-file" style="width: 0px;height: 0px;overflow: hidden" type="file">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <colgroup>
+                                                    <col width="30%"/>
+                                                    <col width="15%"/>
+                                                    <col width="19%"/>
+                                                    <col width="18%"/>
+                                                    <col width="18%"/>
+                                                </colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <th>장학명칭</th>
+                                                    <th>신청일</th>
+                                                    <th>신청상태</th>
+                                                    <th>장학금액</th>
+                                                    <th>지급방식</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="scholarship : ${scholarshipList}">
+                                                    <td th:text="${scholarship.getKind().getKorean()}"></td>
+                                                    <td th:text="${#dates.format(scholarship.getApliDate(),'yyyy-MM-dd')}"></td>
+                                                    <td th:text="${scholarship.getStatus().getKorean()}"></td>
+                                                    <td th:text="${#numbers.formatInteger(scholarship.getPrice(),3,'COMMA')}"></td>
+                                                    <td th:text="${scholarship.getMethod().getKorean()}"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        <div>
-                                            <br/>
-                                            <label>지급기준</label>
-                                            <textarea id="criteria" style="display:block; width:85%;" readonly th:text="${scholarshipKindList[0].getSelectionCriteria()}"></textarea>
+                                    </div>
+                                    <div style="height:350px;" class="card col-lg-6 p-t-10 p-l-20">
+                                        <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
+                                            <div class="align-self-center">
+                                                <h4 style="display: inline-block;" class="f-w-700 p-l-10 m-b-0 m-t-5">장학신청</h4>
+                                                <button id="aplication-btn" class="pull-right btn btn-primary" type="button">신청</button>
+                                            </div>
                                         </div>
-                                    </form>
+                                        <form id="scholarship-form">
+                                            <div>
+                                                <label>장학명칭</label>
+                                                <div class="search-bg"><i class="fa fa-search"></i>
+                                                    <select name="kindId" style="width:80%;" id="scholarship-search" onchange="scholarSelected()">
+                                                        <option th:each="scholarshipKind : ${scholarshipKindList}" th:value="${scholarshipKind.getId()}" th:text="${scholarshipKind.getKorean()}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <br/>
+                                                <label style="display: block;">첨부파일</label>
+                                                <input id="attachment-text" style="display: inline-block; width: 70%;" class="form-control-plaintext disabled" type="text" placeholder="파일이름" readonly>
+                                                <button id="attachment-btn" type="button" class="btn-success btn-sm"> <span class="icon-import"></span></button>
+                                                <input name="attachment" id="attachment-file" style="width: 0px;height: 0px;overflow: hidden" type="file">
+                                            </div>
+                                            <div>
+                                                <br/>
+                                                <label>지급기준</label>
+                                                <textarea id="criteria" style="display:block; width:85%;" readonly th:text="${scholarshipKindList[0].getSelectionCriteria()}"></textarea>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                                 <div class="col-lg-12" id="progress-app">
                                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
