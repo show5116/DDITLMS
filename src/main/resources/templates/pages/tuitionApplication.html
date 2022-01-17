@@ -6,7 +6,7 @@
 <th:block layout:fragment="content">
     <th:block th:replace="/fragment/page-header.html :: page-headerFragment(title='등록금 고지서')"></th:block>
     <div class="col-lg-12">
-        <div style="height:500px;" class="card">
+        <div style="height:800px;" class="card">
             <div class="p-20">
                 <div class="tab-content m-t-15">
                     <div class="row justify-content-between b-l-secondary border-6 m-b-15 ">
@@ -15,41 +15,41 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="row">
+                        <div class="row p-10">
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">등록 학기</label>
-                                    <input class="form-control disabled" type="text" th:value="${semester.getYear()}">
+                                    <input class="form-control bg-white" type="text" th:value="${semester.getYear()}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">등록금</label>
-                                    <input class="form-control disabled" type="text" th:value="${#numbers.formatInteger(payment,3,'COMMA')}">
+                                    <input class="form-control bg-white" type="text" th:value="${#numbers.formatInteger(payment,3,'COMMA')}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">(장학)감면액</label>
-                                    <input class="form-control disabled" type="text" th:value="${#numbers.formatInteger(sale,3,'COMMA')}">
+                                    <input class="form-control bg-white" type="text" th:value="${#numbers.formatInteger(sale,3,'COMMA')}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">실 납부액</label>
-                                    <input class="form-control disabled" type="text" th:value="${#numbers.formatInteger(realPay,3,'COMMA')}">
+                                    <input class="form-control bg-white" type="text" th:value="${#numbers.formatInteger(realPay,3,'COMMA')}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">가상계좌</label>
-                                    <input class="form-control disabled" type="text" value="신한">
+                                    <input class="form-control bg-white" type="text" value="신한" readonly>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">계좌번호</label>
-                                    <input class="form-control disabled" type="text" value="110-420-178727">
+                                    <input class="form-control bg-white" type="text" value="110-420-178727" readonly>
                                 </div>
                             </div>
                         </div>
