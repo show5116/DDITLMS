@@ -89,7 +89,7 @@
                             <th scope="col">결재기한</th>
                         </tr>
                         </thead>
-                        <tbody th:each="result : ${results}" style="height: 500px">
+                        <tbody th:each="result : ${results}">
                         <tr th:if="${not #strings.isEmpty(result)}" style="cursor:pointer;"
                             th:value="@{ {id}(id= ${result.sanctnId})}"
                             th:onclick="btnShowSanctn(this)" th:id="idValue">
