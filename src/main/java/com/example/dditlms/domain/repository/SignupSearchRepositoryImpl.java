@@ -66,11 +66,13 @@ public class SignupSearchRepositoryImpl implements SignupSearchRepositoryCustom{
         String methodName = (String)searchSubject.get("name");
         switch (methodName){
             case "totalList" :
+               query.orderBy(openLecture.yearSeme.year.asc());
                result = query.fetch();
                break;
             case "searchSubject" :
                 String subject = (String)searchSubject.get("subject");
                 query.where(QSubject.subject.name.contains(subject));
+                query.orderBy(openLecture.yearSeme.year.asc());
                 result = query.fetch();
                 break;
             case "allAutoSearch" :
@@ -104,6 +106,7 @@ public class SignupSearchRepositoryImpl implements SignupSearchRepositoryCustom{
                 }
                 query.where(openLecture.yearSeme.year.contains(allsearchYear));
                 query.where(openLecture.yearSeme.year.contains(allyearSeme));
+                query.orderBy(openLecture.yearSeme.year.asc());
                 result = query.fetch();
                 break;
         }
