@@ -71,7 +71,7 @@
                                     <span class="col text-muted p-l-10 m-t-10" id="regist-lecture-count" th:text="${#lists.size(registrationList)}+'건'"></span>
                                 </div>
                             </div>
-                            <div style="height: 200px; overflow-y: auto;">
+                            <div style="height: 190px; overflow-y: auto;">
                                 <table class="table table-bordered text-center baseline" >
                                     <thead class="table-secondary">
                                         <tr>
@@ -93,20 +93,20 @@
                                     </thead>
                                     <tbody>
                                         <tr class="registration-tr" th:each="realRL,index : ${registrationList}" th:id="${realRL.getLectureCode()}">
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${index.index+1}"></td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getCollege()}">학부</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getMajorKr()}">전기-전자-통신공학과</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getLectureCode()}">IFA100</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center"><a onclick="testPDF();" id="regist-lecture-name" class="btn btn-link txt-dark" th:text="${realRL.getLectureName()}"></a></td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getLectureClass()}">01</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getLectureSeme()}">전필</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getLecturedivision()}">오프라인</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getMaxPeopleCount()}">25</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getApplicantsCount()}">24</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getProfessor()}">안치형</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getLectureSchedule()}">금03A~04B,06A~09B</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center" th:text="${realRL.getLectureRoom()}">공학1관(B404)</td>
-                                            <td class="p-0 p-t-5 p-b-5 t-12 align-self-center"><button class="btn btn-primary" id="registration-cancel" onclick="oneRegistCancel();">취소</button></td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${index.index+1}"></td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getCollege()}">학부</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getMajorKr()}">전기-전자-통신공학과</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getLectureCode()}">IFA100</td>
+                                            <td class="p-0 t-12 align-self-center"><a onclick="testPDF();" id="regist-lecture-name" class="btn btn-link txt-dark" th:text="${realRL.getLectureName()}"></a></td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getLectureClass()}">01</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getLectureSeme()}">전필</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getLecturedivision()}">오프라인</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getMaxPeopleCount()}">25</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getApplicantsCount()}">24</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getProfessor()}">안치형</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getLectureSchedule()}">금03A~04B,06A~09B</td>
+                                            <td class="p-0 t-12 align-self-center" th:text="${realRL.getLectureRoom()}">공학1관(B404)</td>
+                                            <td class="p-0 t-12 align-self-center"><button class="btn btn-primary" id="registration-cancel" onclick="oneRegistCancel();">취소</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -128,18 +128,18 @@
                                             <table class="table table-bordered text-center f-14">
                                                 <thead class="table-secondary">
                                                     <tr>
-                                                        <th>학부(과)</th>
-                                                        <th>과목코드</th>
-                                                        <th>교과목명</th>
-                                                        <th>분반</th>
-                                                        <th>이수구분</th>
-                                                        <th>강의구분</th>
-                                                        <th>정원</th>
-                                                        <th>수강인원</th>
-                                                        <th>담당교수</th>
-                                                        <th>강의시간</th>
-                                                        <th>강의실</th>
-                                                        <th>신청</th>
+                                                        <th class="p-0 p-t-10 p-b-10">학부(과)</th>
+                                                        <th class="p-0 p-t-10 p-b-10">과목코드</th>
+                                                        <th class="p-0 p-t-10 p-b-10">교과목명</th>
+                                                        <th class="p-0 p-t-10 p-b-10">분반</th>
+                                                        <th class="p-0 p-t-10 p-b-10">이수구분</th>
+                                                        <th class="p-0 p-t-10 p-b-10">강의구분</th>
+                                                        <th class="p-0 p-t-10 p-b-10">정원</th>
+                                                        <th class="p-0 p-t-10 p-b-10">수강인원</th>
+                                                        <th class="p-0 p-t-10 p-b-10">담당교수</th>
+                                                        <th class="p-0 p-t-10 p-b-10">강의시간</th>
+                                                        <th class="p-0 p-t-10 p-b-10">강의실</th>
+                                                        <th class="p-0 p-t-10 p-b-10">신청</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -189,7 +189,7 @@
                                                 <tbody>
                                                     <tr class="pre-registration-tr" th:each="preL : ${preRegistrationList}" th:id="${preL.getLectureCode().getId()}">
                                                         <td th:if="${preL.getExistence().equals('1')}">수강</td>
-                                                        <td th:if="${preL.getExistence().equals('0')}"><button type="button" class="btn-air-light one-registration" onclick="oneRegist()">신청</button></td>
+                                                        <td th:if="${preL.getExistence().equals('0')}"><button type="button" class="btn-air-light one-registration btn btn-primary" onclick="oneRegist()">신청</button></td>
                                                         <td th:text="${preL.getLectureCode().getSubjectCode().getName()}">기초전기전자실습</td>
                                                         <td th:if="${#strings.endsWith(preL.getLectureCode().getId(),'A')}">01</td>
                                                         <td th:unless="${#strings.endsWith(preL.getLectureCode().getId(),'A')}">02</td>
